@@ -23,7 +23,6 @@ endr
 	ld c, [hl]
 	pop hl
 	ret
-
 .WrapAroundTimes:
 ; entries correspond to RESTART_CLOCK_* constants
 MACRO wraparound_time
@@ -54,15 +53,12 @@ RestartClock:
 	ld [hl], b
 	ld c, a
 	ret
-
 .ClockTimeMayBeWrongText:
 	text_far _ClockTimeMayBeWrongText
 	text_end
-
 .ClockSetWithControlPadText:
 	text_far _ClockSetWithControlPadText
 	text_end
-
 .SetClock:
 	ld a, RESTART_CLOCK_DAY
 	ld [wRestartClockCurDivision], a
@@ -76,7 +72,6 @@ RestartClock:
 	ld [wRestartClockHour], a
 	ldh a, [hMinutes]
 	ld [wRestartClockMin], a
-
 .loop
 	call .joy_loop
 	jr nc, .loop
@@ -102,19 +97,15 @@ RestartClock:
 	call WaitPressAorB_BlinkCursor
 	xor a ; FALSE
 	ret
-
 .cancel
 	ld a, TRUE
 	ret
-
 .ClockIsThisOKText:
 	text_far _ClockIsThisOKText
 	text_end
-
 .ClockHasResetText:
 	text_far _ClockHasResetText
 	text_end
-
 .joy_loop
 	call JoyTextDelay_ForcehJoyDown
 	ld c, a
@@ -134,17 +125,14 @@ RestartClock:
 	bit 4, a
 	jr nz, .pressed_right
 	jr .joy_loop
-
 .press_A
 	ld a, FALSE
 	scf
 	ret
-
 .press_B
 	ld a, TRUE
 	scf
 	ret
-
 .pressed_up
 	ld a, [wRestartClockCurDivision]
 	call RestartClock_GetWraparoundTime
@@ -156,7 +144,6 @@ RestartClock:
 	ld a, 0
 	ld [de], a
 	jr .done_scroll
-
 .pressed_down
 	ld a, [wRestartClockCurDivision]
 	call RestartClock_GetWraparoundTime
@@ -169,14 +156,12 @@ RestartClock:
 	dec a
 	ld [de], a
 	jr .done_scroll
-
 .pressed_left
 	ld hl, wRestartClockCurDivision
 	dec [hl]
 	jr nz, .done_scroll
 	ld [hl], RESTART_CLOCK_MIN
 	jr .done_scroll
-
 .pressed_right
 	ld hl, wRestartClockCurDivision
 	inc [hl]
@@ -184,11 +169,9 @@ RestartClock:
 	cp NUM_RESTART_CLOCK_DIVISIONS + 1
 	jr c, .done_scroll
 	ld [hl], RESTART_CLOCK_DAY
-
 .done_scroll
 	xor a ; FALSE
 	ret
-
 .PrintTime:
 	hlcoord 0, 5
 	ld b, 5
@@ -213,13 +196,6 @@ RestartClock:
 	ld a, [wRestartClockCurDivision]
 	ld [wRestartClockPrevDivision], a
 	ret
-
-.UnusedPlaceCharsFragment: ; unreferenced
-	ld a, [wRestartClockUpArrowYCoord]
-	ld b, a
-	call Coord2Tile
-	ret
-
 .PlaceChars:
 	push de
 	call RestartClock_GetWraparoundTime
@@ -233,9 +209,3 @@ RestartClock:
 	add hl, bc
 	ld [hl], e
 	ret
-
-JPHourString: ; unreferenced
-	db "じ@" ; HR
-
-JPMinuteString: ; unreferenced
-	db "ふん@" ; MIN

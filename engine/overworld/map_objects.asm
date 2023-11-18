@@ -58,7 +58,6 @@ CheckObjectStillVisible:
 	cp MAPOBJECT_SCREEN_HEIGHT
 	jr nc, .ok
 	jr .yes
-
 .ok
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
@@ -86,7 +85,6 @@ CheckObjectStillVisible:
 .yes
 	and a
 	ret
-
 .ok2
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
@@ -95,7 +93,6 @@ CheckObjectStillVisible:
 	call DeleteMapObject
 	scf
 	ret
-
 .yes2
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
@@ -116,7 +113,6 @@ HandleStepType:
 	cp STEP_TYPE_FROM_MOVEMENT
 	jr z, .one
 	jr .ok3
-
 .zero
 	call StepFunction_Reset
 	ld hl, OBJECT_FLAGS2
@@ -136,7 +132,6 @@ HandleStepType:
 	ld hl, StepTypesJumptable
 	rst JumpTable
 	ret
-
 .frozen
 	ret
 
@@ -151,7 +146,7 @@ HandleObjectAction:
 	jr nz, SetFacingStanding
 	bit FROZEN_F, [hl]
 	jr nz, _CallFrozenObjectAction
-; use first column (normal)
+	; use first column (normal)
 	ld de, ObjectActionPairPointers
 	jr CallObjectAction
 
@@ -160,8 +155,9 @@ HandleFrozenObjectAction:
 	add hl, bc
 	bit INVISIBLE_F, [hl]
 	jr nz, SetFacingStanding
+
 _CallFrozenObjectAction:
-; use second column (frozen)
+	; use second column (frozen)
 	ld de, ObjectActionPairPointers + 2
 	jr CallObjectAction ; pointless
 
@@ -205,7 +201,7 @@ CopyCoordsTileToLastCoordsTile:
 	ld hl, OBJECT_TILE
 	add hl, bc
 	ld a, [hl]
-	call UselessAndA
+	and a
 	ret
 
 CopyLastCoordsToCoords:
@@ -236,12 +232,12 @@ UpdateTallGrassFlags:
 	ld hl, OBJECT_TILE
 	add hl, bc
 	ld a, [hl]
-	call UselessAndA
+	and a
 	ret c ; never happens
 	ld hl, OBJECT_LAST_TILE
 	add hl, bc
 	ld a, [hl]
-	call UselessAndA
+	and a
 	ret
 
 SetTallGrassFlags:
@@ -259,10 +255,6 @@ SetTallGrassFlags:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	res OVERHEAD_F, [hl]
-	ret
-
-UselessAndA:
-	and a
 	ret
 
 EndSpriteMovement:
@@ -2252,14 +2244,14 @@ UpdateObjectFrozen:
 	call CheckObjectOnScreen
 	jr c, SetFacing_Standing
 	call UpdateObjectTile
-	farcall HandleFrozenObjectAction ; no need to farcall
+	call HandleFrozenObjectAction
 	xor a
 	ret
 
 UpdateRespawnedObjectFrozen:
 	call CheckObjectOnScreen
 	jr c, SetFacing_Standing
-	farcall HandleFrozenObjectAction ; no need to farcall
+	call HandleFrozenObjectAction
 	xor a
 	ret
 
@@ -2334,14 +2326,14 @@ CheckObjectCoveredByTextbox:
 	cp SCREEN_WIDTH_PX
 	jp nc, .nope
 .ok1
-; Account for objects currently moving left/right.
+	; Account for objects currently moving left/right.
 	and %00000111
 	ld d, 2
 	cp TILE_WIDTH / 2
 	jr c, .ok2
 	ld d, 3
 .ok2
-; Convert pixels to tiles.
+	; Convert pixels to tiles.
 	ld a, [hl]
 	srl a
 	srl a
@@ -2351,8 +2343,7 @@ CheckObjectCoveredByTextbox:
 	sub BG_MAP_WIDTH
 .ok3
 	ldh [hCurSpriteXCoord], a
-
-; Check whether the object fits in the screen height.
+	; Check whether the object fits in the screen height.
 	ld a, [wPlayerBGMapOffsetY]
 	ld e, a
 	ld hl, OBJECT_SPRITE_Y_OFFSET
@@ -2384,8 +2375,7 @@ CheckObjectCoveredByTextbox:
 	sub BG_MAP_HEIGHT
 .ok6
 	ldh [hCurSpriteYCoord], a
-
-; Account for big objects that are twice as wide and high.
+	; Account for big objects that are twice as wide and high.
 	ld hl, OBJECT_PALETTE
 	add hl, bc
 	bit BIG_OBJECT_F, [hl]
@@ -2399,7 +2389,6 @@ CheckObjectCoveredByTextbox:
 .ok7
 	ld a, d
 	ldh [hCurSpriteXPixel], a
-
 .loop
 	ldh a, [hCurSpriteXPixel]
 	ld d, a
@@ -2419,8 +2408,8 @@ CheckObjectCoveredByTextbox:
 	push bc
 	call Coord2Tile
 	pop bc
-; NPCs disappear if standing on tile $60-$7f (or $e0-$ff),
-; since those IDs are for text characters and textbox frames.
+	; NPCs disappear if standing on tile $60-$7f (or $e0-$ff),
+	; since those IDs are for text characters and textbox frames.
 	ld a, [hl]
 	cp FIRST_REGULAR_TEXT_CHAR
 	jr nc, .nope
@@ -2430,10 +2419,8 @@ CheckObjectCoveredByTextbox:
 .ok9
 	dec e
 	jr nz, .loop
-
 	and a
 	ret
-
 .nope
 	scf
 	ret

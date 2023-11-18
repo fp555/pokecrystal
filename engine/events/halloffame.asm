@@ -1,5 +1,3 @@
-DEF HALLOFFAME_COLON EQU $63
-
 HallOfFame::
 	call HallOfFame_FadeOutMusic
 	ld a, [wStatusFlags]
@@ -9,13 +7,10 @@ HallOfFame::
 	call DisableSpriteUpdates
 	ld a, SPAWN_LANCE
 	ld [wSpawnAfterChampion], a
-
 	; Enable the Pokégear map to cycle through all of Kanto
 	ld hl, wStatusFlags
 	set STATUSFLAGS_HALL_OF_FAME_F, [hl]
-
 	farcall HallOfFame_InitSaveIfNeeded
-
 	ld hl, wHallOfFameCount
 	ld a, [hl]
 	cp HOF_MASTER_COUNT
@@ -25,7 +20,6 @@ HallOfFame::
 	farcall SaveGameData
 	call GetHallOfFameParty
 	farcall AddHallOfFameEntry
-
 	xor a
 	ld [wGameLogicPaused], a
 	call AnimateHallOfFame
@@ -107,7 +101,6 @@ AnimateHallOfFame:
 	ld hl, wHallOfFameMonCounter
 	inc [hl]
 	jr .loop
-
 .done
 	call HOF_AnimatePlayerPic
 	ld a, $4
@@ -116,7 +109,6 @@ AnimateHallOfFame:
 	ld c, 8
 	call DelayFrames
 	ret
-
 .DisplayNewHallOfFamer:
 	call DisplayHOFMon
 	ld de, .String_NewHallOfFamer
@@ -130,7 +122,6 @@ AnimateHallOfFame:
 	call DelayFrames
 	and a
 	ret
-
 .String_NewHallOfFamer:
 	db "New Hall of Famer!@"
 
@@ -153,25 +144,21 @@ GetHallOfFameParty:
 	jr nz, .mon
 	inc c
 	jr .next
-
 .mon
 	push hl
 	push de
 	push bc
-
 	ld a, c
 	ld hl, wPartyMons
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call AddNTimes
 	ld c, l
 	ld b, h
-
 	ld hl, MON_SPECIES
 	add hl, bc
 	ld a, [hl]
 	ld [de], a
 	inc de
-
 	ld hl, MON_ID
 	add hl, bc
 	ld a, [hli]
@@ -180,7 +167,6 @@ GetHallOfFameParty:
 	ld a, [hl]
 	ld [de], a
 	inc de
-
 	ld hl, MON_DVS
 	add hl, bc
 	ld a, [hli]
@@ -189,13 +175,11 @@ GetHallOfFameParty:
 	ld a, [hl]
 	ld [de], a
 	inc de
-
 	ld hl, MON_LEVEL
 	add hl, bc
 	ld a, [hl]
 	ld [de], a
 	inc de
-
 	pop bc
 	push bc
 	ld a, c
@@ -204,7 +188,6 @@ GetHallOfFameParty:
 	call AddNTimes
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
-
 	pop bc
 	inc c
 	pop de
@@ -214,7 +197,6 @@ GetHallOfFameParty:
 	ld d, h
 	pop hl
 	jr .next
-
 .done
 	ld a, -1
 	ld [de], a
@@ -306,7 +288,6 @@ _HallOfFamePC:
 	ld hl, wJumptableIndex
 	inc [hl]
 	jr .MasterLoop
-
 .DisplayTeam:
 	xor a
 	ld [wHallOfFameMonCounter], a
@@ -327,16 +308,13 @@ _HallOfFamePC:
 	jr nz, .start_button
 	call DelayFrame
 	jr .loop
-
 .a_button
 	ld hl, wHallOfFameMonCounter
 	inc [hl]
 	jr .next
-
 .b_button
 	scf
 	ret
-
 .start_button
 	and a
 	ret
@@ -353,11 +331,9 @@ _HallOfFamePC:
 	ld a, [hl]
 	cp -1
 	jr nz, .okay
-
 .fail
 	scf
 	ret
-
 .okay
 	push hl
 	call ClearBGPalettes
@@ -372,7 +348,6 @@ _HallOfFamePC:
 	call PlaceString
 	hlcoord 13, 2
 	jr .finish
-
 .print_num_hof
 	ld de, .TimeFamer
 	hlcoord 1, 2
@@ -382,7 +357,6 @@ _HallOfFamePC:
 	lb bc, 1, 3
 	call PrintNum
 	hlcoord 11, 2
-
 .finish
 	ld de, .EmptyString
 	call PlaceString
@@ -395,13 +369,10 @@ _HallOfFamePC:
 	predef HOF_AnimateFrontpic
 	and a
 	ret
-
 .EmptyString:
 	db "@"
-
 .HOFMaster:
 	db "    HOF Master!@"
-
 .TimeFamer:
 	db "    -Time Famer@"
 
@@ -423,10 +394,8 @@ LoadHOFTeam:
 	call CloseSRAM
 	and a
 	ret
-
 .absent
 	call CloseSRAM
-
 .invalid
 	scf
 	ret
@@ -492,7 +461,6 @@ DisplayHOFMon:
 	ld a, "♂"
 	jr nz, .got_gender
 	ld a, "♀"
-
 .got_gender
 	hlcoord 18, 13
 	ld [hli], a
@@ -503,7 +471,6 @@ DisplayHOFMon:
 	call PlaceString
 	hlcoord 1, 16
 	call PrintLevel
-
 .print_id_no
 	hlcoord 7, 16
 	ld a, "<ID>"
@@ -519,10 +486,6 @@ DisplayHOFMon:
 
 HOF_AnimatePlayerPic:
 	call ClearBGPalettes
-	ld hl, vTiles2 tile HALLOFFAME_COLON
-	ld de, FontExtra + 13 tiles ; "<COLON>"
-	lb bc, BANK(FontExtra), 1
-	call Request2bpp
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	ld a, " "
@@ -592,7 +555,7 @@ HOF_AnimatePlayerPic:
 	ld de, wGameTimeHours
 	lb bc, 2, 3
 	call PrintNum
-	ld [hl], HALLOFFAME_COLON
+	ld [hl], "<COLON>"
 	inc hl
 	ld de, wGameTimeMinutes
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
@@ -600,6 +563,5 @@ HOF_AnimatePlayerPic:
 	call WaitBGMap
 	farcall ProfOaksPCRating
 	ret
-
 .PlayTime:
 	db "PLAY TIME@"

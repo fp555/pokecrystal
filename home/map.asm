@@ -18,7 +18,6 @@ CheckScenes::
 	ld a, [hl]
 	jr nz, .scene_exists
 	ld a, -1
-
 .scene_exists
 	pop hl
 	ret
@@ -26,18 +25,18 @@ CheckScenes::
 GetCurrentMapSceneID::
 ; Grabs the wram map scene script pointer for the current map and loads it into wCurMapSceneScriptPointer.
 ; If there is no scene, both bytes of wCurMapSceneScriptPointer are wiped clean.
-; Copy the current map group and number into bc.  This is needed for GetMapSceneID.
+	; Copy the current map group and number into bc.  This is needed for GetMapSceneID.
 	ld a, [wMapGroup]
 	ld b, a
 	ld a, [wMapNumber]
 	ld c, a
-; Blank out wCurMapSceneScriptPointer; this is the default scenario.
+	; Blank out wCurMapSceneScriptPointer; this is the default scenario.
 	xor a
 	ld [wCurMapSceneScriptPointer], a
 	ld [wCurMapSceneScriptPointer + 1], a
 	call GetMapSceneID
 	ret c ; The map is not in the scene script table
-; Load the scene script pointer from de into wCurMapSceneScriptPointer
+	; Load the scene script pointer from de into wCurMapSceneScriptPointer
 	ld a, e
 	ld [wCurMapSceneScriptPointer], a
 	ld a, d
@@ -53,7 +52,6 @@ GetMapSceneID::
 	push af
 	ld a, BANK(MapScenes)
 	rst Bankswitch
-
 	ld hl, MapScenes
 .loop
 	push hl
@@ -66,28 +64,23 @@ GetMapSceneID::
 	cp c
 	jr nz, .next ; map number did not match
 	jr .found ; we found our map
-
 .next
 	pop hl
 	ld de, 4 ; scene_var size
 	add hl, de
 	jr .loop
-
 .end
 	scf
 	jr .done
-
 .found
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-
 .done
 	pop hl
 	pop bc
 	ld a, b
 	rst Bankswitch
-
 	pop bc
 	ret
 
@@ -99,20 +92,16 @@ OverworldTextModeSwitch::
 LoadMapPart::
 	ldh a, [hROMBank]
 	push af
-
 	ld a, [wTilesetBlocksBank]
 	rst Bankswitch
 	call LoadMetatiles
-
 	ld a, "■"
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	call ByteFill
-
 	ld a, BANK(_LoadMapPart)
 	rst Bankswitch
 	call _LoadMapPart
-
 	pop af
 	rst Bankswitch
 	ret
@@ -125,12 +114,10 @@ LoadMetatiles::
 	ld d, a
 	ld hl, wSurroundingTiles
 	ld b, SCREEN_META_HEIGHT
-
 .row
 	push de
 	push hl
 	ld c, SCREEN_META_WIDTH
-
 .col
 	push de
 	push hl
@@ -140,7 +127,6 @@ LoadMetatiles::
 	and a
 	jr nz, .ok
 	ld a, [wMapBorderBlock]
-
 .ok
 	; Load the current wSurroundingTiles address into de.
 	ld e, l
@@ -159,7 +145,6 @@ LoadMetatiles::
 	ld a, [wTilesetBlocksAddress + 1]
 	adc h
 	ld h, a
-
 	; copy the 4x4 metatile
 rept METATILE_WIDTH - 1
 rept METATILE_WIDTH
@@ -214,12 +199,10 @@ ReturnToMapFromSubmenu::
 CheckWarpTile::
 	call GetDestinationWarpNumber
 	ret nc
-
 	push bc
 	farcall CheckDirectionalWarp
 	pop bc
 	ret nc
-
 	call CopyWarpData
 	scf
 	ret
@@ -233,18 +216,14 @@ WarpCheck::
 GetDestinationWarpNumber::
 	farcall CheckWarpCollision
 	ret nc
-
 	ldh a, [hROMBank]
 	push af
-
 	call SwitchToMapScriptsBank
 	call .GetDestinationWarpNumber
-
 	pop de
 	ld a, d
 	rst Bankswitch
 	ret
-
 .GetDestinationWarpNumber:
 	ld a, [wPlayerMapY]
 	sub 4
@@ -255,7 +234,6 @@ GetDestinationWarpNumber::
 	ld a, [wCurMapWarpCount]
 	and a
 	ret z
-
 	ld c, a
 	ld hl, wCurMapWarpsPointer
 	ld a, [hli]
@@ -270,7 +248,6 @@ GetDestinationWarpNumber::
 	cp d
 	jr nz, .next
 	jr .found_warp
-
 .next
 	pop hl
 	ld a, WARP_EVENT_SIZE
@@ -278,25 +255,21 @@ GetDestinationWarpNumber::
 	ld l, a
 	jr nc, .okay
 	inc h
-
 .okay
 	dec c
 	jr nz, .loop
 	xor a
 	ret
-
 .found_warp
 	pop hl
 	call .IncreaseHLTwice
 	ret nc ; never encountered
-
 	ld a, [wCurMapWarpCount]
 	inc a
 	sub c
 	ld c, a
 	scf
 	ret
-
 .IncreaseHLTwice:
 	inc hl
 	inc hl
@@ -306,15 +279,12 @@ GetDestinationWarpNumber::
 CopyWarpData::
 	ldh a, [hROMBank]
 	push af
-
 	call SwitchToMapScriptsBank
 	call .CopyWarpData
-
 	pop af
 	rst Bankswitch
 	scf
 	ret
-
 .CopyWarpData:
 	push bc
 	ld hl, wCurMapWarpsPointer
@@ -332,7 +302,6 @@ CopyWarpData::
 	jr nz, .skip
 	ld hl, wBackupWarpNumber
 	ld a, [hli]
-
 .skip
 	pop bc
 	ld [wNextWarp], a
@@ -340,7 +309,6 @@ CopyWarpData::
 	ld [wNextMapGroup], a
 	ld a, [hli]
 	ld [wNextMapNumber], a
-
 	ld a, c
 	ld [wPrevWarp], a
 	ld a, [wMapGroup]
@@ -1267,7 +1235,6 @@ BackupBGMapColumn::
 	ld l, a
 	jr nc, .skip
 	inc h
-
 .skip
 	dec c
 	jr nz, .loop
@@ -1281,7 +1248,6 @@ UpdateBGMapRow::
 	ld a, BG_MAP_WIDTH
 	add e
 	ld e, a
-
 .iteration
 	ld c, 10
 .loop
@@ -1317,24 +1283,16 @@ UpdateBGMapColumn::
 	ld e, a
 	jr nc, .skip
 	inc d
-; cap d at HIGH(vBGMap0)
+	; cap d at HIGH(vBGMap0)
 	ld a, d
 	and %11
 	or HIGH(vBGMap0)
 	ld d, a
-
 .skip
 	dec c
 	jr nz, .loop
 	ld a, SCREEN_HEIGHT
 	ldh [hBGMapTileCount], a
-	ret
-
-ClearBGMapBuffer:: ; unreferenced
-	ld hl, wBGMapBuffer
-	ld bc, wBGMapBufferEnd - wBGMapBuffer
-	xor a
-	call ByteFill
 	ret
 
 LoadTilesetGFX::
@@ -1344,38 +1302,30 @@ LoadTilesetGFX::
 	ld l, a
 	ld a, [wTilesetBank]
 	ld e, a
-
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wDecompressScratch)
 	ldh [rSVBK], a
-
 	ld a, e
 	ld de, wDecompressScratch
 	call FarDecompress
-
 	ld hl, wDecompressScratch
 	ld de, vTiles2
-	ld bc, $60 tiles
+	ld bc, $7f tiles
 	call CopyBytes
-
 	ldh a, [rVBK]
 	push af
 	ld a, BANK(vTiles5)
 	ldh [rVBK], a
-
-	ld hl, wDecompressScratch + $60 tiles
+	ld hl, wDecompressScratch + $80 tiles
 	ld de, vTiles5
-	ld bc, $60 tiles
+	ld bc, $80 tiles
 	call CopyBytes
-
 	pop af
 	ldh [rVBK], a
-
 	pop af
 	ldh [rSVBK], a
-
-; These tilesets support dynamic per-mapgroup roof tiles.
+	; These tilesets support dynamic per-mapgroup roof tiles.
 	ld a, [wMapTileset]
 	cp TILESET_JOHTO
 	jr z, .load_roof
@@ -1384,10 +1334,8 @@ LoadTilesetGFX::
 	cp TILESET_BATTLE_TOWER_OUTSIDE
 	jr z, .load_roof
 	jr .skip_roof
-
 .load_roof
 	farcall LoadMapGroupRoof
-
 .skip_roof
 	xor a
 	ldh [hTileAnimFrame], a

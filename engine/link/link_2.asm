@@ -30,7 +30,6 @@ LinkTextbox2:
 	call .PlaceBorder
 	pop hl
 	pop bc
-
 	ld de, wAttrmap - wTilemap
 	add hl, de
 	inc b
@@ -52,7 +51,6 @@ LinkTextbox2:
 	dec b
 	jr nz, .row
 	ret
-
 .PlaceBorder:
 	push hl
 	ld a, $76
@@ -76,14 +74,12 @@ LinkTextbox2:
 	add hl, de
 	dec b
 	jr nz, .loop
-
 	ld a, $7b
 	ld [hli], a
 	ld a, $7c
 	call .PlaceRow
 	ld [hl], $7d
 	ret
-
 .PlaceRow:
 	ld d, c
 .row_loop

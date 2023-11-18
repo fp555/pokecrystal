@@ -21,12 +21,10 @@ FillBoxWithByte::
 
 ClearTilemap::
 ; Fill wTilemap with blank tiles.
-
 	hlcoord 0, 0
 	ld a, " "
 	ld bc, wTilemapEnd - wTilemap
 	call ByteFill
-
 	; Update the BG Map.
 	ldh a, [rLCDC]
 	bit rLCDC_ENABLE, a
@@ -61,7 +59,6 @@ TextboxBorder::
 	inc a ; "┐"
 	ld [hl], a
 	pop hl
-
 	; Middle
 	ld de, SCREEN_WIDTH
 	add hl, de
@@ -73,19 +70,16 @@ TextboxBorder::
 	call .PlaceChars
 	ld [hl], "│"
 	pop hl
-
 	ld de, SCREEN_WIDTH
 	add hl, de
 	dec b
 	jr nz, .row
-
 	; Bottom
 	ld a, "└"
 	ld [hli], a
 	ld a, "─"
 	call .PlaceChars
 	ld [hl], "┘"
-
 	ret
 
 .PlaceChars:
@@ -128,14 +122,9 @@ SpeechTextbox::
 	ld c, TEXTBOX_INNERW
 	jp Textbox
 
-GameFreakText:: ; unreferenced
-	text "ゲームフりーク！" ; "GAMEFREAK!"
-	done
-
 RadioTerminator::
 	ld hl, .stop
 	ret
-
 .stop:
 	text_end
 
@@ -176,10 +165,6 @@ PlaceNextChar::
 	ld c, l
 	pop hl
 	ret
-
-DummyChar:: ; unreferenced
-	pop de
-	; fallthrough
 
 NextChar::
 	inc de
@@ -242,49 +227,7 @@ ENDM
 	dict "<USER>",    PlaceMoveUsersName
 	dict "<ENEMY>",   PlaceEnemysName
 	dict "<PLAY_G>",  PlaceGenderedPlayerName
-	dict "ﾟ",         .place ; should be .diacritic
-	dict "ﾞ",         .place ; should be .diacritic
-	jr .not_diacritic
-
-.diacritic ; unreferenced
-	ld b, a
-	call Diacritic
-	jp NextChar
-
-.not_diacritic
-	cp FIRST_REGULAR_TEXT_CHAR
-	jr nc, .place
-; dakuten or handakuten
-	cp "パ"
-	jr nc, .handakuten
-; dakuten
-	cp FIRST_HIRAGANA_DAKUTEN_CHAR
-	jr nc, .hiragana_dakuten
-; katakana dakuten
-	add "カ" - "ガ"
-	jr .place_dakuten
-
-.hiragana_dakuten
-	add "か" - "が"
-.place_dakuten
-	ld b, "ﾞ" ; dakuten
-	call Diacritic
-	jr .place
-
-.handakuten
-	cp "ぱ"
-	jr nc, .hiragana_handakuten
-; katakana handakuten
-	add "ハ" - "パ"
-	jr .place_handakuten
-
-.hiragana_handakuten
-	add "は" - "ぱ"
-.place_handakuten
-	ld b, "ﾟ" ; handakuten
-	call Diacritic
-
-.place
+	
 	ld [hli], a
 	call PrintLetterDelay
 	jp NextChar
@@ -333,10 +276,8 @@ PlaceBattlersName:
 	push de
 	and a
 	jr nz, .enemy
-
 	ld de, wBattleMonNickname
 	jr PlaceCommandCharacter
-
 .enemy
 	ld de, EnemyText
 	call PlaceString
@@ -347,17 +288,14 @@ PlaceBattlersName:
 
 PlaceEnemysName::
 	push de
-
 	ld a, [wLinkMode]
 	and a
 	jr nz, .linkbattle
-
 	ld a, [wTrainerClass]
 	cp RIVAL1
 	jr z, .rival
 	cp RIVAL2
 	jr z, .rival
-
 	ld de, wOTClassName
 	call PlaceString
 	ld h, b
@@ -369,11 +307,9 @@ PlaceEnemysName::
 	pop hl
 	ld de, wStringBuffer1
 	jr PlaceCommandCharacter
-
 .rival
 	ld de, wRivalName
 	jr PlaceCommandCharacter
-
 .linkbattle
 	ld de, wOTClassName
 	jr PlaceCommandCharacter
@@ -444,12 +380,10 @@ CarriageReturnChar::
 	ld a, l
 	cp SCREEN_WIDTH
 	jr c, .done
-
 .next
 	add hl, de
 	inc c
 	jr .loop
-
 .done
 	hlcoord 0, 0
 	ld de, SCREEN_WIDTH
@@ -460,7 +394,6 @@ CarriageReturnChar::
 	add hl, de
 	dec a
 	jr .loop2
-
 .done2
 	pop de
 	inc de
@@ -479,14 +412,12 @@ LineChar::
 
 Paragraph::
 	push de
-
 	ld a, [wLinkMode]
 	cp LINK_COLOSSEUM
 	jr z, .linkbattle
 	cp LINK_MOBILE
 	jr z, .linkbattle
 	call LoadBlinkingCursor
-
 .linkbattle
 	call Text_WaitBGMap
 	call PromptButton
@@ -505,14 +436,11 @@ _ContText::
 	or a
 	jr nz, .communication
 	call LoadBlinkingCursor
-
 .communication
 	call Text_WaitBGMap
-
 	push de
 	call PromptButton
 	pop de
-
 	ld a, [wLinkMode]
 	or a
 	call z, UnloadBlinkingCursor
@@ -553,7 +481,6 @@ PromptText::
 	cp LINK_MOBILE
 	jr z, .ok
 	call LoadBlinkingCursor
-
 .ok
 	call Text_WaitBGMap
 	call PromptButton
@@ -569,7 +496,6 @@ DoneText::
 	ld de, .stop
 	dec de
 	ret
-
 .stop:
 	text_end
 
@@ -583,18 +509,15 @@ TextScroll::
 	hlcoord TEXTBOX_INNERX, TEXTBOX_INNERY
 	decoord TEXTBOX_INNERX, TEXTBOX_INNERY - 1
 	ld a, TEXTBOX_INNERH - 1
-
 .col
 	push af
 	ld c, TEXTBOX_INNERW
-
 .row
 	ld a, [hli]
 	ld [de], a
 	inc de
 	dec c
 	jr nz, .row
-
 	inc de
 	inc de
 	inc hl
@@ -602,7 +525,6 @@ TextScroll::
 	pop af
 	dec a
 	jr nz, .col
-
 	hlcoord TEXTBOX_INNERX, TEXTBOX_INNERY + 2
 	ld a, " "
 	ld bc, TEXTBOX_INNERW
@@ -617,15 +539,10 @@ Text_WaitBGMap::
 	push af
 	ld a, 1
 	ldh [hOAMUpdate], a
-
 	call WaitBGMap
-
 	pop af
 	ldh [hOAMUpdate], a
 	pop bc
-	ret
-
-Diacritic::
 	ret
 
 LoadBlinkingCursor::

@@ -1,34 +1,29 @@
 ; These functions deal with miscellaneous statistics
 ; which were used for Trainer Rankings in Pokémon News.
 
-; Copies certain values at the time the player enters the Hall of Fame.
 StubbedTrainerRankings_HallOfFame2::
+; Copies certain values at the time the player enters the Hall of Fame.
 	ret
 	ld a, BANK(sTrainerRankingGameTimeHOF)
 	call OpenSRAM
-
 	ld hl, wGameTimeHours
 	ld de, sTrainerRankingGameTimeHOF
 	ld bc, 4
 	call CopyBytes
-
 	ld hl, sTrainerRankingStepCount
 	ld de, sTrainerRankingStepCountHOF
 	ld bc, 4
 	call CopyBytes
-
 	; sTrainerRankingHealings is only a 3-byte value.
 	; One extraneous byte is copied from sTrainerRankingMysteryGift.
 	ld hl, sTrainerRankingHealings
 	ld de, sTrainerRankingHealingsHOF
 	ld bc, 4
 	call CopyBytes
-
 	ld hl, sTrainerRankingBattles
 	ld de, sTrainerRankingBattlesHOF
 	ld bc, 3
 	call CopyBytes
-
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
 	ret
@@ -39,14 +34,12 @@ StubbedTrainerRankings_MagikarpLength:
 	call OpenSRAM
 	ld de, wMagikarpLength
 	ld hl, sTrainerRankingLongestMagikarp
-
 	; Is this Magikarp the longest measured?
 	ld a, [de]
 	cp [hl]
 	jr z, .isLowByteHigher
 	jr nc, .newRecordLongest
 	jr .checkShortest
-
 .isLowByteHigher
 	inc hl
 	inc de
@@ -55,7 +48,6 @@ StubbedTrainerRankings_MagikarpLength:
 	dec hl
 	dec de
 	jr c, .checkShortest
-
 .newRecordLongest
 	ld a, [de]
 	inc de
@@ -63,7 +55,6 @@ StubbedTrainerRankings_MagikarpLength:
 	ld a, [de]
 	dec de
 	ld [hl], a
-
 .checkShortest
 	; First, check if the record for shortest Magikarp is 0.
 	; This seems unnecessary, because the value is initialized to 100.0 cm.
@@ -72,14 +63,12 @@ StubbedTrainerRankings_MagikarpLength:
 	or [hl]
 	dec hl
 	jr z, .newRecordShortest
-
 	; Now check if this Magikarp is the shortest
 	ld a, [de]
 	cp [hl]
 	jr z, .isLowByteLower
 	jr c, .newRecordShortest
 	jr .done
-
 .isLowByteLower
 	inc hl
 	inc de
@@ -88,14 +77,12 @@ StubbedTrainerRankings_MagikarpLength:
 	jr nc, .done
 	dec hl
 	dec de
-
 .newRecordShortest
 	ld a, [de]
 	inc de
 	ld [hli], a
 	ld a, [de]
 	ld [hl], a
-
 .done
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
@@ -111,20 +98,17 @@ StubbedTrainerRankings_BugContestScore:
 	jr z, .isLowByteHigher
 	jr nc, .newHighScore
 	jr .done
-
 .isLowByteHigher
 	inc hl
 	ldh a, [hMultiplicand]
 	cp [hl]
 	jr c, .done
 	dec hl
-
 .newHighScore
 	ldh a, [hProduct]
 	ld [hli], a
 	ldh a, [hMultiplicand]
 	ld [hl], a
-
 .done
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
@@ -134,7 +118,6 @@ StubbedTrainerRankings_AddToSlotsWinStreak:
 	ret
 	ld a, BANK(sTrainerRankingCurrentSlotsStreak)
 	call OpenSRAM
-
 	; Increment the current streak
 	ld hl, sTrainerRankingCurrentSlotsStreak + 1
 	inc [hl]
@@ -142,7 +125,6 @@ StubbedTrainerRankings_AddToSlotsWinStreak:
 	dec hl
 	inc [hl]
 	inc hl
-
 .noCarry
 	dec hl
 	; Now check if this is a new record for longest streak
@@ -151,20 +133,17 @@ StubbedTrainerRankings_AddToSlotsWinStreak:
 	jr z, .isLowByteHigher
 	jr c, .newRecordStreak
 	jr .done
-
 .isLowByteHigher
 	inc hl
 	ld a, [sTrainerRankingLongestSlotsStreak + 1]
 	cp [hl]
 	jr nc, .done
 	dec hl
-
 .newRecordStreak
 	ld a, [hli]
 	ld [sTrainerRankingLongestSlotsStreak], a
 	ld a, [hl]
 	ld [sTrainerRankingLongestSlotsStreak + 1], a
-
 .done
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
@@ -204,7 +183,6 @@ StubbedTrainerRankings_AddToSlotsPayouts:
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-
 .done
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
@@ -234,7 +212,6 @@ StubbedTrainerRankings_AddToBattlePayouts:
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-
 .done
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
@@ -244,17 +221,6 @@ StubbedTrainerRankings_StepCount:
 	ret
 	ld hl, sTrainerRankingStepCount
 	jp StubbedTrainerRankings_Increment4Byte
-
-StubbedTrainerRankings_BattleTowerWins: ; unreferenced
-	ret
-	ld a, BANK(s5_aa8d)
-	call OpenSRAM
-	ld a, [s5_aa8d]
-	and a
-	call CloseSRAM
-	ret nz
-	ld hl, sTrainerRankingBattleTowerWins
-	jp StubbedTrainerRankings_Increment2Byte
 
 StubbedTrainerRankings_TMsHMsTaught:
 	ret
@@ -280,11 +246,6 @@ StubbedTrainerRankings_WildBattles:
 StubbedTrainerRankings_TrainerBattles:
 	ret
 	ld hl, sTrainerRankingTrainerBattles
-	jp StubbedTrainerRankings_Increment3Byte
-
-StubbedTrainerRankings_Unused1: ; unreferenced
-	ret
-	ld hl, sTrainerRankingUnused1
 	jp StubbedTrainerRankings_Increment3Byte
 
 StubbedTrainerRankings_HallOfFame::
@@ -362,11 +323,6 @@ StubbedTrainerRankings_PhoneCalls:
 	ld hl, sTrainerRankingPhoneCalls
 	jr StubbedTrainerRankings_Increment3Byte
 
-StubbedTrainerRankings_Unused2: ; unreferenced
-	ret
-	ld hl, sTrainerRankingUnused2
-	jr StubbedTrainerRankings_Increment3Byte
-
 StubbedTrainerRankings_LinkBattles:
 	ret
 	ld hl, sTrainerRankingLinkBattles
@@ -386,11 +342,6 @@ StubbedTrainerRankings_TreeEncounters:
 	ld hl, sTrainerRankingTreeEncounters
 	jr StubbedTrainerRankings_Increment3Byte
 
-StubbedTrainerRankings_Unused3: ; unreferenced
-	ret
-	ld hl, sTrainerRankingUnused3
-	jr StubbedTrainerRankings_Increment3Byte
-
 StubbedTrainerRankings_ColosseumWins:
 	ret
 	ld hl, sTrainerRankingColosseumWins
@@ -406,8 +357,8 @@ StubbedTrainerRankings_ColosseumDraws:
 	ld hl, sTrainerRankingColosseumDraws
 	jr StubbedTrainerRankings_Increment3Byte
 
-; Counts uses of both Selfdestruct and Explosion.
 StubbedTrainerRankings_Selfdestruct:
+; Counts uses of both Selfdestruct and Explosion.
 	ret
 	; Only counts if it’s the player’s turn
 	ldh a, [hBattleTurn]
@@ -431,12 +382,8 @@ StubbedTrainerRankings_Increment2Byte:
 	ld bc, 1
 	jr StubbedTrainerRankings_Increment
 
-StubbedTrainerRankings_Increment1Byte: ; unreferenced
-	push bc
-	ld bc, 0
-
-; Increments a big-endian value of bc + 1 bytes at hl
 StubbedTrainerRankings_Increment:
+; Increments a big-endian value of bc + 1 bytes at hl
 	ld a, BANK(sTrainerRankings)
 	call OpenSRAM
 	push hl
@@ -449,7 +396,6 @@ StubbedTrainerRankings_Increment:
 	jr nz, .asm_10613d
 	dec e
 	jr nz, .asm_106136
-
 .asm_10613d
 	pop de
 	pop hl
@@ -464,15 +410,14 @@ StubbedTrainerRankings_Increment:
 	dec hl
 	dec c
 	jr .asm_106142
-
 .asm_10614d
 	call UpdateTrainerRankingsChecksum
 	call CloseSRAM
 	pop bc
 	ret
 
-; Used when SRAM bank 5 isn’t already loaded — what’s the point of this?
 UpdateTrainerRankingsChecksum2:
+; Used when SRAM bank 5 isn’t already loaded — what’s the point of this?
 	ret
 	ld a, BANK(sTrainerRankings)
 	call OpenSRAM
@@ -502,7 +447,6 @@ CalculateTrainerRankingsChecksum:
 	ld e, a
 	jr nc, .asm_10617f
 	inc d
-
 .asm_10617f
 	inc hl
 	dec bc
@@ -536,43 +480,12 @@ RestoreGSBallFlag:
 	call CloseSRAM
 	ret
 
-VerifyTrainerRankingsChecksum: ; unreferenced
-	call CalculateTrainerRankingsChecksum
-	ld hl, sTrainerRankingsChecksum
-	ld a, d
-	cp [hl]
-	ret nz
-	inc hl
-	ld a, e
-	cp [hl]
-	ret
-
 ClearGSBallFlag:
 	ld a, BANK(sGSBallFlag)
 	call OpenSRAM
 	xor a
 	ld [sGSBallFlag], a
 	call CloseSRAM
-	ret
-
-InitializeTrainerRankings: ; unreferenced
-; Initializes Trainer Rankings data for a new save file in JP Crystal.
-	ld hl, sTrainerRankings
-	ld bc, sTrainerRankingsEnd - sTrainerRankings
-	xor a
-	call ByteFill
-
-	; Initialize the shortest Magikarp to 100.0 cm
-	ld hl, sTrainerRankingShortestMagikarp
-	ld a, $3
-	ld [hli], a
-	ld [hl], $e8
-
-	call UpdateTrainerRankingsChecksum
-	ld hl, sTrainerRankings
-	ld de, sTrainerRankingsBackup
-	ld bc, sTrainerRankingsEnd - sTrainerRankings
-	call CopyBytes
 	ret
 
 _MobilePrintNum::
@@ -595,26 +508,22 @@ _MobilePrintNum::
 	jr z, .two_bytes
 	cp $3
 	jr z, .three_bytes
-; four bytes
+	; four bytes
 	ld a, [de]
 	ldh [hPrintNumBuffer + 0], a
 	inc de
-
 .three_bytes
 	ld a, [de]
 	ldh [hPrintNumBuffer + 1], a
 	inc de
-
 .two_bytes
 	ld a, [de]
 	ldh [hPrintNumBuffer + 2], a
 	inc de
-
 .one_byte
 	ld a, [de]
 	ldh [hPrintNumBuffer + 3], a
 	inc de
-
 	push de
 	xor a
 	ldh [hPrintNumBuffer + 8], a
@@ -645,14 +554,12 @@ _MobilePrintNum::
 	cp 9
 	jr z, .three_to_nine_digits
 	ld de, ._9
-
 .three_to_nine_digits
 	inc de
 	inc de
 	inc de
 	dec a
 	dec a
-
 .digit_loop
 	push af
 	call .Function1062b2
@@ -663,7 +570,6 @@ endr
 	pop af
 	dec a
 	jr nz, .digit_loop
-
 .two_digits
 	ld c, 0
 	ldh a, [hPrintNumBuffer + 3]
@@ -673,7 +579,6 @@ endr
 	sub 10
 	inc c
 	jr .mod_ten_loop
-
 .simple_divide_done
 	ld b, a
 	ldh a, [hPrintNumBuffer + 8]
@@ -682,12 +587,10 @@ endr
 	jr nz, .create_digit
 	call .LoadMinusTenIfNegative
 	jr .done
-
 .create_digit
 	ld a, "0"
 	add c
 	ld [hl], a
-
 .done
 	call .Function1062ff
 	ld a, "0"
@@ -696,7 +599,6 @@ endr
 	pop de
 	pop bc
 	ret
-
 ._9
 	dd 1000000000
 ._8
@@ -713,7 +615,6 @@ endr
 	dd 1000
 ._2
 	dd 100
-
 .Function1062b2:
 	ld c, $0
 .asm_1062b4
@@ -754,7 +655,6 @@ endr
 	ldh [hPrintNumBuffer + 3], a
 	inc c
 	jr .asm_1062b4
-
 .asm_1062eb
 	ldh a, [hPrintNumBuffer + 8]
 	or c
@@ -764,15 +664,12 @@ endr
 	ld [hl], a
 	ldh [hPrintNumBuffer + 8], a
 	ret
-
 .LoadMinusTenIfNegative:
 	ldh a, [hPrintNumBuffer + 9]
 	bit 7, a
 	ret z
-
 	ld [hl], -10
 	ret
-
 .Function1062ff:
 	ldh a, [hPrintNumBuffer + 9]
 	bit 7, a
@@ -789,17 +686,15 @@ endr
 
 ; functions related to the cable club and various NPC scripts referencing communications
 
-CheckMobileAdapterStatusSpecial: ; unused
-	; this routine calls CheckMobileAdapterStatus
-	; in the Japanese version
+CheckMobileAdapterStatusSpecial:
+	; this routine calls CheckMobileAdapterStatus in the Japanese version
 	xor a
 	ld [wScriptVar], a
 	ret
 
-SetMobileAdapterStatus: ; unused
+SetMobileAdapterStatus:
 	ret
-	; the instructions below are the
-	; original Japanese version code
+	; the instructions below are the original Japanese version code
 	ld a, BANK(sMobileAdapterStatus)
 	call OpenSRAM
 	ld a, c
@@ -813,11 +708,10 @@ SetMobileAdapterStatus: ; unused
 	call CloseSRAM
 	ret
 
-CheckMobileAdapterStatus: ; unused
+CheckMobileAdapterStatus:
 	or a
 	ret
-	; the instructions below are the
-	; original Japanese version code
+	; the instructions below are the original Japanese version code
 	ld a, BANK(sMobileAdapterStatus)
 	call OpenSRAM
 	ld a, [sMobileAdapterStatus]
@@ -832,20 +726,16 @@ CheckMobileAdapterStatus: ; unused
 	ld a, c
 	cp b
 	jr nz, .nope
-
 	; check [sMobileAdapterStatus2] != 0
 	and a
 	jr z, .nope
-
 	; check !([sMobileAdapterStatus2] & %01110000)
 	and %10001111
 	cp c
 	jr nz, .nope
-
 	ld c, a
 	scf
 	ret
-
 .nope
 	xor a
 	ld c, a
@@ -859,7 +749,6 @@ Function10635c:
 	ld hl, .Jumptable
 	rst JumpTable
 	ret
-
 .Jumptable:
 	dw .init
 	dw Function106392
@@ -870,7 +759,6 @@ Function10635c:
 	dw Function106403
 	dw Function106442
 	dw Function106453
-
 .init:
 	ld de, wcd30
 	ld hl, $41
@@ -891,7 +779,6 @@ Function106392:
 	bit 0, a
 	jr z, .asm_1063bf
 	ret
-
 .asm_1063a2
 	call CheckMobileAdapterStatus
 	ld a, c
@@ -902,14 +789,12 @@ Function106392:
 	ld a, $7
 	ld [wMobileCommsJumptableIndex], a
 	ret
-
 .asm_1063b4
 	ld a, $7
 	ld [wcf64], a
 	ld a, $7
 	ld [wMobileCommsJumptableIndex], a
 	ret
-
 .asm_1063bf
 	ld a, $1
 	ld [wcf64], a
@@ -959,7 +844,6 @@ Function106403:
 	bit 0, a
 	jr z, .asm_10640f
 	ret
-
 .asm_10640f
 	ld a, [wcd31]
 	and $80
@@ -973,7 +857,6 @@ Function106403:
 	inc a
 	ld [wMobileCommsJumptableIndex], a
 	ret
-
 .asm_106426
 	call CheckMobileAdapterStatus
 	ld a, c
@@ -983,7 +866,6 @@ Function106403:
 	inc a
 	ld [wMobileCommsJumptableIndex], a
 	ret
-
 .asm_106435
 	ld c, $0
 	call SetMobileAdapterStatus
@@ -1016,16 +898,8 @@ Stubbed_Function106462:
 	ret
 
 Function106464::
-	ld de, FontsExtra_SolidBlackGFX
-	ld hl, vTiles2 tile "■" ; $60
-	lb bc, BANK(FontsExtra_SolidBlackGFX), 1
-	call Get2bpp
-	ld de, FontsExtra2_UpArrowGFX
-	ld hl, vTiles2 tile "▲" ; $61
-	lb bc, BANK(FontsExtra2_UpArrowGFX), 1
-	call Get2bpp
 	ld de, MobileDialingFrameGFX
-	ld hl, vTiles2 tile "☎" ; $62
+	ld hl, vTiles2 tile $62
 	ld c, 9
 	ld b, BANK(MobileDialingFrameGFX)
 	call Get2bpp
@@ -1036,25 +910,6 @@ Function106464::
 	farcall LoadFrame
 	ret
 
-Function10649b: ; unreferenced
-	ld a, [wTextboxFrame]
-	maskbits NUM_FRAMES
-	ld bc, TEXTBOX_FRAME_TILES * LEN_1BPP_TILE
-	ld hl, Frames
-	call AddNTimes
-	ld d, h
-	ld e, l
-	ld hl, vTiles2 tile "┌" ; $79
-	ld c, TEXTBOX_FRAME_TILES ; "┌" to "┘"
-	ld b, BANK(Frames)
-	call Function1064c3
-	ld hl, vTiles2 tile " " ; $7f
-	ld de, TextboxSpaceGFX
-	ld c, 1
-	ld b, BANK(TextboxSpaceGFX)
-	call Function1064c3
-	ret
-
 Function1064c3:
 	ldh a, [rSVBK]
 	push af
@@ -1063,22 +918,6 @@ Function1064c3:
 	push bc
 	push hl
 	ld hl, Function3f88
-	ld a, b
-	rst FarCall
-	pop hl
-	pop bc
-	pop af
-	ldh [rSVBK], a
-	jr asm_1064ed
-
-Function1064d8: ; unreferenced
-	ldh a, [rSVBK]
-	push af
-	ld a, $6
-	ldh [rSVBK], a
-	push bc
-	push hl
-	ld hl, Function3f9f
 	ld a, b
 	rst FarCall
 	pop hl
@@ -1103,12 +942,6 @@ asm_1064ed:
 	ldh [rVBK], a
 	pop af
 	ldh [rSVBK], a
-	ret
-
-Function10650a: ; unreferenced
-	ld de, MobilePhoneTilesGFX
-	lb bc, BANK(MobilePhoneTilesGFX), 17
-	call Get2bpp
 	ret
 
 MobileDialingFrameGFX:

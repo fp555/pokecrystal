@@ -2,18 +2,16 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
+    tags: [ v* ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Checkout rgbds
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           path: rgbds
           ref: v0.6.1
@@ -23,23 +21,10 @@ jobs:
         working-directory: rgbds
         run: |
           sudo make install
-
-      - name: Remove rgbds
-        run: |
+          cd ..
           rm -rf rgbds
 
-      - name: Compare
-        if: ${{ github.repository_owner == 'pret' }}
-        run: |
-          make DEBUG=1 -j$(nproc) compare
-          if ! git diff-index --quiet HEAD --; then
-            echo 'Uncommitted changes detected:'
-            git diff-index HEAD --
-            return 1
-          fi
-
       - name: Make
-        if: ${{ github.repository_owner != 'pret' }}
         run: |
           make -j$(nproc)
           if ! git diff-index --quiet HEAD --; then
@@ -48,30 +33,21 @@ jobs:
             return 1
           fi
 
-      - name: Discord webhook
-        if: ${{ github.event_name == 'push' && github.repository_owner == 'pret' }}
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          .github/webhook.sh
-
-      - name: Checkout symbols
-        if: ${{ github.event_name == 'push' && github.repository_owner == 'pret' }}
-        uses: actions/checkout@master
+      - name: Archive map file
+        uses: actions/upload-artifact@v3
         with:
-          path: symbols
-          ref: symbols
-
-      - name: Move symbols
-        if: ${{ github.event_name == 'push' && github.repository_owner == 'pret' }}
-        run: |
-          cp -v *.sym symbols/
-          cp -v *.map symbols/
-
-      - name: Update symbols
-        if: ${{ github.event_name == 'push' && github.repository_owner == 'pret' }}
-        uses: EndBug/add-and-commit@v9
+          name: pokecrystal
+          path: 'pokecrystal.map'
+          if-no-files-found: error
+          
+      - name: Check free space
+        run: tools/free_space.awk BANK=all pokecrystal.map
+         
+      - name: Create release draft
+        uses: ncipollo/release-action@v1
         with:
-          cwd: "./symbols"
-          add: "*.sym *.map"
-          message: ${{ github.event.commits[0].message }}
+            name: ${{ github.ref_name }}
+            draft: true
+            prerelease: true
+            artifacts: "pokecrystal.gbc"
+            artifactErrorsFailBuild: true

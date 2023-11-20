@@ -8,7 +8,8 @@
 	const HEALMACHINESTATE_FINISH
 
 HealMachineAnim:
-	; If you have no Pokemon, don't change the buffer.  This can lead to some glitchy effects if you have no Pokemon.
+	; If you have no Pokemon, don't change the buffer.
+	; This can lead to some glitchy effects if you have no Pokemon.
 	ld a, [wPartyCount]
 	and a
 	ret z
@@ -24,7 +25,6 @@ HealMachineAnim:
 	ld a, [wHealMachineTempOBP1]
 	call DmgToCgbObjPal1
 	ret
-
 .DoJumptableFunctions:
 	xor a
 	ld [wHealMachineAnimState], a
@@ -49,10 +49,8 @@ HealMachineAnim:
 	ld hl, .Jumptable
 	rst JumpTable
 	jr .jumptable_loop
-
 .finish
 	ret
-
 .Pointers:
 ; entries correspond to HEALMACHINE_* constants
 	dw .Pokecenter
@@ -81,7 +79,6 @@ ENDM
 	dw .PlayHealMusic
 	dw .HOF_PlaySFX
 	dw .dummy_5 ; never encountered
-
 .LoadGFX:
 	call .LoadPalettes
 	ld de, .HealMachineGFX
@@ -89,18 +86,15 @@ ENDM
 	lb bc, BANK(.HealMachineGFX), 2
 	call Request2bpp
 	ret
-
 .PC_LoadBallsOntoMachine:
 	ld hl, wShadowOAMSprite32
 	ld de, .PC_ElmsLab_OAM
 	call .PlaceHealingMachineTile
 	call .PlaceHealingMachineTile
 	jr .LoadBallsOntoMachine
-
 .HOF_LoadBallsOntoMachine:
 	ld hl, wShadowOAMSprite32
 	ld de, .HOF_OAM
-
 .LoadBallsOntoMachine:
 	ld a, [wPartyCount]
 	ld b, a
@@ -110,17 +104,15 @@ ENDM
 	ld de, SFX_SECOND_PART_OF_ITEMFINDER
 	call PlaySFX
 	pop de
-	ld c, 30
+	ld c, 15
 	call DelayFrames
 	dec b
 	jr nz, .party_loop
 	ret
-
 .PlayHealMusic:
 	ld de, MUSIC_HEAL
 	call PlayMusic
 	jp .FlashPalettes8Times
-
 .HOF_PlaySFX:
 	ld de, SFX_GAME_FREAK_LOGO_GS
 	call PlaySFX
@@ -129,10 +121,8 @@ ENDM
 	ld de, SFX_BOOT_PC
 	call PlaySFX
 	ret
-
 .dummy_5
 	ret
-
 .PC_ElmsLab_OAM:
 	dbsprite   4,   4, 2, 0, $7c, PAL_OW_TREE | OBP_NUM
 	dbsprite   4,   4, 6, 0, $7c, PAL_OW_TREE | OBP_NUM
@@ -142,7 +132,6 @@ ENDM
 	dbsprite   5,   5, 0, 3, $7d, PAL_OW_TREE | OBP_NUM | X_FLIP
 	dbsprite   4,   6, 0, 0, $7d, PAL_OW_TREE | OBP_NUM
 	dbsprite   5,   6, 0, 0, $7d, PAL_OW_TREE | OBP_NUM | X_FLIP
-
 .HealMachineGFX:
 INCBIN "gfx/overworld/heal_machine.2bpp"
 
@@ -153,14 +142,12 @@ INCBIN "gfx/overworld/heal_machine.2bpp"
 	dbsprite  11,   7, 2, 3, $7d, PAL_OW_TREE | OBP_NUM
 	dbsprite   9,   7, 1, 1, $7d, PAL_OW_TREE | OBP_NUM
 	dbsprite  11,   7, 5, 1, $7d, PAL_OW_TREE | OBP_NUM
-
 .LoadPalettes:
 	call IsCGB
 	jr nz, .cgb
 	ld a, %11100000
 	ldh [rOBP1], a
 	ret
-
 .cgb
 	ld hl, .palettes
 	ld de, wOBPals2 palette PAL_OW_TREE
@@ -170,7 +157,6 @@ INCBIN "gfx/overworld/heal_machine.2bpp"
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-
 .palettes
 INCLUDE "gfx/overworld/heal_machine.pal"
 
@@ -185,7 +171,6 @@ INCLUDE "gfx/overworld/heal_machine.pal"
 	dec c
 	jr nz, .palette_loop
 	ret
-
 .FlashPalettes:
 	call IsCGB
 	jr nz, .go
@@ -193,13 +178,11 @@ INCLUDE "gfx/overworld/heal_machine.pal"
 	xor %00101000
 	ldh [rOBP1], a
 	ret
-
 .go
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wOBPals2)
 	ldh [rSVBK], a
-
 	ld hl, wOBPals2 palette PAL_OW_TREE
 	ld a, [hli]
 	ld e, a
@@ -228,13 +211,11 @@ INCLUDE "gfx/overworld/heal_machine.pal"
 	ld [hld], a
 	ld a, e
 	ld [hl], a
-
 	pop af
 	ldh [rSVBK], a
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-
 .PlaceHealingMachineTile:
 	push bc
 	ld a, [wHealMachineAnimType]
@@ -242,7 +223,6 @@ INCLUDE "gfx/overworld/heal_machine.pal"
 	cp HEALMACHINE_ELMS_LAB
 	jr z, .okay
 	bcpixel 0, 0
-
 .okay
 	ld a, [de]
 	add c

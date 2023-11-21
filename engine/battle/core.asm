@@ -4054,10 +4054,8 @@ SpikesDamage:
 	ld de, wEnemyMonType
 	ld bc, UpdateEnemyHUD
 .ok
-
 	bit SCREENS_SPIKES, [hl]
 	ret z
-
 	; Flying-types aren't affected by Spikes.
 	ld a, [de]
 	cp FLYING
@@ -4066,20 +4064,14 @@ SpikesDamage:
 	ld a, [de]
 	cp FLYING
 	ret z
-
 	push bc
-
 	ld hl, BattleText_UserHurtBySpikes ; "hurt by SPIKES!"
 	call StdBattleTextbox
-
 	call GetEighthMaxHP
 	call SubtractHPFromTarget
-
 	pop hl
 	call .hl
-
 	jp WaitBGMap
-
 .hl
 	jp hl
 
@@ -4091,10 +4083,8 @@ PursuitSwitch:
 	ld a, b
 	cp EFFECT_PURSUIT
 	jr nz, .done
-
 	ld a, [wCurBattleMon]
 	push af
-
 	ld hl, DoPlayerTurn
 	ldh a, [hBattleTurn]
 	and a
@@ -4105,46 +4095,40 @@ PursuitSwitch:
 .do_turn
 	ld a, BANK(DoPlayerTurn) ; aka BANK(DoEnemyTurn)
 	rst FarCall
-
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVarAddr
 	ld a, $ff
 	ld [hl], a
-
 	pop af
 	ld [wCurBattleMon], a
-
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .check_enemy_fainted
-
 	ld a, [wLastPlayerMon]
 	call UpdateBattleMon
 	ld hl, wBattleMonHP
 	ld a, [hli]
 	or [hl]
 	jr nz, .done
-
-; BUG: A Pokémon that fainted from Pursuit will have its old status condition when revived (see docs/bugs_and_glitches.md)
 	ld a, $f0
 	ld [wCryTracks], a
 	ld a, [wBattleMonSpecies]
 	call PlayStereoCry
+	ld a, [wCurBattleMon]
+	push af
 	ld a, [wLastPlayerMon]
-	ld c, a
-	ld hl, wBattleParticipantsNotFainted
-	ld b, RESET_FLAG
-	predef SmallFarFlagAction
+	ld [wCurBattleMon], a
+	call UpdateFaintedPlayerMon
+	pop af
+	ld [wCurBattleMon], a
 	call PlayerMonFaintedAnimation
 	ld hl, BattleText_MonFainted
 	jr .done_fainted
-
 .check_enemy_fainted
 	ld hl, wEnemyMonHP
 	ld a, [hli]
 	or [hl]
 	jr nz, .done
-
 	ld de, SFX_KINESIS
 	call PlaySFX
 	call WaitSFX
@@ -4153,12 +4137,10 @@ PursuitSwitch:
 	call WaitSFX
 	call EnemyMonFaintedAnimation
 	ld hl, BattleText_EnemyMonFainted
-
 .done_fainted
 	call StdBattleTextbox
 	scf
 	ret
-
 .done
 	and a
 	ret

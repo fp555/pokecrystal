@@ -3,11 +3,9 @@ BattleCommand_BeatUp:
 	ldh a, [hBattleTurn]
 	and a
 	jp nz, .enemy_beats_up
-
 	ld a, [wPlayerSubStatus3]
 	bit SUBSTATUS_IN_LOOP, a
 	jr nz, .next_mon
-
 	ld c, 20
 	call DelayFrames
 	xor a
@@ -15,16 +13,13 @@ BattleCommand_BeatUp:
 	ld [wCurBeatUpPartyMon], a
 	ld [wBeatUpHitAtLeastOnce], a
 	jr .got_mon
-
 .next_mon
 	ld a, [wPlayerRolloutCount]
 	ld b, a
 	ld a, [wPartyCount]
 	sub b
 	ld [wCurBeatUpPartyMon], a
-
 .got_mon
-; BUG: Beat Up can desynchronize link battles (see docs/bugs_and_glitches.md)
 	ld a, [wCurBeatUpPartyMon]
 	ld hl, wPartyMonNicknames
 	call GetNickname
@@ -36,7 +31,7 @@ BattleCommand_BeatUp:
 	ld a, [wCurBeatUpPartyMon]
 	ld c, a
 	ld a, [wCurBattleMon]
-	cp [hl]
+	cp c
 	ld hl, wBattleMonStatus
 	jr z, .active_mon
 	ld a, MON_STATUS
@@ -45,18 +40,15 @@ BattleCommand_BeatUp:
 	ld a, [hl]
 	and a
 	jp nz, .beatup_fail
-
 	ld a, $1
 	ld [wBeatUpHitAtLeastOnce], a
 	ld hl, BeatUpAttackText
 	call StdBattleTextbox
-
 	ld a, [wEnemyMonSpecies]
 	ld [wCurSpecies], a
 	call GetBaseData
 	ld a, [wBaseDefense]
 	ld c, a
-
 	push bc
 	ld a, MON_SPECIES
 	call GetBeatupMonLocation
@@ -66,49 +58,40 @@ BattleCommand_BeatUp:
 	ld a, [wBaseAttack]
 	pop bc
 	ld b, a
-
 	push bc
 	ld a, MON_LEVEL
 	call GetBeatupMonLocation
 	ld a, [hl]
 	ld e, a
 	pop bc
-
 	ld a, [wPlayerMoveStructPower]
 	ld d, a
 	ret
-
 .enemy_beats_up
 	ld a, [wEnemySubStatus3]
 	bit SUBSTATUS_IN_LOOP, a
 	jr nz, .enemy_next_mon
-
 	xor a
 	ld [wEnemyRolloutCount], a
 	ld [wCurBeatUpPartyMon], a
 	ld [wBeatUpHitAtLeastOnce], a
 	jr .enemy_got_mon
-
 .enemy_next_mon
 	ld a, [wEnemyRolloutCount]
 	ld b, a
 	ld a, [wOTPartyCount]
 	sub b
 	ld [wCurBeatUpPartyMon], a
-
 .enemy_got_mon
 	ld a, [wBattleMode]
 	dec a
 	jr z, .wild
-
 	ld a, [wLinkMode]
 	and a
 	jr nz, .link_or_tower
-
 	ld a, [wInBattleTowerBattle]
 	and a
 	jr nz, .link_or_tower
-
 	ld a, [wCurBeatUpPartyMon]
 	ld c, a
 	ld b, 0
@@ -118,7 +101,6 @@ BattleCommand_BeatUp:
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	jr .got_enemy_nick
-
 .link_or_tower
 	ld a, [wCurBeatUpPartyMon]
 	ld hl, wOTPartyMonNicknames
@@ -126,14 +108,12 @@ BattleCommand_BeatUp:
 	call AddNTimes
 	ld de, wStringBuffer1
 	call CopyBytes
-
 .got_enemy_nick
 	ld a, MON_HP
 	call GetBeatupMonLocation
 	ld a, [hli]
 	or [hl]
 	jp z, .beatup_fail
-
 	ld a, [wCurBeatUpPartyMon]
 	ld b, a
 	ld a, [wCurOTMon]
@@ -146,11 +126,9 @@ BattleCommand_BeatUp:
 	ld a, [hl]
 	and a
 	jr nz, .beatup_fail
-
 	ld a, $1
 	ld [wBeatUpHitAtLeastOnce], a
 	jr .finish_beatup
-
 .wild
 	ld a, [wEnemyMonSpecies]
 	ld [wNamedObjectIndex], a
@@ -158,17 +136,14 @@ BattleCommand_BeatUp:
 	ld hl, BeatUpAttackText
 	call StdBattleTextbox
 	jp EnemyAttackDamage
-
 .finish_beatup
 	ld hl, BeatUpAttackText
 	call StdBattleTextbox
-
 	ld a, [wBattleMonSpecies]
 	ld [wCurSpecies], a
 	call GetBaseData
 	ld a, [wBaseDefense]
 	ld c, a
-
 	push bc
 	ld a, MON_SPECIES
 	call GetBeatupMonLocation
@@ -178,18 +153,15 @@ BattleCommand_BeatUp:
 	ld a, [wBaseAttack]
 	pop bc
 	ld b, a
-
 	push bc
 	ld a, MON_LEVEL
 	call GetBeatupMonLocation
 	ld a, [hl]
 	ld e, a
 	pop bc
-
 	ld a, [wEnemyMoveStructPower]
 	ld d, a
 	ret
-
 .beatup_fail
 	ld b, buildopponentrage_command
 	jp SkipToBattleCommand

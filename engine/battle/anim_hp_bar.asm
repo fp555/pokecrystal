@@ -351,20 +351,18 @@ ShortHPBar_CalcPixelFrame:
 	and a
 	jr z, .return_zero
 	call AddNTimes
-
 	ld b, 0
 .loop
-; BUG: HP bar animation off-by-one error for low HP (see docs/bugs_and_glitches.md)
 	ld a, l
 	sub HP_BAR_LENGTH_PX
 	ld l, a
 	ld a, h
 	sbc $0
 	ld h, a
+	jr z, .done
 	jr c, .done
 	inc b
 	jr .loop
-
 .done
 	push bc
 	ld bc, $80
@@ -389,12 +387,10 @@ ShortHPBar_CalcPixelFrame:
 .finish
 	ld [wCurHPAnimOldHP], a
 	ret
-
 .return_zero
 	xor a
 	ld [wCurHPAnimOldHP], a
 	ret
-
 .return_max
 	ld a, [wCurHPAnimMaxHP]
 	ld [wCurHPAnimOldHP], a

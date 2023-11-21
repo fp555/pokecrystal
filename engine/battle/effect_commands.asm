@@ -3991,16 +3991,13 @@ BattleCommand_EvasionDown2:
 
 BattleCommand_StatDown:
 	ld [wLoweredStat], a
-
 	call CheckMist
 	jp nz, .Mist
-
 	ld hl, wEnemyStatLevels
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .GetStatLevel
 	ld hl, wPlayerStatLevels
-
 .GetStatLevel:
 ; Attempt to lower the stat.
 	ld a, [wLoweredStat]
@@ -4011,65 +4008,52 @@ BattleCommand_StatDown:
 	ld b, [hl]
 	dec b
 	jp z, .CantLower
-
-; Sharply lower the stat if applicable.
+	; Sharply lower the stat if applicable.
 	ld a, [wLoweredStat]
 	and $f0
 	jr z, .ComputerMiss
 	dec b
 	jr nz, .ComputerMiss
 	inc b
-
 .ComputerMiss:
-; Computer opponents have a 25% chance of failing.
+	; Computer opponents have a 25% chance of failing.
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .DidntMiss
-
 	ld a, [wLinkMode]
 	and a
 	jr nz, .DidntMiss
-
 	ld a, [wInBattleTowerBattle]
 	and a
 	jr nz, .DidntMiss
-
-; Lock-On still always works.
+	; Lock-On still always works.
 	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_LOCK_ON, a
 	jr nz, .DidntMiss
-
-; Attacking moves that also lower accuracy are unaffected.
+	; Attacking moves that also lower accuracy are unaffected.
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_ACCURACY_DOWN_HIT
 	jr z, .DidntMiss
-
 	call BattleRandom
 	cp 25 percent + 1 ; 25% chance AI fails
 	jr c, .Failed
-
 .DidntMiss:
 	call CheckSubstituteOpp
 	jr nz, .Failed
-
 	ld a, [wAttackMissed]
 	and a
 	jr nz, .Failed
-
 	ld a, [wEffectFailed]
 	and a
 	jr nz, .Failed
-
 	call CheckHiddenOpponent
 	jr nz, .Failed
-
-; Accuracy/Evasion reduction don't involve stats.
+	; Accuracy/Evasion reduction don't involve stats.
 	ld [hl], b
 	ld a, c
 	cp ACCURACY
 	jr nc, .Hit
-
 	push hl
 	ld hl, wEnemyMonAttack + 1
 	ld de, wEnemyStats
@@ -4082,12 +4066,10 @@ BattleCommand_StatDown:
 	call TryLowerStat
 	pop hl
 	jr z, .CouldntLower
-
 .Hit:
 	xor a
 	ld [wFailedMessage], a
 	ret
-
 .CouldntLower:
 	inc [hl]
 .CantLower:
@@ -4096,13 +4078,11 @@ BattleCommand_StatDown:
 	ld a, 1
 	ld [wAttackMissed], a
 	ret
-
 .Failed:
 	ld a, 1
 	ld [wFailedMessage], a
 	ld [wAttackMissed], a
 	ret
-
 .Mist:
 	ld a, 2
 	ld [wFailedMessage], a
@@ -4128,7 +4108,6 @@ CheckMist:
 .dont_check_mist
 	xor a
 	ret
-
 .check_mist
 	ld a, BATTLE_VARS_SUBSTATUS4_OPP
 	call GetBattleVar
@@ -5954,25 +5933,19 @@ ResetTurn:
 INCLUDE "engine/battle/move_effects/thief.asm"
 
 BattleCommand_ArenaTrap:
-; Doesn't work on an absent opponent.
-
+	; Doesn't work on an absent opponent.
 	call CheckHiddenOpponent
 	jr nz, .failed
-
-; Don't trap if the opponent is already trapped.
-
+	; Don't trap if the opponent is already trapped.
 	ld a, BATTLE_VARS_SUBSTATUS5
 	call GetBattleVarAddr
 	bit SUBSTATUS_CANT_RUN, [hl]
 	jr nz, .failed
-
-; Otherwise trap the opponent.
-
+	; Otherwise trap the opponent.
 	set SUBSTATUS_CANT_RUN, [hl]
 	call AnimateCurrentMove
 	ld hl, CantEscapeNowText
 	jp StdBattleTextbox
-
 .failed
 	call AnimateFailedMove
 	jp PrintButItFailed
@@ -5981,47 +5954,34 @@ INCLUDE "engine/battle/move_effects/nightmare.asm"
 
 BattleCommand_Defrost:
 ; Thaw the user.
-
 	ld a, BATTLE_VARS_STATUS
 	call GetBattleVarAddr
 	bit FRZ, [hl]
 	ret z
 	res FRZ, [hl]
-
-; Don't update the enemy's party struct in a wild battle.
-
+	; Don't update the enemy's party struct in a wild battle.
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .party
-
 	ld a, [wBattleMode]
 	dec a
 	jr z, .done
-
 .party
 	ld a, MON_STATUS
 	call UserPartyAttr
 	res FRZ, [hl]
-
 .done
 	call RefreshBattleHuds
 	ld hl, WasDefrostedText
 	jp StdBattleTextbox
 
 INCLUDE "engine/battle/move_effects/curse.asm"
-
 INCLUDE "engine/battle/move_effects/protect.asm"
-
 INCLUDE "engine/battle/move_effects/endure.asm"
-
 INCLUDE "engine/battle/move_effects/spikes.asm"
-
 INCLUDE "engine/battle/move_effects/foresight.asm"
-
 INCLUDE "engine/battle/move_effects/perish_song.asm"
-
 INCLUDE "engine/battle/move_effects/sandstorm.asm"
-
 INCLUDE "engine/battle/move_effects/rollout.asm"
 
 BattleCommand_Unused5D:
@@ -6212,11 +6172,14 @@ BattleCommand_SkipSunCharge:
 	jp SkipToBattleCommand
 
 INCLUDE "engine/battle/move_effects/future_sight.asm"
-
 INCLUDE "engine/battle/move_effects/thunder.asm"
 
 CheckHiddenOpponent:
-; BUG: Lock-On and Mind Reader don't always bypass Fly and Dig (see docs/bugs_and_glitches.md)
+	ld a, BATTLE_VARS_SUBSTATUS5_OPP
+	call GetBattleVar
+	cpl
+	and 1 << SUBSTATUS_LOCK_ON
+	ret z
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVar
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND

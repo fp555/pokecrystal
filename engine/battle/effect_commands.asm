@@ -400,7 +400,7 @@ CheckEnemyTurn:
 	ld hl, HurtItselfText
 	call StdBattleTextbox
 	call HitSelfInConfusion
-	call BattleCommand_DamageCalc
+	call ConfusionDamageCalc
 	call BattleCommand_LowerSub
 	xor a
 	ld [wNumHits], a
@@ -481,7 +481,7 @@ HitConfusion:
 	xor a
 	ld [wCriticalHit], a
 	call HitSelfInConfusion
-	call BattleCommand_DamageCalc
+	call ConfusionDamageCalc
 	call BattleCommand_LowerSub
 	xor a
 	ld [wNumHits], a
@@ -2747,52 +2747,48 @@ HitSelfInConfusion:
 	ld d, 40
 	pop af
 	ld e, a
+	ld a, TRUE
+	ld [wIsConfusionDamage], a
 	ret
 
 BattleCommand_DamageCalc:
 ; Return a damage value for move power d, player level e, enemy defense c and player attack b.
-; BUG: Confusion damage is affected by type-boosting items and Explosion/Self-Destruct doubling (see docs/bugs_and_glitches.md)
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
-
-; Selfdestruct and Explosion halve defense.
+	; Selfdestruct and Explosion halve defense.
 	cp EFFECT_SELFDESTRUCT
 	jr nz, .dont_selfdestruct
-
 	srl c
 	jr nz, .dont_selfdestruct
 	inc c
-
 .dont_selfdestruct
-
-; Variable-hit moves and Conversion can have a power of 0.
+	; Variable-hit moves and Conversion can have a power of 0.
 	cp EFFECT_MULTI_HIT
 	jr z, .skip_zero_damage_check
-
 	cp EFFECT_CONVERSION
 	jr z, .skip_zero_damage_check
-
-; No damage if move power is 0.
+	; No damage if move power is 0.
 	ld a, d
 	and a
 	ret z
-
 .skip_zero_damage_check
-; Minimum defense value is 1.
+	xor a ; Not confusion damage
+	ld [wIsConfusionDamage], a
+	; fallthrough
+
+ConfusionDamageCalc:
+	; Minimum defense value is 1.
 	ld a, c
 	and a
 	jr nz, .not_dividing_by_zero
 	ld c, 1
 .not_dividing_by_zero
-
 	xor a
 	ld hl, hDividend
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-
-; Level * 2
+	; Level * 2
 	ld a, e
 	add a
 	jr nc, .level_not_overflowing
@@ -2800,78 +2796,67 @@ BattleCommand_DamageCalc:
 .level_not_overflowing
 	inc hl
 	ld [hli], a
-
-; / 5
+	; / 5
 	ld a, 5
 	ld [hld], a
 	push bc
 	ld b, 4
 	call Divide
 	pop bc
-
-; + 2
+	; + 2
 	inc [hl]
 	inc [hl]
-
-; * bp
+	; * bp
 	inc hl
 	ld [hl], d
 	call Multiply
-
-; * Attack
+	; * Attack
 	ld [hl], b
 	call Multiply
-
-; / Defense
+	; / Defense
 	ld [hl], c
 	ld b, 4
 	call Divide
-
-; / 50
+	; / 50
 	ld [hl], 50
 	ld b, $4
 	call Divide
-
-; Item boosts
+	; Item boosts don't apply to confusion damage
+	ld a, [wIsConfusionDamage]
+	and a
+	jr nz, .DoneItem
+	; Item boosts
 	call GetUserItem
-
 	ld a, b
 	and a
 	jr z, .DoneItem
-
 	ld hl, TypeBoostItems
-
 .NextItem:
 	ld a, [hli]
 	cp -1
 	jr z, .DoneItem
-
-; Item effect
+	; Item effect
 	cp b
 	ld a, [hli]
 	jr nz, .NextItem
-
-; Type
+	; Type
 	ld b, a
 	ld a, BATTLE_VARS_MOVE_TYPE
 	call GetBattleVar
 	cp b
 	jr nz, .DoneItem
-
-; * 100 + item effect amount
+	; * 100 + item effect amount
 	ld a, c
 	add 100
 	ldh [hMultiplier], a
 	call Multiply
-
-; / 100
+	; / 100
 	ld a, 100
 	ldh [hDivisor], a
 	ld b, 4
 	call Divide
-
 .DoneItem:
-; Critical hits
+	; Critical hits
 	call .CriticalMultiplier
 
 ; Update wCurDamage. Max 999 (capped at 997, then add 2).
@@ -2885,63 +2870,50 @@ DEF DAMAGE_CAP EQU MAX_DAMAGE - MIN_DAMAGE
 	add b
 	ldh [hQuotient + 3], a
 	jr nc, .dont_cap_1
-
 	ldh a, [hQuotient + 2]
 	inc a
 	ldh [hQuotient + 2], a
 	and a
 	jr z, .Cap
-
 .dont_cap_1
 	ldh a, [hQuotient]
 	ld b, a
 	ldh a, [hQuotient + 1]
 	or a
 	jr nz, .Cap
-
 	ldh a, [hQuotient + 2]
 	cp HIGH(DAMAGE_CAP + 1)
 	jr c, .dont_cap_2
-
 	cp HIGH(DAMAGE_CAP + 1) + 1
 	jr nc, .Cap
-
 	ldh a, [hQuotient + 3]
 	cp LOW(DAMAGE_CAP + 1)
 	jr nc, .Cap
-
 .dont_cap_2
 	inc hl
-
 	ldh a, [hQuotient + 3]
 	ld b, [hl]
 	add b
 	ld [hld], a
-
 	ldh a, [hQuotient + 2]
 	ld b, [hl]
 	adc b
 	ld [hl], a
 	jr c, .Cap
-
 	ld a, [hl]
 	cp HIGH(DAMAGE_CAP + 1)
 	jr c, .dont_cap_3
-
 	cp HIGH(DAMAGE_CAP + 1) + 1
 	jr nc, .Cap
-
 	inc hl
 	ld a, [hld]
 	cp LOW(DAMAGE_CAP + 1)
 	jr c, .dont_cap_3
-
 .Cap:
 	ld a, HIGH(DAMAGE_CAP)
 	ld [hli], a
 	ld a, LOW(DAMAGE_CAP)
 	ld [hld], a
-
 .dont_cap_3
 ; Add back MIN_DAMAGE (capping at 999).
 	inc hl
@@ -2951,33 +2923,26 @@ DEF DAMAGE_CAP EQU MAX_DAMAGE - MIN_DAMAGE
 	jr nc, .dont_floor
 	inc [hl]
 .dont_floor
-
 ; Returns nz and nc.
 	ld a, 1
 	and a
 	ret
-
 .CriticalMultiplier:
 	ld a, [wCriticalHit]
 	and a
 	ret z
-
-; x2
+	; x2
 	ldh a, [hQuotient + 3]
 	add a
 	ldh [hQuotient + 3], a
-
 	ldh a, [hQuotient + 2]
 	rl a
 	ldh [hQuotient + 2], a
-
-; Cap at $ffff.
+	; Cap at $ffff.
 	ret nc
-
 	ld a, $ff
 	ldh [hQuotient + 2], a
 	ldh [hQuotient + 3], a
-
 	ret
 
 INCLUDE "data/types/type_boost_items.asm"
@@ -2988,7 +2953,6 @@ BattleCommand_ConstantDamage:
 	and a
 	jr z, .got_turn
 	ld hl, wEnemyMonLevel
-
 .got_turn
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
@@ -2996,24 +2960,19 @@ BattleCommand_ConstantDamage:
 	ld b, [hl]
 	ld a, 0
 	jr z, .got_power
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_PSYWAVE
 	jr z, .psywave
-
 	cp EFFECT_SUPER_FANG
 	jr z, .super_fang
-
 	cp EFFECT_REVERSAL
 	jr z, .reversal
-
 	ld a, BATTLE_VARS_MOVE_POWER
 	call GetBattleVar
 	ld b, a
 	ld a, $0
 	jr .got_power
-
 .psywave
 	ld a, b
 	srl a

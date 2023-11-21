@@ -4694,31 +4694,24 @@ BattleCommand_ForceSwitch:
 	inc a
 	ld [wEnemySwitchMonIndex], a
 	callfar ForceEnemySwitch
-
 	ld hl, DraggedOutText
 	call StdBattleTextbox
-
 	ld hl, SpikesDamage
 	jp CallBattleCore
-
 .switch_fail
 	jp .fail
-
 .force_player_switch
 	ld a, [wAttackMissed]
 	and a
 	jr nz, .player_miss
-
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .vs_trainer
-
 	ld a, [wBattleMonLevel]
 	ld b, a
 	ld a, [wCurPartyLevel]
 	cp b
 	jr nc, .wild_succeed_playeristarget
-
 	add b
 	ld c, a
 	inc c
@@ -4726,15 +4719,12 @@ BattleCommand_ForceSwitch:
 	call BattleRandom
 	cp c
 	jr nc, .wild_random_loop_playeristarget
-
 	srl b
 	srl b
 	cp b
 	jr nc, .wild_succeed_playeristarget
-
 .player_miss
 	jr .fail
-
 .wild_succeed_playeristarget
 	call UpdateBattleMonInParty
 	xor a
@@ -4744,15 +4734,12 @@ BattleCommand_ForceSwitch:
 	call SetBattleDraw
 	ld a, [wEnemyMoveStructAnimation]
 	jr .succeed
-
 .vs_trainer
 	call CheckPlayerHasMonToSwitchTo
 	jr c, .fail
-
 	ld a, [wEnemyGoesFirst]
 	cp $1
 	jr z, .switch_fail
-
 	call UpdateBattleMonInParty
 	ld a, $1
 	ld [wBattleAnimParam], a
@@ -4773,10 +4760,8 @@ BattleCommand_ForceSwitch:
 	and $7
 	cp b
 	jr nc, .random_loop_trainer_playeristarget
-
 	cp c
 	jr z, .random_loop_trainer_playeristarget
-
 	push af
 	push bc
 	ld hl, wPartyMon1HP
@@ -4786,24 +4771,19 @@ BattleCommand_ForceSwitch:
 	pop bc
 	pop de
 	jr z, .random_loop_trainer_playeristarget
-
 	ld a, d
 	ld [wCurPartyMon], a
 	ld hl, SwitchPlayerMon
 	call CallBattleCore
-
 	ld hl, DraggedOutText
 	call StdBattleTextbox
-
 	ld hl, SpikesDamage
 	jp CallBattleCore
-
 .fail
 	call BattleCommand_LowerSub
 	call BattleCommand_MoveDelay
 	call BattleCommand_RaiseSub
 	jp PrintButItFailed
-
 .succeed
 	push af
 	call SetBattleDraw
@@ -4813,7 +4793,6 @@ BattleCommand_ForceSwitch:
 	ld c, 20
 	call DelayFrames
 	pop af
-
 	ld hl, FledInFearText
 	cp ROAR
 	jr z, .do_text
@@ -4830,19 +4809,16 @@ CheckPlayerHasMonToSwitchTo:
 	ld a, [wCurBattleMon]
 	cp e
 	jr z, .next
-
 	ld a, e
 	ld hl, wPartyMon1HP
 	call AddNTimes
 	ld a, [hli]
 	or [hl]
 	jr nz, .not_fainted
-
 .next
 	inc e
 	dec d
 	jr nz, .loop
-
 	scf
 	ret
 
@@ -4852,7 +4828,6 @@ CheckPlayerHasMonToSwitchTo:
 
 BattleCommand_EndLoop:
 ; Loop back to 'critical'.
-
 	ld de, wPlayerRolloutCount
 	ld bc, wPlayerDamageTaken
 	ldh a, [hBattleTurn]
@@ -4861,7 +4836,6 @@ BattleCommand_EndLoop:
 	ld de, wEnemyRolloutCount
 	ld bc, wEnemyDamageTaken
 .got_addrs
-
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	bit SUBSTATUS_IN_LOOP, [hl]
@@ -4889,7 +4863,6 @@ BattleCommand_EndLoop:
 	ld a, 1
 	ld [bc], a
 	jr .done_loop
-
 .beat_up
 	ldh a, [hBattleTurn]
 	and a
@@ -4899,7 +4872,6 @@ BattleCommand_EndLoop:
 	jp z, .only_one_beatup
 	dec a
 	jr .double_hit
-
 .check_ot_beat_up
 	ld a, [wBattleMode]
 	cp WILD_BATTLE
@@ -4909,15 +4881,11 @@ BattleCommand_EndLoop:
 	jp z, .only_one_beatup
 	dec a
 	jr .double_hit
-
 .only_one_beatup
-; BUG: Beat Up works incorrectly with only one Pokémon in the party (see docs/bugs_and_glitches.md)
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	res SUBSTATUS_IN_LOOP, [hl]
-	call BattleCommand_BeatUpFailText
-	jp EndMoveEffect
-
+	ret
 .not_triple_kick
 	call BattleRandom
 	and $3
@@ -4932,11 +4900,9 @@ BattleCommand_EndLoop:
 	inc a
 	ld [bc], a
 	jr .loop_back_to_critical
-
 .twineedle
 	ld a, 1
 	jr .double_hit
-
 .in_loop
 	ld a, [de]
 	dec a
@@ -4946,14 +4912,12 @@ BattleCommand_EndLoop:
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	res SUBSTATUS_IN_LOOP, [hl]
-
 	ld hl, PlayerHitTimesText
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .got_hit_n_times_text
 	ld hl, EnemyHitTimesText
 .got_hit_n_times_text
-
 	push bc
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
@@ -4961,12 +4925,10 @@ BattleCommand_EndLoop:
 	jr z, .beat_up_2
 	call StdBattleTextbox
 .beat_up_2
-
 	pop bc
 	xor a
 	ld [bc], a
 	ret
-
 .loop_back_to_critical
 	ld a, [wBattleScriptBufferAddress + 1]
 	ld h, a
@@ -4987,18 +4949,14 @@ BattleCommand_FakeOut:
 	ld a, [wAttackMissed]
 	and a
 	ret nz
-
 	call CheckSubstituteOpp
 	jr nz, .fail
-
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVar
 	and 1 << FRZ | SLP_MASK
 	jr nz, .fail
-
 	call CheckOpponentWentFirst
 	jr z, FlinchTarget
-
 .fail
 	ld a, 1
 	ld [wAttackMissed], a
@@ -5007,19 +4965,15 @@ BattleCommand_FakeOut:
 BattleCommand_FlinchTarget:
 	call CheckSubstituteOpp
 	ret nz
-
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVar
 	and 1 << FRZ | SLP_MASK
 	ret nz
-
 	call CheckOpponentWentFirst
 	ret nz
-
 	ld a, [wEffectFailed]
 	and a
 	ret nz
-
 	; fallthrough
 
 FlinchTarget:

@@ -2490,31 +2490,22 @@ TruncateHL_BC:
 	jr nz, .finish
 	inc l
 .finish
-; BUG: Reflect and Light Screen can make (Special) Defense wrap around above 1024 (see docs/bugs_and_glitches.md)
-	ld a, [wLinkMode]
-	cp LINK_COLOSSEUM
-	jr z, .done
 ; If we go back to the loop point,
-; it's the same as doing this exact
-; same check twice.
+; it's the same as doing this exact same check twice.
 	ld a, h
 	or b
 	jr nz, .loop
-
-.done
 	ld b, l
 	ret
 
 CheckDamageStatsCritical:
 ; Return carry if boosted stats should be used in damage calculations.
 ; Unboosted stats should be used if the attack is a critical hit,
-;  and the stage of the opponent's defense is higher than the user's attack.
-
+; and the stage of the opponent's defense is higher than the user's attack.
 	ld a, [wCriticalHit]
 	and a
 	scf
 	ret z
-
 	push hl
 	push bc
 	ldh a, [hBattleTurn]
@@ -2522,12 +2513,12 @@ CheckDamageStatsCritical:
 	jr nz, .enemy
 	ld a, [wPlayerMoveStructType]
 	cp SPECIAL
-; special
+	; special
 	ld a, [wPlayerSAtkLevel]
 	ld b, a
 	ld a, [wEnemySDefLevel]
 	jr nc, .end
-; physical
+	; physical
 	ld a, [wPlayerAtkLevel]
 	ld b, a
 	ld a, [wEnemyDefLevel]
@@ -2966,7 +2957,6 @@ BattleCommand_ConstantDamage:
 	ld b, a
 	ld a, 0
 	jr .got_power
-
 .super_fang
 	ld hl, wEnemyMonHP
 	ldh a, [hBattleTurn]
@@ -2989,13 +2979,11 @@ BattleCommand_ConstantDamage:
 	jr nz, .got_power
 	ld b, 1
 	jr .got_power
-
 .got_power
 	ld hl, wCurDamage
 	ld [hli], a
 	ld [hl], b
 	ret
-
 .reversal
 	ld hl, wBattleMonHP
 	ldh a, [hBattleTurn]
@@ -3020,7 +3008,6 @@ BattleCommand_ConstantDamage:
 	ld a, b
 	and a
 	jr z, .skip_to_divide
-
 	ldh a, [hProduct + 4]
 	srl b
 	rr a
@@ -3037,39 +3024,33 @@ BattleCommand_ConstantDamage:
 	ldh [hDividend + 3], a
 	ld a, b
 	ldh [hDividend + 2], a
-
 .skip_to_divide
 	ld b, 4
 	call Divide
 	ldh a, [hQuotient + 3]
 	ld b, a
 	ld hl, FlailReversalPower
-
 .reversal_loop
 	ld a, [hli]
 	cp b
 	jr nc, .break_loop
 	inc hl
 	jr .reversal_loop
-
 .break_loop
 	ldh a, [hBattleTurn]
 	and a
 	ld a, [hl]
 	jr nz, .notPlayersTurn
-
 	ld hl, wPlayerMoveStructPower
 	ld [hl], a
 	push hl
 	call PlayerAttackDamage
 	jr .notEnemysTurn
-
 .notPlayersTurn
 	ld hl, wEnemyMoveStructPower
 	ld [hl], a
 	push hl
 	call EnemyAttackDamage
-
 .notEnemysTurn
 	call BattleCommand_DamageCalc
 	pop hl
@@ -3077,64 +3058,45 @@ BattleCommand_ConstantDamage:
 	ret
 
 INCLUDE "data/moves/flail_reversal_power.asm"
-
 INCLUDE "engine/battle/move_effects/counter.asm"
-
 INCLUDE "engine/battle/move_effects/encore.asm"
-
 INCLUDE "engine/battle/move_effects/pain_split.asm"
-
 INCLUDE "engine/battle/move_effects/snore.asm"
-
 INCLUDE "engine/battle/move_effects/conversion2.asm"
-
 INCLUDE "engine/battle/move_effects/lock_on.asm"
-
 INCLUDE "engine/battle/move_effects/sketch.asm"
 
 BattleCommand_DefrostOpponent:
-; Thaw the opponent if frozen, and
-; raise the user's Attack one stage.
-
+; Thaw the opponent if frozen, and raise the user's Attack one stage.
 	call AnimateCurrentMove
-
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVarAddr
 	call Defrost
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVarAddr
 	ld a, [hl]
 	push hl
 	push af
-
 	ld a, EFFECT_ATTACK_UP
 	ld [hl], a
 	call BattleCommand_StatUp
-
 	pop af
 	pop hl
 	ld [hl], a
 	ret
 
 INCLUDE "engine/battle/move_effects/sleep_talk.asm"
-
 INCLUDE "engine/battle/move_effects/destiny_bond.asm"
-
 INCLUDE "engine/battle/move_effects/spite.asm"
-
 INCLUDE "engine/battle/move_effects/false_swipe.asm"
-
 INCLUDE "engine/battle/move_effects/heal_bell.asm"
 
 FarPlayBattleAnimation:
 ; play animation de
-
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVar
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	ret nz
-
 	; fallthrough
 
 PlayFXAnimID:

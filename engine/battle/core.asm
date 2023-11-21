@@ -5157,23 +5157,18 @@ EnemyMonEntrance:
 
 BattleMonEntrance:
 	call WithdrawMonText
-
 	ld c, 50
 	call DelayFrames
-
 	ld hl, wPlayerSubStatus4
 	res SUBSTATUS_RAGE, [hl]
-
 	call SetEnemyTurn
 	call PursuitSwitch
 	jr c, .ok
 	call RecallPlayerMon
 .ok
-
 	hlcoord 9, 7
 	lb bc, 5, 11
 	call ClearBox
-
 	ld a, [wCurBattleMon]
 	ld [wCurPartyMon], a
 	call AddBattleParticipant
@@ -5194,11 +5189,9 @@ BattleMonEntrance:
 PassedBattleMonEntrance:
 	ld c, 50
 	call DelayFrames
-
 	hlcoord 9, 7
 	lb bc, 5, 11
 	call ClearBox
-
 	ld a, [wCurPartyMon]
 	ld [wCurBattleMon], a
 	call AddBattleParticipant
@@ -7283,16 +7276,13 @@ ExpPointsText:
 
 AnimateExpBar:
 	push bc
-
 	ld hl, wCurPartyMon
 	ld a, [wCurBattleMon]
 	cp [hl]
 	jp nz, .finish
-
 	ld a, [wBattleMonLevel]
 	cp MAX_LEVEL
 	jp nc, .finish
-
 	ldh a, [hProduct + 3]
 	ld [wExperienceGained + 2], a
 	push af
@@ -7325,7 +7315,6 @@ AnimateExpBar:
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-
 .NoOverflow:
 	ld d, MAX_LEVEL
 	callfar CalcExpAtLevel
@@ -7349,7 +7338,6 @@ AnimateExpBar:
 	ld [hli], a
 	ld a, d
 	ld [hld], a
-
 .AlreadyAtMaxExp:
 	callfar CalcLevel
 	ld a, d
@@ -7360,7 +7348,6 @@ AnimateExpBar:
 	jr nc, .LoopLevels
 	ld a, e
 	ld d, a
-
 .LoopLevels:
 	ld a, e
 	cp MAX_LEVEL
@@ -7391,7 +7378,6 @@ AnimateExpBar:
 	inc e
 	ld b, $0
 	jr .LoopLevels
-
 .FinishExpBar:
 	push bc
 	ld b, d
@@ -7407,11 +7393,9 @@ AnimateExpBar:
 	ldh [hProduct + 2], a
 	pop af
 	ldh [hProduct + 3], a
-
 .finish
 	pop bc
 	ret
-
 .PlayExpBarSound:
 	push bc
 	call WaitSFX
@@ -7421,7 +7405,6 @@ AnimateExpBar:
 	call DelayFrames
 	pop bc
 	ret
-
 .LoopBarAnimation:
 	ld d, 3
 	dec b
@@ -7471,14 +7454,12 @@ SendOutMonText:
 	ld a, [wLinkMode]
 	and a
 	jr z, .not_linked
-
-; If we're in a LinkBattle print just "Go <PlayerMon>"
-; unless DoBattle already set [wBattleHasJustStarted]
+	; If we're in a LinkBattle print just "Go <PlayerMon>"
+	; unless DoBattle already set [wBattleHasJustStarted]
 	ld hl, GoMonText
 	ld a, [wBattleHasJustStarted]
 	and a
 	jr nz, .skip_to_textbox
-
 .not_linked
 ; Depending on the HP of the enemy mon, the game prints a different text
 	ld hl, wEnemyMonHP
@@ -7486,8 +7467,6 @@ SendOutMonText:
 	or [hl]
 	ld hl, GoMonText
 	jr z, .skip_to_textbox
-
-; BUG: Switching out or switching against a Pokémon with max HP below 4 freezes the game (see docs/bugs_and_glitches.md)
 	; compute enemy health remaining as a percentage
 	xor a
 	ldh [hMultiplicand + 0], a
@@ -7498,34 +7477,36 @@ SendOutMonText:
 	ld a, [hl]
 	ld [wEnemyHPAtTimeOfPlayerSwitch + 1], a
 	ldh [hMultiplicand + 2], a
-	ld a, 25
-	ldh [hMultiplier], a
-	call Multiply
 	ld hl, wEnemyMonMaxHP
 	ld a, [hli]
 	ld b, [hl]
-	srl a
+	ld c, 100
+	and a
+	jr z, .shift_done
+.shift
+	rra
 	rr b
-	srl a
-	rr b
+	srl c
+	and a
+	jr nz, .shift
+.shift_done
+	ld a, c
+	ldh [hMultiplier], a
+	call Multiply
 	ld a, b
 	ld b, 4
 	ldh [hDivisor], a
 	call Divide
-
 	ldh a, [hQuotient + 3]
 	ld hl, GoMonText
 	cp 70
 	jr nc, .skip_to_textbox
-
 	ld hl, DoItMonText
 	cp 40
 	jr nc, .skip_to_textbox
-
 	ld hl, GoForItMonText
 	cp 10
 	jr nc, .skip_to_textbox
-
 	ld hl, YourFoesWeakGetmMonText
 .skip_to_textbox
 	jp BattleTextbox
@@ -7559,11 +7540,10 @@ BattleMonNicknameText:
 WithdrawMonText:
 	ld hl, .WithdrawMonText
 	jp BattleTextbox
-
 .WithdrawMonText:
 	text_far _BattleMonNickCommaText
 	text_asm
-; Depending on the HP lost since the enemy mon was sent out, the game prints a different text
+	; Depending on the HP lost since the enemy mon was sent out, the game prints a different text
 	push de
 	push bc
 	; compute enemy health lost as a percentage
@@ -7579,16 +7559,22 @@ WithdrawMonText:
 	ld a, [de]
 	sbc b
 	ldh [hMultiplicand + 1], a
-	ld a, 25
-	ldh [hMultiplier], a
-	call Multiply
 	ld hl, wEnemyMonMaxHP
 	ld a, [hli]
 	ld b, [hl]
-	srl a
+	ld c, 100
+	and a
+	jr z, .shift_done
+.shift
+	rra
 	rr b
-	srl a
-	rr b
+	srl c
+	and a
+	jr nz, .shift
+.shift_done
+	ld a, c
+	ldh [hMultiplier], a
+	call Multiply
 	ld a, b
 	ld b, 4
 	ldh [hDivisor], a
@@ -7599,15 +7585,12 @@ WithdrawMonText:
 	ld hl, ThatsEnoughComeBackText
 	and a
 	ret z
-
 	ld hl, ComeBackText
 	cp 30
 	ret c
-
 	ld hl, OKComeBackText
 	cp 70
 	ret c
-
 	ld hl, GoodComeBackText
 	ret
 
@@ -7623,45 +7606,9 @@ GoodComeBackText:
 	text_far _GoodComeBackText
 	text_end
 
-TextJump_ComeBack: ; unreferenced
-	ld hl, ComeBackText
-	ret
-
 ComeBackText:
 	text_far _ComeBackText
 	text_end
-
-HandleSafariAngerEatingStatus: ; unreferenced
-	ld hl, wSafariMonEating
-	ld a, [hl]
-	and a
-	jr z, .angry
-	dec [hl]
-	ld hl, BattleText_WildMonIsEating
-	jr .finish
-
-.angry
-	dec hl
-	assert wSafariMonEating - 1 == wSafariMonAngerCount
-	ld a, [hl]
-	and a
-	ret z
-	dec [hl]
-	ld hl, BattleText_WildMonIsAngry
-	jr nz, .finish
-	push hl
-	ld a, [wEnemyMonSpecies]
-	ld [wCurSpecies], a
-	call GetBaseData
-	ld a, [wBaseCatchRate]
-	ld [wEnemyMonCatchRate], a
-	pop hl
-
-.finish
-	push hl
-	call SafeLoadTempTilemapToTilemap
-	pop hl
-	jp StdBattleTextbox
 
 FillInExpBar:
 	push hl
@@ -7679,7 +7626,7 @@ CalcExpBar:
 	push de
 	callfar CalcExpAtLevel
 	pop de
-; exp at current level gets pushed to the stack
+	; exp at current level gets pushed to the stack
 	ld hl, hMultiplicand
 	ld a, [hli]
 	push af
@@ -7687,10 +7634,10 @@ CalcExpBar:
 	push af
 	ld a, [hl]
 	push af
-; next level
+	; next level
 	inc d
 	callfar CalcExpAtLevel
-; back up the next level exp, and subtract the two levels
+	; back up the next level exp, and subtract the two levels
 	ld hl, hMultiplicand + 2
 	ld a, [hl]
 	ldh [hMathBuffer + 2], a
@@ -7708,14 +7655,12 @@ CalcExpBar:
 	sbc b
 	ld [hl], a
 	pop de
-
 	ld hl, hMultiplicand + 1
 	ld a, [hli]
 	push af
 	ld a, [hl]
 	push af
-
-; get the amount of exp remaining to the next level
+	; get the amount of exp remaining to the next level
 	ld a, [de]
 	dec de
 	ld c, a
@@ -7757,7 +7702,6 @@ CalcExpBar:
 	inc hl
 	rr [hl]
 	jr .loop
-
 .done
 	ld a, c
 	ldh [hDivisor], a
@@ -7782,22 +7726,18 @@ PlaceExpBar:
 	dec c
 	jr z, .finish
 	jr .loop1
-
 .next
 	add $8
 	jr z, .loop2
 	add $54 ; tile to the left of small exp bar tile
 	jr .skip
-
 .loop2
 	ld a, $62 ; empty bar
-
 .skip
 	ld [hld], a
 	ld a, $62 ; empty bar
 	dec c
 	jr nz, .loop2
-
 .finish
 	ret
 

@@ -1,44 +1,35 @@
 DoPlayerTurn:
 	call SetPlayerTurn
-
 	ld a, [wBattlePlayerAction]
 	and a ; BATTLEPLAYERACTION_USEMOVE?
 	ret nz
-
 	jr DoTurn
 
 DoEnemyTurn:
 	call SetEnemyTurn
-
 	ld a, [wLinkMode]
 	and a
 	jr z, DoTurn
-
 	ld a, [wBattleAction]
 	cp BATTLEACTION_STRUGGLE
 	jr z, DoTurn
 	cp BATTLEACTION_SWITCH1
 	ret nc
-
 	; fallthrough
 
 DoTurn:
 ; Read in and execute the user's move effects for this turn.
-
 	xor a
 	ld [wTurnEnded], a
-
 	; Effect command checkturn is called for every move.
-	call CheckTurn
-
+	call BattleCommand_CheckTurn
 	ld a, [wTurnEnded]
 	and a
 	ret nz
-
 	call UpdateMoveData
 
 DoMove:
-; Get the user's move effect.
+	; Get the user's move effect.
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	ld c, a
@@ -48,9 +39,7 @@ DoMove:
 	add hl, bc
 	ld a, BANK(MoveEffectsPointers)
 	call GetFarWord
-
 	ld de, wBattleScriptBuffer
-
 .GetMoveEffect:
 	ld a, BANK(MoveEffects)
 	call GetFarByte
@@ -59,35 +48,29 @@ DoMove:
 	inc de
 	cp endmove_command
 	jr nz, .GetMoveEffect
-
-; Start at the first command.
+	; Start at the first command.
 	ld hl, wBattleScriptBuffer
 	ld a, l
 	ld [wBattleScriptBufferAddress], a
 	ld a, h
 	ld [wBattleScriptBufferAddress + 1], a
-
 .ReadMoveEffectCommand:
 ; ld a, [wBattleScriptBufferAddress++]
 	ld a, [wBattleScriptBufferAddress]
 	ld l, a
 	ld a, [wBattleScriptBufferAddress + 1]
 	ld h, a
-
 	ld a, [hli]
-
 	push af
 	ld a, l
 	ld [wBattleScriptBufferAddress], a
 	ld a, h
 	ld [wBattleScriptBufferAddress + 1], a
 	pop af
-
-; endturn_command (-2) is used to terminate branches without ending the read cycle.
+	; endturn_command (-2) is used to terminate branches without ending the read cycle.
 	cp endturn_command
 	ret nc
-
-; The rest of the commands (01-af) are read from BattleCommandPointers.
+	; The rest of the commands (01-af) are read from BattleCommandPointers.
 	push bc
 	dec a
 	ld c, a
@@ -96,27 +79,20 @@ DoMove:
 	add hl, bc
 	add hl, bc
 	pop bc
-
 	ld a, BANK(BattleCommandPointers)
 	call GetFarWord
-
 	call .DoMoveEffectCommand
-
 	jr .ReadMoveEffectCommand
-
 .DoMoveEffectCommand:
 	jp hl
 
-CheckTurn:
 BattleCommand_CheckTurn:
 ; Repurposed as hardcoded turn handling. Useless as a command.
-
 ; Move $ff immediately ends the turn.
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVar
 	inc a
 	jp z, EndTurn
-
 	xor a
 	ld [wAttackMissed], a
 	ld [wEffectFailed], a
@@ -124,43 +100,34 @@ BattleCommand_CheckTurn:
 	ld [wAlreadyDisobeyed], a
 	ld [wAlreadyFailed], a
 	ld [wSomeoneIsRampaging], a
-
 	ld a, EFFECTIVE
 	ld [wTypeModifier], a
-
 	ldh a, [hBattleTurn]
 	and a
 	jp nz, CheckEnemyTurn
-
-; check player turn
+	; check player turn
 	ld hl, wPlayerSubStatus4
 	bit SUBSTATUS_RECHARGE, [hl]
 	jr z, .no_recharge
-
 	res SUBSTATUS_RECHARGE, [hl]
 	ld hl, MustRechargeText
 	call StdBattleTextbox
 	call CantMove
 	jp EndTurn
-
 .no_recharge
-
 	ld hl, wBattleMonStatus
 	ld a, [hl]
 	and SLP_MASK
 	jr z, .not_asleep
-
 	dec a
 	ld [wBattleMonStatus], a
 	and SLP_MASK
 	jr z, .woke_up
-
 	xor a
 	ld [wNumHits], a
 	ld de, ANIM_SLP
 	call FarPlayBattleAnimation
 	jr .fast_asleep
-
 .woke_up
 	ld hl, WokeUpText
 	call StdBattleTextbox
@@ -173,85 +140,65 @@ BattleCommand_CheckTurn:
 	ld hl, wPlayerSubStatus1
 	res SUBSTATUS_NIGHTMARE, [hl]
 	jr .not_asleep
-
 .fast_asleep
 	ld hl, FastAsleepText
 	call StdBattleTextbox
-
 	; Snore and Sleep Talk bypass sleep.
 	ld a, [wCurPlayerMove]
 	cp SNORE
 	jr z, .not_asleep
 	cp SLEEP_TALK
 	jr z, .not_asleep
-
 	call CantMove
 	jp EndTurn
-
 .not_asleep
-
 	ld hl, wBattleMonStatus
 	bit FRZ, [hl]
 	jr z, .not_frozen
-
 	; Flame Wheel and Sacred Fire thaw the user.
 	ld a, [wCurPlayerMove]
 	cp FLAME_WHEEL
 	jr z, .not_frozen
 	cp SACRED_FIRE
 	jr z, .not_frozen
-
 	ld hl, FrozenSolidText
 	call StdBattleTextbox
-
 	call CantMove
 	jp EndTurn
-
 .not_frozen
-
 	ld hl, wPlayerSubStatus3
 	bit SUBSTATUS_FLINCHED, [hl]
 	jr z, .not_flinched
-
 	res SUBSTATUS_FLINCHED, [hl]
 	ld hl, FlinchedText
 	call StdBattleTextbox
-
 	call CantMove
 	jp EndTurn
-
 .not_flinched
-
 	ld hl, wPlayerDisableCount
 	ld a, [hl]
 	and a
 	jr z, .not_disabled
-
 	dec a
 	ld [hl], a
 	and $f
 	jr nz, .not_disabled
-
 	ld [hl], a
 	ld [wDisabledMove], a
 	ld hl, DisabledNoMoreText
 	call StdBattleTextbox
-
 .not_disabled
-
 	ld a, [wPlayerSubStatus3]
 	add a
 	jr nc, .not_confused
 	ld hl, wPlayerConfuseCount
 	dec [hl]
 	jr nz, .confused
-
 	ld hl, wPlayerSubStatus3
 	res SUBSTATUS_CONFUSED, [hl]
 	ld hl, ConfusedNoMoreText
 	call StdBattleTextbox
 	jr .not_confused
-
 .confused
 	ld hl, IsConfusedText
 	call StdBattleTextbox
@@ -259,72 +206,56 @@ BattleCommand_CheckTurn:
 	ld [wNumHits], a
 	ld de, ANIM_CONFUSED
 	call FarPlayBattleAnimation
-
 	; 50% chance of hitting itself
 	call BattleRandom
 	cp 50 percent + 1
 	jr nc, .not_confused
-
 	; clear confusion-dependent substatus
 	ld hl, wPlayerSubStatus3
 	ld a, [hl]
 	and 1 << SUBSTATUS_CONFUSED
 	ld [hl], a
-
 	call HitConfusion
 	call CantMove
 	jp EndTurn
-
 .not_confused
-
 	ld a, [wPlayerSubStatus1]
 	add a ; bit SUBSTATUS_ATTRACT
 	jr nc, .not_infatuated
-
 	ld hl, InLoveWithText
 	call StdBattleTextbox
 	xor a
 	ld [wNumHits], a
 	ld de, ANIM_IN_LOVE
 	call FarPlayBattleAnimation
-
 	; 50% chance of infatuation
 	call BattleRandom
 	cp 50 percent + 1
 	jr c, .not_infatuated
-
 	ld hl, InfatuationText
 	call StdBattleTextbox
 	call CantMove
 	jp EndTurn
-
 .not_infatuated
-
 	; We can't disable a move that doesn't exist.
 	ld a, [wDisabledMove]
 	and a
 	jr z, .no_disabled_move
-
 	; Are we using the disabled move?
 	ld hl, wCurPlayerMove
 	cp [hl]
 	jr nz, .no_disabled_move
-
 	call MoveDisabled
 	call CantMove
 	jp EndTurn
-
 .no_disabled_move
-
 	ld hl, wBattleMonStatus
 	bit PAR, [hl]
 	ret z
-
 	; 25% chance to be fully paralyzed
 	call BattleRandom
 	cp 25 percent
 	ret nc
-
 	ld hl, FullyParalyzedText
 	call StdBattleTextbox
 	call CantMove
@@ -334,23 +265,18 @@ CantMove:
 	ld a, BATTLE_VARS_SUBSTATUS1
 	call GetBattleVarAddr
 	res SUBSTATUS_ROLLOUT, [hl]
-
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	ld a, [hl]
 	and ~(1 << SUBSTATUS_BIDE | 1 << SUBSTATUS_RAMPAGE | 1 << SUBSTATUS_CHARGED)
 	ld [hl], a
-
 	call ResetFuryCutterCount
-
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
 	cp FLY
 	jr z, .fly_dig
-
 	cp DIG
 	ret nz
-
 .fly_dig
 	res SUBSTATUS_UNDERGROUND, [hl]
 	res SUBSTATUS_FLYING, [hl]
@@ -365,25 +291,20 @@ CheckEnemyTurn:
 	ld hl, wEnemySubStatus4
 	bit SUBSTATUS_RECHARGE, [hl]
 	jr z, .no_recharge
-
 	res SUBSTATUS_RECHARGE, [hl]
 	ld hl, MustRechargeText
 	call StdBattleTextbox
 	call CantMove
 	jp EndTurn
-
 .no_recharge
-
 	ld hl, wEnemyMonStatus
 	ld a, [hl]
 	and SLP_MASK
 	jr z, .not_asleep
-
 	dec a
 	ld [wEnemyMonStatus], a
 	and a
 	jr z, .woke_up
-
 	ld hl, FastAsleepText
 	call StdBattleTextbox
 	xor a
@@ -391,7 +312,6 @@ CheckEnemyTurn:
 	ld de, ANIM_SLP
 	call FarPlayBattleAnimation
 	jr .fast_asleep
-
 .woke_up
 	ld hl, WokeUpText
 	call StdBattleTextbox
@@ -404,7 +324,6 @@ CheckEnemyTurn:
 	ld hl, wEnemySubStatus1
 	res SUBSTATUS_NIGHTMARE, [hl]
 	jr .not_asleep
-
 .fast_asleep
 	; Snore and Sleep Talk bypass sleep.
 	ld a, [wCurEnemyMove]
@@ -414,170 +333,129 @@ CheckEnemyTurn:
 	jr z, .not_asleep
 	call CantMove
 	jp EndTurn
-
 .not_asleep
-
 	ld hl, wEnemyMonStatus
 	bit FRZ, [hl]
 	jr z, .not_frozen
-
 	; Flame Wheel and Sacred Fire thaw the user.
 	ld a, [wCurEnemyMove]
 	cp FLAME_WHEEL
 	jr z, .not_frozen
 	cp SACRED_FIRE
 	jr z, .not_frozen
-
 	ld hl, FrozenSolidText
 	call StdBattleTextbox
 	call CantMove
 	jp EndTurn
-
 .not_frozen
-
 	ld hl, wEnemySubStatus3
 	bit SUBSTATUS_FLINCHED, [hl]
 	jr z, .not_flinched
-
 	res SUBSTATUS_FLINCHED, [hl]
 	ld hl, FlinchedText
 	call StdBattleTextbox
-
 	call CantMove
 	jp EndTurn
-
 .not_flinched
-
 	ld hl, wEnemyDisableCount
 	ld a, [hl]
 	and a
 	jr z, .not_disabled
-
 	dec a
 	ld [hl], a
 	and $f
 	jr nz, .not_disabled
-
 	ld [hl], a
 	ld [wEnemyDisabledMove], a
-
 	ld hl, DisabledNoMoreText
 	call StdBattleTextbox
-
 .not_disabled
-
 	ld a, [wEnemySubStatus3]
 	add a ; bit SUBSTATUS_CONFUSED
 	jr nc, .not_confused
-
 	ld hl, wEnemyConfuseCount
 	dec [hl]
 	jr nz, .confused
-
 	ld hl, wEnemySubStatus3
 	res SUBSTATUS_CONFUSED, [hl]
 	ld hl, ConfusedNoMoreText
 	call StdBattleTextbox
 	jr .not_confused
-
 .confused
 	ld hl, IsConfusedText
 	call StdBattleTextbox
-
 	xor a
 	ld [wNumHits], a
 	ld de, ANIM_CONFUSED
 	call FarPlayBattleAnimation
-
 	; 50% chance of hitting itself
 	call BattleRandom
 	cp 50 percent + 1
 	jr nc, .not_confused
-
 	; clear confusion-dependent substatus
 	ld hl, wEnemySubStatus3
 	ld a, [hl]
 	and 1 << SUBSTATUS_CONFUSED
 	ld [hl], a
-
 	ld hl, HurtItselfText
 	call StdBattleTextbox
-
 	call HitSelfInConfusion
 	call BattleCommand_DamageCalc
 	call BattleCommand_LowerSub
-
 	xor a
 	ld [wNumHits], a
-
 	; Flicker the monster pic unless flying or underground.
 	ld de, ANIM_HIT_CONFUSION
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVar
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	call z, PlayFXAnimID
-
 	ld c, TRUE
 	call DoEnemyDamage
 	call BattleCommand_RaiseSub
 	call CantMove
 	jp EndTurn
-
 .not_confused
-
 	ld a, [wEnemySubStatus1]
 	add a ; bit SUBSTATUS_ATTRACT
 	jr nc, .not_infatuated
-
 	ld hl, InLoveWithText
 	call StdBattleTextbox
 	xor a
 	ld [wNumHits], a
 	ld de, ANIM_IN_LOVE
 	call FarPlayBattleAnimation
-
 	; 50% chance of infatuation
 	call BattleRandom
 	cp 50 percent + 1
 	jr c, .not_infatuated
-
 	ld hl, InfatuationText
 	call StdBattleTextbox
 	call CantMove
 	jp EndTurn
-
 .not_infatuated
-
 	; We can't disable a move that doesn't exist.
 	ld a, [wEnemyDisabledMove]
 	and a
 	jr z, .no_disabled_move
-
 	; Are we using the disabled move?
 	ld hl, wCurEnemyMove
 	cp [hl]
 	jr nz, .no_disabled_move
-
 	call MoveDisabled
-
 	call CantMove
 	jp EndTurn
-
 .no_disabled_move
-
 	ld hl, wEnemyMonStatus
 	bit PAR, [hl]
 	ret z
-
 	; 25% chance to be fully paralyzed
 	call BattleRandom
 	cp 25 percent
 	ret nc
-
 	ld hl, FullyParalyzedText
 	call StdBattleTextbox
 	call CantMove
-
 	; fallthrough
 
 EndTurn:
@@ -590,36 +468,29 @@ MoveDisabled:
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	res SUBSTATUS_CHARGED, [hl]
-
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVar
 	ld [wNamedObjectIndex], a
 	call GetMoveName
-
 	ld hl, DisabledMoveText
 	jp StdBattleTextbox
 
 HitConfusion:
 	ld hl, HurtItselfText
 	call StdBattleTextbox
-
 	xor a
 	ld [wCriticalHit], a
-
 	call HitSelfInConfusion
 	call BattleCommand_DamageCalc
 	call BattleCommand_LowerSub
-
 	xor a
 	ld [wNumHits], a
-
 	; Flicker the monster pic unless flying or underground.
 	ld de, ANIM_HIT_CONFUSION
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVar
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	call z, PlayFXAnimID
-
 	ld hl, UpdatePlayerHUD
 	call CallBattleCore
 	ld a, $1
@@ -2684,16 +2555,15 @@ CheckDamageStatsCritical:
 	ld b, a
 	ld a, [wEnemyDefLevel]
 	jr .end
-
 .enemy
 	ld a, [wEnemyMoveStructType]
 	cp SPECIAL
-; special
+	; special
 	ld a, [wEnemySAtkLevel]
 	ld b, a
 	ld a, [wPlayerSDefLevel]
 	jr nc, .end
-; physical
+	; physical
 	ld a, [wEnemyAtkLevel]
 	ld b, a
 	ld a, [wPlayerDefLevel]
@@ -2705,7 +2575,6 @@ CheckDamageStatsCritical:
 
 ThickClubBoost:
 ; Return in hl the stat value at hl.
-
 ; If the attacking monster is Cubone or Marowak and
 ; it's holding a Thick Club, double it.
 	push bc
@@ -2720,7 +2589,6 @@ ThickClubBoost:
 
 LightBallBoost:
 ; Return in hl the stat value at hl.
-
 ; If the attacking monster is Pikachu and it's
 ; holding a Light Ball, double it.
 	push bc
@@ -2735,18 +2603,14 @@ LightBallBoost:
 
 SpeciesItemBoost:
 ; Return in hl the stat value at hl.
-
 ; If the attacking monster is species b or c and
 ; it's holding item d, double it.
-
 	ld a, [hli]
 	ld l, [hl]
 	ld h, a
-
 	push hl
 	ld a, MON_SPECIES
 	call BattlePartyAttr
-
 	ldh a, [hBattleTurn]
 	and a
 	ld a, [hl]
@@ -2754,12 +2618,10 @@ SpeciesItemBoost:
 	ld a, [wTempEnemyMonSpecies]
 .CompareSpecies:
 	pop hl
-
 	cp b
 	jr z, .GetItemHeldEffect
 	cp c
 	ret nz
-
 .GetItemHeldEffect:
 	push hl
 	call GetUserItem
@@ -2767,63 +2629,61 @@ SpeciesItemBoost:
 	pop hl
 	cp d
 	ret nz
-
-; Double the stat
-; BUG: Thick Club and Light Ball can make (Special) Attack wrap around above 1024 (see docs/bugs_and_glitches.md)
+	; Double the stat
 	sla l
 	rl h
+	ld a, HIGH(MAX_STAT_VALUE)
+	cp h
+	jr c, .cap
+	ret nz
+	ld a, LOW(MAX_STAT_VALUE)
+	cp l
+	ret nc
+.cap
+	ld hl, MAX_STAT_VALUE
 	ret
 
 EnemyAttackDamage:
 	call ResetDamage
-
-; No damage dealt with 0 power.
+	; No damage dealt with 0 power.
 	ld hl, wEnemyMoveStructPower
 	ld a, [hli] ; hl = wEnemyMoveStructType
 	ld d, a
 	and a
 	ret z
-
 	ld a, [hl]
 	cp SPECIAL
 	jr nc, .special
-
-; physical
+	; physical
 	ld hl, wBattleMonDefense
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
-
 	ld a, [wPlayerScreens]
 	bit SCREENS_REFLECT, a
 	jr z, .physicalcrit
 	sla c
 	rl b
-
 .physicalcrit
 	ld hl, wEnemyMonAttack
 	call CheckDamageStatsCritical
 	jr c, .thickclub
-
 	ld hl, wPlayerDefense
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
 	ld hl, wEnemyAttack
 	jr .thickclub
-
 .special
 	ld hl, wBattleMonSpclDef
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
-
 	ld a, [wPlayerScreens]
 	bit SCREENS_LIGHT_SCREEN, a
 	jr z, .specialcrit
 	sla c
 	rl b
-
 .specialcrit
 	ld hl, wEnemyMonSpclAtk
 	call CheckDamageStatsCritical
@@ -2833,21 +2693,16 @@ EnemyAttackDamage:
 	ld b, a
 	ld c, [hl]
 	ld hl, wEnemySpAtk
-
 .lightball
 	call LightBallBoost
 	jr .done
-
 .thickclub
 	call ThickClubBoost
-
 .done
 	call TruncateHL_BC
-
 	ld a, [wEnemyMonLevel]
 	ld e, a
 	call DittoMetalPowder
-
 	ld a, 1
 	and a
 	ret
@@ -2858,7 +2713,6 @@ BattleCommand_ClearMissDamage:
 	ld a, [wAttackMissed]
 	and a
 	ret z
-
 	jp ResetDamage
 
 HitSelfInConfusion:
@@ -2869,7 +2723,6 @@ HitSelfInConfusion:
 	ld de, wPlayerScreens
 	ld a, [wBattleMonLevel]
 	jr z, .got_it
-
 	ld hl, wEnemyMonDefense
 	ld de, wEnemyScreens
 	ld a, [wEnemyMonLevel]
@@ -2881,7 +2734,6 @@ HitSelfInConfusion:
 	ld a, [de]
 	bit SCREENS_REFLECT, a
 	jr z, .mimic_screen
-
 	sla c
 	rl b
 .mimic_screen

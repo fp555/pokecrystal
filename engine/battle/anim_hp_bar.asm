@@ -18,7 +18,6 @@ _AnimateHPBar:
 	pop af
 	jr nc, .ShortAnimLoop
 	ret
-
 .MoreThan48Pixels:
 	call .ComputePixels
 .LongAnimLoop:
@@ -38,7 +37,6 @@ _AnimateHPBar:
 	pop af
 	jr nc, .LongAnimLoop
 	ret
-
 .IsMaximumMoreThan48Pixels:
 	ld a, [wCurHPAnimMaxHP + 1]
 	and a
@@ -48,11 +46,9 @@ _AnimateHPBar:
 	jr nc, .player
 	and a
 	ret
-
 .player
 	scf
 	ret
-
 .ComputePixels:
 	push hl
 	ld hl, wCurHPAnimMaxHP
@@ -68,7 +64,6 @@ _AnimateHPBar:
 	call ComputeHPBarPixels
 	ld a, e
 	ld [wCurHPBarPixels], a
-
 	ld a, [wCurHPAnimNewHP]
 	ld c, a
 	ld a, [wCurHPAnimNewHP + 1]
@@ -80,7 +75,6 @@ _AnimateHPBar:
 	call ComputeHPBarPixels
 	ld a, e
 	ld [wNewHPBarPixels], a
-
 	push hl
 	ld hl, wCurHPAnimOldHP
 	ld a, [hli]
@@ -105,7 +99,6 @@ _AnimateHPBar:
 	ld [wCurHPAnimHighHP], a
 	ld bc, 1
 	jr .got_direction
-
 .negative
 	ld a, [wCurHPAnimOldHP]
 	ld [wCurHPAnimHighHP], a
@@ -133,7 +126,6 @@ ShortAnim_UpdateVariables:
 	jr nz, .not_finished
 	scf
 	ret
-
 .not_finished
 	ld a, c
 	add [hl]
@@ -158,7 +150,6 @@ LongAnim_UpdateVariables:
 	jr nz, .next
 	scf
 	ret
-
 .next
 	ld l, e
 	ld h, d
@@ -179,12 +170,11 @@ LongAnim_UpdateVariables:
 	ld c, a
 	ld a, [hli]
 	ld b, a
-; BUG: HP bar animation is slow for high HP (see docs/bugs_and_glitches.md)
 	call ComputeHPBarPixels
+	ld a, e
 	pop bc
 	pop de
 	pop hl
-	ld a, e
 	ld hl, wCurHPBarPixels
 	cp [hl]
 	jr z, .loop
@@ -251,7 +241,6 @@ HPBarAnim_UpdateHPRemaining:
 	jr z, .load_15
 	ld de, SCREEN_WIDTH + 2
 	jr .loaded_de
-
 .load_15
 	ld de, SCREEN_WIDTH + 1
 .loaded_de
@@ -290,7 +279,6 @@ HPBarAnim_BGMapUpdate:
 	call DelayFrame
 	call DelayFrame
 	ret
-
 .cgb
 	ld a, [wWhichHPBar]
 	and a
@@ -302,7 +290,6 @@ HPBarAnim_BGMapUpdate:
 	jr nc, .bottom_half_of_screen
 	ld c, $0
 	jr .got_third
-
 .bottom_half_of_screen
 	ld c, $1
 .got_third
@@ -328,7 +315,6 @@ HPBarAnim_BGMapUpdate:
 	cp $5
 	jr z, .two_frames
 	ret
-
 .two_frames
 	inc c
 	ld a, $2
@@ -342,11 +328,9 @@ HPBarAnim_BGMapUpdate:
 	ldh [hBGMapThird], a
 	call DelayFrame
 	ret
-
 .load_0
 	ld c, $0
 	jr .finish
-
 .load_1
 	ld c, $1
 .finish

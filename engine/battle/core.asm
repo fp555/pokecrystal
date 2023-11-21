@@ -5273,18 +5273,15 @@ MoveSelectionScreen:
 	ret z ; use Struggle
 	ld hl, wBattleMonMoves
 	jr .got_menu_type
-
 .ether_elixer_menu
 	ld a, MON_MOVES
 	call GetPartyParamLocation
-
 .got_menu_type
 	ld de, wListMoves_MoveIndicesBuffer
 	ld bc, NUM_MOVES
 	call CopyBytes
 	xor a
 	ldh [hBGMapMode], a
-
 	hlcoord 4, 17 - NUM_MOVES - 1
 	ld b, 4
 	ld c, 14
@@ -5296,7 +5293,6 @@ MoveSelectionScreen:
 	ld c, 14
 .got_dims
 	call Textbox
-
 	hlcoord 6, 17 - NUM_MOVES
 	ld a, [wMoveSelectionMenuType]
 	cp $2
@@ -5306,7 +5302,6 @@ MoveSelectionScreen:
 	ld a, SCREEN_WIDTH
 	ld [wListMovesLineSpacing], a
 	predef ListMoves
-
 	ld b, 5
 	ld a, [wMoveSelectionMenuType]
 	cp $2
@@ -5314,7 +5309,6 @@ MoveSelectionScreen:
 	jr nz, .got_default_coord
 	ld b, 5
 	ld a, 17 - NUM_MOVES - 4
-
 .got_default_coord
 	ld [w2DMenuCursorInitY], a
 	ld a, b
@@ -5324,7 +5318,6 @@ MoveSelectionScreen:
 	jr z, .skip_inc
 	ld a, [wCurMoveNum]
 	inc a
-
 .skip_inc
 	ld [wMenuCursorY], a
 	ld a, 1
@@ -5346,7 +5339,6 @@ MoveSelectionScreen:
 	and a
 	jr nz, .okay
 	ld b, D_DOWN | D_UP | A_BUTTON | B_BUTTON | SELECT
-
 .okay
 	ld a, b
 	ld [wMenuJoypadFilter], a
@@ -5366,7 +5358,6 @@ MoveSelectionScreen:
 	ld de, .empty_string
 	call PlaceString
 	jr .interpret_joypad
-
 .battle_player_moves
 	call MoveInfoBox
 	ld a, [wSwappingMove]
@@ -5377,7 +5368,6 @@ MoveSelectionScreen:
 	dec a
 	call AddNTimes
 	ld [hl], "▷"
-
 .interpret_joypad
 	ld a, $1
 	ldh [hBGMapMode], a
@@ -5391,7 +5381,6 @@ MoveSelectionScreen:
 	bit B_BUTTON_F, a
 	; A button
 	push af
-
 	xor a
 	ld [wSwappingMove], a
 	ld a, [wMenuCursorY]
@@ -5401,23 +5390,18 @@ MoveSelectionScreen:
 	ld a, [wMoveSelectionMenuType]
 	dec a
 	jr nz, .not_enemy_moves_process_b
-
 	pop af
 	ret
-
 .not_enemy_moves_process_b
 	dec a
 	ld a, b
 	ld [wCurMoveNum], a
 	jr nz, .use_move
-
 	pop af
 	ret
-
 .use_move
 	pop af
 	ret nz
-
 	ld hl, wBattleMonPP
 	ld a, [wMenuCursorY]
 	ld c, a
@@ -5441,27 +5425,21 @@ MoveSelectionScreen:
 	ld b, 0
 	add hl, bc
 	ld a, [hl]
-
 .skip2
 	ld [wCurPlayerMove], a
 	xor a
 	ret
-
 .move_disabled
 	ld hl, BattleText_TheMoveIsDisabled
 	jr .place_textbox_start_over
-
 .no_pp_left
 	ld hl, BattleText_TheresNoPPLeftForThisMove
-
 .place_textbox_start_over
 	call StdBattleTextbox
 	call SafeLoadTempTilemapToTilemap
 	jp MoveSelectionScreen
-
 .empty_string
 	db "@"
-
 .pressed_up
 	ld a, [wMenuCursorY]
 	and a
@@ -5470,7 +5448,6 @@ MoveSelectionScreen:
 	inc a
 	ld [wMenuCursorY], a
 	jp .menu_loop
-
 .pressed_down
 	ld a, [wMenuCursorY]
 	ld b, a
@@ -5482,7 +5459,6 @@ MoveSelectionScreen:
 	ld a, $1
 	ld [wMenuCursorY], a
 	jp .menu_loop
-
 .pressed_select
 	ld a, [wSwappingMove]
 	and a
@@ -5507,7 +5483,6 @@ MoveSelectionScreen:
 	add b
 	ld [hl], a
 	jr .swap_moves_in_party_struct
-
 .not_swapping_disabled_move
 	ld a, [wSwappingMove]
 	cp b
@@ -5519,7 +5494,6 @@ MoveSelectionScreen:
 	swap a
 	add b
 	ld [hl], a
-
 .swap_moves_in_party_struct
 ; Fixes the COOLTRAINER glitch
 	ld a, [wPlayerSubStatus5]
@@ -5534,12 +5508,10 @@ MoveSelectionScreen:
 	ld bc, MON_PP - MON_MOVES
 	add hl, bc
 	call .swap_bytes
-
 .transformed
 	xor a
 	ld [wSwappingMove], a
 	jp MoveSelectionScreen
-
 .swap_bytes
 	push hl
 	ld a, [wSwappingMove]
@@ -5561,7 +5533,6 @@ MoveSelectionScreen:
 	ld a, b
 	ld [de], a
 	ret
-
 .start_swap
 	ld a, [wMenuCursorY]
 	ld [wSwappingMove], a
@@ -5570,29 +5541,24 @@ MoveSelectionScreen:
 MoveInfoBox:
 	xor a
 	ldh [hBGMapMode], a
-
 	hlcoord 0, 8
 	ld b, 3
 	ld c, 9
 	call Textbox
 	call MobileTextBorder
-
 	ld a, [wPlayerDisableCount]
 	and a
 	jr z, .not_disabled
-
 	swap a
 	and $f
 	ld b, a
 	ld a, [wMenuCursorY]
 	cp b
 	jr nz, .not_disabled
-
 	hlcoord 1, 10
 	ld de, .Disabled
 	call PlaceString
 	jr .done
-
 .not_disabled
 	ld hl, wMenuCursorY
 	dec [hl]
@@ -5604,13 +5570,11 @@ MoveInfoBox:
 	add hl, bc
 	ld a, [hl]
 	ld [wCurPlayerMove], a
-
 	ld a, [wCurBattleMon]
 	ld [wCurPartyMon], a
 	ld a, WILDMON
 	ld [wMonType], a
 	callfar GetMaxPPOfMove
-
 	ld hl, wMenuCursorY
 	ld c, [hl]
 	inc [hl]
@@ -5621,28 +5585,22 @@ MoveInfoBox:
 	and PP_MASK
 	ld [wStringBuffer1], a
 	call .PrintPP
-
 	hlcoord 1, 9
 	ld de, .Type
 	call PlaceString
-
 	hlcoord 7, 11
 	ld [hl], "/"
-
 	callfar UpdateMoveData
 	ld a, [wPlayerMoveStruct + MOVE_ANIM]
 	ld b, a
 	hlcoord 2, 10
 	predef PrintMoveType
-
 .done
 	ret
-
 .Disabled:
 	db "Disabled!@"
 .Type:
 	db "TYPE/@"
-
 .PrintPP:
 	hlcoord 5, 11
 	ld a, [wLinkMode] ; What's the point of this check?
@@ -5671,7 +5629,6 @@ CheckPlayerHasUsableMoves:
 	and a
 	ld hl, wBattleMonPP
 	jr nz, .disabled
-
 	ld a, [hli]
 	or [hl]
 	inc hl
@@ -5681,7 +5638,6 @@ CheckPlayerHasUsableMoves:
 	and PP_MASK
 	ret nz
 	jr .force_struggle
-
 .disabled
 	swap a
 	and $f
@@ -5697,12 +5653,9 @@ CheckPlayerHasUsableMoves:
 	jr z, .loop
 	or c
 	jr .loop
-
 .done
-; BUG: A Disabled but PP Up–enhanced move may not trigger Struggle (see docs/bugs_and_glitches.md)
-	and a
+	and PP_MASK
 	ret nz
-
 .force_struggle
 	ld hl, BattleText_MonHasNoMovesLeft
 	call StdBattleTextbox
@@ -5739,7 +5692,6 @@ ParseEnemyAction:
 	ld a, [wEnemySubStatus3]
 	and 1 << SUBSTATUS_CHARGED | 1 << SUBSTATUS_RAMPAGE | 1 << SUBSTATUS_BIDE
 	jp nz, .skip_load
-
 	ld hl, wEnemySubStatus5
 	bit SUBSTATUS_ENCORED, [hl]
 	ld a, [wLastEnemyMove]
@@ -5749,23 +5701,19 @@ ParseEnemyAction:
 	add hl, bc
 	ld a, [hl]
 	jp .finish
-
 .not_linked
 	ld hl, wEnemySubStatus5
 	bit SUBSTATUS_ENCORED, [hl]
 	jr z, .skip_encore
 	ld a, [wLastEnemyMove]
 	jp .finish
-
 .skip_encore
 	call CheckEnemyLockedIn
 	jp nz, ResetVarsForSubstatusRage
 	jr .continue
-
 .skip_turn
 	ld a, $ff
 	jr .finish
-
 .continue
 	ld hl, wEnemyMonMoves
 	ld de, wEnemyMonPP
@@ -5780,14 +5728,12 @@ ParseEnemyAction:
 	ld a, [de]
 	and PP_MASK
 	jr nz, .enough_pp
-
 .disabled
 	inc hl
 	inc de
 	dec b
 	jr nz, .loop
 	jr .struggle
-
 .enough_pp
 	ld a, [wBattleMode]
 	dec a
@@ -5818,10 +5764,8 @@ ParseEnemyAction:
 	ld a, c
 	ld [wCurEnemyMoveNum], a
 	ld a, b
-
 .finish
 	ld [wCurEnemyMove], a
-
 .skip_load
 	call SetEnemyTurn
 	callfar UpdateMoveData
@@ -5829,14 +5773,12 @@ ParseEnemyAction:
 	jr nz, .raging
 	xor a
 	ld [wEnemyCharging], a
-
 .raging
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	cp EFFECT_FURY_CUTTER
 	jr z, .fury_cutter
 	xor a
 	ld [wEnemyFuryCutterCount], a
-
 .fury_cutter
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	cp EFFECT_RAGE
@@ -5845,7 +5787,6 @@ ParseEnemyAction:
 	res SUBSTATUS_RAGE, [hl]
 	xor a
 	ld [wEnemyRageCounter], a
-
 .no_rage
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	cp EFFECT_PROTECT
@@ -5855,7 +5796,6 @@ ParseEnemyAction:
 	xor a
 	ld [wEnemyProtectCount], a
 	ret
-
 .struggle
 	ld a, STRUGGLE
 	jr .finish

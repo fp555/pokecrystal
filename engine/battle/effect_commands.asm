@@ -1355,23 +1355,18 @@ BattleCommand_ResetTypeMatchup:
 	inc a
 	ld [wAttackMissed], a
 	ret
-
 .reset
 	ld [wTypeMatchup], a
 	ret
 
 INCLUDE "engine/battle/ai/switch.asm"
-
 INCLUDE "data/types/type_matchups.asm"
 
 BattleCommand_DamageVariation:
 ; Modify the damage spread between 85% and 100%.
-
-; Because of the method of division the probability distribution
-; is not consistent. This makes the highest damage multipliers
-; rarer than normal.
-
-; No point in reducing 1 or 0 damage.
+; Because of the method of division the probability distribution is not consistent.
+; This makes the highest damage multipliers rarer than normal.
+	; No point in reducing 1 or 0 damage.
 	ld hl, wCurDamage
 	ld a, [hli]
 	and a
@@ -1379,9 +1374,8 @@ BattleCommand_DamageVariation:
 	ld a, [hl]
 	cp 2
 	ret c
-
 .go
-; Start with the maximum damage.
+	; Start with the maximum damage.
 	xor a
 	ldh [hMultiplicand + 0], a
 	dec hl
@@ -1389,24 +1383,20 @@ BattleCommand_DamageVariation:
 	ldh [hMultiplicand + 1], a
 	ld a, [hl]
 	ldh [hMultiplicand + 2], a
-
-; Multiply by 85-100%...
 .loop
+	; Multiply by 85-100%...
 	call BattleRandom
 	rrca
 	cp 85 percent + 1
 	jr c, .loop
-
 	ldh [hMultiplier], a
 	call Multiply
-
-; ...divide by 100%...
+	; ...divide by 100%...
 	ld a, 100 percent
 	ldh [hDivisor], a
 	ld b, $4
 	call Divide
-
-; ...to get .85-1.00x damage.
+	; ...to get .85-1.00x damage.
 	ldh a, [hQuotient + 2]
 	ld hl, wCurDamage
 	ld [hli], a
@@ -1417,33 +1407,24 @@ BattleCommand_DamageVariation:
 BattleCommand_CheckHit:
 	call .DreamEater
 	jp z, .Miss
-
 	call .Protect
 	jp nz, .Miss
-
 	call .DrainSub
 	jp z, .Miss
-
 	call .LockOn
 	ret nz
-
 	call .FlyDigMoves
 	jp nz, .Miss
-
 	call .ThunderRain
 	ret z
-
 	call .XAccuracy
 	ret nz
-
 	; Perfect-accuracy moves
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_ALWAYS_HIT
 	ret z
-
 	call .StatModifiers
-
 	ld a, [wPlayerMoveStruct + MOVE_ACC]
 	ld b, a
 	ldh a, [hBattleTurn]
@@ -1451,7 +1432,6 @@ BattleCommand_CheckHit:
 	jr z, .BrightPowder
 	ld a, [wEnemyMoveStruct + MOVE_ACC]
 	ld b, a
-
 .BrightPowder:
 	push bc
 	call GetOpponentItem
@@ -1460,26 +1440,21 @@ BattleCommand_CheckHit:
 	ld a, c ; % miss
 	pop bc
 	jr nz, .skip_brightpowder
-
 	ld c, a
 	ld a, b
 	sub c
 	ld b, a
 	jr nc, .skip_brightpowder
 	ld b, 0
-
 .skip_brightpowder
 	ld a, b
 	cp -1
 	jr z, .Hit
-
 	call BattleRandom
 	cp b
 	jr nc, .Miss
-
 .Hit:
 	ret
-
 .Miss:
 ; Keep the damage value intact if we're using (Hi) Jump Kick.
 	ld a, BATTLE_VARS_MOVE_EFFECT
@@ -1487,12 +1462,10 @@ BattleCommand_CheckHit:
 	cp EFFECT_JUMP_KICK
 	jr z, .Missed
 	call ResetDamage
-
 .Missed:
 	ld a, 1
 	ld [wAttackMissed], a
 	ret
-
 .DreamEater:
 ; Return z if we're trying to eat the dream of
 ; a monster that isn't sleeping.
@@ -1500,33 +1473,26 @@ BattleCommand_CheckHit:
 	call GetBattleVar
 	cp EFFECT_DREAM_EATER
 	ret nz
-
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVar
 	and SLP_MASK
 	ret
-
 .Protect:
 ; Return nz if the opponent is protected.
 	ld a, BATTLE_VARS_SUBSTATUS1_OPP
 	call GetBattleVar
 	bit SUBSTATUS_PROTECT, a
 	ret z
-
 	ld c, 40
 	call DelayFrames
-
-; 'protecting itself!'
+	; 'protecting itself!'
 	ld hl, ProtectingItselfText
 	call StdBattleTextbox
-
 	ld c, 40
 	call DelayFrames
-
 	ld a, 1
 	and a
 	ret
-
 .LockOn:
 ; Return nz if we are locked-on and aren't trying to use Earthquake,
 ; Fissure or Magnitude on a monster that is flying.
@@ -1535,60 +1501,47 @@ BattleCommand_CheckHit:
 	bit SUBSTATUS_LOCK_ON, [hl]
 	res SUBSTATUS_LOCK_ON, [hl]
 	ret z
-
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVar
 	bit SUBSTATUS_FLYING, a
 	jr z, .LockedOn
-
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
-
 	cp EARTHQUAKE
 	ret z
 	cp FISSURE
 	ret z
 	cp MAGNITUDE
 	ret z
-
 .LockedOn:
 	ld a, 1
 	and a
 	ret
-
 .DrainSub:
 ; Return z if using an HP drain move on a substitute.
 	call CheckSubstituteOpp
 	jr z, .not_draining_sub
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
-
 	cp EFFECT_LEECH_HIT
 	ret z
 	cp EFFECT_DREAM_EATER
 	ret z
-
 .not_draining_sub
 	ld a, 1
 	and a
 	ret
-
 .FlyDigMoves:
 ; Check for moves that can hit underground/flying opponents.
 ; Return z if the current move can hit the opponent.
-
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVar
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	ret z
-
 	bit SUBSTATUS_FLYING, a
 	jr z, .DigMoves
-
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
-
 	cp GUST
 	ret z
 	cp WHIRLWIND
@@ -1597,65 +1550,53 @@ BattleCommand_CheckHit:
 	ret z
 	cp TWISTER
 	ret
-
 .DigMoves:
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
-
 	cp EARTHQUAKE
 	ret z
 	cp FISSURE
 	ret z
 	cp MAGNITUDE
 	ret
-
 .ThunderRain:
 ; Return z if the current move always hits in rain, and it is raining.
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_THUNDER
 	ret nz
-
 	ld a, [wBattleWeather]
 	cp WEATHER_RAIN
 	ret
-
 .XAccuracy:
 	ld a, BATTLE_VARS_SUBSTATUS4
 	call GetBattleVar
 	bit SUBSTATUS_X_ACCURACY, a
 	ret
-
 .StatModifiers:
 	ldh a, [hBattleTurn]
 	and a
-
 	; load the user's accuracy into b and the opponent's evasion into c.
 	ld hl, wPlayerMoveStruct + MOVE_ACC
 	ld a, [wPlayerAccLevel]
 	ld b, a
 	ld a, [wEnemyEvaLevel]
 	ld c, a
-
 	jr z, .got_acc_eva
-
 	ld hl, wEnemyMoveStruct + MOVE_ACC
 	ld a, [wEnemyAccLevel]
 	ld b, a
 	ld a, [wPlayerEvaLevel]
 	ld c, a
-
 .got_acc_eva
 	cp b
 	jr c, .skip_foresight_check
-
 	; if the target's evasion is greater than the user's accuracy,
 	; check the target's foresight status
 	ld a, BATTLE_VARS_SUBSTATUS1_OPP
 	call GetBattleVar
 	bit SUBSTATUS_IDENTIFIED, a
 	ret nz
-
 .skip_foresight_check
 	; subtract evasion from 14
 	ld a, MAX_STAT_LEVEL + 1
@@ -1669,7 +1610,6 @@ BattleCommand_CheckHit:
 	ldh [hMultiplicand + 2], a
 	push hl
 	ld d, 2 ; do this twice, once for the user's accuracy and once for the target's evasion
-
 .accuracy_loop
 	; look up the multiplier from the table
 	push bc
@@ -1698,20 +1638,17 @@ BattleCommand_CheckHit:
 	ldh [hQuotient + 2], a
 	ld a, 1
 	ldh [hQuotient + 3], a
-
 .min_accuracy
 	; do the same thing to the target's evasion
 	ld b, c
 	dec d
 	jr nz, .accuracy_loop
-
 	; if the result is more than 2 bytes, max out at 100%
 	ldh a, [hQuotient + 2]
 	and a
 	ldh a, [hQuotient + 3]
 	jr z, .finish_accuracy
 	ld a, $ff
-
 .finish_accuracy
 	pop hl
 	ld [hl], a
@@ -1724,7 +1661,6 @@ BattleCommand_EffectChance:
 	ld [wEffectFailed], a
 	call CheckSubstituteOpp
 	jr nz, .failed
-
 	push hl
 	ld hl, wPlayerMoveStruct + MOVE_CHANCE
 	ldh a, [hBattleTurn]
@@ -1732,12 +1668,14 @@ BattleCommand_EffectChance:
 	jr z, .got_move_chance
 	ld hl, wEnemyMoveStruct + MOVE_CHANCE
 .got_move_chance
-; BUG: Moves with a 100% secondary effect chance will not trigger it in 1/256 uses (see docs/bugs_and_glitches.md)
-	call BattleRandom
+	ld a, [hl]
+	sub 100 percent
+	; If chance was 100%, RNG won't be called (carry not set)
+	; Thus chance will be subtracted from 0, guaranteeing a carry
+	call c, BattleRandom
 	cp [hl]
 	pop hl
 	ret c
-
 .failed
 	ld a, 1
 	ld [wEffectFailed], a
@@ -1749,12 +1687,10 @@ BattleCommand_LowerSub:
 	call GetBattleVar
 	bit SUBSTATUS_SUBSTITUTE, a
 	ret z
-
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVar
 	bit SUBSTATUS_CHARGED, a
 	jr nz, .already_charged
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_RAZOR_WIND
@@ -1767,18 +1703,14 @@ BattleCommand_LowerSub:
 	jr z, .charge_turn
 	cp EFFECT_FLY
 	jr z, .charge_turn
-
 .already_charged
 	call .Rampage
 	jr z, .charge_turn
-
 	call CheckUserIsCharging
 	ret nz
-
 .charge_turn
 	call _CheckBattleScene
 	jr c, .mimic_anims
-
 	xor a
 	ld [wNumHits], a
 	ld [wFXAnimID + 1], a
@@ -1786,11 +1718,9 @@ BattleCommand_LowerSub:
 	ld [wBattleAnimParam], a
 	ld a, SUBSTITUTE
 	jp LoadAnim
-
 .mimic_anims
 	call BattleCommand_LowerSubNoAnim
 	jp BattleCommand_MoveDelay
-
 .Rampage:
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
@@ -1798,11 +1728,9 @@ BattleCommand_LowerSub:
 	jr z, .rollout_rampage
 	cp EFFECT_RAMPAGE
 	jr z, .rollout_rampage
-
 	ld a, 1
 	and a
 	ret
-
 .rollout_rampage
 	ld a, [wSomeoneIsRampaging]
 	and a
@@ -1819,7 +1747,6 @@ BattleCommand_MoveAnimNoSub:
 	ld a, [wAttackMissed]
 	and a
 	jp nz, BattleCommand_MoveDelay
-
 	ldh a, [hBattleTurn]
 	and a
 	ld de, wPlayerRolloutCount
@@ -1827,7 +1754,6 @@ BattleCommand_MoveAnimNoSub:
 	jr z, .got_rollout_count
 	ld de, wEnemyRolloutCount
 	ld a, BATTLEANIM_PLAYER_DAMAGE
-
 .got_rollout_count
 	ld [wNumHits], a
 	ld a, BATTLE_VARS_MOVE_EFFECT
@@ -1844,14 +1770,12 @@ BattleCommand_MoveAnimNoSub:
 	jr z, .triplekick
 	xor a
 	ld [wBattleAnimParam], a
-
 .triplekick
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
 	ld e, a
 	ld d, 0
 	call PlayFXAnimID
-
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
 	cp FLY
@@ -1860,7 +1784,6 @@ BattleCommand_MoveAnimNoSub:
 	ret nz
 .clear_sprite
 	jp AppearUserLowerSub
-
 .alternate_anim
 	ld a, [wBattleAnimParam]
 	and 1
@@ -1883,7 +1806,6 @@ BattleCommand_StatUpAnim:
 	ld a, [wAttackMissed]
 	and a
 	jp nz, BattleCommand_MoveDelay
-
 	xor a
 	jr BattleCommand_StatUpDownAnim
 
@@ -1891,13 +1813,11 @@ BattleCommand_StatDownAnim:
 	ld a, [wAttackMissed]
 	and a
 	jp nz, BattleCommand_MoveDelay
-
 	ldh a, [hBattleTurn]
 	and a
 	ld a, BATTLEANIM_ENEMY_STAT_DOWN
 	jr z, BattleCommand_StatUpDownAnim
 	ld a, BATTLEANIM_WOBBLE
-
 	; fallthrough
 
 BattleCommand_StatUpDownAnim:

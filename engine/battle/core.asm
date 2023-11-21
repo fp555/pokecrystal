@@ -18,18 +18,15 @@ DoBattle:
 	jr nz, .alive
 	add hl, bc
 	jr .loop
-
 .alive
 	ld a, d
 	ld [wBattleAction], a
 	ld a, [wLinkMode]
 	and a
 	jr z, .not_linked
-
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr z, .player_2
-
 .not_linked
 	ld a, [wBattleMode]
 	dec a
@@ -40,11 +37,9 @@ DoBattle:
 	call ResetEnemyStatLevels
 	call BreakAttraction
 	call EnemySwitch
-
 .wild
 	ld c, 40
 	call DelayFrames
-
 .player_2
 	call LoadTilemapToTempTilemap
 	call CheckPlayerPartyForFitMon
@@ -65,7 +60,6 @@ DoBattle:
 	ld hl, wCurPartyMon
 	inc [hl]
 	jr .loop2
-
 .alive2
 	ld a, [wCurBattleMon]
 	ld [wLastPlayerMon], a
@@ -108,10 +102,8 @@ DoBattle:
 	call EnemySwitch
 	call SetEnemyTurn
 	call SpikesDamage
-
 .not_linked_2
 	jp BattleTurn
-
 .tutorial_debug
 	jp BattleMenu
 
@@ -125,31 +117,24 @@ WildFled_EnemyFled_LinkBattleCanceled:
 	and a
 	ld hl, BattleText_WildFled
 	jr z, .print_text
-
 	ld a, [wBattleResult]
 	and BATTLERESULT_BITMASK
 	ld [wBattleResult], a ; WIN
 	ld hl, BattleText_EnemyFled
 	call CheckMobileBattleError
 	jr nc, .print_text
-
 	ld hl, wcd2a
 	bit 4, [hl]
 	jr nz, .skip_text
-
 	ld hl, BattleText_LinkErrorBattleCanceled
-
 .print_text
 	call StdBattleTextbox
-
 .skip_text
 	call StopDangerSound
 	call CheckMobileBattleError
 	jr c, .skip_sfx
-
 	ld de, SFX_RUN
 	call PlaySFX
-
 .skip_sfx
 	call SetPlayerTurn
 	ld a, 1
@@ -161,7 +146,6 @@ BattleTurn:
 	call Stubbed_Increments5_a89a
 	call CheckContestBattleOver
 	jp c, .quit
-
 	xor a
 	ld [wPlayerIsSwitching], a
 	ld [wEnemyIsSwitching], a
@@ -170,11 +154,9 @@ BattleTurn:
 	ld [wEnemyJustGotFrozen], a
 	ld [wCurDamage], a
 	ld [wCurDamage + 1], a
-
 	call HandleBerserkGene
 	call UpdateBattleMonInParty
 	farcall AIChooseMove
-
 	call IsMobileBattle
 	jr nz, .not_disconnected
 	farcall Function100da5
@@ -182,7 +164,6 @@ BattleTurn:
 	farcall Function100dd8
 	jp c, .quit
 .not_disconnected
-
 	call CheckPlayerLockedIn
 	jr c, .skip_iteration
 .loop1
@@ -197,10 +178,8 @@ BattleTurn:
 .skip_iteration
 	call ParsePlayerAction
 	jr nz, .loop1
-
 	call EnemyTriesToFlee
 	jr c, .quit
-
 	call DetermineMoveOrder
 	jr c, .false
 	call Battle_EnemyFirst
@@ -210,21 +189,17 @@ BattleTurn:
 .proceed
 	call CheckMobileBattleError
 	jr c, .quit
-
 	ld a, [wForcedSwitch]
 	and a
 	jr nz, .quit
-
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .quit
-
 	call HandleBetweenTurnEffects
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .quit
 	jp .loop
-
 .quit
 	ret
 
@@ -241,7 +216,6 @@ Stubbed_Increments5_a89a:
 	dec [hl]
 	inc hl
 	dec [hl]
-
 .finish
 	call CloseSRAM
 	ret
@@ -265,7 +239,6 @@ HandleBetweenTurnEffects:
 	call CheckFaint_PlayerThenEnemy
 	ret c
 	jr .NoMoreFaintingConditions
-
 .CheckEnemyFirst:
 	call CheckFaint_EnemyThenPlayer
 	ret c
@@ -281,7 +254,6 @@ HandleBetweenTurnEffects:
 	call HandlePerishSong
 	call CheckFaint_EnemyThenPlayer
 	ret c
-
 .NoMoreFaintingConditions:
 	call HandleLeftovers
 	call HandleMysteryberry
@@ -294,15 +266,25 @@ HandleBetweenTurnEffects:
 	call LoadTilemapToTempTilemap
 	jp HandleEncore
 
+HasAnyoneFainted:
+	call HasPlayerFainted
+	jp nz, HasEnemyFainted
+	ret
+
 CheckFaint_PlayerThenEnemy:
-; BUG: Perish Song and Spikes can leave a Pokemon with 0 HP and not faint (see docs/bugs_and_glitches.md)
+.faint_loop
+	call .Function
+	ret c
+	call HasAnyoneFainted
+	ret nz
+	jr .faint_loop
+.Function:
 	call HasPlayerFainted
 	jr nz, .PlayerNotFainted
 	call HandlePlayerMonFaint
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .BattleIsOver
-
 .PlayerNotFainted:
 	call HasEnemyFainted
 	jr nz, .BattleContinues
@@ -310,24 +292,27 @@ CheckFaint_PlayerThenEnemy:
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .BattleIsOver
-
 .BattleContinues:
 	and a
 	ret
-
 .BattleIsOver:
 	scf
 	ret
 
 CheckFaint_EnemyThenPlayer:
-; BUG: Perish Song and Spikes can leave a Pokemon with 0 HP and not faint (see docs/bugs_and_glitches.md)
+.faint_loop
+	call .Function
+	ret c
+	call HasAnyoneFainted
+	ret nz
+	jr .faint_loop
+.Function:
 	call HasEnemyFainted
 	jr nz, .EnemyNotFainted
 	call HandleEnemyMonFaint
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .BattleIsOver
-
 .EnemyNotFainted:
 	call HasPlayerFainted
 	jr nz, .BattleContinues
@@ -335,11 +320,9 @@ CheckFaint_EnemyThenPlayer:
 	ld a, [wBattleEnded]
 	and a
 	jr nz, .BattleIsOver
-
 .BattleContinues:
 	and a
 	ret
-
 .BattleIsOver:
 	scf
 	ret
@@ -348,28 +331,23 @@ HandleBerserkGene:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
 	jr z, .reverse
-
 	call .player
 	jr .enemy
-
 .reverse
 	call .enemy
 	; fallthrough
-
 .player
 	call SetPlayerTurn
 	ld de, wPartyMon1Item
 	ld a, [wCurBattleMon]
 	ld b, a
 	jr .go
-
 .enemy
 	call SetEnemyTurn
 	ld de, wOTPartyMon1Item
 	ld a, [wCurOTMon]
 	ld b, a
 	; fallthrough
-
 .go
 	push de
 	push bc
@@ -380,9 +358,7 @@ HandleBerserkGene:
 	pop bc
 	pop de
 	ret nz
-
 	ld [hl], a
-
 	ld h, d
 	ld l, e
 	ld a, b

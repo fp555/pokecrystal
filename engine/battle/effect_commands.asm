@@ -2364,120 +2364,103 @@ DittoMetalPowder:
 	ld a, [hl]
 	jr nz, .got_species
 	ld a, [wTempEnemyMonSpecies]
-
 .got_species
 	cp DITTO
 	ret nz
-
 	push bc
 	call GetOpponentItem
 	ld a, [hl]
 	cp METAL_POWDER
 	pop bc
 	ret nz
-
-; BUG: Metal Powder can increase damage taken with boosted (Special) Defense (see docs/bugs_and_glitches.md)
-	ld a, c
-	srl a
-	add c
-	ld c, a
-	ret nc
-
+	ld h, b
+	ld l, c
 	srl b
-	ld a, b
-	and a
-	jr nz, .done
-	inc b
-.done
-	scf
 	rr c
+	add hl, bc
+	ld b, h
+	ld c, l
+	ld a, HIGH(MAX_STAT_VALUE)
+	cp b
+	jr c, .cap
+	ret nz
+	ld a, LOW(MAX_STAT_VALUE)
+	cp c
+	ret nc
+.cap
+	ld bc, MAX_STAT_VALUE
 	ret
 
 BattleCommand_DamageStats:
 	ldh a, [hBattleTurn]
 	and a
 	jp nz, EnemyAttackDamage
-
 	; fallthrough
 
 PlayerAttackDamage:
 ; Return move power d, player level e, enemy defense c and player attack b.
-
 	call ResetDamage
-
 	ld hl, wPlayerMoveStructPower
 	ld a, [hli]
 	and a
 	ld d, a
 	ret z
-
 	ld a, [hl]
 	cp SPECIAL
 	jr nc, .special
-
-; physical
+	; physical
 	ld hl, wEnemyMonDefense
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
-
 	ld a, [wEnemyScreens]
 	bit SCREENS_REFLECT, a
 	jr z, .physicalcrit
 	sla c
 	rl b
-
 .physicalcrit
 	ld hl, wBattleMonAttack
 	call CheckDamageStatsCritical
 	jr c, .thickclub
-
 	ld hl, wEnemyDefense
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
 	ld hl, wPlayerAttack
 	jr .thickclub
-
 .special
 	ld hl, wEnemyMonSpclDef
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
-
 	ld a, [wEnemyScreens]
 	bit SCREENS_LIGHT_SCREEN, a
 	jr z, .specialcrit
 	sla c
 	rl b
-
 .specialcrit
 	ld hl, wBattleMonSpclAtk
 	call CheckDamageStatsCritical
 	jr c, .lightball
-
 	ld hl, wEnemySpDef
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
 	ld hl, wPlayerSpAtk
-
 .lightball
 ; Note: Returns player special attack at hl in hl.
 	call LightBallBoost
 	jr .done
-
 .thickclub
 ; Note: Returns player attack at hl in hl.
 	call ThickClubBoost
-
 .done
+	push hl
+	call DittoMetalPowder
+	pop hl
 	call TruncateHL_BC
-
 	ld a, [wBattleMonLevel]
 	ld e, a
-	call DittoMetalPowder
-
 	ld a, 1
 	and a
 	ret
@@ -2486,32 +2469,26 @@ TruncateHL_BC:
 .loop
 ; Truncate 16-bit values hl and bc to 8-bit values b and c respectively.
 ; b = hl, c = bc
-
 	ld a, h
 	or b
 	jr z, .finish
-
 	srl b
 	rr c
 	srl b
 	rr c
-
 	ld a, c
 	or b
 	jr nz, .done_bc
 	inc c
-
 .done_bc
 	srl h
 	rr l
 	srl h
 	rr l
-
 	ld a, l
 	or h
 	jr nz, .finish
 	inc l
-
 .finish
 ; BUG: Reflect and Light Screen can make (Special) Defense wrap around above 1024 (see docs/bugs_and_glitches.md)
 	ld a, [wLinkMode]
@@ -2699,10 +2676,12 @@ EnemyAttackDamage:
 .thickclub
 	call ThickClubBoost
 .done
+	push hl
+	call DittoMetalPowder
+	pop hl
 	call TruncateHL_BC
 	ld a, [wEnemyMonLevel]
 	ld e, a
-	call DittoMetalPowder
 	ld a, 1
 	and a
 	ret

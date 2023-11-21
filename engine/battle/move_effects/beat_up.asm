@@ -167,11 +167,11 @@ BattleCommand_BeatUp:
 	jp SkipToBattleCommand
 
 BattleCommand_BeatUpFailText:
-; BUG: Beat Up may trigger King's Rock even if it failed (see docs/bugs_and_glitches.md)
 	ld a, [wBeatUpHitAtLeastOnce]
 	and a
 	ret nz
-
+	inc a
+	ld [wAttackMissed], a
 	jp PrintButItFailed
 
 GetBeatupMonLocation:
@@ -183,7 +183,6 @@ GetBeatupMonLocation:
 	ld hl, wPartyMon1Species
 	jr z, .got_species
 	ld hl, wOTPartyMon1Species
-
 .got_species
 	ld a, [wCurBeatUpPartyMon]
 	add hl, bc

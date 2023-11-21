@@ -1841,10 +1841,8 @@ BattleCommand_RaiseSub:
 	call GetBattleVar
 	bit SUBSTATUS_SUBSTITUTE, a
 	ret z
-
 	call _CheckBattleScene
 	jp c, BattleCommand_RaiseSubNoAnim
-
 	xor a
 	ld [wNumHits], a
 	ld [wFXAnimID + 1], a
@@ -1860,33 +1858,28 @@ BattleCommand_FailureText:
 	ld a, [wAttackMissed]
 	and a
 	ret z
-
 	call GetFailureResultText
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVarAddr
-
 	cp FLY
 	jr z, .fly_dig
 	cp DIG
 	jr z, .fly_dig
-
-; Move effect:
+	; Move effect:
 	inc hl
 	ld a, [hl]
-
-; BUG: Beat Up may fail to raise Substitute (see docs/bugs_and_glitches.md)
 	cp EFFECT_MULTI_HIT
 	jr z, .multihit
 	cp EFFECT_DOUBLE_HIT
 	jr z, .multihit
 	cp EFFECT_POISON_MULTI_HIT
 	jr z, .multihit
+	cp EFFECT_BEAT_UP
+	jr z, .multihit
 	jp EndMoveEffect
-
 .multihit
 	call BattleCommand_RaiseSub
 	jp EndMoveEffect
-
 .fly_dig
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
@@ -1900,20 +1893,17 @@ BattleCommand_ApplyDamage:
 	call GetBattleVar
 	bit SUBSTATUS_ENDURE, a
 	jr z, .focus_band
-
 	call BattleCommand_FalseSwipe
 	ld b, 0
 	jr nc, .damage
 	ld b, 1
 	jr .damage
-
 .focus_band
 	call GetOpponentItem
 	ld a, b
 	cp HELD_FOCUS_BAND
 	ld b, 0
 	jr nz, .damage
-
 	call BattleRandom
 	cp c
 	jr nc, .damage
@@ -1921,7 +1911,6 @@ BattleCommand_ApplyDamage:
 	ld b, 0
 	jr nc, .damage
 	ld b, 2
-
 .damage
 	push bc
 	call .update_damage_taken
@@ -1931,21 +1920,17 @@ BattleCommand_ApplyDamage:
 	jr nz, .damage_player
 	call DoEnemyDamage
 	jr .done_damage
-
 .damage_player
 	call DoPlayerDamage
-
 .done_damage
 	pop bc
 	ld a, b
 	and a
 	ret z
-
 	dec a
 	jr nz, .focus_band_text
 	ld hl, EnduredText
 	jp StdBattleTextbox
-
 .focus_band_text
 	call GetOpponentItem
 	ld a, [hl]
@@ -1953,19 +1938,16 @@ BattleCommand_ApplyDamage:
 	call GetItemName
 	ld hl, HungOnText
 	jp StdBattleTextbox
-
 .update_damage_taken
 	ld a, BATTLE_VARS_SUBSTATUS4_OPP
 	call GetBattleVar
 	bit SUBSTATUS_SUBSTITUTE, a
 	ret nz
-
 	ld de, wPlayerDamageTaken + 1
 	ldh a, [hBattleTurn]
 	and a
 	jr nz, .got_damage_taken
 	ld de, wEnemyDamageTaken + 1
-
 .got_damage_taken
 	ld a, [wCurDamage + 1]
 	ld b, a
@@ -2007,16 +1989,13 @@ GetFailureResultText:
 	call FailText_CheckOpponentProtect
 	xor a
 	ld [wCriticalHit], a
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_JUMP_KICK
 	ret nz
-
 	ld a, [wTypeModifier]
 	and $7f
 	ret z
-
 	ld hl, wCurDamage
 	ld a, [hli]
 	ld b, [hl]

@@ -365,11 +365,20 @@ HandleBerserkGene:
 	call GetPartyLocation
 	xor a
 	ld [hl], a
-; BUG: Berserk Gene's confusion lasts for 256 turns or the previous Pokémon's confusion count (see docs/bugs_and_glitches.md)
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	push af
 	set SUBSTATUS_CONFUSED, [hl]
+	ldh a, [hBattleTurn]
+	and a
+	ld hl, wPlayerConfuseCount
+	jr z, .set_confuse_count
+	ld hl, wEnemyConfuseCount
+.set_confuse_count
+	call BattleRandom
+	and %11
+	add 2
+	ld [hl], a
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVarAddr
 	push hl
@@ -404,11 +413,9 @@ EnemyTriesToFlee:
 	ld a, [wBattleAction]
 	cp BATTLEACTION_FORFEIT
 	jr z, .forfeit
-
 .not_linked
 	and a
 	ret
-
 .forfeit
 	call WildFled_EnemyFled_LinkBattleCanceled
 	scf
@@ -431,24 +438,20 @@ DetermineMoveOrder:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr z, .player_2
-
 	call BattleRandom
 	cp 50 percent + 1
 	jp c, .player_first
 	jp .enemy_first
-
 .player_2
 	call BattleRandom
 	cp 50 percent + 1
 	jp c, .enemy_first
 	jp .player_first
-
 .switch
 	callfar AI_Switch
 	call SetEnemyTurn
 	call SpikesDamage
 	jp .enemy_first
-
 .use_move
 	ld a, [wBattlePlayerAction]
 	and a ; BATTLEPLAYERACTION_USEMOVE?
@@ -457,7 +460,6 @@ DetermineMoveOrder:
 	jr z, .equal_priority
 	jp c, .player_first ; player goes first
 	jp .enemy_first
-
 .equal_priority
 	call SetPlayerTurn
 	callfar GetUserItem
@@ -474,7 +476,6 @@ DetermineMoveOrder:
 	cp e
 	jr nc, .speed_check
 	jp .player_first
-
 .player_no_quick_claw
 	ld a, b
 	cp HELD_QUICK_CLAW
@@ -483,7 +484,6 @@ DetermineMoveOrder:
 	cp c
 	jr nc, .speed_check
 	jp .enemy_first
-
 .both_have_quick_claw
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
@@ -495,7 +495,6 @@ DetermineMoveOrder:
 	cp e
 	jp c, .player_first
 	jr .speed_check
-
 .player_2b
 	call BattleRandom
 	cp e
@@ -504,7 +503,6 @@ DetermineMoveOrder:
 	cp c
 	jp c, .enemy_first
 	jr .speed_check
-
 .speed_check
 	ld de, wBattleMonSpeed
 	ld hl, wEnemyMonSpeed
@@ -513,7 +511,6 @@ DetermineMoveOrder:
 	jr z, .speed_tie
 	jp nc, .player_first
 	jp .enemy_first
-
 .speed_tie
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
@@ -522,7 +519,6 @@ DetermineMoveOrder:
 	cp 50 percent + 1
 	jp c, .player_first
 	jp .enemy_first
-
 .player_2c
 	call BattleRandom
 	cp 50 percent + 1
@@ -530,7 +526,6 @@ DetermineMoveOrder:
 .player_first
 	scf
 	ret
-
 .enemy_first
 	and a
 	ret
@@ -548,7 +543,6 @@ CheckContestBattleOver:
 	ld [wBattleResult], a
 	scf
 	ret
-
 .contest_not_over
 	and a
 	ret
@@ -557,23 +551,18 @@ CheckPlayerLockedIn:
 	ld a, [wPlayerSubStatus4]
 	and 1 << SUBSTATUS_RECHARGE
 	jp nz, .quit
-
 	ld hl, wEnemySubStatus3
 	res SUBSTATUS_FLINCHED, [hl]
 	ld hl, wPlayerSubStatus3
 	res SUBSTATUS_FLINCHED, [hl]
-
 	ld a, [hl]
 	and 1 << SUBSTATUS_CHARGED | 1 << SUBSTATUS_RAMPAGE
 	jp nz, .quit
-
 	ld hl, wPlayerSubStatus1
 	bit SUBSTATUS_ROLLOUT, [hl]
 	jp nz, .quit
-
 	and a
 	ret
-
 .quit
 	scf
 	ret
@@ -587,7 +576,6 @@ ParsePlayerAction:
 	ld a, [wLastPlayerMove]
 	ld [wCurPlayerMove], a
 	jr .encored
-
 .not_encored
 	ld a, [wBattlePlayerAction]
 	cp BATTLEPLAYERACTION_SWITCH
@@ -609,13 +597,11 @@ ParsePlayerAction:
 	cp STRUGGLE
 	jr z, .struggle
 	call PlayClickSFX
-
 .struggle
 	ld a, $1
 	ldh [hBGMapMode], a
 	pop af
 	ret nz
-
 .encored
 	call SetPlayerTurn
 	callfar UpdateMoveData
@@ -626,7 +612,6 @@ ParsePlayerAction:
 	jr z, .continue_fury_cutter
 	xor a
 	ld [wPlayerFuryCutterCount], a
-
 .continue_fury_cutter
 	ld a, [wPlayerMoveStruct + MOVE_EFFECT]
 	cp EFFECT_RAGE
@@ -635,7 +620,6 @@ ParsePlayerAction:
 	res SUBSTATUS_RAGE, [hl]
 	xor a
 	ld [wPlayerRageCounter], a
-
 .continue_rage
 	ld a, [wPlayerMoveStruct + MOVE_EFFECT]
 	cp EFFECT_PROTECT
@@ -645,11 +629,9 @@ ParsePlayerAction:
 	xor a
 	ld [wPlayerProtectCount], a
 	jr .continue_protect
-
 .reset_bide
 	ld hl, wPlayerSubStatus3
 	res SUBSTATUS_BIDE, [hl]
-
 .locked_in
 	xor a
 	ld [wPlayerFuryCutterCount], a
@@ -657,12 +639,10 @@ ParsePlayerAction:
 	ld [wPlayerRageCounter], a
 	ld hl, wPlayerSubStatus4
 	res SUBSTATUS_RAGE, [hl]
-
 .continue_protect
 	call ParseEnemyAction
 	xor a
 	ret
-
 .reset_rage
 	xor a
 	ld [wPlayerFuryCutterCount], a
@@ -679,7 +659,6 @@ HandleEncore:
 	jr z, .player_1
 	call .do_player
 	jr .do_enemy
-
 .player_1
 	call .do_enemy
 .do_player
@@ -698,14 +677,12 @@ HandleEncore:
 	ld a, [hl]
 	and PP_MASK
 	ret nz
-
 .end_player_encore
 	ld hl, wPlayerSubStatus5
 	res SUBSTATUS_ENCORED, [hl]
 	call SetEnemyTurn
 	ld hl, BattleText_TargetsEncoreEnded
 	jp StdBattleTextbox
-
 .do_enemy
 	ld hl, wEnemySubStatus5
 	bit SUBSTATUS_ENCORED, [hl]
@@ -722,7 +699,6 @@ HandleEncore:
 	ld a, [hl]
 	and PP_MASK
 	ret nz
-
 .end_enemy_encore
 	ld hl, wEnemySubStatus5
 	res SUBSTATUS_ENCORED, [hl]
@@ -734,30 +710,24 @@ TryEnemyFlee:
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .Stay
-
 	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_CANT_RUN, a
 	jr nz, .Stay
-
 	ld a, [wEnemyWrapCount]
 	and a
 	jr nz, .Stay
-
 	ld a, [wEnemyMonStatus]
 	and 1 << FRZ | SLP_MASK
 	jr nz, .Stay
-
 	ld a, [wTempEnemyMonSpecies]
 	ld de, 1
 	ld hl, AlwaysFleeMons
 	call IsInArray
 	jr c, .Flee
-
 	call BattleRandom
 	ld b, a
 	cp 50 percent + 1
 	jr nc, .Stay
-
 	push bc
 	ld a, [wTempEnemyMonSpecies]
 	ld de, 1
@@ -765,21 +735,17 @@ TryEnemyFlee:
 	call IsInArray
 	pop bc
 	jr c, .Flee
-
 	ld a, b
 	cp 10 percent + 1
 	jr nc, .Stay
-
 	ld a, [wTempEnemyMonSpecies]
 	ld de, 1
 	ld hl, SometimesFleeMons
 	call IsInArray
 	jr c, .Flee
-
 .Stay:
 	and a
 	ret
-
 .Flee:
 	scf
 	ret
@@ -789,7 +755,6 @@ INCLUDE "data/wild/flee_mons.asm"
 CompareMovePriority:
 ; Compare the priority of the player and enemy's moves.
 ; Return carry if the player goes first, or z if they match.
-
 	ld a, [wCurPlayerMove]
 	call GetMovePriority
 	ld b, a
@@ -802,14 +767,11 @@ CompareMovePriority:
 
 GetMovePriority:
 ; Return the priority (0-3) of move a.
-
 	ld b, a
-
 	; Vital Throw goes last.
 	cp VITAL_THROW
 	ld a, 0
 	ret z
-
 	call GetMoveEffect
 	ld hl, MoveEffectPriorities
 .loop
@@ -819,10 +781,8 @@ GetMovePriority:
 	inc hl
 	cp -1
 	jr nz, .loop
-
 	ld a, BASE_PRIORITY
 	ret
-
 .done
 	ld a, [hl]
 	ret

@@ -147,14 +147,12 @@ AI_TryItem:
 	ld b, h
 	ld c, l
 	ld hl, AI_Items
-; BUG: AI might use its base reward value as an item (see docs/bugs_and_glitches.md)
-	ld de, wEnemyTrainerItem1
 .loop
+	ld de, wEnemyTrainerItem1
 	ld a, [hl]
 	and a
 	inc a
 	ret z
-
 	ld a, [de]
 	cp [hl]
 	jr z, .has_item
@@ -162,13 +160,11 @@ AI_TryItem:
 	ld a, [de]
 	cp [hl]
 	jr z, .has_item
-
 	dec de
 	inc hl
 	inc hl
 	inc hl
 	jr .loop
-
 .has_item
 	inc hl
 	push hl

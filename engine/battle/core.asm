@@ -3304,7 +3304,6 @@ ScoreMonTypeMatchups:
 	dec b
 	jr z, .loop5
 	jr .loop2
-
 .okay
 	ld a, [wEnemyEffectivenessVsPlayerMons]
 	and a
@@ -3316,7 +3315,6 @@ ScoreMonTypeMatchups:
 	sla c
 	jr nc, .loop3
 	jr .quit
-
 .okay2
 	ld b, -1
 	ld a, [wPlayerEffectivenessVsEnemyMons]
@@ -3326,7 +3324,6 @@ ScoreMonTypeMatchups:
 	sla c
 	jr c, .loop4
 	jr .quit
-
 .loop5
 	ld a, [wOTPartyCount]
 	ld b, a
@@ -3348,7 +3345,6 @@ ScoreMonTypeMatchups:
 	ld a, [hl]
 	or c
 	jr z, .loop5
-
 .quit
 	ret
 
@@ -3370,7 +3366,6 @@ LoadEnemyMonToSwitchTo:
 	ld [wTempEnemyMonSpecies], a
 	ld [wCurPartySpecies], a
 	call LoadEnemyMon
-
 	ld a, [wCurPartySpecies]
 	cp UNOWN
 	jr nz, .skip_unown
@@ -3382,7 +3377,6 @@ LoadEnemyMonToSwitchTo:
 	ld a, [wUnownLetter]
 	ld [wFirstUnownSeen], a
 .skip_unown
-
 	ld hl, wEnemyMonHP
 	ld a, [hli]
 	ld [wEnemyHPAtTimeOfPlayerSwitch], a
@@ -3414,7 +3408,6 @@ CheckWhetherToAskSwitch:
 	jr c, .return_nc
 	scf
 	ret
-
 .return_nc
 	and a
 	ret
@@ -5805,93 +5798,68 @@ LinkBattleSendReceiveAction:
 LoadEnemyMon:
 ; Initialize enemy monster parameters
 ; To do this we pull the species from wTempEnemyMonSpecies
-
-; Notes:
-;   BattleRandom is used to ensure sync between Game Boys
-
-; Clear the whole enemy mon struct (wEnemyMon)
+; BattleRandom is used to ensure sync between Game Boys
+	; Clear the whole enemy mon struct (wEnemyMon)
 	xor a
 	ld hl, wEnemyMonSpecies
 	ld bc, wEnemyMonEnd - wEnemyMon
 	call ByteFill
-
-; We don't need to be here if we're in a link battle
+	; We don't need to be here if we're in a link battle
 	ld a, [wLinkMode]
 	and a
 	jp nz, InitEnemyMon
-
-; and also not in a BattleTower-Battle
+	; and also not in a BattleTower-Battle
 	ld a, [wInBattleTowerBattle]
 	bit 0, a
 	jp nz, InitEnemyMon
-
-; Make sure everything knows what species we're working with
+	; Make sure everything knows what species we're working with
 	ld a, [wTempEnemyMonSpecies]
 	ld [wEnemyMonSpecies], a
 	ld [wCurSpecies], a
 	ld [wCurPartySpecies], a
-
-; Grab the BaseData for this species
+	; Grab the BaseData for this species
 	call GetBaseData
-
-; Let's get the item:
-
-; Is the item predetermined?
+	; Is the item predetermined?
 	ld a, [wBattleMode]
 	dec a
 	jr z, .WildItem
-
-; If we're in a trainer battle, the item is in the party struct
+	; If we're in a trainer battle, the item is in the party struct
 	ld a, [wCurPartyMon]
 	ld hl, wOTPartyMon1Item
 	call GetPartyLocation ; bc = PartyMon[wCurPartyMon] - wPartyMons
 	ld a, [hl]
 	jr .UpdateItem
-
 .WildItem:
 ; In a wild battle, we pull from the item slots in BaseData
-
-; Force Item1
-; Used for Ho-Oh, Lugia and Snorlax encounters
+	; Force Item1 (used for Ho-Oh, Lugia and Snorlax encounters)
 	ld a, [wBattleType]
 	cp BATTLETYPE_FORCEITEM
 	ld a, [wBaseItem1]
 	jr z, .UpdateItem
-
-; Failing that, it's all up to chance
-;  Effective chances:
-;    75% None
-;    23% Item1
-;     2% Item2
-
-; 25% chance of getting an item
+	; Failing that, it's all up to chance
+	; 75% None, 23% Item1, 2% Item2
+	; 25% chance of getting an item
 	call BattleRandom
 	cp 75 percent + 1
 	ld a, NO_ITEM
 	jr c, .UpdateItem
-
-; From there, an 8% chance for Item2
+	; From there, an 8% chance for Item2
 	call BattleRandom
 	cp 8 percent ; 8% of 25% = 2% Item2
 	ld a, [wBaseItem1]
 	jr nc, .UpdateItem
 	ld a, [wBaseItem2]
-
 .UpdateItem:
 	ld [wEnemyMonItem], a
-
-; Initialize DVs
-
-; If we're in a trainer battle, DVs are predetermined
+	; Initialize DVs
+	; If we're in a trainer battle, DVs are predetermined
 	ld a, [wBattleMode]
 	and a
 	jr z, .InitDVs
-
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jr z, .InitDVs
-
-; Unknown
+	; Unknown
 	ld hl, wEnemyBackupDVs
 	ld de, wEnemyMonDVs
 	ld a, [hli]
@@ -5900,49 +5868,39 @@ LoadEnemyMon:
 	ld a, [hl]
 	ld [de], a
 	jp .Happiness
-
 .InitDVs:
-; Trainer DVs
-
-; All trainers have preset DVs, determined by class
-; See GetTrainerDVs for more on that
+	; All trainers have preset DVs, determined by class
+	; See GetTrainerDVs for more on that
 	farcall GetTrainerDVs
-; These are the DVs we'll use if we're actually in a trainer battle
+	; These are the DVs we'll use if we're actually in a trainer battle
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .UpdateDVs
-
-; Wild DVs
-; Here's where the fun starts
-
-; Roaming monsters (Entei, Raikou) work differently
-; They have their own structs, which are shorter than normal
+	; Wild DVs
+	; Roaming monsters (Entei, Raikou) work differently
+	; They have their own structs, which are shorter than normal
 	ld a, [wBattleType]
 	cp BATTLETYPE_ROAMING
 	jr nz, .NotRoaming
-
-; Grab HP
+	; Grab HP
 	call GetRoamMonHP
 	ld a, [hl]
-; Check if the HP has been initialized
+	; Check if the HP has been initialized
 	and a
-; We'll do something with the result in a minute
+	; We'll do something with the result in a minute
 	push af
-
-; Grab DVs
+	; Grab DVs
 	call GetRoamMonDVs
 	inc hl
 	ld a, [hld]
 	ld c, a
 	ld b, [hl]
-
-; Get back the result of our check
+	; Get back the result of our check
 	pop af
-; If the RoamMon struct has already been initialized, we're done
+	; If the RoamMon struct has already been initialized, we're done
 	jr nz, .UpdateDVs
-
-; If it hasn't, we need to initialize the DVs
-; (HP is initialized at the end of the battle)
+	; If it hasn't, we need to initialize the DVs
+	; (HP is initialized at the end of the battle)
 	call GetRoamMonDVs
 	inc hl
 	call BattleRandom
@@ -5951,55 +5909,44 @@ LoadEnemyMon:
 	call BattleRandom
 	ld [hl], a
 	ld b, a
-; We're done with DVs
+	; We're done with DVs
 	jr .UpdateDVs
-
 .NotRoaming:
-; Register a contains wBattleType
-
-; Forced shiny battle type
-; Used by Red Gyarados at Lake of Rage
+	; Register a contains wBattleType
+	; Forced shiny battle type
+	; Used by Red Gyarados at Lake of Rage
 	cp BATTLETYPE_FORCESHINY
 	jr nz, .GenerateDVs
-
-	ld b, ATKDEFDV_SHINY ; $ea
-	ld c, SPDSPCDV_SHINY ; $aa
+	ld b, ATKDEFDV_SHINY ; $ee
+	ld c, SPDSPCDV_SHINY ; $ee
 	jr .UpdateDVs
-
 .GenerateDVs:
 ; Generate new random DVs
 	call BattleRandom
 	ld b, a
 	call BattleRandom
 	ld c, a
-
 .UpdateDVs:
 ; Input DVs in register bc
 	ld hl, wEnemyMonDVs
 	ld a, b
 	ld [hli], a
 	ld [hl], c
-
-; We've still got more to do if we're dealing with a wild monster
+	; We've still got more to do if we're dealing with a wild monster
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .Happiness
-
-; Species-specfic:
-
-; Unown
+	; Unown
 	ld a, [wTempEnemyMonSpecies]
 	cp UNOWN
 	jr nz, .Magikarp
-
-; Get letter based on DVs
+	; Get letter based on DVs
 	ld hl, wEnemyMonDVs
 	predef GetUnownLetter
-; Can't use any letters that haven't been unlocked
-; If combined with forced shiny battletype, causes an infinite loop
+	; Can't use any letters that haven't been unlocked
+	; If combined with forced shiny battletype, causes an infinite loop
 	call CheckUnownLetter
 	jr c, .GenerateDVs ; try again
-
 .Magikarp:
 ; These filters are untranslated.
 ; They expect at wMagikarpLength a 2-byte value in mm,
@@ -6058,83 +6005,70 @@ LoadEnemyMon:
 	ld a, [wMagikarpLength]
 	cp HIGH(1024)
 	jr c, .GenerateDVs ; try again
-
-; Finally done with DVs
-
+	; Finally done with DVs
 .Happiness:
-; Set happiness
+	; Set happiness
 	ld a, BASE_HAPPINESS
 	ld [wEnemyMonHappiness], a
-; Set level
+	; Set level
 	ld a, [wCurPartyLevel]
 	ld [wEnemyMonLevel], a
-; Fill stats
+	; Fill stats
 	ld de, wEnemyMonMaxHP
 	ld b, FALSE
 	ld hl, wEnemyMonDVs - (MON_DVS - MON_STAT_EXP + 1)
 	predef CalcMonStats
-
-; If we're in a trainer battle,
-; get the rest of the parameters from the party struct
+	; If we're in a trainer battle,
+	; get the rest of the parameters from the party struct
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
 	jr z, .OpponentParty
-
-; If we're in a wild battle, check wild-specific stuff
+	; If we're in a wild battle, check wild-specific stuff
 	and a
 	jr z, .TreeMon
-
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jp nz, .Moves
-
 .TreeMon:
-; If we're headbutting trees, some monsters enter battle asleep
+	; If we're headbutting trees, some monsters enter battle asleep
 	call CheckSleepingTreeMon
 	ld a, TREEMON_SLEEP_TURNS
 	jr c, .UpdateStatus
-; Otherwise, no status
+	; Otherwise, no status
 	xor a
-
 .UpdateStatus:
 	ld hl, wEnemyMonStatus
 	ld [hli], a
-
-; Unused byte
+	; Unused byte
 	xor a
 	ld [hli], a
-
-; Full HP..
+	; Full HP..
 	ld a, [wEnemyMonMaxHP]
 	ld [hli], a
 	ld a, [wEnemyMonMaxHP + 1]
 	ld [hl], a
-
-; ..unless it's a RoamMon
+	; ..unless it's a RoamMon
 	ld a, [wBattleType]
 	cp BATTLETYPE_ROAMING
 	jr nz, .Moves
-
-; Grab HP
+	; Grab HP
 	call GetRoamMonHP
 	ld a, [hl]
-; Check if it's been initialized again
+	; Check if it's been initialized again
 	and a
 	jr z, .InitRoamHP
-; Update from the struct if it has
+	; Update from the struct if it has
 	ld a, [hl]
 	ld [wEnemyMonHP + 1], a
 	jr .Moves
-
 .InitRoamHP:
 ; HP only uses the lo byte in the RoamMon struct since
 ; Raikou and Entei will have < 256 hp at level 40
 	ld a, [wEnemyMonHP + 1]
 	ld [hl], a
 	jr .Moves
-
 .OpponentParty:
-; Get HP from the party struct
+	; Get HP from the party struct
 	ld hl, (wOTPartyMon1HP + 1)
 	ld a, [wCurPartyMon]
 	call GetPartyLocation
@@ -6142,16 +6076,13 @@ LoadEnemyMon:
 	ld [wEnemyMonHP + 1], a
 	ld a, [hld]
 	ld [wEnemyMonHP], a
-
-; Make sure everything knows which monster the opponent is using
+	; Make sure everything knows which monster the opponent is using
 	ld a, [wCurPartyMon]
 	ld [wCurOTMon], a
-
-; Get status from the party struct
+	; Get status from the party struct
 	dec hl
 	ld a, [hl] ; OTPartyMonStatus
 	ld [wEnemyMonStatus], a
-
 .Moves:
 	ld hl, wBaseType1
 	ld de, wEnemyMonType1
@@ -6160,23 +6091,21 @@ LoadEnemyMon:
 	inc de
 	ld a, [hl]
 	ld [de], a
-
-; Get moves
+	; Get moves
 	ld de, wEnemyMonMoves
-; Are we in a trainer battle?
+	; Are we in a trainer battle?
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
 	jr nz, .WildMoves
-; Then copy moves from the party struct
+	; Then copy moves from the party struct
 	ld hl, wOTPartyMon1Moves
 	ld a, [wCurPartyMon]
 	call GetPartyLocation
 	ld bc, NUM_MOVES
 	call CopyBytes
 	jr .PP
-
 .WildMoves:
-; Clear wEnemyMonMoves
+	; Clear wEnemyMonMoves
 	xor a
 	ld h, d
 	ld l, e
@@ -6185,21 +6114,18 @@ LoadEnemyMon:
 	ld [hli], a
 	ld [hl], a
 	ld [wSkipMovesBeforeLevelUp], a
-; Fill moves based on level
+	; Fill moves based on level
 	predef FillMoves
-
 .PP:
-; Trainer battle?
+	; Trainer battle?
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
 	jr z, .TrainerPP
-
-; Fill wild PP
+	; Fill wild PP
 	ld hl, wEnemyMonMoves
 	ld de, wEnemyMonPP
 	predef FillPP
 	jr .Finish
-
 .TrainerPP:
 ; Copy PP from the party struct
 	ld hl, wOTPartyMon1PP
@@ -6208,7 +6134,6 @@ LoadEnemyMon:
 	ld de, wEnemyMonPP
 	ld bc, NUM_MOVES
 	call CopyBytes
-
 .Finish:
 ; Copy the first five base stats (the enemy mon's base Sp. Atk
 ; is also used to calculate Sp. Def stat experience)
@@ -6221,56 +6146,44 @@ LoadEnemyMon:
 	inc de
 	dec b
 	jr nz, .loop
-
 	ld a, [wBaseCatchRate]
 	ld [de], a
 	inc de
-
 	ld a, [wBaseExp]
 	ld [de], a
-
 	ld a, [wTempEnemyMonSpecies]
 	ld [wNamedObjectIndex], a
-
 	call GetPokemonName
-
-; Did we catch it?
+	; Did we catch it?
 	ld a, [wBattleMode]
 	and a
 	ret z
-
-; Update enemy nickname
+	; Update enemy nickname
 	ld hl, wStringBuffer1
 	ld de, wEnemyMonNickname
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
-; Saw this mon
+	; Saw this mon
 	ld a, [wTempEnemyMonSpecies]
 	dec a
 	ld c, a
 	ld b, SET_FLAG
 	ld hl, wPokedexSeen
 	predef SmallFarFlagAction
-
 	ld hl, wEnemyMonStats
 	ld de, wEnemyStats
 	ld bc, NUM_BATTLE_STATS * 2
 	call CopyBytes
-
-; BUG: PRZ and BRN stat reductions don't apply to switched Pokémon (see docs/bugs_and_glitches.md)
+	call ApplyStatusEffectOnEnemyStats
 	ret
 
 CheckSleepingTreeMon:
-; Return carry if species is in the list
-; for the current time of day
-
-; Don't do anything if this isn't a tree encounter
+; Return carry if species is in the list for the current time of day
+	; Don't do anything if this isn't a tree encounter
 	ld a, [wBattleType]
 	cp BATTLETYPE_TREE
 	jr nz, .NotSleeping
-
-; Get list for the time of day
+	; Get list for the time of day
 	ld hl, AsleepTreeMonsMorn
 	ld a, [wTimeOfDay]
 	cp DAY_F
@@ -6278,14 +6191,12 @@ CheckSleepingTreeMon:
 	ld hl, AsleepTreeMonsDay
 	jr z, .Check
 	ld hl, AsleepTreeMonsNite
-
 .Check:
 	ld a, [wTempEnemyMonSpecies]
 	ld de, 1 ; length of species id
 	call IsInArray
-; If it's a match, the opponent is asleep
+	; If it's a match, the opponent is asleep
 	ret c
-
 .NotSleeping:
 	and a
 	ret
@@ -6294,24 +6205,19 @@ INCLUDE "data/wild/treemons_asleep.asm"
 
 CheckUnownLetter:
 ; Return carry if the Unown letter hasn't been unlocked yet
-
 	ld a, [wUnlockedUnowns]
 	ld c, a
 	ld de, 0
-
 .loop
-
-; Don't check this set unless it's been unlocked
+	; Don't check this set unless it's been unlocked
 	srl c
 	jr nc, .next
-
-; Is our letter in the set?
+	; Is our letter in the set?
 	ld hl, UnlockedUnownLetterSets
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	push de
 	ld a, [wUnownLetter]
 	ld de, 1
@@ -6319,38 +6225,23 @@ CheckUnownLetter:
 	call IsInArray
 	pop bc
 	pop de
-
 	jr c, .match
-
 .next
-; Make sure we haven't gone past the end of the table
+	; Make sure we haven't gone past the end of the table
 	inc e
 	inc e
 	ld a, e
 	cp NUM_UNLOCKED_UNOWN_SETS * 2
 	jr c, .loop
-
-; Hasn't been unlocked, or the letter is invalid
+	; Hasn't been unlocked, or the letter is invalid
 	scf
 	ret
-
 .match
-; Valid letter
+	; Valid letter
 	and a
 	ret
 
 INCLUDE "data/wild/unlocked_unowns.asm"
-
-SwapBattlerLevels: ; unreferenced
-	push bc
-	ld a, [wBattleMonLevel]
-	ld b, a
-	ld a, [wEnemyMonLevel]
-	ld [wBattleMonLevel], a
-	ld a, b
-	ld [wEnemyMonLevel], a
-	pop bc
-	ret
 
 BattleWinSlideInEnemyTrainerFrontpic:
 	xor a
@@ -6362,7 +6253,6 @@ BattleWinSlideInEnemyTrainerFrontpic:
 	callfar GetTrainerPic
 	hlcoord 19, 0
 	ld c, 0
-
 .outer_loop
 	inc c
 	ld a, c

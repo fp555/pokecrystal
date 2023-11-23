@@ -1150,19 +1150,6 @@ _YouCantTakeAnEggText::
 	para ""
 	done
 
-_BallDodgedText::
-	text "It dodged the"
-	line "thrown BALL!"
-
-	para "This #MON"
-	line "can't be caught!"
-	prompt
-
-_BallMissedText::
-	text "You missed the"
-	line "#MON!"
-	prompt
-
 _BallBrokeFreeText::
 	text "Oh no! The #MON"
 	line "broke free!"

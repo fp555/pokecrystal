@@ -884,25 +884,20 @@ FastBallMultiplier:
 	ld hl, FleeMons
 	ld d, 3
 .loop
-; BUG: Fast Ball only boosts catch rate for three Pokémon (see docs/bugs_and_glitches.md)
 	ld a, BANK(FleeMons)
 	call GetFarByte
-
 	inc hl
 	cp -1
 	jr z, .next
 	cp c
-	jr nz, .next
+	jr nz, .loop
 	sla b
 	jr c, .max
-
 	sla b
 	ret nc
-
 .max
 	ld b, $ff
 	ret
-
 .next
 	dec d
 	jr nz, .loop
@@ -919,32 +914,19 @@ LevelBallMultiplier:
 	ret nc ; if player is lower level, we're done here
 	sla b
 	jr c, .max
-
 	srl c
 	cp c
 	ret nc ; if player/2 is lower level, we're done here
 	sla b
 	jr c, .max
-
 	srl c
 	cp c
 	ret nc ; if player/4 is lower level, we're done here
 	sla b
 	ret nc
-
 .max
 	ld b, $ff
 	ret
-
-; BallDodgedText and BallMissedText were used in Gen 1.
-
-BallDodgedText: ; unreferenced
-	text_far _BallDodgedText
-	text_end
-
-BallMissedText: ; unreferenced
-	text_far _BallMissedText
-	text_end
 
 BallBrokeFreeText:
 	text_far _BallBrokeFreeText
@@ -1008,24 +990,18 @@ BicycleEffect:
 EvoStoneEffect:
 	ld b, PARTYMENUACTION_EVO_STONE
 	call UseItem_SelectMon
-
 	jp c, .DecidedNotToUse
-
 	ld a, MON_ITEM
 	call GetPartyParamLocation
-
 	ld a, [hl]
 	cp EVERSTONE
 	jr z, .NoEffect
-
 	ld a, TRUE
 	ld [wForceEvolution], a
 	farcall EvolvePokemon
-
 	ld a, [wMonTriedToEvolve]
 	and a
 	jr z, .NoEffect
-
 	jp UseDisposableItem
 
 .NoEffect:
@@ -1039,27 +1015,19 @@ EvoStoneEffect:
 VitaminEffect:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-
 	jp c, RareCandy_StatBooster_ExitMenu
-
 	call RareCandy_StatBooster_GetParameters
-
 	call GetStatExpRelativePointer
-
 	ld a, MON_STAT_EXP
 	call GetPartyParamLocation
-
 	add hl, bc
 	ld a, [hl]
 	cp 100
 	jr nc, NoEffectMessage
-
 	add 10
 	ld [hl], a
 	call UpdateStatsAfterItem
-
 	call GetStatExpRelativePointer
-
 	ld hl, StatStrings
 	add hl, bc
 	ld a, [hli]
@@ -1068,15 +1036,11 @@ VitaminEffect:
 	ld de, wStringBuffer2
 	ld bc, ITEM_NAME_LENGTH
 	call CopyBytes
-
 	call Play_SFX_FULL_HEAL
-
 	ld hl, ItemStatRoseText
 	call PrintText
-
 	ld c, HAPPINESS_USEDITEM
 	farcall ChangeHappiness
-
 	jp UseDisposableItem
 
 NoEffectMessage:

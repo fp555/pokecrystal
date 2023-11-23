@@ -340,11 +340,10 @@ PokeBallEffect:
 	jr nc, .max_1
 	ld a, $ff
 .max_1
-
-; BUG: HELD_CATCH_CHANCE has no effect (see docs/bugs_and_glitches.md)
 	ld d, a
 	push de
 	ld a, [wBattleMonItem]
+	ld b, a
 	farcall GetItemHeldEffect
 	ld a, b
 	cp HELD_CATCH_CHANCE

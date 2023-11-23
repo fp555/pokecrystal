@@ -210,22 +210,21 @@ ItemEffects:
 ; NoEffect would be appropriate, with the table then being NUM_ITEMS long.
 
 PokeBallEffect:
-; BUG: The Dude's catching tutorial may crash if his Poké Ball can't be used (see docs/bugs_and_glitches.md)
 	ld a, [wBattleMode]
 	dec a
 	jp nz, UseBallInTrainerBattle
-
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
+	jr z, .room_in_party
 	ld a, [wPartyCount]
 	cp PARTY_LENGTH
 	jr nz, .room_in_party
-
 	ld a, BANK(sBoxCount)
 	call OpenSRAM
 	ld a, [sBoxCount]
 	cp MONS_PER_BOX
 	call CloseSRAM
 	jp z, Ball_BoxIsFullMessage
-
 .room_in_party
 ; BUG: Using a Park Ball in non-Contest battles has a corrupt animation (see docs/bugs_and_glitches.md)
 	xor a

@@ -663,10 +663,10 @@ ParkBallMultiplier:
 	ret
 
 HeavyBall_GetDexEntryBank:
-; BUG: Heavy Ball uses wrong weight value for three Pokémon (see docs/bugs_and_glitches.md)
 	push hl
 	push de
 	ld a, [wEnemyMonSpecies]
+	dec a
 	rlca
 	rlca
 	maskbits NUM_DEX_ENTRY_BANKS
@@ -678,7 +678,6 @@ HeavyBall_GetDexEntryBank:
 	pop de
 	pop hl
 	ret
-
 .PokedexEntryBanks:
 	db BANK("Pokedex Entries 001-064")
 	db BANK("Pokedex Entries 065-128")

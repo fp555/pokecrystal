@@ -6333,11 +6333,9 @@ ApplyPrzEffectOnSpeed:
 	or b
 	jr nz, .player_ok
 	ld b, $1 ; min speed
-
 .player_ok
 	ld [hl], b
 	ret
-
 .enemy
 	ld a, [wEnemyMonStatus]
 	and 1 << PAR
@@ -6354,7 +6352,6 @@ ApplyPrzEffectOnSpeed:
 	or b
 	jr nz, .enemy_ok
 	ld b, $1 ; min speed
-
 .enemy_ok
 	ld [hl], b
 	ret
@@ -6376,11 +6373,9 @@ ApplyBrnEffectOnAttack:
 	or b
 	jr nz, .player_ok
 	ld b, $1 ; min attack
-
 .player_ok
 	ld [hl], b
 	ret
-
 .enemy
 	ld a, [wEnemyMonStatus]
 	and 1 << BRN
@@ -6395,7 +6390,6 @@ ApplyBrnEffectOnAttack:
 	or b
 	jr nz, .enemy_ok
 	ld b, $1 ; min attack
-
 .enemy_ok
 	ld [hl], b
 	ret
@@ -6424,7 +6418,6 @@ ApplyStatLevelMultiplier:
 	ld hl, wEnemyMonAttack
 	ld de, wEnemyStats
 	ld bc, wEnemyAtkLevel
-
 .got_pointers
 	add c
 	ld c, a
@@ -6467,19 +6460,16 @@ ApplyStatLevelMultiplier:
 	ld b, 4
 	call Divide
 	pop hl
-
-; Cap at 999.
+	; Cap at 999.
 	ldh a, [hQuotient + 3]
 	sub LOW(MAX_STAT_VALUE)
 	ldh a, [hQuotient + 2]
 	sbc HIGH(MAX_STAT_VALUE)
 	jp c, .okay3
-
 	ld a, HIGH(MAX_STAT_VALUE)
 	ldh [hQuotient + 2], a
 	ld a, LOW(MAX_STAT_VALUE)
 	ldh [hQuotient + 3], a
-
 .okay3
 	ldh a, [hQuotient + 2]
 	ld [hli], a
@@ -6489,7 +6479,6 @@ ApplyStatLevelMultiplier:
 	or b
 	jr nz, .okay4
 	inc [hl]
-
 .okay4
 	pop bc
 	ret
@@ -6499,28 +6488,21 @@ INCLUDE "data/battle/stat_multipliers_2.asm"
 BadgeStatBoosts:
 ; Raise the stats of the battle mon in wBattleMon
 ; depending on which badges have been obtained.
-
 ; Every other badge boosts a stat, starting from the first.
 ; GlacierBadge also boosts Special Defense, although the relevant code is buggy (see below).
-
 ; 	ZephyrBadge:  Attack
 ; 	PlainBadge:   Speed
 ; 	MineralBadge: Defense
 ; 	GlacierBadge: Special Attack and Special Defense
-
 ; The boosted stats are in order, except PlainBadge and MineralBadge's boosts are swapped.
-
 	ld a, [wLinkMode]
 	and a
 	ret nz
-
 	ld a, [wInBattleTowerBattle]
 	and a
 	ret nz
-
 	ld a, [wJohtoBadges]
-
-; Swap badges 3 (PlainBadge) and 5 (MineralBadge).
+	; Swap badges 3 (PlainBadge) and 5 (MineralBadge).
 	ld d, a
 	and (1 << PLAINBADGE)
 	add a
@@ -6536,17 +6518,17 @@ BadgeStatBoosts:
 	or b
 	or c
 	ld b, a
-
 	ld hl, wBattleMonAttack
 	ld c, 4
 .CheckBadge:
-; BUG: Glacier Badge may not boost Special Defense depending on the value of Special Attack (see docs/bugs_and_glitches.md)
 	ld a, b
 	srl b
+	push af
 	call c, BoostStat
+	pop af
 	inc hl
 	inc hl
-; Check every other badge.
+	; Check every other badge.
 	srl b
 	dec c
 	jr nz, .CheckBadge
@@ -6556,7 +6538,6 @@ BadgeStatBoosts:
 
 BoostStat:
 ; Raise stat at hl by 1/8.
-
 	ld a, [hli]
 	ld d, a
 	ld e, [hl]
@@ -6572,8 +6553,7 @@ BoostStat:
 	ld a, [hl]
 	adc d
 	ld [hli], a
-
-; Cap at 999.
+	; Cap at 999.
 	ld a, [hld]
 	sub LOW(MAX_STAT_VALUE)
 	ld a, [hl]
@@ -6593,31 +6573,15 @@ _LoadHPBar:
 	callfar LoadHPBar
 	ret
 
-LoadHPExpBarGFX: ; unreferenced
-	ld de, EnemyHPBarBorderGFX
-	ld hl, vTiles2 tile $6c
-	lb bc, BANK(EnemyHPBarBorderGFX), 4
-	call Get1bpp
-	ld de, HPExpBarBorderGFX
-	ld hl, vTiles2 tile $73
-	lb bc, BANK(HPExpBarBorderGFX), 6
-	call Get1bpp
-	ld de, ExpBarGFX
-	ld hl, vTiles2 tile $55
-	lb bc, BANK(ExpBarGFX), 8
-	jp Get2bpp
-
 EmptyBattleTextbox:
 	ld hl, .empty
 	jp BattleTextbox
-
 .empty:
 	text_end
 
 _BattleRandom::
 ; If the normal RNG is used in a link battle it'll desync.
 ; To circumvent this a shared PRNG is used instead.
-
 ; But if we're in a non-link battle we're safe to use it
 	ld a, [wLinkMode]
 	and a

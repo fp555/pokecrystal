@@ -1,32 +1,26 @@
 AIScoring: ; used only for BANK(AIScoring)
 
-
 AI_Basic:
 ; Don't do anything redundant:
 ;  -Using status-only moves if the player can't be statused
 ;  -Using moves that fail if they've already been used
-
 	ld hl, wEnemyAIMoveScores - 1
 	ld de, wEnemyMonMoves
 	ld b, NUM_MOVES + 1
 .checkmove
 	dec b
 	ret z
-
 	inc hl
 	ld a, [de]
 	and a
 	ret z
-
 	inc de
 	call AIGetEnemyMove
-
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	ld c, a
-
-; Dismiss moves with special effects if they are
-; useless or not a good choice right now.
-; For example, healing moves, weather moves, Dream Eater...
+	; Dismiss moves with special effects if they are
+	; useless or not a good choice right now.
+	; For example, healing moves, weather moves, Dream Eater...
 	push hl
 	push de
 	push bc
@@ -35,8 +29,7 @@ AI_Basic:
 	pop de
 	pop hl
 	jr nz, .discourage
-
-; Dismiss status-only moves if the player can't be statused.
+	; Dismiss status-only moves if the player can't be statused.
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	push hl
 	push de
@@ -44,21 +37,17 @@ AI_Basic:
 	ld hl, StatusOnlyEffects
 	ld de, 1
 	call IsInArray
-
 	pop bc
 	pop de
 	pop hl
 	jr nc, .checkmove
-
 	ld a, [wBattleMonStatus]
 	and a
 	jr nz, .discourage
-
-; Dismiss Safeguard if it's already active.
+	; Dismiss Safeguard if it's already active.
 	ld a, [wPlayerScreens]
 	bit SCREENS_SAFEGUARD, a
 	jr z, .checkmove
-
 .discourage
 	call AIDiscourageMove
 	jr .checkmove
@@ -68,70 +57,54 @@ INCLUDE "data/battle/ai/status_only_effects.asm"
 
 AI_Setup:
 ; Use stat-modifying moves on turn 1.
-
 ; 50% chance to greatly encourage stat-up moves during the first turn of enemy's Pokemon.
 ; 50% chance to greatly encourage stat-down moves during the first turn of player's Pokemon.
 ; Almost 90% chance to greatly discourage stat-modifying moves otherwise.
-
 	ld hl, wEnemyAIMoveScores - 1
 	ld de, wEnemyMonMoves
 	ld b, NUM_MOVES + 1
 .checkmove
 	dec b
 	ret z
-
 	inc hl
 	ld a, [de]
 	and a
 	ret z
-
 	inc de
 	call AIGetEnemyMove
-
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
-
 	cp EFFECT_ATTACK_UP
 	jr c, .checkmove
 	cp EFFECT_EVASION_UP + 1
 	jr c, .statup
-
 ;	cp EFFECT_ATTACK_DOWN - 1
 	jr z, .checkmove
 	cp EFFECT_EVASION_DOWN + 1
 	jr c, .statdown
-
 	cp EFFECT_ATTACK_UP_2
 	jr c, .checkmove
 	cp EFFECT_EVASION_UP_2 + 1
 	jr c, .statup
-
 ;	cp EFFECT_ATTACK_DOWN_2 - 1
 	jr z, .checkmove
 	cp EFFECT_EVASION_DOWN_2 + 1
 	jr c, .statdown
-
 	jr .checkmove
-
 .statup
 	ld a, [wEnemyTurnsTaken]
 	and a
 	jr nz, .discourage
-
 	jr .encourage
-
 .statdown
 	ld a, [wPlayerTurnsTaken]
 	and a
 	jr nz, .discourage
-
 .encourage
 	call AI_50_50
 	jr c, .checkmove
-
 	dec [hl]
 	dec [hl]
 	jr .checkmove
-
 .discourage
 	call Random
 	cp 12 percent
@@ -140,28 +113,23 @@ AI_Setup:
 	inc [hl]
 	jr .checkmove
 
-
 AI_Types:
 ; Dismiss any move that the player is immune to.
 ; Encourage super-effective moves.
 ; Discourage not very effective moves unless
 ; all damaging moves are of the same type.
-
 	ld hl, wEnemyAIMoveScores - 1
 	ld de, wEnemyMonMoves
 	ld b, NUM_MOVES + 1
 .checkmove
 	dec b
 	ret z
-
 	inc hl
 	ld a, [de]
 	and a
 	ret z
-
 	inc de
 	call AIGetEnemyMove
-
 	push hl
 	push bc
 	push de
@@ -171,21 +139,18 @@ AI_Types:
 	pop de
 	pop bc
 	pop hl
-
 	ld a, [wTypeMatchup]
 	and a
 	jr z, .immune
 	cp EFFECTIVE
 	jr z, .checkmove
 	jr c, .noteffective
-
-; effective
+	; effective
 	ld a, [wEnemyMoveStruct + MOVE_POWER]
 	and a
 	jr z, .checkmove
 	dec [hl]
 	jr .checkmove
-
 .noteffective
 ; Discourage this move if there are any moves
 ; that do damage of a different type.
@@ -200,11 +165,9 @@ AI_Types:
 .checkmove2
 	dec b
 	jr z, .movesdone
-
 	ld a, [hli]
 	and a
 	jr z, .movesdone
-
 	call AIGetEnemyMove
 	ld a, [wEnemyMoveStruct + MOVE_TYPE]
 	cp d
@@ -213,7 +176,6 @@ AI_Types:
 	and a
 	jr nz, .damaging
 	jr .checkmove2
-
 .damaging
 	ld c, a
 .movesdone
@@ -225,80 +187,62 @@ AI_Types:
 	jr z, .checkmove
 	inc [hl]
 	jr .checkmove
-
 .immune
 	call AIDiscourageMove
 	jr .checkmove
 
-
 AI_Offensive:
 ; Greatly discourage non-damaging moves.
-
 	ld hl, wEnemyAIMoveScores - 1
 	ld de, wEnemyMonMoves
 	ld b, NUM_MOVES + 1
 .checkmove
 	dec b
 	ret z
-
 	inc hl
 	ld a, [de]
 	and a
 	ret z
-
 	inc de
 	call AIGetEnemyMove
-
 	ld a, [wEnemyMoveStruct + MOVE_POWER]
 	and a
 	jr nz, .checkmove
-
 	inc [hl]
 	inc [hl]
 	jr .checkmove
 
-
 AI_Smart:
 ; Context-specific scoring.
-
 	ld hl, wEnemyAIMoveScores
 	ld de, wEnemyMonMoves
 	ld b, NUM_MOVES + 1
 .checkmove
 	dec b
 	ret z
-
 	ld a, [de]
 	inc de
 	and a
 	ret z
-
 	push de
 	push bc
 	push hl
 	call AIGetEnemyMove
-
 	ld a, [wEnemyMoveStruct + MOVE_EFFECT]
 	ld hl, AI_Smart_EffectHandlers
 	ld de, 3
 	call IsInArray
-
 	inc hl
 	jr nc, .nextmove
-
 	ld a, [hli]
 	ld e, a
 	ld d, [hl]
-
 	pop hl
 	push hl
-
 	ld bc, .nextmove
 	push bc
-
 	push de
 	ret
-
 .nextmove
 	pop hl
 	pop bc
@@ -1707,27 +1651,22 @@ AI_Smart_Conversion2:
 AI_Smart_Disable:
 	call AICompareSpeed
 	jr nc, .discourage
-
 	push hl
 	ld a, [wLastPlayerCounterMove]
 	ld hl, UsefulMoves
 	ld de, 1
 	call IsInArray
-
 	pop hl
 	jr nc, .notencourage
-
 	call Random
 	cp 39 percent + 1
 	ret c
 	dec [hl]
 	ret
-
 .notencourage
 	ld a, [wEnemyMoveStruct + MOVE_POWER]
 	and a
 	ret nz
-
 .discourage
 	call Random
 	cp 8 percent
@@ -1738,36 +1677,29 @@ AI_Smart_Disable:
 AI_Smart_MeanLook:
 	call AICheckEnemyHalfHP
 	jr nc, .discourage
-
 	push hl
 	call AICheckLastPlayerMon
 	pop hl
 	jp z, AIDiscourageMove
-
-; 80% chance to greatly encourage this move if the enemy is badly poisoned.
-; BUG: "Smart" AI encourages Mean Look if its own Pokémon is badly poisoned (see docs/bugs_and_glitches.md)
-	ld a, [wEnemySubStatus5]
+	; 80% chance to greatly encourage this move if the enemy is badly poisoned.
+	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_TOXIC, a
 	jr nz, .encourage
-
-; 80% chance to greatly encourage this move if the player is either
-; in love, identified, stuck in Rollout, or has a Nightmare.
+	; 80% chance to greatly encourage this move if the player is either
+	; in love, identified, stuck in Rollout, or has a Nightmare.
 	ld a, [wPlayerSubStatus1]
 	and 1 << SUBSTATUS_IN_LOVE | 1 << SUBSTATUS_ROLLOUT | 1 << SUBSTATUS_IDENTIFIED | 1 << SUBSTATUS_NIGHTMARE
 	jr nz, .encourage
-
-; Otherwise, discourage this move unless the player only has not very effective moves against the enemy.
+	; Otherwise, discourage this move unless the player only has not very effective moves against the enemy.
 	push hl
 	callfar CheckPlayerMoveTypeMatchups
 	ld a, [wEnemyAISwitchScore]
 	cp BASE_AI_SWITCH_SCORE + 1 ; not very effective
 	pop hl
 	ret nc
-
 .discourage
 	inc [hl]
 	ret
-
 .encourage
 	call AI_80_20
 	ret c
@@ -1782,30 +1714,25 @@ AICheckLastPlayerMon:
 	ld c, 0
 	ld hl, wPartyMon1HP
 	ld de, PARTYMON_STRUCT_LENGTH
-
 .loop
 	ld a, [wCurBattleMon]
 	cp c
 	jr z, .skip
-
 	ld a, [hli]
 	or [hl]
 	ret nz
 	dec hl
-
 .skip
 	add hl, de
 	inc c
 	dec b
 	jr nz, .loop
-
 	ret
 
 AI_Smart_Nightmare:
 ; 50% chance to encourage this move.
 ; The AI_Basic layer will make sure that
 ; Dream Eater is only used against sleeping targets.
-
 	call AI_50_50
 	ret c
 	dec [hl]
@@ -1813,7 +1740,6 @@ AI_Smart_Nightmare:
 
 AI_Smart_FlameWheel:
 ; Use this move if the enemy is frozen.
-
 	ld a, [wEnemyMonStatus]
 	bit FRZ, a
 	ret z
@@ -1829,16 +1755,13 @@ AI_Smart_Curse:
 	ld a, [wEnemyMonType2]
 	cp GHOST
 	jr z, .ghost_curse
-
 	call AICheckEnemyHalfHP
 	jr nc, .encourage
-
 	ld a, [wEnemyAtkLevel]
 	cp BASE_STAT_LEVEL + 4
 	jr nc, .encourage
 	cp BASE_STAT_LEVEL + 2
 	ret nc
-
 	ld a, [wBattleMonType1]
 	cp GHOST
 	jr z, .greatly_encourage
@@ -1852,7 +1775,6 @@ AI_Smart_Curse:
 	dec [hl]
 	dec [hl]
 	ret
-
 .approve
 	inc [hl]
 	inc [hl]
@@ -1861,48 +1783,37 @@ AI_Smart_Curse:
 .encourage
 	inc [hl]
 	ret
-
 .ghost_curse
 	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_CURSE, a
 	jp nz, AIDiscourageMove
-
 	push hl
 	farcall FindAliveEnemyMons
 	pop hl
 	jr nc, .notlastmon
-
 	push hl
 	call AICheckLastPlayerMon
 	pop hl
 	jr nz, .approve
-
 	jr .ghost_continue
-
 .notlastmon
 	push hl
 	call AICheckLastPlayerMon
 	pop hl
 	jr z, .maybe_greatly_encourage
-
 .ghost_continue
 	call AICheckEnemyQuarterHP
 	jp nc, .approve
-
 	call AICheckEnemyHalfHP
 	jr nc, .greatly_encourage
-
 	call AICheckEnemyMaxHP
 	ret nc
-
 	ld a, [wPlayerTurnsTaken]
 	and a
 	ret nz
-
 .maybe_greatly_encourage
 	call AI_50_50
 	ret c
-
 	dec [hl]
 	dec [hl]
 	ret

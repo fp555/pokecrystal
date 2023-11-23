@@ -142,6 +142,11 @@ WildFled_EnemyFled_LinkBattleCanceled:
 	ret
 
 BattleTurn:
+	ldh a, [hInMenu]
+	push af
+	; 1 allows continuous scrolling, 0 disables it
+	xor a ; or "ld a, 1" for the value 1
+	ldh [hInMenu], a
 .loop
 	call Stubbed_Increments5_a89a
 	call CheckContestBattleOver
@@ -201,6 +206,8 @@ BattleTurn:
 	jr nz, .quit
 	jp .loop
 .quit
+	pop af
+	ldh [hInMenu], a
 	ret
 
 Stubbed_Increments5_a89a:

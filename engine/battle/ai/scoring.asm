@@ -1516,20 +1516,17 @@ AI_Smart_HealBell:
 ; Dismiss this move if none of the opponent's Pokemon is statused.
 ; Encourage this move if the enemy is statused.
 ; 50% chance to greatly encourage this move if the enemy is fast asleep or frozen.
-
 	push hl
 	ld a, [wOTPartyCount]
 	ld b, a
 	ld c, 0
 	ld hl, wOTPartyMon1HP
 	ld de, PARTYMON_STRUCT_LENGTH
-
 .loop
 	push hl
 	ld a, [hli]
 	or [hl]
 	jr z, .next
-
 	; status
 	dec hl
 	dec hl
@@ -1537,18 +1534,15 @@ AI_Smart_HealBell:
 	ld a, [hl]
 	or c
 	ld c, a
-
 .next
 	pop hl
 	add hl, de
 	dec b
 	jr nz, .loop
-
 	pop hl
 	ld a, c
 	and a
 	jr z, .no_status
-
 	ld a, [wEnemyMonStatus]
 	and a
 	jr z, .ok
@@ -1561,7 +1555,6 @@ AI_Smart_HealBell:
 	dec [hl]
 	dec [hl]
 	ret
-
 .no_status
 	ld a, [wEnemyMonStatus]
 	and a
@@ -1572,13 +1565,11 @@ AI_Smart_HealBell:
 AI_Smart_PriorityHit:
 	call AICompareSpeed
 	ret c
-
-; Dismiss this move if the player is flying or underground.
+	; Dismiss this move if the player is flying or underground.
 	ld a, [wPlayerSubStatus3]
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	jp nz, AIDiscourageMove
-
-; Greatly encourage this move if it will KO the player.
+	; Greatly encourage this move if it will KO the player.
 	ld a, 1
 	ldh [hBattleTurn], a
 	push hl
@@ -1602,45 +1593,35 @@ AI_Smart_PriorityHit:
 
 AI_Smart_Thief:
 ; Don't use Thief unless it's the only move available.
-
 	ld a, [hl]
 	add $1e
 	ld [hl], a
 	ret
 
 AI_Smart_Conversion2:
-; BUG: "Smart" AI discourages Conversion2 after the first turn (see docs/bugs_and_glitches.md)
 	ld a, [wLastPlayerMove]
 	and a
-	jr nz, .discourage
-
+	jr z, .discourage
 	push hl
 	dec a
 	ld hl, Moves + MOVE_TYPE
 	ld bc, MOVE_LENGTH
 	call AddNTimes
-
 	ld a, BANK(Moves)
 	call GetFarByte
 	ld [wPlayerMoveStruct + MOVE_TYPE], a
-
 	xor a
 	ldh [hBattleTurn], a
-
 	callfar BattleCheckTypeMatchup
-
 	ld a, [wTypeMatchup]
 	cp EFFECTIVE
 	pop hl
 	jr c, .discourage
 	ret z
-
 	call AI_50_50
 	ret c
-
 	dec [hl]
 	ret
-
 .discourage
 	call Random
 	cp 10 percent

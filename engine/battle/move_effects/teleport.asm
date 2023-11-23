@@ -8,7 +8,6 @@ BattleCommand_Teleport:
 	jr z, .failed
 	cp BATTLETYPE_SUICUNE
 	jr z, .failed
-
 	ld a, BATTLE_VARS_SUBSTATUS5_OPP
 	call GetBattleVar
 	bit SUBSTATUS_CANT_RUN, a
@@ -16,7 +15,6 @@ BattleCommand_Teleport:
 	ldh a, [hBattleTurn]
 	and a
 	jr nz, .enemy_turn
-
 	; Can't teleport from a trainer battle
 	ld a, [wBattleMode]
 	dec a
@@ -43,11 +41,9 @@ BattleCommand_Teleport:
 	; If the random number >= enemy level / 4, Teleport will succeed
 	cp b
 	jr nc, .run_away
-
 .failed
 	call AnimateFailedMove
 	jp PrintButItFailed
-
 .enemy_turn
 	; Can't teleport from a trainer battle
 	ld a, [wBattleMode]
@@ -66,7 +62,7 @@ BattleCommand_Teleport:
 	inc c
 	; Generate a number less than c
 .loop_enemy
-; BUG: Wild Pokémon can always Teleport regardless of level difference (see docs/bugs_and_glitches.md)
+; If a random number >= player level / 4, Teleport will succeed
 	call BattleRandom
 	cp c
 	jr nc, .loop_enemy
@@ -74,8 +70,7 @@ BattleCommand_Teleport:
 	srl b
 	srl b
 	cp b
-	jr nc, .run_away
-
+	jr c, .failed
 .run_away
 	call UpdateBattleMonInParty
 	xor a
@@ -89,6 +84,5 @@ BattleCommand_Teleport:
 	ld c, 20
 	call DelayFrames
 	call SetBattleDraw
-
 	ld hl, FledFromBattleText
 	jp StdBattleTextbox

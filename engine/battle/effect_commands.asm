@@ -1088,7 +1088,6 @@ BattleCommand_Stab:
 	call GetBattleVar
 	cp STRUGGLE
 	ret z
-
 	ld hl, wBattleMonType1
 	ld a, [hli]
 	ld b, a
@@ -1097,11 +1096,9 @@ BattleCommand_Stab:
 	ld a, [hli]
 	ld d, a
 	ld e, [hl]
-
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .go ; Who Attacks and who Defends
-
 	ld hl, wEnemyMonType1
 	ld a, [hli]
 	ld b, a
@@ -1110,12 +1107,10 @@ BattleCommand_Stab:
 	ld a, [hli]
 	ld d, a
 	ld e, [hl]
-
 .go
 	ld a, BATTLE_VARS_MOVE_TYPE
 	call GetBattleVarAddr
 	ld [wCurType], a
-
 	push hl
 	push de
 	push bc
@@ -1123,53 +1118,42 @@ BattleCommand_Stab:
 	pop bc
 	pop de
 	pop hl
-
 	push de
 	push bc
 	farcall DoBadgeTypeBoosts
 	pop bc
 	pop de
-
 	ld a, [wCurType]
 	cp b
 	jr z, .stab
 	cp c
 	jr z, .stab
-
 	jr .SkipStab
-
 .stab
 	ld hl, wCurDamage + 1
 	ld a, [hld]
 	ld h, [hl]
 	ld l, a
-
 	ld b, h
 	ld c, l
 	srl b
 	rr c
 	add hl, bc
-
 	ld a, h
 	ld [wCurDamage], a
 	ld a, l
 	ld [wCurDamage + 1], a
-
 	ld hl, wTypeModifier
 	set 7, [hl]
-
 .SkipStab:
 	ld a, BATTLE_VARS_MOVE_TYPE
 	call GetBattleVar
 	ld b, a
 	ld hl, TypeMatchups
-
 .TypesLoop:
 	ld a, [hli]
-
 	cp -1
 	jr z, .end
-
 	; foresight
 	cp -2
 	jr nz, .SkipForesightCheck
@@ -1177,9 +1161,7 @@ BattleCommand_Stab:
 	call GetBattleVar
 	bit SUBSTATUS_IDENTIFIED, a
 	jr nz, .end
-
 	jr .TypesLoop
-
 .SkipForesightCheck:
 	cp b
 	jr nz, .SkipType
@@ -1189,7 +1171,6 @@ BattleCommand_Stab:
 	cp e
 	jr z, .GotMatchup
 	jr .SkipType
-
 .GotMatchup:
 	push hl
 	push bc
@@ -1197,7 +1178,7 @@ BattleCommand_Stab:
 	ld a, [wTypeModifier]
 	and %10000000
 	ld b, a
-; If the target is immune to the move, treat it as a miss and calculate the damage as 0
+	; If the target is immune to the move, treat it as a miss and calculate the damage as 0
 	ld a, [hl]
 	and a
 	jr nz, .NotImmune
@@ -1208,18 +1189,14 @@ BattleCommand_Stab:
 	ldh [hMultiplier], a
 	add b
 	ld [wTypeModifier], a
-
 	xor a
 	ldh [hMultiplicand + 0], a
-
 	ld hl, wCurDamage
 	ld a, [hli]
 	ldh [hMultiplicand + 1], a
 	ld a, [hld]
 	ldh [hMultiplicand + 2], a
-
 	call Multiply
-
 	ldh a, [hProduct + 1]
 	ld b, a
 	ldh a, [hProduct + 2]
@@ -1227,9 +1204,9 @@ BattleCommand_Stab:
 	ld b, a
 	ldh a, [hProduct + 3]
 	or b
-	jr z, .ok ; This is a very convoluted way to get back that we've essentially dealt no damage.
-
-; Take the product and divide it by 10.
+	; This is a very convoluted way to get back that we've essentially dealt no damage.
+	jr z, .ok 
+	; Take the product and divide it by 10.
 	ld a, 10
 	ldh [hDivisor], a
 	ld b, 4
@@ -1239,10 +1216,8 @@ BattleCommand_Stab:
 	ldh a, [hQuotient + 3]
 	or b
 	jr nz, .ok
-
 	ld a, 1
 	ldh [hMultiplicand + 2], a
-
 .ok
 	ldh a, [hMultiplicand + 1]
 	ld [hli], a
@@ -1250,12 +1225,10 @@ BattleCommand_Stab:
 	ld [hl], a
 	pop bc
 	pop hl
-
 .SkipType:
 	inc hl
 	inc hl
 	jr .TypesLoop
-
 .end
 	call BattleCheckTypeMatchup
 	ld a, [wTypeMatchup]
@@ -1270,16 +1243,17 @@ BattleCheckTypeMatchup:
 	ld hl, wEnemyMonType1
 	ldh a, [hBattleTurn]
 	and a
-	jr z, CheckTypeMatchup
+	jr z, .get_type
 	ld hl, wBattleMonType1
+.get_type
+	ld a, BATTLE_VARS_MOVE_TYPE
+	call GetBattleVar ; preserves hl, de, and bc
 	; fallthrough
+
 CheckTypeMatchup:
-; BUG: AI makes a false assumption about CheckTypeMatchup (see docs/bugs_and_glitches.md)
 	push hl
 	push de
 	push bc
-	ld a, BATTLE_VARS_MOVE_TYPE
-	call GetBattleVar
 	ld d, a
 	ld b, [hl]
 	inc hl
@@ -1298,7 +1272,6 @@ CheckTypeMatchup:
 	bit SUBSTATUS_IDENTIFIED, a
 	jr nz, .End
 	jr .TypesLoop
-
 .Next:
 	cp d
 	jr nz, .Nope
@@ -1308,13 +1281,11 @@ CheckTypeMatchup:
 	cp c
 	jr z, .Yup
 	jr .Nope2
-
 .Nope:
 	inc hl
 .Nope2:
 	inc hl
 	jr .TypesLoop
-
 .Yup:
 	xor a
 	ldh [hDividend + 0], a
@@ -1334,7 +1305,6 @@ CheckTypeMatchup:
 	ldh a, [hQuotient + 3]
 	ld [wTypeMatchup], a
 	jr .TypesLoop
-
 .End:
 	pop bc
 	pop de

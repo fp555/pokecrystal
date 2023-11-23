@@ -1,30 +1,28 @@
 BattleCommand_Sketch:
 	call ClearLastMove
-; Don't sketch during a link battle
+	; Don't sketch during a link battle
 	ld a, [wLinkMode]
 	and a
 	jr z, .not_linked
 	call AnimateFailedMove
 	jp PrintNothingHappened
-
 .not_linked
-; If the opponent has a substitute up, fail.
+	; If the opponent has a substitute up, fail.
 	call CheckSubstituteOpp
 	jp nz, .fail
-; If the opponent is transformed, fail.
-; BUG: A Transformed Pokémon can use Sketch and learn otherwise unobtainable moves (see docs/bugs_and_glitches.md)
-	ld a, BATTLE_VARS_SUBSTATUS5_OPP
+	; If the user is transformed, fail.
+	ld a, BATTLE_VARS_SUBSTATUS5
 	call GetBattleVarAddr
 	bit SUBSTATUS_TRANSFORMED, [hl]
 	jp nz, .fail
-; Get the user's moveset in its party struct.
-; This move replacement shall be permanent.
-; Pointer will be in de.
+	; Get the user's moveset in its party struct.
+	; This move replacement shall be permanent.
+	; Pointer will be in de.
 	ld a, MON_MOVES
 	call UserPartyAttr
 	ld d, h
 	ld e, l
-; Get the battle move structs.
+	; Get the battle move structs.
 	ld hl, wBattleMonMoves
 	ldh a, [hBattleTurn]
 	and a
@@ -35,12 +33,12 @@ BattleCommand_Sketch:
 	call GetBattleVar
 	ld [wNamedObjectIndex], a
 	ld b, a
-; Fail if move is invalid or is Struggle.
+	; Fail if move is invalid or is Struggle.
 	and a
 	jr z, .fail
 	cp STRUGGLE
 	jr z, .fail
-; Fail if user already knows that move
+	; Fail if user already knows that move
 	ld c, NUM_MOVES
 .does_user_already_know_move
 	ld a, [hli]
@@ -48,8 +46,8 @@ BattleCommand_Sketch:
 	jr z, .fail
 	dec c
 	jr nz, .does_user_already_know_move
-; Find Sketch in the user's moveset.
-; Pointer in hl, and index in c.
+	; Find Sketch in the user's moveset.
+	; Pointer in hl, and index in c.
 	dec hl
 	ld c, NUM_MOVES
 .find_sketch
@@ -58,10 +56,10 @@ BattleCommand_Sketch:
 	cp SKETCH
 	jr nz, .find_sketch
 	inc hl
-; The Sketched move is loaded to that slot.
+	; The Sketched move is loaded to that slot.
 	ld a, b
 	ld [hl], a
-; Copy the base PP from that move.
+	; Copy the base PP from that move.
 	push bc
 	push hl
 	dec a
@@ -72,14 +70,13 @@ BattleCommand_Sketch:
 	add hl, bc
 	ld [hl], a
 	pop bc
-
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .user_trainer
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .user_trainer
-; wildmon
+	; wildmon
 	ld a, [hl]
 	push bc
 	ld hl, wWildMonPP
@@ -91,7 +88,6 @@ BattleCommand_Sketch:
 	pop bc
 	ld [hl], b
 	jr .done_copy
-
 .user_trainer
 	ld a, [hl]
 	push af
@@ -107,10 +103,8 @@ BattleCommand_Sketch:
 .done_copy
 	call GetMoveName
 	call AnimateCurrentMove
-
 	ld hl, SketchedText
 	jp StdBattleTextbox
-
 .fail
 	call AnimateFailedMove
 	jp PrintDidntAffect

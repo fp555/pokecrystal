@@ -858,14 +858,11 @@ LoveBallMultiplier:
 	jr nz, .got_wild_gender
 	inc d   ; female
 .got_wild_gender
-
-; BUG: Love Ball boosts catch rate for the wrong gender (see docs/bugs_and_glitches.md)
 	ld a, d
 	pop de
 	cp d
 	pop bc
-	ret nz
-
+	ret z
 	sla b
 	jr c, .max
 	sla b
@@ -875,10 +872,8 @@ LoveBallMultiplier:
 .max
 	ld b, $ff
 	ret
-
 .done2
 	pop de
-
 .done1
 	pop bc
 	ret
@@ -888,7 +883,6 @@ FastBallMultiplier:
 	ld c, a
 	ld hl, FleeMons
 	ld d, 3
-
 .loop
 ; BUG: Fast Ball only boosts catch rate for three Pokémon (see docs/bugs_and_glitches.md)
 	ld a, BANK(FleeMons)

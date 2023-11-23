@@ -362,37 +362,30 @@ PokeBallEffect:
 	cp HELD_CATCH_CHANCE
 	pop de
 	ld a, d
-	jr nz, .max_2
+	jr nz, .skip_hp_calc
 	add c
-	jr nc, .max_2
+	jr nc, .skip_hp_calc
 	ld a, $ff
-.max_2
-
 .skip_hp_calc
 	ld b, a
 	ld [wFinalCatchRate], a
 	call Random
-
 	cp b
 	ld a, 0
 	jr z, .catch_without_fail
 	jr nc, .fail_to_catch
-
 .catch_without_fail
 	ld a, [wEnemyMonSpecies]
-
 .fail_to_catch
 	ld [wWildMon], a
 	ld c, 20
 	call DelayFrames
-
 	ld a, [wCurItem]
 	cp POKE_BALL + 1 ; Assumes Master/Ultra/Great come before
 	jr c, .not_kurt_ball
 	ld a, POKE_BALL
 .not_kurt_ball
 	ld [wBattleAnimParam], a
-
 	ld de, ANIM_THROW_POKE_BALL
 	ld a, e
 	ld [wFXAnimID], a
@@ -403,7 +396,6 @@ PokeBallEffect:
 	ld [wThrownBallWobbleCount], a
 	ld [wNumHits], a
 	predef PlayBattleAnim
-
 	ld a, [wWildMon]
 	and a
 	jr nz, .caught
@@ -420,7 +412,6 @@ PokeBallEffect:
 	cp 4
 	ld hl, BallSoCloseText
 	jp z, .shake_and_break_free
-
 .caught
 	ld hl, wEnemyMonStatus
 	ld a, [hli]
@@ -439,35 +430,21 @@ PokeBallEffect:
 	ld a, [hl]
 	push af
 	set SUBSTATUS_TRANSFORMED, [hl]
-
-; BUG: Catching a Transformed Pokémon always catches a Ditto (see docs/bugs_and_glitches.md)
 	bit SUBSTATUS_TRANSFORMED, a
-	jr nz, .ditto
-	jr .not_ditto
-
-.ditto
-	ld a, DITTO
-	ld [wTempEnemyMonSpecies], a
-	jr .load_data
-
-.not_ditto
-	set SUBSTATUS_TRANSFORMED, [hl]
+	jr nz, .load_data
 	ld hl, wEnemyBackupDVs
 	ld a, [wEnemyMonDVs]
 	ld [hli], a
 	ld a, [wEnemyMonDVs + 1]
 	ld [hl], a
-
 .load_data
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
 	ld a, [wEnemyMonLevel]
 	ld [wCurPartyLevel], a
 	farcall LoadEnemyMon
-
 	pop af
 	ld [wEnemySubStatus5], a
-
 	pop hl
 	pop af
 	ld [hl], a
@@ -479,7 +456,6 @@ PokeBallEffect:
 	dec hl
 	pop af
 	ld [hl], a
-
 	ld hl, wEnemySubStatus5
 	bit SUBSTATUS_TRANSFORMED, [hl]
 	jr nz, .Transformed
@@ -487,12 +463,10 @@ PokeBallEffect:
 	ld de, wEnemyMonMoves
 	ld bc, NUM_MOVES
 	call CopyBytes
-
 	ld hl, wWildMonPP
 	ld de, wEnemyMonPP
 	ld bc, NUM_MOVES
 	call CopyBytes
-
 .Transformed:
 	ld a, [wEnemyMonSpecies]
 	ld [wWildMon], a
@@ -501,18 +475,13 @@ PokeBallEffect:
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jp z, .FinishTutorial
-
 	farcall StubbedTrainerRankings_WildMonsCaught
-
 	ld hl, Text_GotchaMonWasCaught
 	call PrintText
-
 	call ClearSprites
-
 	ld a, [wTempSpecies]
 	dec a
 	call CheckCaughtMon
-
 	ld a, c
 	push af
 	ld a, [wTempSpecies]
@@ -521,19 +490,14 @@ PokeBallEffect:
 	pop af
 	and a
 	jr nz, .skip_pokedex
-
 	call CheckReceivedDex
 	jr z, .skip_pokedex
-
 	ld hl, NewDexDataText
 	call PrintText
-
 	call ClearSprites
-
 	ld a, [wEnemyMonSpecies]
 	ld [wTempSpecies], a
 	predef NewPokedexEntry
-
 .skip_pokedex
 	ld a, [wBattleType]
 	cp BATTLETYPE_CONTEST
@@ -543,50 +507,38 @@ PokeBallEffect:
 	ld hl, wBattleResult
 	set BATTLERESULT_CAUGHT_CELEBI, [hl]
 .not_celebi
-
 	ld a, [wPartyCount]
 	cp PARTY_LENGTH
 	jr z, .SendToPC
-
 	xor a ; PARTYMON
 	ld [wMonType], a
 	call ClearSprites
-
 	predef TryAddMonToParty
-
 	farcall SetCaughtData
-
 	ld a, [wCurItem]
 	cp FRIEND_BALL
 	jr nz, .SkipPartyMonFriendBall
-
 	ld a, [wPartyCount]
 	dec a
 	ld hl, wPartyMon1Happiness
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call AddNTimes
-
 	ld a, FRIEND_BALL_HAPPINESS
 	ld [hl], a
-
 .SkipPartyMonFriendBall:
 	ld hl, AskGiveNicknameText
 	call PrintText
-
 	ld a, [wCurPartySpecies]
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
-
 	call YesNoBox
 	jp c, .return_from_capture
-
 	ld a, [wPartyCount]
 	dec a
 	ld [wCurPartyMon], a
 	ld hl, wPartyMonNicknames
 	ld bc, MON_NAME_LENGTH
 	call AddNTimes
-
 	ld d, h
 	ld e, l
 	push de
@@ -594,27 +546,18 @@ PokeBallEffect:
 	ld [wMonType], a
 	ld b, NAME_MON
 	farcall NamingScreen
-
 	call RotateThreePalettesRight
-
 	call LoadStandardFont
-
 	pop hl
 	ld de, wStringBuffer1
 	call InitName
-
 	jp .return_from_capture
-
 .SendToPC:
 	call ClearSprites
-
 	predef SendMonIntoBox
-
 	farcall SetBoxMonCaughtData
-
 	ld a, BANK(sBoxCount)
 	call OpenSRAM
-
 	ld a, [sBoxCount]
 	cp MONS_PER_BOX
 	jr nz, .BoxNotFullYet
@@ -629,17 +572,13 @@ PokeBallEffect:
 	ld [sBoxMon1Happiness], a
 .SkipBoxMonFriendBall:
 	call CloseSRAM
-
 	ld hl, AskGiveNicknameText
 	call PrintText
-
 	ld a, [wCurPartySpecies]
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
-
 	call YesNoBox
 	jr c, .SkipBoxMonNickname
-
 	xor a
 	ld [wCurPartyMon], a
 	ld a, BOXMON
@@ -647,50 +586,37 @@ PokeBallEffect:
 	ld de, wMonOrItemNameBuffer
 	ld b, NAME_MON
 	farcall NamingScreen
-
 	ld a, BANK(sBoxMonNicknames)
 	call OpenSRAM
-
 	ld hl, wMonOrItemNameBuffer
 	ld de, sBoxMonNicknames
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 	ld hl, sBoxMonNicknames
 	ld de, wStringBuffer1
 	call InitName
-
 	call CloseSRAM
-
 .SkipBoxMonNickname:
 	ld a, BANK(sBoxMonNicknames)
 	call OpenSRAM
-
 	ld hl, sBoxMonNicknames
 	ld de, wMonOrItemNameBuffer
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 	call CloseSRAM
-
 	ld hl, BallSentToPCText
 	call PrintText
-
 	call RotateThreePalettesRight
 	call LoadStandardFont
 	jr .return_from_capture
-
 .catch_bug_contest_mon
 	farcall BugContest_SetCaughtContestMon
 	jr .return_from_capture
-
 .FinishTutorial:
 	ld hl, Text_GotchaMonWasCaught
-
 .shake_and_break_free
 	call PrintText
 	call ClearSprites
-
 .return_from_capture
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
@@ -699,20 +625,16 @@ PokeBallEffect:
 	ret z
 	cp BATTLETYPE_CONTEST
 	jr z, .used_park_ball
-
 	ld a, [wWildMon]
 	and a
 	jr z, .toss
-
 	call ClearBGPalettes
 	call ClearTilemap
-
 .toss
 	ld hl, wNumItems
 	inc a
 	ld [wItemQuantityChange], a
 	jp TossItem
-
 .used_park_ball
 	ld hl, wParkBallsRemaining
 	dec [hl]

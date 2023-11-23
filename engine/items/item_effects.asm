@@ -249,7 +249,6 @@ PokeBallEffect:
 	ld a, [wCurItem]
 	ld c, a
 	ld hl, BallMultiplierFunctionTable
-
 .get_multiplier_loop
 	ld a, [hli]
 	cp $ff
@@ -259,7 +258,6 @@ PokeBallEffect:
 	inc hl
 	inc hl
 	jr .get_multiplier_loop
-
 .call_ball_function
 	ld a, [hli]
 	ld h, [hl]
@@ -267,16 +265,13 @@ PokeBallEffect:
 	ld de, .skip_or_return_from_ball_fn
 	push de
 	jp hl
-
 .skip_or_return_from_ball_fn
 	ld a, [wCurItem]
 	cp LEVEL_BALL
 	ld a, b
 	jp z, .skip_hp_calc
-
 	ld a, b
 	ldh [hMultiplicand + 2], a
-
 	ld hl, wEnemyMonHP
 	ld b, [hl]
 	inc hl
@@ -287,7 +282,6 @@ PokeBallEffect:
 	ld e, [hl]
 	sla c
 	rl b
-
 	ld h, d
 	ld l, e
 	add hl, de
@@ -297,7 +291,6 @@ PokeBallEffect:
 	ld a, d
 	and a
 	jr z, .okay_1
-
 	srl d
 	rr e
 	srl d
@@ -306,14 +299,12 @@ PokeBallEffect:
 	rr c
 	srl b
 	rr c
-
 	ld a, c
 	and a
 	jr nz, .okay_1
 	ld c, $1
 .okay_1
 	ld b, e
-
 	push bc
 	ld a, b
 	sub c
@@ -324,23 +315,21 @@ PokeBallEffect:
 	ldh [hMultiplicand + 1], a
 	call Multiply
 	pop bc
-
 	ld a, b
 	ldh [hDivisor], a
 	ld b, 4
 	call Divide
-
 	ldh a, [hQuotient + 3]
 	and a
 	jr nz, .statuscheck
 	ld a, 1
 .statuscheck
-; BUG: BRN/PSN/PAR do not affect catch rate (see docs/bugs_and_glitches.md)
 	ld b, a
 	ld a, [wEnemyMonStatus]
 	and 1 << FRZ | SLP_MASK
 	ld c, 10
 	jr nz, .addstatus
+	ld a, [wEnemyMonStatus]
 	and a
 	ld c, 5
 	jr nz, .addstatus

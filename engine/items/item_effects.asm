@@ -700,41 +700,34 @@ HeavyBallMultiplier:
 	add hl, de
 	ld a, BANK(PokedexDataPointerTable)
 	call GetFarWord
-
 .SkipText:
 	call HeavyBall_GetDexEntryBank
 	call GetFarByte
 	inc hl
 	cp "@"
 	jr nz, .SkipText
-
 	call HeavyBall_GetDexEntryBank
 	push bc
 	inc hl
 	inc hl
 	call GetFarWord
-
 	srl h
 	rr l
 	ld b, h
 	ld c, l
-
 rept 4
 	srl b
 	rr c
 endr
 	call .subbc
-
 	srl b
 	rr c
 	call .subbc
-
 	ld a, h
 	pop bc
 	jr .compare
-
 .subbc
-	; subtract bc from hl
+; subtract bc from hl
 	push bc
 	ld a, b
 	cpl
@@ -746,12 +739,10 @@ endr
 	add hl, bc
 	pop bc
 	ret
-
 .compare
 	ld c, a
 	cp HIGH(1024) ; 102.4 kg
 	jr c, .lightmon
-
 	ld hl, .WeightsTable
 .lookup
 	ld a, c
@@ -760,7 +751,6 @@ endr
 	inc hl
 	inc hl
 	jr .lookup
-
 .heavymon
 	inc hl
 	ld a, b
@@ -769,7 +759,6 @@ endr
 	ret nc
 	ld b, $ff
 	ret
-
 .lightmon
 	ld a, b
 	sub 20
@@ -777,7 +766,6 @@ endr
 	ret nc
 	ld b, $1
 	ret
-
 .WeightsTable:
 ; weight factor, boost
 	db HIGH(2048),   0
@@ -790,11 +778,9 @@ LureBallMultiplier:
 	ld a, [wBattleType]
 	cp BATTLETYPE_FISH
 	ret nz
-
 	ld a, b
 	add a
 	jr c, .max
-
 	add b
 	jr nc, .done
 .max
@@ -815,26 +801,21 @@ MoonBallMultiplier:
 	ld a, BANK(EvosAttacksPointers)
 	call GetFarWord
 	pop bc
-
 	push bc
 	ld a, BANK("Evolutions and Attacks")
 	call GetFarByte
 	cp EVOLVE_ITEM
 	pop bc
 	ret nz
-
 	inc hl
 	inc hl
 	inc hl
-
-; BUG: Moon Ball does not boost catch rate (see docs/bugs_and_glitches.md)
 	push bc
 	ld a, BANK("Evolutions and Attacks")
 	call GetFarByte
-	cp MOON_STONE_RED ; BURN_HEAL
+	cp MOON_STONE
 	pop bc
 	ret nz
-
 	sla b
 	jr c, .max
 	sla b
@@ -845,14 +826,12 @@ MoonBallMultiplier:
 	ret
 
 LoveBallMultiplier:
-
 	; does species match?
 	ld a, [wTempEnemyMonSpecies]
 	ld c, a
 	ld a, [wTempBattleMonSpecies]
 	cp c
 	ret nz
-
 	; check player mon species
 	push bc
 	ld a, [wTempBattleMonSpecies]
@@ -863,12 +842,10 @@ LoveBallMultiplier:
 	ld [wCurPartyMon], a
 	farcall GetGender
 	jr c, .done1 ; no effect on genderless
-
 	ld d, 0 ; male
 	jr nz, .got_player_gender
 	inc d   ; female
 .got_player_gender
-
 	; check wild mon species
 	push de
 	ld a, [wTempEnemyMonSpecies]
@@ -877,7 +854,6 @@ LoveBallMultiplier:
 	ld [wMonType], a
 	farcall GetGender
 	jr c, .done2 ; no effect on genderless
-
 	ld d, 0 ; male
 	jr nz, .got_wild_gender
 	inc d   ; female

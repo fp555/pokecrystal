@@ -153,9 +153,9 @@ Options_TextSpeed:
 	dw .Mid
 	dw .Slow
 	dw .None
-.Fast: db "FAST@"
-.Mid:  db "MID @"
-.Slow: db "SLOW@"
+.Fast: db "FAST   @"
+.Mid:  db "MID    @"
+.Slow: db "SLOW   @"
 .None: db "INSTANT@"
 
 GetTextSpeed:

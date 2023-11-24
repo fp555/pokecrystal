@@ -8,7 +8,6 @@ TryAddMonToParty:
 	and $f
 	jr z, .getpartylocation ; PARTYMON
 	ld de, wOTPartyCount
-
 .getpartylocation
 	; Do we have room for it?
 	ld a, [de]
@@ -23,7 +22,6 @@ TryAddMonToParty:
 	ld e, a
 	jr nc, .loadspecies
 	inc d
-
 .loadspecies
 	; Load the species of the Pokemon into the party list.
 	; The terminator is usually here, but it'll be back.
@@ -39,7 +37,6 @@ TryAddMonToParty:
 	and $f
 	jr z, .loadOTname
 	ld hl, wOTPartyMonOTs
-
 .loadOTname
 	ldh a, [hMoveMon] ; Restore index from backup
 	dec a
@@ -65,29 +62,27 @@ TryAddMonToParty:
 	ld hl, wStringBuffer1
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 .skipnickname
 	ld hl, wPartyMon1Species
 	ld a, [wMonType]
 	and $f
 	jr z, .initializeStats
 	ld hl, wOTPartyMon1Species
-
 .initializeStats
 	ldh a, [hMoveMon]
 	dec a
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call AddNTimes
+	; fallthrough
+
 GeneratePartyMonStats:
 ; wBattleMode specifies whether it's a wild mon or not.
 ; wMonType specifies whether it's an opposing mon or not.
 ; wCurPartySpecies/wCurPartyLevel specify the species and level.
 ; hl points to the wPartyMon struct to fill.
-
 	ld e, l
 	ld d, h
 	push hl
-
 	; Initialize the species
 	ld a, [wCurPartySpecies]
 	ld [wCurSpecies], a
@@ -95,7 +90,6 @@ GeneratePartyMonStats:
 	ld a, [wBaseDexNo]
 	ld [de], a
 	inc de
-
 	; Copy the item if it's a wild mon
 	ld a, [wBattleMode]
 	and a
@@ -105,7 +99,6 @@ GeneratePartyMonStats:
 .skipitem
 	ld [de], a
 	inc de
-
 	; Copy the moves if it's a wild mon
 	push de
 	ld h, d
@@ -125,7 +118,6 @@ endr
 	ld a, [de]
 	ld [hl], a
 	jr .next
-
 .randomlygeneratemoves
 	xor a
 rept NUM_MOVES - 1
@@ -134,13 +126,11 @@ endr
 	ld [hl], a
 	ld [wSkipMovesBeforeLevelUp], a
 	predef FillMoves
-
 .next
 	pop de
 rept NUM_MOVES
 	inc de
 endr
-
 	; Initialize ID.
 	ld a, [wPlayerID]
 	ld [de], a
@@ -148,7 +138,6 @@ endr
 	ld a, [wPlayerID + 1]
 	ld [de], a
 	inc de
-
 	; Initialize Exp.
 	push de
 	ld a, [wCurPartyLevel]
@@ -164,7 +153,6 @@ endr
 	ldh a, [hProduct + 3]
 	ld [de], a
 	inc de
-
 	; Initialize stat experience.
 	xor a
 	ld b, MON_DVS - MON_STAT_EXP
@@ -173,18 +161,15 @@ endr
 	inc de
 	dec b
 	jr nz, .loop
-
 	pop hl
 	push hl
 	ld a, [wMonType]
 	and $f
 	jr z, .registerpokedex
-
 	push hl
 	farcall GetTrainerDVs
 	pop hl
 	jr .initializeDVs
-
 .registerpokedex
 	ld a, [wCurPartySpecies]
 	ld [wTempSpecies], a
@@ -195,13 +180,11 @@ endr
 	dec a
 	call SetSeenAndCaughtMon
 	pop de
-
 	pop hl
 	push hl
 	ld a, [wBattleMode]
 	and a
 	jr nz, .copywildmonDVs
-
 	call Random
 	ld b, a
 	call Random
@@ -213,7 +196,6 @@ endr
 	ld a, c
 	ld [de], a
 	inc de
-
 	; Initialize PP.
 	push hl
 	push de
@@ -225,12 +207,10 @@ endr
 rept NUM_MOVES
 	inc de
 endr
-
 	; Initialize happiness.
 	ld a, BASE_HAPPINESS
 	ld [de], a
 	inc de
-
 	xor a
 	; PokerusStatus
 	ld [de], a
@@ -241,12 +221,10 @@ endr
 	; CaughtGender/CaughtLocation
 	ld [de], a
 	inc de
-
 	; Initialize level.
 	ld a, [wCurPartyLevel]
 	ld [de], a
 	inc de
-
 	xor a
 	; Status
 	ld [de], a
@@ -254,7 +232,6 @@ endr
 	; Unused
 	ld [de], a
 	inc de
-
 	; Initialize HP.
 	ld bc, MON_STAT_EXP - 1
 	add hl, bc
@@ -269,7 +246,6 @@ endr
 	ld [de], a
 	inc de
 	jr .initstats
-
 .copywildmonDVs
 	ld a, [wEnemyMonDVs]
 	ld [de], a
@@ -277,7 +253,6 @@ endr
 	ld a, [wEnemyMonDVs + 1]
 	ld [de], a
 	inc de
-
 	push hl
 	ld hl, wEnemyMonPP
 	ld b, NUM_MOVES
@@ -288,12 +263,10 @@ endr
 	dec b
 	jr nz, .wildmonpploop
 	pop hl
-
 	; Initialize happiness.
 	ld a, BASE_HAPPINESS
 	ld [de], a
 	inc de
-
 	xor a
 	; PokerusStatus
 	ld [de], a
@@ -304,12 +277,10 @@ endr
 	; CaughtGender/CaughtLocation
 	ld [de], a
 	inc de
-
 	; Initialize level.
 	ld a, [wCurPartyLevel]
 	ld [de], a
 	inc de
-
 	ld hl, wEnemyMonStatus
 	; Copy wEnemyMonStatus
 	ld a, [hli]
@@ -326,7 +297,6 @@ endr
 	ld a, [hl]
 	ld [de], a
 	inc de
-
 .initstats
 	ld a, [wBattleMode]
 	dec a
@@ -336,14 +306,12 @@ endr
 	call CopyBytes
 	pop hl
 	jr .registerunowndex
-
 .generatestats
 	pop hl
 	ld bc, MON_STAT_EXP - 1
 	add hl, bc
 	ld b, FALSE
 	call CalcMonStats
-
 .registerunowndex
 	ld a, [wMonType]
 	and $f
@@ -358,7 +326,6 @@ endr
 	call AddNTimes
 	predef GetUnownLetter
 	callfar UpdateUnownDex
-
 .done
 	scf ; When this function returns, the carry flag indicates success vs failure.
 	ret
@@ -384,7 +351,6 @@ FillPP:
 	pop de
 	pop hl
 	ld a, [wStringBuffer1 + MOVE_PP]
-
 .next
 	ld [de], a
 	inc de
@@ -399,7 +365,6 @@ AddTempmonToParty:
 	cp PARTY_LENGTH
 	scf
 	ret z
-
 	inc a
 	ld [hl], a
 	ld c, a
@@ -408,7 +373,6 @@ AddTempmonToParty:
 	ld a, [wCurPartySpecies]
 	ld [hli], a
 	ld [hl], $ff
-
 	ld hl, wPartyMon1Species
 	ld a, [wPartyCount]
 	dec a
@@ -418,7 +382,6 @@ AddTempmonToParty:
 	ld d, h
 	ld hl, wTempMonSpecies
 	call CopyBytes
-
 	ld hl, wPartyMonOTs
 	ld a, [wPartyCount]
 	dec a
@@ -430,7 +393,6 @@ AddTempmonToParty:
 	call SkipNames
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
 	ld hl, wPartyMonNicknames
 	ld a, [wPartyCount]
 	dec a
@@ -442,7 +404,6 @@ AddTempmonToParty:
 	call SkipNames
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 	ld a, [wCurPartySpecies]
 	ld [wNamedObjectIndex], a
 	cp EGG
@@ -456,7 +417,6 @@ AddTempmonToParty:
 	call AddNTimes
 	ld [hl], BASE_HAPPINESS
 .egg
-
 	ld a, [wCurPartySpecies]
 	cp UNOWN
 	jr nz, .done
@@ -473,7 +433,6 @@ AddTempmonToParty:
 	ld a, [wUnownLetter]
 	ld [wFirstUnownSeen], a
 .done
-
 	and a
 	ret
 
@@ -483,7 +442,6 @@ SendGetMonIntoFromBox:
 ; wPokemonWithdrawDepositParameter == 1: sent mon into Box
 ; wPokemonWithdrawDepositParameter == 2: get mon from DayCare
 ; wPokemonWithdrawDepositParameter == 3: put mon into DayCare
-
 	ld a, BANK(sBoxCount)
 	call OpenSRAM
 	ld a, [wPokemonWithdrawDepositParameter]
@@ -494,7 +452,6 @@ SendGetMonIntoFromBox:
 	cp DAY_CARE_DEPOSIT
 	ld hl, wBreedMon1Species
 	jr z, .breedmon
-
 	; we want to sent a mon into the Box
 	; so check if there's enough space
 	ld hl, sBoxCount
@@ -502,13 +459,11 @@ SendGetMonIntoFromBox:
 	cp MONS_PER_BOX
 	jr nz, .there_is_room
 	jp CloseSRAM_And_SetCarryFlag
-
 .check_IfPartyIsFull
 	ld hl, wPartyCount
 	ld a, [hl]
 	cp PARTY_LENGTH
 	jp z, CloseSRAM_And_SetCarryFlag
-
 .there_is_room
 	inc a
 	ld [hl], a
@@ -520,7 +475,6 @@ SendGetMonIntoFromBox:
 	ld a, [wBreedMon1Species]
 	jr z, .okay1
 	ld a, [wCurPartySpecies]
-
 .okay1
 	ld [hli], a
 	ld [hl], $ff
@@ -533,11 +487,9 @@ SendGetMonIntoFromBox:
 	ld hl, sBoxMon1Species
 	ld bc, BOXMON_STRUCT_LENGTH
 	ld a, [sBoxCount]
-
 .okay2
 	dec a ; wPartyCount - 1
 	call AddNTimes
-
 .breedmon
 	push hl
 	ld e, l
@@ -552,11 +504,9 @@ SendGetMonIntoFromBox:
 	jr z, .okay4
 	ld hl, wPartyMon1Species
 	ld bc, PARTYMON_STRUCT_LENGTH
-
 .okay3
 	ld a, [wCurPartyMon]
 	call AddNTimes
-
 .okay4
 	ld bc, BOXMON_STRUCT_LENGTH
 	call CopyBytes
@@ -570,13 +520,11 @@ SendGetMonIntoFromBox:
 	jr nz, .okay6
 	ld hl, sBoxMonOTs
 	ld a, [sBoxCount]
-
 .okay6
 	dec a
 	call SkipNames
 	ld d, h
 	ld e, l
-
 .okay5
 	ld hl, sBoxMonOTs
 	ld a, [wPokemonWithdrawDepositParameter]
@@ -586,11 +534,9 @@ SendGetMonIntoFromBox:
 	cp DAY_CARE_WITHDRAW
 	jr z, .okay8
 	ld hl, wPartyMonOTs
-
 .okay7
 	ld a, [wCurPartyMon]
 	call SkipNames
-
 .okay8
 	ld bc, NAME_LENGTH
 	call CopyBytes
@@ -604,13 +550,11 @@ SendGetMonIntoFromBox:
 	jr nz, .okay10
 	ld hl, sBoxMonNicknames
 	ld a, [sBoxCount]
-
 .okay10
 	dec a
 	call SkipNames
 	ld d, h
 	ld e, l
-
 .okay9
 	ld hl, sBoxMonNicknames
 	ld a, [wPokemonWithdrawDepositParameter]
@@ -620,22 +564,18 @@ SendGetMonIntoFromBox:
 	cp DAY_CARE_WITHDRAW
 	jr z, .okay12
 	ld hl, wPartyMonNicknames
-
 .okay11
 	ld a, [wCurPartyMon]
 	call SkipNames
-
 .okay12
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 	pop hl
-
 	ld a, [wPokemonWithdrawDepositParameter]
 	cp PC_DEPOSIT
 	jr z, .took_out_of_box
 	cp DAY_CARE_DEPOSIT
 	jp z, .CloseSRAM_And_ClearCarryFlag
-
 	push hl
 	srl a
 	add $2
@@ -645,7 +585,6 @@ SendGetMonIntoFromBox:
 	ld a, d
 	ld [wCurPartyLevel], a
 	pop hl
-
 	ld b, h
 	ld c, l
 	ld hl, MON_LEVEL
@@ -657,12 +596,10 @@ SendGetMonIntoFromBox:
 	ld e, l
 	ld hl, MON_STAT_EXP - 1
 	add hl, bc
-
 	push bc
 	ld b, TRUE
 	call CalcMonStats
 	pop bc
-
 	ld a, [wPokemonWithdrawDepositParameter]
 	and a
 	jr nz, .CloseSRAM_And_ClearCarryFlag
@@ -685,14 +622,12 @@ SendGetMonIntoFromBox:
 	inc de
 	ld [de], a
 	jr .CloseSRAM_And_ClearCarryFlag
-
 .egg
 	xor a
 	ld [de], a
 	inc de
 	ld [de], a
 	jr .CloseSRAM_And_ClearCarryFlag
-
 .took_out_of_box
 	ld a, [sBoxCount]
 	dec a
@@ -731,7 +666,6 @@ RestorePPOfDepositedPokemon:
 	call CopyBytes
 	pop hl
 	pop de
-
 	ld a, [wMenuCursorY]
 	push af
 	ld a, [wMonType]
@@ -764,7 +698,6 @@ RestorePPOfDepositedPokemon:
 	ld a, b
 	cp NUM_MOVES
 	jr c, .loop
-
 .done
 	pop af
 	ld [wMonType], a
@@ -809,7 +742,6 @@ RetrieveBreedmon:
 	jr nz, .room_in_party
 	scf
 	ret
-
 .room_in_party
 	inc a
 	ld [hl], a
@@ -823,7 +755,6 @@ RetrieveBreedmon:
 	jr z, .okay
 	ld a, [wBreedMon2Species]
 	ld de, wBreedMon2Nickname
-
 .okay
 	ld [hli], a
 	ld [wCurSpecies], a
@@ -879,23 +810,35 @@ RetrieveBreedmon:
 	ld a, TRUE
 	ld [wSkipMovesBeforeLevelUp], a
 	predef FillMoves
-; BUG: Pokémon deposited in the Day-Care might lose experience (see docs/bugs_and_glitches.md)
 	ld a, [wPartyCount]
 	dec a
 	ld [wCurPartyMon], a
 	farcall HealPartyMon
-	ld a, [wCurPartyLevel]
-	ld d, a
+	ld d, MAX_LEVEL
 	callfar CalcExpAtLevel
 	pop bc
-	ld hl, MON_EXP
+	ld hl, MON_EXP + 2
 	add hl, bc
 	ldh a, [hMultiplicand]
-	ld [hli], a
+	ld b, a
 	ldh a, [hMultiplicand + 1]
-	ld [hli], a
+	ld c, a
 	ldh a, [hMultiplicand + 2]
+	ld d, a
+	ld a, [hld]
+	sub d
+	ld a, [hld]
+	sbc c
+	ld a, [hl]
+	sbc b
+	jr c, .not_max_exp
+	ld a, b
+	ld [hli], a
+	ld a, c
+	ld [hli], a
+	ld a, d
 	ld [hl], a
+.not_max_exp
 	and a
 	ret
 

@@ -20,22 +20,21 @@ FieldMoveJumptable:
 	ret
 
 GetPartyNickname:
-; write wCurPartyMon nickname to wStringBuffer1-3
+	; write wCurPartyMon nickname to wStringBuffer1-3
 	ld hl, wPartyMonNicknames
 	ld a, BOXMON
 	ld [wMonType], a
 	ld a, [wCurPartyMon]
 	call GetNickname
 	call CopyName1
-; copy text from wStringBuffer2 to wStringBuffer3
+	; copy text from wStringBuffer2 to wStringBuffer3
 	ld de, wStringBuffer2
 	ld hl, wStringBuffer3
 	call CopyName2
 	ret
 
 CheckEngineFlag:
-; Check engine flag de
-; Return carry if flag is not set
+; Check engine flag de. Return carry if flag is not set
 	ld b, CHECK_FLAG
 	farcall EngineFlagAction
 	ld a, c
@@ -56,14 +55,12 @@ CheckBadge:
 	call MenuTextboxBackup ; push text to queue
 	scf
 	ret
-
 .BadgeRequiredText:
 	text_far _BadgeRequiredText
 	text_end
 
 CheckPartyMove:
 ; Check if a monster in your party has move d.
-
 	ld e, 0
 	xor a
 	ld [wCurPartyMon], a
@@ -79,7 +76,6 @@ CheckPartyMove:
 	jr z, .no
 	cp EGG
 	jr z, .next
-
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, wPartyMon1Moves
 	ld a, e
@@ -91,11 +87,9 @@ CheckPartyMove:
 	jr z, .yes
 	dec b
 	jr nz, .check
-
 .next
 	inc e
 	jr .loop
-
 .yes
 	ld a, e
 	ld [wCurPartyMon], a ; which mon has the move
@@ -109,7 +103,6 @@ FieldMoveFailed:
 	ld hl, .CantUseItemText
 	call MenuTextboxBackup
 	ret
-
 .CantUseItemText:
 	text_far _CantUseItemText
 	text_end
@@ -123,12 +116,10 @@ CutFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .Jumptable:
 	dw .CheckAble
 	dw .DoCut
 	dw .FailCut
-
 .CheckAble:
 	ld de, ENGINE_HIVEBADGE
 	call CheckBadge
@@ -137,21 +128,17 @@ CutFunction:
 	jr c, .nothingtocut
 	ld a, $1
 	ret
-
 .nohivebadge
 	ld a, $80
 	ret
-
 .nothingtocut
 	ld a, $2
 	ret
-
 .DoCut:
 	ld hl, Script_CutFromMenu
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailCut:
 	ld hl, CutNothingText
 	call MenuTextboxBackup
@@ -194,7 +181,6 @@ CheckMapForSomethingToCut:
 	ld [wCutWhirlpoolAnimationType], a
 	xor a
 	ret
-
 .fail
 	scf
 	ret
@@ -234,11 +220,10 @@ CutDownTreeOrGrass:
 	ret
 
 CheckOverworldTileArrays:
-	; Input: c contains the tile you're facing
-	; Output: Replacement tile in b and effect on wild encounters in c, plus carry set.
-	;         Carry is not set if the facing tile cannot be replaced, or if the tileset
-	;         does not contain a tile you can replace.
-
+; Input: c contains the tile you're facing
+; Output: Replacement tile in b and effect on wild encounters in c, plus carry set.
+; Carry is not set if the facing tile cannot be replaced, or if the tileset
+; does not contain a tile you can replace.
 	; Dictionary lookup for pointer to tile replacement table
 	push bc
 	ld a, [wMapTileset]
@@ -264,7 +249,6 @@ CheckOverworldTileArrays:
 	ld c, [hl]
 	scf
 	ret
-
 .nope
 	xor a
 	ret
@@ -276,7 +260,6 @@ FlashFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .CheckUseFlash:
 	ld de, ENGINE_ZEPHYRBADGE
 	farcall CheckBadge
@@ -292,12 +275,10 @@ FlashFunction:
 	call UseFlash
 	ld a, $81
 	ret
-
 .notadarkcave
 	call FieldMoveFailed
 	ld a, $80
 	ret
-
 .nozephyrbadge
 	ld a, $80
 	ret
@@ -323,7 +304,6 @@ UseFlashTextScript:
 	call WaitSFX
 	ld hl, .BlankText
 	ret
-
 .BlankText:
 	text_end
 
@@ -336,13 +316,11 @@ SurfFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .Jumptable:
 	dw .TrySurf
 	dw .DoSurf
 	dw .FailSurf
 	dw .AlreadySurfing
-
 .TrySurf:
 	ld de, ENGINE_FOGBADGE
 	call CheckBadge
@@ -374,7 +352,6 @@ SurfFunction:
 .cannotsurf
 	ld a, $2
 	ret
-
 .DoSurf:
 	call GetSurfType
 	ld [wSurfingPlayerState], a
@@ -383,13 +360,11 @@ SurfFunction:
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailSurf:
 	ld hl, CantSurfText
 	call MenuTextboxBackup
 	ld a, $80
 	ret
-
 .AlreadySurfing:
 	ld hl, AlreadySurfingText
 	call MenuTextboxBackup
@@ -400,23 +375,16 @@ SurfFromMenuScript:
 	special UpdateTimePals
 
 UsedSurfScript:
-; BUG: Surfing directly across a map connection does not load the new map (see docs/bugs_and_glitches.md)
 	writetext UsedSurfText ; "used SURF!"
 	waitbutton
 	closetext
-
 	callasm .stubbed_fn
-
 	readmem wSurfingPlayerState
 	writevar VAR_MOVEMENT
-
 	special UpdatePlayerSprite
 	special PlayMapMusic
-; step into the water (slow_step DIR, step_end)
 	special SurfStartStep
-	applymovement PLAYER, wMovementBuffer
 	end
-
 .stubbed_fn
 	farcall StubbedTrainerRankings_Surf
 	ret
@@ -436,13 +404,11 @@ AlreadySurfingText:
 GetSurfType:
 ; Surfing on Pikachu uses an alternate sprite.
 ; This is done by using a separate movement type.
-
 	ld a, [wCurPartyMon]
 	ld e, a
 	ld d, 0
 	ld hl, wPartySpecies
 	add hl, de
-
 	ld a, [hl]
 	cp PIKACHU
 	ld a, PLAYER_SURF_PIKA
@@ -453,8 +419,7 @@ GetSurfType:
 CheckDirection:
 ; Return carry if a tile permission prevents you
 ; from moving in the direction you're facing.
-
-; Get player direction
+	; Get player direction
 	ld a, [wPlayerDirection]
 	and %00001100 ; bits 2 and 3 contain direction
 	rrca
@@ -463,18 +428,15 @@ CheckDirection:
 	ld d, 0
 	ld hl, .Directions
 	add hl, de
-
-; Can you walk in this direction?
+	; Can you walk in this direction?
 	ld a, [wTilePermissions]
 	and [hl]
 	jr nz, .quit
 	xor a
 	ret
-
 .quit
 	scf
 	ret
-
 .Directions:
 	db FACE_DOWN
 	db FACE_UP
@@ -484,47 +446,37 @@ CheckDirection:
 TrySurfOW::
 ; Checking a tile in the overworld.
 ; Return carry if fail is allowed.
-
-; Don't ask to surf if already fail.
+	; Don't ask to surf if already fail.
 	ld a, [wPlayerState]
 	cp PLAYER_SURF_PIKA
 	jr z, .quit
 	cp PLAYER_SURF
 	jr z, .quit
-
-; Must be facing water.
+	; Must be facing water.
 	ld a, [wFacingTileID]
 	call GetTileCollision
 	cp WATER_TILE
 	jr nz, .quit
-
-; Check tile permissions.
+	; Check tile permissions.
 	call CheckDirection
 	jr c, .quit
-
 	ld de, ENGINE_FOGBADGE
 	call CheckEngineFlag
 	jr c, .quit
-
 	ld d, SURF
 	call CheckPartyMove
 	jr c, .quit
-
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
 	jr nz, .quit
-
 	call GetSurfType
 	ld [wSurfingPlayerState], a
 	call GetPartyNickname
-
 	ld a, BANK(AskSurfScript)
 	ld hl, AskSurfScript
 	call CallScript
-
 	scf
 	ret
-
 .quit
 	xor a
 	ret

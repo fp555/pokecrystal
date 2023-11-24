@@ -386,11 +386,6 @@ _CantUseTeleportText::
 	para ""
 	done
 
-_AlreadyUsingStrengthText::
-	text "A #MON is using"
-	line "STRENGTH already."
-	prompt
-
 _UseStrengthText::
 	text_ram wStringBuffer2
 	text " used"
@@ -487,11 +482,6 @@ _RodBiteText::
 
 _RodNothingText::
 	text "Not even a nibble!"
-	prompt
-
-_UnusedNothingHereText::
-	text "Looks like there's"
-	line "nothing here."
 	prompt
 
 _CantGetOffBikeText::

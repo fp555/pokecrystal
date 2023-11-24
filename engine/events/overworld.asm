@@ -502,12 +502,10 @@ FlyFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .Jumptable:
 	dw .TryFly
 	dw .DoFly
 	dw .FailFly
-
 .TryFly:
 	ld de, ENGINE_STORMBADGE
 	call CheckBadge
@@ -516,7 +514,6 @@ FlyFunction:
 	call CheckOutdoorMap
 	jr z, .outdoors
 	jr .indoors
-
 .outdoors
 	xor a
 	ldh [hMapAnims], a
@@ -528,37 +525,30 @@ FlyFunction:
 	jr z, .illegal
 	cp NUM_SPAWNS
 	jr nc, .illegal
-
 	ld [wDefaultSpawnpoint], a
 	call CloseWindow
 	ld a, $1
 	ret
-
 .nostormbadge
 	ld a, $82
 	ret
-
 .indoors
 	ld a, $2
 	ret
-
 .illegal
 	call CloseWindow
 	call WaitBGMap
 	ld a, $80
 	ret
-
 .DoFly:
 	ld hl, .FlyScript
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailFly:
 	call FieldMoveFailed
 	ld a, $82
 	ret
-
 .FlyScript:
 	reloadmappart
 	callasm HideSprites
@@ -573,7 +563,6 @@ FlyFunction:
 	special WaitSFX
 	callasm .ReturnFromFly
 	end
-
 .ReturnFromFly:
 	farcall RespawnPlayer
 	call DelayFrame
@@ -586,7 +575,6 @@ WaterfallFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .TryWaterfall:
 	ld de, ENGINE_RISINGBADGE
 	farcall CheckBadge
@@ -598,7 +586,6 @@ WaterfallFunction:
 	call QueueScript
 	ld a, $81
 	ret
-
 .failed
 	call FieldMoveFailed
 	ld a, $80
@@ -614,7 +601,6 @@ CheckMapCanWaterfall:
 	jr nz, .failed
 	xor a
 	ret
-
 .failed
 	scf
 	ret
@@ -634,7 +620,6 @@ Script_UsedWaterfall:
 	callasm .CheckContinueWaterfall
 	iffalse .loop
 	end
-
 .CheckContinueWaterfall:
 	xor a
 	ld [wScriptVar], a
@@ -645,11 +630,9 @@ Script_UsedWaterfall:
 	ld a, $1
 	ld [wScriptVar], a
 	ret
-
 .WaterfallStep:
 	turn_waterfall UP
 	step_end
-
 .UseWaterfallText:
 	text_far _UseWaterfallText
 	text_end
@@ -668,7 +651,6 @@ TryWaterfallOW::
 	call CallScript
 	scf
 	ret
-
 .failed
 	ld a, BANK(Script_CantDoWaterfall)
 	ld hl, Script_CantDoWaterfall
@@ -678,7 +660,6 @@ TryWaterfallOW::
 
 Script_CantDoWaterfall:
 	jumptext .HugeWaterfallText
-
 .HugeWaterfallText:
 	text_far _HugeWaterfallText
 	text_end
@@ -690,7 +671,6 @@ Script_AskWaterfall:
 	iftrue Script_UsedWaterfall
 	closetext
 	end
-
 .AskWaterfallText:
 	text_far _AskWaterfallText
 	text_end
@@ -713,12 +693,10 @@ EscapeRopeOrDig:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .DigTable:
 	dw .CheckCanDig
 	dw .DoDig
 	dw .FailDig
-
 .CheckCanDig:
 	call GetMapEnvironment
 	cp CAVE
@@ -728,7 +706,6 @@ EscapeRopeOrDig:
 .fail
 	ld a, $2
 	ret
-
 .incave
 	ld hl, wDigWarpNumber
 	ld a, [hli]
@@ -742,7 +719,6 @@ EscapeRopeOrDig:
 	jr z, .fail
 	ld a, $1
 	ret
-
 .DoDig:
 	ld hl, wDigWarpNumber
 	ld de, wNextWarp
@@ -756,14 +732,12 @@ EscapeRopeOrDig:
 	call QueueScript
 	ld a, $81
 	ret
-
 .escaperope
 	farcall SpecialKabutoChamber
 	ld hl, .UsedEscapeRopeScript
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailDig:
 	ld a, [wEscapeRopeOrDigType]
 	cp $2
@@ -772,34 +746,27 @@ EscapeRopeOrDig:
 	call MenuTextbox
 	call WaitPressAorB_BlinkCursor
 	call CloseWindow
-
 .failescaperope
 	ld a, $80
 	ret
-
 .UseDigText:
 	text_far _UseDigText
 	text_end
-
 .UseEscapeRopeText:
 	text_far _UseEscapeRopeText
 	text_end
-
 .CantUseDigText:
 	text_far _CantUseDigText
 	text_end
-
 .UsedEscapeRopeScript:
 	reloadmappart
 	special UpdateTimePals
 	writetext .UseEscapeRopeText
 	sjump .UsedDigOrEscapeRopeScript
-
 .UsedDigScript:
 	reloadmappart
 	special UpdateTimePals
 	writetext .UseDigText
-
 .UsedDigOrEscapeRopeScript:
 	waitbutton
 	closetext
@@ -812,12 +779,10 @@ EscapeRopeOrDig:
 	playsound SFX_WARP_FROM
 	applymovement PLAYER, .DigReturn
 	end
-
 .DigOut:
 	step_dig 32
 	hide_object
 	step_end
-
 .DigReturn:
 	show_object
 	return_dig 32
@@ -832,18 +797,15 @@ TeleportFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .Jumptable:
 	dw .TryTeleport
 	dw .DoTeleport
 	dw .FailTeleport
-
 .TryTeleport:
 	call GetMapEnvironment
 	call CheckOutdoorMap
 	jr z, .CheckIfSpawnPoint
 	jr .nope
-
 .CheckIfSpawnPoint:
 	ld a, [wLastSpawnMapGroup]
 	ld d, a
@@ -855,32 +817,26 @@ TeleportFunction:
 	ld [wDefaultSpawnpoint], a
 	ld a, $1
 	ret
-
 .nope
 	ld a, $2
 	ret
-
 .DoTeleport:
 	call GetPartyNickname
 	ld hl, .TeleportScript
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailTeleport:
 	ld hl, .CantUseTeleportText
 	call MenuTextboxBackup
 	ld a, $80
 	ret
-
 .TeleportReturnText:
 	text_far _TeleportReturnText
 	text_end
-
 .CantUseTeleportText:
 	text_far _CantUseTeleportText
 	text_end
-
 .TeleportScript:
 	reloadmappart
 	special UpdateTimePals
@@ -897,11 +853,9 @@ TeleportFunction:
 	playsound SFX_WARP_FROM
 	applymovement PLAYER, .TeleportTo
 	end
-
 .TeleportFrom:
 	teleport_from
 	step_end
-
 .TeleportTo:
 	teleport_to
 	step_end
@@ -911,27 +865,14 @@ StrengthFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .TryStrength:
 	ld de, ENGINE_PLAINBADGE
 	call CheckBadge
 	jr c, .Failed
 	jr .UseStrength
-
-.AlreadyUsingStrength: ; unreferenced
-	ld hl, .AlreadyUsingStrengthText
-	call MenuTextboxBackup
-	ld a, $80
-	ret
-
-.AlreadyUsingStrengthText:
-	text_far _AlreadyUsingStrengthText
-	text_end
-
 .Failed:
 	ld a, $80
 	ret
-
 .UseStrength:
 	ld hl, Script_StrengthFromMenu
 	call QueueScript
@@ -964,11 +905,9 @@ Script_UsedStrength:
 	writetext .MoveBoulderText
 	closetext
 	end
-
 .UseStrengthText:
 	text_far _UseStrengthText
 	text_end
-
 .MoveBoulderText:
 	text_far _MoveBoulderText
 	text_end
@@ -978,13 +917,10 @@ AskStrengthScript:
 	iffalse .AskStrength
 	ifequal $1, .DontMeetRequirements
 	sjump .AlreadyUsedStrength
-
 .DontMeetRequirements:
 	jumptext BouldersMayMoveText
-
 .AlreadyUsedStrength:
 	jumptext BouldersMoveText
-
 .AskStrength:
 	opentext
 	writetext AskStrengthText
@@ -1009,26 +945,20 @@ TryStrengthOW:
 	ld d, STRENGTH
 	call CheckPartyMove
 	jr c, .nope
-
 	ld de, ENGINE_PLAINBADGE
 	call CheckEngineFlag
 	jr c, .nope
-
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_STRENGTH_ACTIVE_F, [hl]
 	jr z, .already_using
-
 	ld a, 2
 	jr .done
-
 .nope
 	ld a, 1
 	jr .done
-
 .already_using
 	xor a
 	jr .done
-
 .done
 	ld [wScriptVar], a
 	ret
@@ -1042,12 +972,10 @@ WhirlpoolFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .Jumptable:
 	dw .TryWhirlpool
 	dw .DoWhirlpool
 	dw .FailWhirlpool
-
 .TryWhirlpool:
 	ld de, ENGINE_GLACIERBADGE
 	call CheckBadge
@@ -1056,21 +984,17 @@ WhirlpoolFunction:
 	jr c, .failed
 	ld a, $1
 	ret
-
 .failed
 	ld a, $2
 	ret
-
 .noglacierbadge
 	ld a, $80
 	ret
-
 .DoWhirlpool:
 	ld hl, Script_WhirlpoolFromMenu
 	call QueueScript
 	ld a, $81
 	ret
-
 .FailWhirlpool:
 	call FieldMoveFailed
 	ld a, $80
@@ -1105,7 +1029,6 @@ TryWhirlpoolMenu:
 	ld [wCutWhirlpoolAnimationType], a
 	xor a
 	ret
-
 .failed
 	scf
 	ret
@@ -1153,7 +1076,6 @@ TryWhirlpoolOW::
 	call CallScript
 	scf
 	ret
-
 .failed
 	ld a, BANK(Script_MightyWhirlpool)
 	ld hl, Script_MightyWhirlpool
@@ -1163,7 +1085,6 @@ TryWhirlpoolOW::
 
 Script_MightyWhirlpool:
 	jumptext .MayPassWhirlpoolText
-
 .MayPassWhirlpoolText:
 	text_far _MayPassWhirlpoolText
 	text_end
@@ -1190,12 +1111,10 @@ TryHeadbuttFromMenu:
 	call GetFacingTileCoord
 	call CheckHeadbuttTreeTile
 	jr nz, .no_tree
-
 	ld hl, HeadbuttFromMenuScript
 	call QueueScript
 	ld a, $81
 	ret
-
 .no_tree
 	call FieldMoveFailed
 	ld a, $80
@@ -1216,10 +1135,8 @@ HeadbuttFromMenuScript:
 HeadbuttScript:
 	callasm GetPartyNickname
 	writetext UseHeadbuttText
-
 	reloadmappart
 	callasm ShakeHeadbuttTree
-
 	callasm TreeMonEncounter
 	iffalse .no_battle
 	closetext
@@ -1227,7 +1144,6 @@ HeadbuttScript:
 	startbattle
 	reloadmapafterbattle
 	end
-
 .no_battle
 	writetext HeadbuttNothingText
 	waitbutton
@@ -1238,13 +1154,11 @@ TryHeadbuttOW::
 	ld d, HEADBUTT
 	call CheckPartyMove
 	jr c, .no
-
 	ld a, BANK(AskHeadbuttScript)
 	ld hl, AskHeadbuttScript
 	call CallScript
 	scf
 	ret
-
 .no
 	xor a
 	ret
@@ -1273,12 +1187,10 @@ TryRockSmashFromMenu:
 	ld a, d
 	cp SPRITEMOVEDATA_SMASHABLE_ROCK
 	jr nz, .no_rock
-
 	ld hl, RockSmashFromMenuScript
 	call QueueScript
 	ld a, $81
 	ret
-
 .no_rock
 	call FieldMoveFailed
 	ld a, $80
@@ -1287,7 +1199,6 @@ TryRockSmashFromMenu:
 GetFacingObject:
 	farcall CheckFacingObject
 	jr nc, .fail
-
 	ldh a, [hObjectStructIndex]
 	call GetObjectStruct
 	ld hl, OBJECT_MAP_OBJECT_INDEX
@@ -1301,7 +1212,6 @@ GetFacingObject:
 	ld d, a
 	and a
 	ret
-
 .fail
 	scf
 	ret
@@ -1319,7 +1229,6 @@ RockSmashScript:
 	earthquake 84
 	applymovementlasttalked MovementData_RockSmash
 	disappear -2
-
 	callasm RockMonEncounter
 	readmem wTempWildMonSpecies
 	iffalse .done
@@ -1340,7 +1249,6 @@ UseRockSmashText:
 AskRockSmashScript:
 	callasm HasRockSmash
 	ifequal 1, .no
-
 	opentext
 	writetext AskRockSmashText
 	yesorno
@@ -1362,7 +1270,7 @@ HasRockSmash:
 	ld d, ROCK_SMASH
 	call CheckPartyMove
 	jr nc, .yes
-; no
+	; no
 	ld a, 1
 	jr .done
 .yes
@@ -1385,7 +1293,6 @@ FishFunction:
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .FishTable:
 	dw .TryFish
 	dw .FishNoBite
@@ -1394,7 +1301,6 @@ FishFunction:
 	dw .FishNoFish
 
 .TryFish:
-; BUG: You can fish on top of NPCs (see docs/bugs_and_glitches.md)
 	ld a, [wPlayerState]
 	cp PLAYER_SURF
 	jr z, .fail
@@ -1403,18 +1309,18 @@ FishFunction:
 	call GetFacingTileCoord
 	call GetTileCollision
 	cp WATER_TILE
-	jr z, .facingwater
+	jr nz, .fail
+	farcall CheckFacingObject
+	jr nc, .facingwater
 .fail
 	ld a, $3
 	ret
-
 .facingwater
 	call GetFishingGroup
 	and a
 	jr nz, .goodtofish
 	ld a, $4
 	ret
-
 .goodtofish
 	ld d, a
 	ld a, [wFishingRodUsed]
@@ -1430,15 +1336,12 @@ FishFunction:
 	ld [wBattleType], a
 	ld a, $2
 	ret
-
 .nonibble
 	ld a, $1
 	ret
-
 .FailFish:
 	ld a, $80
 	ret
-
 .FishGotSomething:
 	ld a, $1
 	ld [wFishingResult], a
@@ -1446,7 +1349,6 @@ FishFunction:
 	call QueueScript
 	ld a, $81
 	ret
-
 .FishNoBite:
 	ld a, $2
 	ld [wFishingResult], a
@@ -1454,7 +1356,6 @@ FishFunction:
 	call QueueScript
 	ld a, $81
 	ret
-
 .FishNoFish:
 	ld a, $0
 	ld [wFishingResult], a
@@ -1484,10 +1385,8 @@ Script_GotABite:
 	iffalse .NotFacingUp
 	applymovement PLAYER, .Movement_FacingUp
 	sjump .FightTheHookedPokemon
-
 .NotFacingUp:
 	applymovement PLAYER, .Movement_NotFacingUp
-
 .FightTheHookedPokemon:
 	pause 40
 	applymovement PLAYER, .Movement_RestoreRod
@@ -1498,7 +1397,6 @@ Script_GotABite:
 	startbattle
 	reloadmapafterbattle
 	end
-
 .Movement_NotFacingUp:
 	fish_got_bite
 	fish_got_bite
@@ -1506,7 +1404,6 @@ Script_GotABite:
 	fish_got_bite
 	show_emote
 	step_end
-
 .Movement_FacingUp:
 	fish_got_bite
 	fish_got_bite
@@ -1515,7 +1412,6 @@ Script_GotABite:
 	step_sleep 1
 	show_emote
 	step_end
-
 .Movement_RestoreRod:
 	hide_emote
 	fish_cast_rod
@@ -1528,7 +1424,6 @@ Fishing_CheckFacingUp:
 	ld a, $1
 	jr z, .up
 	xor a
-
 .up
 	ld [wScriptVar], a
 	ret
@@ -1565,16 +1460,11 @@ RodNothingText:
 	text_far _RodNothingText
 	text_end
 
-UnusedNothingHereText: ; unreferenced
-	text_far _UnusedNothingHereText
-	text_end
-
 BikeFunction:
 	call .TryBike
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
 .TryBike:
 	call .CheckEnvironment
 	jr c, .CannotUseBike
@@ -1584,7 +1474,6 @@ BikeFunction:
 	cp PLAYER_BIKE
 	jr z, .GetOffBike
 	jr .CannotUseBike
-
 .GetOnBike:
 	ld hl, Script_GetOnBike
 	ld de, Script_GetOnBike_Register
@@ -1602,7 +1491,6 @@ BikeFunction:
 	call PlayMusic
 	ld a, $1
 	ret
-
 .GetOffBike:
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
@@ -1612,20 +1500,16 @@ BikeFunction:
 	call .CheckIfRegistered
 	ld a, BANK(Script_GetOffBike)
 	jr .done
-
 .CantGetOffBike:
 	ld hl, Script_CantGetOffBike
 	jr .done
-
 .CannotUseBike:
 	ld a, $0
 	ret
-
 .done
 	call QueueScript
 	ld a, $1
 	ret
-
 .CheckIfRegistered:
 	ld a, [wUsingItemWithSelect]
 	and a
@@ -1633,7 +1517,6 @@ BikeFunction:
 	ld h, d
 	ld l, e
 	ret
-
 .CheckEnvironment:
 	call GetMapEnvironment
 	call CheckOutdoorMap
@@ -1643,14 +1526,12 @@ BikeFunction:
 	cp GATE
 	jr z, .ok
 	jr .nope
-
 .ok
 	call GetPlayerTile
 	and $f ; lo nybble only
 	jr nz, .nope ; not FLOOR_TILE
 	xor a
 	ret
-
 .nope
 	scf
 	ret
@@ -1670,10 +1551,6 @@ Script_GetOnBike_Register:
 	closetext
 	special UpdatePlayerSprite
 	end
-
-Overworld_DummyFunction: ; unreferenced
-	nop
-	ret
 
 Script_GetOffBike:
 	reloadmappart
@@ -1697,7 +1574,6 @@ Script_CantGetOffBike:
 	waitbutton
 	closetext
 	end
-
 .CantGetOffBikeText:
 	text_far _CantGetOffBikeText
 	text_end
@@ -1714,17 +1590,14 @@ TryCutOW::
 	ld d, CUT
 	call CheckPartyMove
 	jr c, .cant_cut
-
 	ld de, ENGINE_HIVEBADGE
 	call CheckEngineFlag
 	jr c, .cant_cut
-
 	ld a, BANK(AskCutScript)
 	ld hl, AskCutScript
 	call CallScript
 	scf
 	ret
-
 .cant_cut
 	ld a, BANK(CantCutScript)
 	ld hl, CantCutScript
@@ -1742,7 +1615,6 @@ AskCutScript:
 .declined
 	closetext
 	end
-
 .CheckMap:
 	xor a
 	ld [wScriptVar], a

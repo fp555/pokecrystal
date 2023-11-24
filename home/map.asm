@@ -8,7 +8,8 @@ ClearUnusedMapBuffer::
 	ret
 
 CheckScenes::
-; Checks wCurMapSceneScriptPointer.  If it's empty, returns -1 in a.  Otherwise, returns the active scene ID in a.
+; Checks wCurMapSceneScriptPointer. If it's empty, returns -1 in a.
+; Otherwise, returns the active scene ID in a.
 	push hl
 	ld hl, wCurMapSceneScriptPointer
 	ld a, [hli]
@@ -132,10 +133,9 @@ LoadMetatiles::
 	ld e, l
 	ld d, h
 	; Set hl to the address of the current metatile data ([wTilesetBlocksAddress] + (a) tiles).
-; BUG: LoadMetatiles wraps around past 128 blocks (see docs/bugs_and_glitches.md)
-	add a
 	ld l, a
 	ld h, 0
+	add hl, hl
 	add hl, hl
 	add hl, hl
 	add hl, hl
@@ -334,14 +334,6 @@ CheckIndoorMap::
 	cp GATE
 	ret
 
-CheckUnknownMap:: ; unreferenced
-	cp INDOOR
-	ret z
-	cp GATE
-	ret z
-	cp ENVIRONMENT_5
-	ret
-
 LoadMapAttributes::
 	call CopyMapPartialAndAttributes
 	call SwitchToMapScriptsBank
@@ -377,11 +369,9 @@ ReadMapEvents::
 	call ReadWarps
 	call ReadCoordEvents
 	call ReadBGEvents
-
 	pop af
 	and a ; skip object events?
 	ret nz
-
 	call ReadObjectEvents
 	ret
 
@@ -411,34 +401,28 @@ GetMapConnections::
 	ld [wSouthConnectedMapGroup], a
 	ld [wWestConnectedMapGroup], a
 	ld [wEastConnectedMapGroup], a
-
 	ld a, [wMapConnections]
 	ld b, a
-
 	bit NORTH_F, b
 	jr z, .no_north
 	ld de, wNorthMapConnection
 	call GetMapConnection
 .no_north
-
 	bit SOUTH_F, b
 	jr z, .no_south
 	ld de, wSouthMapConnection
 	call GetMapConnection
 .no_south
-
 	bit WEST_F, b
 	jr z, .no_west
 	ld de, wWestMapConnection
 	call GetMapConnection
 .no_west
-
 	bit EAST_F, b
 	jr z, .no_east
 	ld de, wEastMapConnection
 	call GetMapConnection
 .no_east
-
 	ret
 
 GetMapConnection::
@@ -463,7 +447,6 @@ ReadMapSceneScripts::
 	ld a, c
 	and a
 	ret z
-
 	ld bc, SCENE_SCRIPT_SIZE
 	call AddNTimes
 	ret
@@ -479,7 +462,6 @@ ReadMapCallbacks::
 	ld a, c
 	and a
 	ret z
-
 	ld bc, CALLBACK_SIZE
 	call AddNTimes
 	ret
@@ -507,11 +489,9 @@ ReadCoordEvents::
 	ld [wCurMapCoordEventsPointer], a
 	ld a, h
 	ld [wCurMapCoordEventsPointer + 1], a
-
 	ld a, c
 	and a
 	ret z
-
 	ld bc, COORD_EVENT_SIZE
 	call AddNTimes
 	ret
@@ -524,11 +504,9 @@ ReadBGEvents::
 	ld [wCurMapBGEventsPointer], a
 	ld a, h
 	ld [wCurMapBGEventsPointer + 1], a
-
 	ld a, c
 	and a
 	ret z
-
 	ld bc, BG_EVENT_SIZE
 	call AddNTimes
 	ret

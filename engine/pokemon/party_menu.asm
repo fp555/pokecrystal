@@ -385,10 +385,13 @@ PlacePartyMonEvoStoneCompatibility:
 	call FarCopyBytes
 	ld hl, wStringBuffer1
 .loop2
-; BUG: EVOLVE_STAT can break Stone compatibility reporting (see docs/bugs_and_glitches.md)
 	ld a, [hli]
 	and a
 	jr z, .nope
+	cp EVOLVE_STAT
+	jr nz, .not_four_bytes
+	inc hl
+.not_four_bytes
 	inc hl
 	inc hl
 	cp EVOLVE_ITEM
@@ -402,11 +405,9 @@ PlacePartyMonEvoStoneCompatibility:
 	jr nz, .loop2
 	ld de, .string_able
 	ret
-
 .nope
 	ld de, .string_not_able
 	ret
-
 .string_able
 	db "ABLE@"
 .string_not_able
@@ -436,11 +437,9 @@ PlacePartyMonGender:
 	ld de, .male
 	jr nz, .got_gender
 	ld de, .female
-
 .got_gender
 	pop hl
 	call PlaceString
-
 .next
 	pop hl
 	ld de, 2 * SCREEN_WIDTH
@@ -450,13 +449,10 @@ PlacePartyMonGender:
 	dec c
 	jr nz, .loop
 	ret
-
 .male
 	db "♂…MALE@"
-
 .female
 	db "♀…FEMALE@"
-
 .unknown
 	db "…UNKNOWN@"
 
@@ -503,7 +499,6 @@ PlacePartyMonMobileBattleSelection:
 	add hl, de
 	dec a
 	jr .loop3
-
 .done
 	ld de, .String_Banme
 	push hl
@@ -527,7 +522,6 @@ PlacePartyMonMobileBattleSelection:
 	dec b
 	ret z
 	jr .loop2
-
 .String_Banme:
 	db "　ばんめ　　@" ; Place
 .String_Sanka_Shinai:
@@ -563,7 +557,6 @@ GetPartyMenuQualityIndexes:
 	ld h, [hl]
 	ld l, a
 	ret
-
 .skip
 	ld hl, PartyMenuQualityPointers.Default
 	ret
@@ -612,10 +605,8 @@ InitPartyMenuWithCancel:
 	inc b
 	cp b
 	jr c, .done
-
 .skip
 	ld a, 1
-
 .done
 	ld [wMenuCursorY], a
 	ld a, A_BUTTON | B_BUTTON
@@ -674,13 +665,11 @@ PartyMenuSelect:
 	add hl, bc
 	ld a, [hl]
 	ld [wCurPartySpecies], a
-
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
 	call WaitSFX
 	and a
 	ret
-
 .exitmenu
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
@@ -745,12 +734,6 @@ TeachWhichPKMNString:
 MoveToWhereString:
 	db "Move to where?@"
 
-ChooseAFemalePKMNString: ; unreferenced
-	db "Choose a ♀<PK><MN>.@"
-
-ChooseAMalePKMNString: ; unreferenced
-	db "Choose a ♂<PK><MN>.@"
-
 ToWhichPKMNString:
 	db "To which <PK><MN>?@"
 
@@ -766,7 +749,6 @@ PrintPartyMenuActionText:
 	ld hl, .MenuActionTexts
 	call .PrintText
 	ret
-
 .MenuActionTexts:
 ; entries correspond to PARTYMENUTEXT_* constants
 	dw .CuredOfPoisonText
@@ -779,47 +761,36 @@ PrintPartyMenuActionText:
 	dw .RevitalizedText
 	dw .GrewToLevelText
 	dw .CameToItsSensesText
-
 .RecoveredSomeHPText:
 	text_far _RecoveredSomeHPText
 	text_end
-
 .CuredOfPoisonText:
 	text_far _CuredOfPoisonText
 	text_end
-
 .RidOfParalysisText:
 	text_far _RidOfParalysisText
 	text_end
-
 .BurnWasHealedText:
 	text_far _BurnWasHealedText
 	text_end
-
 .WasDefrostedText:
 	text_far _WasDefrostedText
 	text_end
-
 .WokeUpText:
 	text_far _WokeUpText
 	text_end
-
 .HealthReturnedText:
 	text_far _HealthReturnedText
 	text_end
-
 .RevitalizedText:
 	text_far _RevitalizedText
 	text_end
-
 .GrewToLevelText:
 	text_far _GrewToLevelText
 	text_end
-
 .CameToItsSensesText:
 	text_far _CameToItsSensesText
 	text_end
-
 .PrintText:
 	ld e, a
 	ld d, 0

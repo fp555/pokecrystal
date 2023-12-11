@@ -38,12 +38,10 @@ Pokedex:
 	push af
 	ld a, $1
 	ldh [hInMenu], a
-
 	xor a
 	ldh [hMapAnims], a
 	call InitPokedex
 	call DelayFrame
-
 .main
 	call JoyTextDelay
 	ld a, [wJumptableIndex]
@@ -52,7 +50,6 @@ Pokedex:
 	call Pokedex_RunJumptable
 	call DelayFrame
 	jr .main
-
 .exit
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
@@ -60,7 +57,6 @@ Pokedex:
 	call ClearSprites
 	ld a, [wCurDexMode]
 	ld [wLastDexMode], a
-
 	pop af
 	ldh [hInMenu], a
 	pop af
@@ -81,23 +77,18 @@ InitPokedex:
 	call ClearSprites
 	call ClearTilemap
 	call Pokedex_LoadGFX
-
 	ld hl, wPokedexDataStart
 	ld bc, wPokedexDataEnd - wPokedexDataStart
 	xor a
 	call ByteFill
-
 	xor a
 	ld [wJumptableIndex], a
 	ld [wPrevDexEntryJumptableIndex], a
 	ld [wPrevDexEntryBackup], a
 	ld [wUnusedPokedexByte], a
-
 	call Pokedex_CheckUnlockedUnownMode
-
 	ld a, [wLastDexMode]
 	ld [wCurDexMode], a
-
 	call Pokedex_OrderMonsByMode
 	call Pokedex_InitCursorPosition
 	call Pokedex_GetLandmark
@@ -109,11 +100,9 @@ Pokedex_CheckUnlockedUnownMode:
 	ld a, [wStatusFlags]
 	bit STATUSFLAGS_UNOWN_DEX_F, a
 	jr nz, .unlocked
-
 	xor a
 	ld [wUnlockedUnownMode], a
 	ret
-
 .unlocked
 	ld a, TRUE
 	ld [wUnlockedUnownMode], a
@@ -126,12 +115,10 @@ Pokedex_InitCursorPosition:
 	jr z, .done
 	cp NUM_POKEMON + 1
 	jr nc, .done
-
 	ld b, a
 	ld a, [wDexListingEnd]
 	cp $8
 	jr c, .only_one_page
-
 	sub $7
 	ld c, a
 .loop1
@@ -144,7 +131,6 @@ Pokedex_InitCursorPosition:
 	ld [wDexListingScrollOffset], a
 	dec c
 	jr nz, .loop1
-
 .only_one_page
 	ld c, $7
 .loop2
@@ -157,7 +143,6 @@ Pokedex_InitCursorPosition:
 	ld [wDexListingCursor], a
 	dec c
 	jr nz, .loop2
-
 .done
 	ret
 
@@ -167,16 +152,13 @@ Pokedex_GetLandmark:
 	ld a, [wMapNumber]
 	ld c, a
 	call GetWorldMapLocation
-
 	cp LANDMARK_SPECIAL
 	jr nz, .load
-
 	ld a, [wBackupMapGroup]
 	ld b, a
 	ld a, [wBackupMapNumber]
 	ld c, a
 	call GetWorldMapLocation
-
 .load
 	ld [wDexCurLocation], a
 	ret
@@ -186,7 +168,6 @@ Pokedex_RunJumptable:
 	ld hl, .Jumptable
 	call Pokedex_LoadPointer
 	jp hl
-
 .Jumptable:
 ; entries correspond to DEXSTATE_* constants
 	dw Pokedex_InitMainScreen
@@ -234,7 +215,6 @@ Pokedex_InitMainScreen:
 	call Pokedex_DrawMainScreenBG
 	ld a, POKEDEX_SCX
 	ldh [hSCX], a
-
 	ld a, [wCurDexMode]
 	cp DEXMODE_OLD
 	ld a, $4a
@@ -245,7 +225,6 @@ Pokedex_InitMainScreen:
 	xor a
 	ldh [hWY], a
 	call WaitBGMap
-
 	call Pokedex_ResetBGMapMode
 	ld a, -1
 	ld [wCurPartySpecies], a
@@ -285,7 +264,6 @@ Pokedex_UpdateMainScreen:
 	call Pokedex_SetBGMapMode3
 	call Pokedex_ResetBGMapMode
 	ret
-
 .a
 	call Pokedex_GetSelectedMon
 	call Pokedex_CheckSeen
@@ -295,7 +273,6 @@ Pokedex_UpdateMainScreen:
 	ld a, DEXSTATE_MAIN_SCR
 	ld [wPrevDexEntryJumptableIndex], a
 	ret
-
 .select
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_OPTION_SCR
@@ -306,7 +283,6 @@ Pokedex_UpdateMainScreen:
 	ldh [hWX], a
 	call DelayFrame
 	ret
-
 .start
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_SEARCH_SCR
@@ -317,7 +293,6 @@ Pokedex_UpdateMainScreen:
 	ldh [hWX], a
 	call DelayFrame
 	ret
-
 .b
 	ld a, DEXSTATE_EXIT
 	ld [wJumptableIndex], a
@@ -364,20 +339,17 @@ Pokedex_UpdateDexEntryScreen:
 	ret nc
 	call Pokedex_IncrementDexPointer
 	ret
-
 .do_menu_action
 	ld a, [wDexArrowCursorPosIndex]
 	ld hl, DexEntryScreen_MenuActionJumptable
 	call Pokedex_LoadPointer
 	jp hl
-
 .return_to_prev_screen
 	ld a, [wLastVolume]
 	and a
 	jr z, .max_volume
 	ld a, MAX_VOLUME
 	ld [wLastVolume], a
-
 .max_volume
 	call MaxVolume
 	ld a, [wPrevDexEntryJumptableIndex]
@@ -432,7 +404,6 @@ DexEntryScreen_MenuActionJumptable:
 	dw .Area
 	dw .Cry
 	dw .Print
-
 .Area:
 	call Pokedex_BlackOutBG
 	xor a
@@ -463,17 +434,10 @@ DexEntryScreen_MenuActionJumptable:
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
 	ret
-
 .Cry:
-; BUG: Playing Entei's Pokédex cry can distort Raikou's and Suicune's (see docs/bugs_and_glitches.md)
-	call Pokedex_GetSelectedMon
-	ld a, [wTempSpecies]
-	call GetCryIndex
-	ld e, c
-	ld d, b
-	call PlayCry
+	ld a, [wCurPartySpecies]
+	call PlayMonCry
 	ret
-
 .Print:
 	call Pokedex_ApplyPrintPals
 	xor a
@@ -544,54 +508,44 @@ Pokedex_UpdateOptionScreen:
 	and A_BUTTON
 	jr nz, .do_menu_action
 	ret
-
 .do_menu_action
 	ld a, [wDexArrowCursorPosIndex]
 	ld hl, .MenuActionJumptable
 	call Pokedex_LoadPointer
 	jp hl
-
 .return_to_main_screen
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_MAIN_SCR
 	ld [wJumptableIndex], a
 	ret
-
 .NoUnownModeArrowCursorData:
 	db D_UP | D_DOWN, 3
 	dwcoord 2,  4 ; NEW
 	dwcoord 2,  6 ; OLD
 	dwcoord 2,  8 ; ABC
-
 .ArrowCursorData:
 	db D_UP | D_DOWN, 4
 	dwcoord 2,  4 ; NEW
 	dwcoord 2,  6 ; OLD
 	dwcoord 2,  8 ; ABC
 	dwcoord 2, 10 ; UNOWN
-
 .MenuActionJumptable:
 	dw .MenuAction_NewMode
 	dw .MenuAction_OldMode
 	dw .MenuAction_ABCMode
 	dw .MenuAction_UnownMode
-
 .MenuAction_NewMode:
 	ld b, DEXMODE_NEW
 	jr .ChangeMode
-
 .MenuAction_OldMode:
 	ld b, DEXMODE_OLD
 	jr .ChangeMode
-
 .MenuAction_ABCMode:
 	ld b, DEXMODE_ABC
-
 .ChangeMode:
 	ld a, [wCurDexMode]
 	cp b
 	jr z, .skip_changing_mode ; Skip if new mode is same as current.
-
 	ld a, b
 	ld [wCurDexMode], a
 	call Pokedex_OrderMonsByMode
@@ -600,13 +554,11 @@ Pokedex_UpdateOptionScreen:
 	ld [wDexListingScrollOffset], a
 	ld [wDexListingCursor], a
 	call Pokedex_InitCursorPosition
-
 .skip_changing_mode
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_MAIN_SCR
 	ld [wJumptableIndex], a
 	ret
-
 .MenuAction_UnownMode:
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_UNOWN_MODE
@@ -646,45 +598,38 @@ Pokedex_UpdateSearchScreen:
 	and A_BUTTON
 	jr nz, .do_menu_action
 	ret
-
 .do_menu_action
 	ld a, [wDexArrowCursorPosIndex]
 	ld hl, .MenuActionJumptable
 	call Pokedex_LoadPointer
 	jp hl
-
 .cancel
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_MAIN_SCR
 	ld [wJumptableIndex], a
 	ret
-
 .ArrowCursorData:
 	db D_UP | D_DOWN, 4
 	dwcoord 2, 4  ; TYPE 1
 	dwcoord 2, 6  ; TYPE 2
 	dwcoord 2, 13 ; BEGIN SEARCH
 	dwcoord 2, 15 ; CANCEL
-
 .MenuActionJumptable:
 	dw .MenuAction_MonSearchType
 	dw .MenuAction_MonSearchType
 	dw .MenuAction_BeginSearch
 	dw .MenuAction_Cancel
-
 .MenuAction_MonSearchType:
 	call Pokedex_NextSearchMonType
 	call Pokedex_PlaceSearchScreenTypeStrings
 	ret
-
 .MenuAction_BeginSearch:
 	call Pokedex_SearchForMons
 	farcall AnimateDexSearchSlowpoke
 	ld a, [wDexSearchResultCount]
 	and a
 	jr nz, .show_search_results
-
-; No mon with matching types was found.
+	; No mon with matching types was found.
 	call Pokedex_OrderMonsByMode
 	call Pokedex_DisplayTypeNotFoundMessage
 	xor a
@@ -694,7 +639,6 @@ Pokedex_UpdateSearchScreen:
 	call Pokedex_PlaceSearchScreenTypeStrings
 	call WaitBGMap
 	ret
-
 .show_search_results
 	ld [wDexListingEnd], a
 	ld a, [wDexListingScrollOffset]
@@ -710,7 +654,6 @@ Pokedex_UpdateSearchScreen:
 	ld a, DEXSTATE_SEARCH_RESULTS_SCR
 	ld [wJumptableIndex], a
 	ret
-
 .MenuAction_Cancel:
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_MAIN_SCR
@@ -769,7 +712,6 @@ Pokedex_UpdateSearchResultsScreen:
 	call Pokedex_SetBGMapMode3
 	call Pokedex_ResetBGMapMode
 	ret
-
 .go_to_dex_entry
 	call Pokedex_GetSelectedMon
 	call Pokedex_CheckSeen
@@ -779,7 +721,6 @@ Pokedex_UpdateSearchResultsScreen:
 	ld a, DEXSTATE_SEARCH_RESULTS_SCR
 	ld [wPrevDexEntryJumptableIndex], a
 	ret
-
 .return_to_search_screen
 	ld a, [wDexListingScrollOffsetBackup]
 	ld [wDexListingScrollOffset], a
@@ -819,7 +760,6 @@ Pokedex_UpdateUnownMode:
 	jr nz, .a_b
 	call Pokedex_UnownModeHandleDPadInput
 	ret
-
 .a_b
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_OPTION_SCR
@@ -829,13 +769,11 @@ Pokedex_UpdateUnownMode:
 	jr nz, .decompress
 	farcall LoadSGBPokedexGFX2
 	jr .done
-
 .decompress
 	ld hl, PokedexLZ
 	ld de, vTiles2 tile $31
 	lb bc, BANK(PokedexLZ), 58
 	call DecompressRequest2bpp
-
 .done
 	ret
 
@@ -848,7 +786,6 @@ Pokedex_UnownModeHandleDPadInput:
 	and D_LEFT
 	jr nz, .left
 	ret
-
 .right
 	ld a, [wDexUnownCount]
 	ld e, a
@@ -860,7 +797,6 @@ Pokedex_UnownModeHandleDPadInput:
 	ld a, [hl]
 	inc [hl]
 	jr .update
-
 .left
 	ld hl, wDexCurUnownIndex
 	ld a, [hl]
@@ -868,7 +804,6 @@ Pokedex_UnownModeHandleDPadInput:
 	ret z
 	ld a, [hl]
 	dec [hl]
-
 .update
 	push af
 	xor a
@@ -919,7 +854,6 @@ Pokedex_NextOrPreviousDexEntry:
 	jr nz, .down
 	and a
 	ret
-
 .up
 	ld a, [wDexListingHeight]
 	ld d, a
@@ -931,7 +865,6 @@ Pokedex_NextOrPreviousDexEntry:
 	call Pokedex_CheckSeen
 	jr nz, .yep
 	jr .up
-
 .down
 	ld a, [wDexListingHeight]
 	ld d, a
@@ -943,11 +876,9 @@ Pokedex_NextOrPreviousDexEntry:
 	call Pokedex_CheckSeen
 	jr nz, .yep
 	jr .down
-
 .yep
 	scf
 	ret
-
 .nope
 	ld a, [wBackupDexListingCursor]
 	ld [wDexListingCursor], a
@@ -1020,7 +951,7 @@ Pokedex_ListingMoveUpOnePage:
 	jr z, Pokedex_ListingPosStayedSame
 	cp d
 	jr nc, .not_near_top
-; If we're already less than page away from the top, go to the top.
+	; If we're already less than page away from the top, go to the top.
 	xor a
 	ld [hl], a
 	jr Pokedex_ListingPosChanged
@@ -1129,11 +1060,14 @@ Pokedex_DrawMainScreenBG:
 
 String_SEEN:
 	db "SEEN", -1
+
 String_OWN:
 	db "OWN", -1
+
 String_SELECT_OPTION:
 	db $3b, $48, $49, $4a, $44, $45, $46, $47 ; SELECT > OPTION
 	; fallthrough
+
 String_START_SEARCH:
 	db $3c, $3b, $41, $42, $43, $4b, $4c, $4d, $4e, $3c, -1 ; START > SEARCH
 
@@ -1168,9 +1102,6 @@ Pokedex_DrawDexEntryScreenBG:
 	call Pokedex_PlaceString
 	call Pokedex_PlaceFrontpicTopLeftCorner
 	ret
-
-.Number: ; unreferenced
-	db $5c, $5d, -1 ; No.
 .Height:
 	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
 .Weight:
@@ -1199,16 +1130,13 @@ Pokedex_DrawOptionScreenBG:
 	ld de, .UnownMode
 	call PlaceString
 	ret
-
 .Title:
 	db $3b, " OPTION ", $3c, -1
-
 .Modes:
 	db   "NEW #DEX MODE"
 	next "OLD #DEX MODE"
 	next "A to Z MODE"
 	db   "@"
-
 .UnownMode:
 	db "UNOWN MODE@"
 
@@ -1233,18 +1161,14 @@ Pokedex_DrawSearchScreenBG:
 	ld de, .Menu
 	call PlaceString
 	ret
-
 .Title:
 	db $3b, " SEARCH ", $3c, -1
-
 .TypeLeftRightArrows:
 	db $3d, "        ", $3e, -1
-
 .Types:
 	db   "TYPE1"
 	next "TYPE2"
 	db   "@"
-
 .Menu:
 	db   "BEGIN SEARCH!!"
 	next "CANCEL"
@@ -1279,7 +1203,6 @@ Pokedex_DrawSearchResultsScreenBG:
 	ld [hl], $6a
 	call Pokedex_PlaceFrontpicTopLeftCorner
 	ret
-
 .BottomWindowText:
 	db   "SEARCH RESULTS"
 	next "  TYPE"

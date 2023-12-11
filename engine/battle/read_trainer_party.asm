@@ -2,22 +2,18 @@ ReadTrainerParty:
 	ld a, [wInBattleTowerBattle]
 	bit 0, a
 	ret nz
-
 	ld a, [wLinkMode]
 	and a
 	ret nz
-
 	ld hl, wOTPartyCount
 	xor a
 	ld [hli], a
 	dec a
 	ld [hl], a
-
 	ld hl, wOTPartyMons
 	ld bc, PARTYMON_STRUCT_LENGTH * PARTY_LENGTH
 	xor a
 	call ByteFill
-
 	ld a, [wOtherTrainerClass]
 	cp CAL
 	jr nz, .not_cal2
@@ -26,7 +22,6 @@ ReadTrainerParty:
 	jr z, .cal2
 	ld a, [wOtherTrainerClass]
 .not_cal2
-
 	dec a
 	ld c, a
 	ld b, 0
@@ -36,24 +31,20 @@ ReadTrainerParty:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	ld a, [wOtherTrainerID]
 	ld b, a
 .skip_trainer
 	dec b
-	jr z, .got_trainer
+	jr z, .skip_name
 .loop
 	ld a, [hli]
 	cp -1
 	jr nz, .loop
 	jr .skip_trainer
-.got_trainer
-
 .skip_name
 	ld a, [hli]
 	cp "@"
 	jr nz, .skip_name
-
 	ld a, [hli]
 	ld c, a
 	ld b, 0
@@ -68,10 +59,8 @@ ReadTrainerParty:
 	ld bc, .done
 	push bc
 	jp hl
-
 .done
 	jp ComputeTrainerReward
-
 .cal2
 	ld a, BANK(sMysteryGiftTrainer)
 	call OpenSRAM
@@ -95,7 +84,6 @@ TrainerType1:
 	ld a, [hli]
 	cp $ff
 	ret z
-
 	ld [wCurPartyLevel], a
 	ld a, [hli]
 	ld [wCurPartySpecies], a
@@ -106,21 +94,18 @@ TrainerType1:
 	pop hl
 	jr .loop
 
-TrainerType2:
-; moves
+TrainerType2: ; moves
 	ld h, d
 	ld l, e
 .loop
 	ld a, [hli]
 	cp $ff
 	ret z
-
 	ld [wCurPartyLevel], a
 	ld a, [hli]
 	ld [wCurPartySpecies], a
 	ld a, OTPARTYMON
 	ld [wMonType], a
-
 	push hl
 	predef TryAddMonToParty
 	ld a, [wOTPartyCount]
@@ -131,7 +116,6 @@ TrainerType2:
 	ld d, h
 	ld e, l
 	pop hl
-
 	ld b, NUM_MOVES
 .copy_moves
 	ld a, [hli]
@@ -139,9 +123,7 @@ TrainerType2:
 	inc de
 	dec b
 	jr nz, .copy_moves
-
 	push hl
-
 	ld a, [wOTPartyCount]
 	dec a
 	ld hl, wOTPartyMon1Species
@@ -155,13 +137,11 @@ TrainerType2:
 	ld hl, MON_MOVES
 	add hl, de
 	pop de
-
 	ld b, NUM_MOVES
 .copy_pp
 	ld a, [hli]
 	and a
 	jr z, .copied_pp
-
 	push hl
 	push bc
 	dec a
@@ -172,25 +152,21 @@ TrainerType2:
 	call GetFarByte
 	pop bc
 	pop hl
-
 	ld [de], a
 	inc de
 	dec b
 	jr nz, .copy_pp
 .copied_pp
-
 	pop hl
 	jr .loop
 
-TrainerType3:
-; item
+TrainerType3: ; item
 	ld h, d
 	ld l, e
 .loop
 	ld a, [hli]
 	cp $ff
 	ret z
-
 	ld [wCurPartyLevel], a
 	ld a, [hli]
 	ld [wCurPartySpecies], a
@@ -210,22 +186,18 @@ TrainerType3:
 	ld [de], a
 	jr .loop
 
-TrainerType4:
-; item + moves
+TrainerType4: ; item + moves
 	ld h, d
 	ld l, e
 .loop
 	ld a, [hli]
 	cp $ff
 	ret z
-
 	ld [wCurPartyLevel], a
 	ld a, [hli]
 	ld [wCurPartySpecies], a
-
 	ld a, OTPARTYMON
 	ld [wMonType], a
-
 	push hl
 	predef TryAddMonToParty
 	ld a, [wOTPartyCount]
@@ -236,10 +208,8 @@ TrainerType4:
 	ld d, h
 	ld e, l
 	pop hl
-
 	ld a, [hli]
 	ld [de], a
-
 	push hl
 	ld a, [wOTPartyCount]
 	dec a
@@ -249,7 +219,6 @@ TrainerType4:
 	ld d, h
 	ld e, l
 	pop hl
-
 	ld b, NUM_MOVES
 .copy_moves
 	ld a, [hli]
@@ -257,9 +226,7 @@ TrainerType4:
 	inc de
 	dec b
 	jr nz, .copy_moves
-
 	push hl
-
 	ld a, [wOTPartyCount]
 	dec a
 	ld hl, wOTPartyMon1
@@ -269,18 +236,15 @@ TrainerType4:
 	ld e, l
 	ld hl, MON_PP
 	add hl, de
-
 	push hl
 	ld hl, MON_MOVES
 	add hl, de
 	pop de
-
 	ld b, NUM_MOVES
 .copy_pp
 	ld a, [hli]
 	and a
 	jr z, .copied_pp
-
 	push hl
 	push bc
 	dec a
@@ -291,13 +255,11 @@ TrainerType4:
 	call GetFarByte
 	pop bc
 	pop hl
-
 	ld [de], a
 	inc de
 	dec b
 	jr nz, .copy_pp
 .copied_pp
-
 	pop hl
 	jr .loop
 
@@ -326,7 +288,6 @@ Battle_GetTrainerName::
 	bit 0, a
 	ld hl, wOTPlayerName
 	jp nz, CopyTrainerName
-
 	ld a, [wOtherTrainerID]
 	ld b, a
 	ld a, [wOtherTrainerClass]
@@ -336,20 +297,17 @@ GetTrainerName::
 	ld a, c
 	cp CAL
 	jr nz, .not_cal2
-
 	ld a, BANK(sMysteryGiftTrainerHouseFlag)
 	call OpenSRAM
 	ld a, [sMysteryGiftTrainerHouseFlag]
 	and a
 	call CloseSRAM
 	jr z, .not_cal2
-
 	ld a, BANK(sMysteryGiftPartnerName)
 	call OpenSRAM
 	ld hl, sMysteryGiftPartnerName
 	call CopyTrainerName
 	jp CloseSRAM
-
 .not_cal2
 	dec c
 	push bc
@@ -361,11 +319,9 @@ GetTrainerName::
 	ld h, [hl]
 	ld l, a
 	pop bc
-
 .loop
 	dec b
 	jr z, CopyTrainerName
-
 .skip
 	ld a, [hli]
 	cp $ff
@@ -380,12 +336,42 @@ CopyTrainerName:
 	pop de
 	ret
 
-IncompleteCopyNameFunction: ; unreferenced
-; Copy of CopyTrainerName but without "call CopyBytes"
-	ld de, wStringBuffer1
-	push de
-	ld bc, NAME_LENGTH
-	pop de
-	ret
-
 INCLUDE "data/trainers/parties.asm"
+
+SetTrainerBattleLevel:
+	ld a, 255
+	ld [wCurPartyLevel], a
+	ld a, [wInBattleTowerBattle]
+	bit 0, a
+	ret nz
+	ld a, [wLinkMode]
+	and a
+	ret nz
+	ld a, [wOtherTrainerClass]
+	dec a
+	ld c, a
+	ld b, 0
+	ld hl, TrainerGroups
+	add hl, bc
+	add hl, bc
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	ld a, [wOtherTrainerID]
+	ld b, a
+.skip_trainer
+	dec b
+	jr z, .skip_name
+.skip_party
+	ld a, [hli]
+	cp $ff
+	jr nz, .skip_party
+	jr .skip_trainer
+.skip_name
+	ld a, [hli]
+	cp "@"
+	jr nz, .skip_name
+	inc hl
+	ld a, [hl]
+	ld [wCurPartyLevel], a
+	ret

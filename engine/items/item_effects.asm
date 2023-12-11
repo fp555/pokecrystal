@@ -226,18 +226,15 @@ PokeBallEffect:
 	call CloseSRAM
 	jp z, Ball_BoxIsFullMessage
 .room_in_party
-; BUG: Using a Park Ball in non-Contest battles has a corrupt animation (see docs/bugs_and_glitches.md)
 	xor a
 	ld [wWildMon], a
-	ld a, [wCurItem]
-	cp PARK_BALL
+	ld a, [wBattleType]
+	cp BATTLETYPE_CONTEST
 	call nz, ReturnToBattle_UseBall
-
 	ld hl, wOptions
 	res NO_TEXT_SCROLL, [hl]
 	ld hl, ItemUsedText
 	call PrintText
-
 	ld a, [wEnemyMonCatchRate]
 	ld b, a
 	ld a, [wBattleType]

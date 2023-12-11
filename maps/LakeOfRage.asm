@@ -14,18 +14,10 @@
 
 LakeOfRage_MapScripts:
 	def_scene_scripts
-	scene_script LakeOfRageNoop1Scene ; unusable
-	scene_script LakeOfRageNoop2Scene ; unusable
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, LakeOfRageFlypointCallback
 	callback MAPCALLBACK_OBJECTS, LakeOfRageWesleyCallback
-
-LakeOfRageNoop1Scene:
-	end
-
-LakeOfRageNoop2Scene:
-	end
 
 LakeOfRageFlypointCallback:
 	setflag ENGINE_FLYPOINT_LAKE_OF_RAGE
@@ -36,7 +28,6 @@ LakeOfRageWesleyCallback:
 	ifequal WEDNESDAY, .WesleyAppears
 	disappear LAKEOFRAGE_WESLEY
 	endcallback
-
 .WesleyAppears:
 	appear LAKEOFRAGE_WESLEY
 	endcallback
@@ -62,14 +53,12 @@ LakeOfRageLanceScript:
 	setevent EVENT_DECIDED_TO_HELP_LANCE
 	setmapscene MAHOGANY_MART_1F, SCENE_MAHOGANYMART1F_LANCE_UNCOVERS_STAIRS
 	end
-
 .RefusedToHelp:
 	writetext LakeOfRageLanceRefusedText
 	waitbutton
 	closetext
 	setevent EVENT_REFUSED_TO_HELP_LANCE_AT_LAKE_OF_RAGE
 	end
-
 .AskAgainForHelp:
 	faceplayer
 	opentext
@@ -136,7 +125,6 @@ MagikarpHouseSignScript:
 	waitbutton
 	closetext
 	end
-
 .MagikarpLengthRecord:
 	promptbutton
 	special MagikarpHouseSign
@@ -145,7 +133,6 @@ MagikarpHouseSignScript:
 
 TrainerFisherAndre:
 	trainer FISHER, ANDRE, EVENT_BEAT_FISHER_ANDRE, FisherAndreSeenText, FisherAndreBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -156,7 +143,6 @@ TrainerFisherAndre:
 
 TrainerFisherRaymond:
 	trainer FISHER, RAYMOND, EVENT_BEAT_FISHER_RAYMOND, FisherRaymondSeenText, FisherRaymondBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -167,7 +153,6 @@ TrainerFisherRaymond:
 
 TrainerCooltrainermAaron:
 	trainer COOLTRAINERM, AARON, EVENT_BEAT_COOLTRAINERM_AARON, CooltrainermAaronSeenText, CooltrainermAaronBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -178,7 +163,6 @@ TrainerCooltrainermAaron:
 
 TrainerCooltrainerfLois:
 	trainer COOLTRAINERF, LOIS, EVENT_BEAT_COOLTRAINERF_LOIS, CooltrainerfLoisSeenText, CooltrainerfLoisBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -512,8 +496,8 @@ LakeOfRage_MapEvents:
 	object_event 20, 26, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LakeOfRageGrampsScript, -1
 	object_event 36, 13, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LakeOfRageSuperNerdScript, -1
 	object_event 25, 29, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LakeOfRageCooltrainerFScript, -1
-	object_event 30, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerFisherAndre, EVENT_LAKE_OF_RAGE_CIVILIANS
-	object_event 24, 26, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerFisherRaymond, EVENT_LAKE_OF_RAGE_CIVILIANS
+	object_event 30, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerFisherAndre, EVENT_LAKE_OF_RAGE_CIVILIANS
+	object_event 24, 26, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerFisherRaymond, EVENT_LAKE_OF_RAGE_CIVILIANS
 	object_event  4, 15, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerCooltrainermAaron, EVENT_LAKE_OF_RAGE_CIVILIANS
 	object_event 36,  7, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, TrainerCooltrainerfLois, EVENT_LAKE_OF_RAGE_CIVILIANS
 	object_event 18, 22, SPRITE_GYARADOS, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, RedGyarados, EVENT_LAKE_OF_RAGE_RED_GYARADOS

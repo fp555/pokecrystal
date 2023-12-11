@@ -48,7 +48,6 @@ AzaleaGymBugsyScript:
 	waitbutton
 	closetext
 	end
-
 .GotFuryCutter:
 	writetext BugsyText_BugMonsAreDeep
 	waitbutton
@@ -60,16 +59,13 @@ AzaleaGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
 TrainerTwinsAmyandmay1:
 	trainer TWINS, AMYANDMAY1, EVENT_BEAT_TWINS_AMY_AND_MAY, TwinsAmyandmay1SeenText, TwinsAmyandmay1BeatenText, 0, .AfterScript
-
 .AfterScript:
 	endifjustbattled
 	opentext
@@ -80,7 +76,6 @@ TrainerTwinsAmyandmay1:
 
 TrainerTwinsAmyandmay2:
 	trainer TWINS, AMYANDMAY2, EVENT_BEAT_TWINS_AMY_AND_MAY, TwinsAmyandmay2SeenText, TwinsAmyandmay2BeatenText, 0, .AfterScript
-
 .AfterScript:
 	endifjustbattled
 	opentext
@@ -91,7 +86,6 @@ TrainerTwinsAmyandmay2:
 
 TrainerBugCatcherBenny:
 	trainer BUG_CATCHER, BUG_CATCHER_BENNY, EVENT_BEAT_BUG_CATCHER_BENNY, BugCatcherBennySeenText, BugCatcherBennyBeatenText, 0, .AfterScript
-
 .AfterScript:
 	endifjustbattled
 	opentext
@@ -102,7 +96,6 @@ TrainerBugCatcherBenny:
 
 TrainerBugCatcherAl:
 	trainer BUG_CATCHER, AL, EVENT_BEAT_BUG_CATCHER_AL, BugCatcherAlSeenText, BugCatcherAlBeatenText, 0, .AfterScript
-
 .AfterScript:
 	endifjustbattled
 	opentext
@@ -113,7 +106,6 @@ TrainerBugCatcherAl:
 
 TrainerBugCatcherJosh:
 	trainer BUG_CATCHER, JOSH, EVENT_BEAT_BUG_CATCHER_JOSH, BugCatcherJoshSeenText, BugCatcherJoshBeatenText, 0, .AfterScript
-
 .AfterScript:
 	endifjustbattled
 	opentext
@@ -131,7 +123,6 @@ AzaleaGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .AzaleaGymGuideWinScript:
 	opentext
 	writetext AzaleaGymGuideWinText

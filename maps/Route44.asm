@@ -18,7 +18,6 @@ Route44_MapScripts:
 
 TrainerBirdKeeperVance1:
 	trainer BIRD_KEEPER, VANCE1, EVENT_BEAT_BIRD_KEEPER_VANCE, BirdKeeperVance1SeenText, BirdKeeperVance1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_BIRDKEEPER_VANCE
 	endifjustbattled
@@ -34,7 +33,6 @@ TrainerBirdKeeperVance1:
 	setevent EVENT_VANCE_ASKED_FOR_PHONE_NUMBER
 	scall Route44AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route44AskNumber2M
 .AskForNumber:
@@ -44,7 +42,6 @@ TrainerBirdKeeperVance1:
 	gettrainername STRING_BUFFER_3, BIRD_KEEPER, VANCE1
 	scall Route44RegisteredNumberM
 	sjump Route44NumberAcceptedM
-
 .WantsBattle:
 	scall Route44RematchM
 	winlosstext BirdKeeperVance1BeatenText, 0
@@ -65,7 +62,6 @@ TrainerBirdKeeperVance1:
 	loadmem wVanceFightCount, 1
 	clearflag ENGINE_VANCE_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer BIRD_KEEPER, VANCE2
 	startbattle
@@ -73,7 +69,6 @@ TrainerBirdKeeperVance1:
 	loadmem wVanceFightCount, 2
 	clearflag ENGINE_VANCE_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer BIRD_KEEPER, VANCE3
 	startbattle
@@ -88,10 +83,8 @@ TrainerBirdKeeperVance1:
 	iffalse VancePackFull
 	setevent EVENT_GOT_CARBOS_FROM_VANCE
 	sjump Route44NumberAcceptedM
-
 .ReceivedCarbosBefore:
 	end
-
 .Carbos:
 	opentext
 	writetext BirdKeeperVance2BeatenText
@@ -149,7 +142,6 @@ Route44RematchGiftM:
 
 TrainerPsychicPhil:
 	trainer PSYCHIC_T, PHIL, EVENT_BEAT_PSYCHIC_PHIL, PsychicPhilSeenText, PsychicPhilBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -160,7 +152,6 @@ TrainerPsychicPhil:
 
 TrainerFisherWilton1:
 	trainer FISHER, WILTON1, EVENT_BEAT_FISHER_WILTON, FisherWilton1SeenText, FisherWilton1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_FISHER_WILTON
 	endifjustbattled
@@ -178,7 +169,6 @@ TrainerFisherWilton1:
 	setevent EVENT_WILTON_ASKED_FOR_PHONE_NUMBER
 	scall Route44AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route44AskNumber2M
 .AskForNumber:
@@ -188,7 +178,6 @@ TrainerFisherWilton1:
 	gettrainername STRING_BUFFER_3, FISHER, WILTON1
 	scall Route44RegisteredNumberM
 	sjump Route44NumberAcceptedM
-
 .WantsBattle:
 	scall Route44RematchM
 	winlosstext FisherWilton1BeatenText, 0
@@ -209,7 +198,6 @@ TrainerFisherWilton1:
 	loadmem wWiltonFightCount, 1
 	clearflag ENGINE_WILTON_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer FISHER, WILTON2
 	startbattle
@@ -217,14 +205,12 @@ TrainerFisherWilton1:
 	loadmem wWiltonFightCount, 2
 	clearflag ENGINE_WILTON_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer FISHER, WILTON3
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_WILTON_READY_FOR_REMATCH
 	end
-
 .HasItem:
 	scall Route44GiftM
 	checkevent EVENT_WILTON_HAS_ULTRA_BALL
@@ -237,25 +223,21 @@ TrainerFisherWilton1:
 	verbosegiveitem ULTRA_BALL
 	iffalse .Route44PackFullM
 	sjump .ItemReceived
-
 .GreatBall:
 	verbosegiveitem GREAT_BALL
 	iffalse .Route44PackFullM
 	sjump .ItemReceived
-
 .PokeBall:
 	verbosegiveitem POKE_BALL
 	iffalse .Route44PackFullM
 .ItemReceived:
 	clearflag ENGINE_WILTON_HAS_ITEM
 	sjump Route44NumberAcceptedM
-
 .Route44PackFullM:
 	sjump Route44PackFullM
 
 TrainerFisherEdgar:
 	trainer FISHER, EDGAR, EVENT_BEAT_FISHER_EDGAR, FisherEdgarSeenText, FisherEdgarBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -266,7 +248,6 @@ TrainerFisherEdgar:
 
 TrainerCooltrainerfCybil:
 	trainer COOLTRAINERF, CYBIL, EVENT_BEAT_COOLTRAINERF_CYBIL, CooltrainerfCybilSeenText, CooltrainerfCybilBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -277,7 +258,6 @@ TrainerCooltrainerfCybil:
 
 TrainerPokemaniacZach:
 	trainer POKEMANIAC, ZACH, EVENT_BEAT_POKEMANIAC_ZACH, PokemaniacZachSeenText, PokemaniacZachBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -288,7 +268,6 @@ TrainerPokemaniacZach:
 
 TrainerCooltrainermAllen:
 	trainer COOLTRAINERM, ALLEN, EVENT_BEAT_COOLTRAINERM_ALLEN, CooltrainermAllenSeenText, CooltrainermAllenBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -521,8 +500,8 @@ Route44_MapEvents:
 	object_event 35,  3, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerFisherWilton1, -1
 	object_event 19, 13, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerFisherEdgar, -1
 	object_event 10,  9, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerPsychicPhil, -1
-	object_event 43,  2, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerPokemaniacZach, -1
-	object_event 51,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 2, TrainerBirdKeeperVance1, -1
+	object_event 43,  2, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerPokemaniacZach, -1
+	object_event 51,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerBirdKeeperVance1, -1
 	object_event 41, 15, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 5, TrainerCooltrainermAllen, -1
 	object_event 31, 14, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 5, TrainerCooltrainerfCybil, -1
 	object_event  9,  5, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route44FruitTree, -1

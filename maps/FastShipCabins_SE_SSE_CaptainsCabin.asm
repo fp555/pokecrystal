@@ -16,9 +16,6 @@ FastShipCabins_SE_SSE_CaptainsCabin_MapScripts:
 
 	def_callbacks
 
-FastShipCabins_SE_SSE_CaptainsCabinNoopScene: ; unreferenced
-	end
-
 SSAquaCaptain:
 	faceplayer
 	opentext
@@ -28,7 +25,6 @@ SSAquaCaptain:
 	waitbutton
 	closetext
 	end
-
 .LaterTrip:
 	writetext SSAquaCaptainHowDoYouLikeText
 	waitbutton
@@ -66,7 +62,6 @@ SSAquaGranddaughterBefore:
 	waitbutton
 	closetext
 	sjump .cont
-
 .PlayerIsFemale:
 	opentext
 	writetext SSAquaGranddaughterWasPlayingFText
@@ -140,7 +135,6 @@ SSAquaGranddaughterAfter:
 
 TrainerPokefanmColin:
 	trainer POKEFANM, COLIN, EVENT_BEAT_POKEFANM_COLIN, PokefanmColinSeenText, PokefanmColinBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -151,7 +145,6 @@ TrainerPokefanmColin:
 
 TrainerTwinsMegandpeg1:
 	trainer TWINS, MEGANDPEG1, EVENT_BEAT_TWINS_MEG_AND_PEG, TwinsMegandpeg1SeenText, TwinsMegandpeg1BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -162,7 +155,6 @@ TrainerTwinsMegandpeg1:
 
 TrainerTwinsMegandpeg2:
 	trainer TWINS, MEGANDPEG2, EVENT_BEAT_TWINS_MEG_AND_PEG, TwinsMegandpeg2SeenText, TwinsMegandpeg2BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -173,7 +165,6 @@ TrainerTwinsMegandpeg2:
 
 TrainerPsychicRodney:
 	trainer PSYCHIC_T, RODNEY, EVENT_BEAT_PSYCHIC_RODNEY, PsychicRodneySeenText, PsychicRodneyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -184,7 +175,6 @@ TrainerPsychicRodney:
 
 TrainerPokefanmJeremy:
 	trainer POKEFANM, JEREMY, EVENT_BEAT_POKEFANM_JEREMY, PokefanmJeremySeenText, PokefanmJeremyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -195,7 +185,6 @@ TrainerPokefanmJeremy:
 
 TrainerPokefanfGeorgia:
 	trainer POKEFANF, GEORGIA, EVENT_BEAT_POKEFANF_GEORGIA, PokefanfGeorgiaSeenText, PokefanfGeorgiaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -206,7 +195,6 @@ TrainerPokefanfGeorgia:
 
 TrainerSupernerdShawn:
 	trainer SUPER_NERD, SHAWN, EVENT_BEAT_SUPER_NERD_SHAWN, SupernerdShawnSeenText, SupernerdShawnBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -484,7 +472,7 @@ FastShipCabins_SE_SSE_CaptainsCabin_MapEvents:
 	object_event  5,  6, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 5, TrainerPokefanmColin, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
 	object_event  2,  4, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerTwinsMegandpeg1, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
 	object_event  3,  4, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerTwinsMegandpeg2, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
-	object_event  5,  5, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 5, TrainerPsychicRodney, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
+	object_event  5,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 5, TrainerPsychicRodney, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
 	object_event  2,  3, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPokefanmJeremy, EVENT_FAST_SHIP_PASSENGERS_WESTBOUND
 	object_event  5,  5, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerPokefanfGeorgia, EVENT_FAST_SHIP_PASSENGERS_WESTBOUND
 	object_event  1, 15, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerSupernerdShawn, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND

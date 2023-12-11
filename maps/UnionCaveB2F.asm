@@ -20,7 +20,6 @@ UnionCaveB2FLaprasCallback:
 .NoAppear:
 	disappear UNIONCAVEB2F_LAPRAS
 	endcallback
-
 .Appear:
 	appear UNIONCAVEB2F_LAPRAS
 	endcallback
@@ -37,7 +36,6 @@ UnionCaveLapras:
 
 TrainerCooltrainermNick:
 	trainer COOLTRAINERM, NICK, EVENT_BEAT_COOLTRAINERM_NICK, CooltrainermNickSeenText, CooltrainermNickBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -48,7 +46,6 @@ TrainerCooltrainermNick:
 
 TrainerCooltrainerfGwen:
 	trainer COOLTRAINERF, GWEN, EVENT_BEAT_COOLTRAINERF_GWEN, CooltrainerfGwenSeenText, CooltrainerfGwenBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -59,7 +56,6 @@ TrainerCooltrainerfGwen:
 
 TrainerCooltrainerfEmma:
 	trainer COOLTRAINERF, EMMA, EVENT_BEAT_COOLTRAINERF_EMMA, CooltrainerfEmmaSeenText, CooltrainerfEmmaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -150,7 +146,7 @@ UnionCaveB2F_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event 15, 19, SPRITE_ROCKER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermNick, -1
+	object_event 15, 19, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermNick, -1
 	object_event  5, 13, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerCooltrainerfGwen, -1
 	object_event  3, 30, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainerfEmma, -1
 	object_event 16,  2, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, UnionCaveB2FElixer, EVENT_UNION_CAVE_B2F_ELIXER

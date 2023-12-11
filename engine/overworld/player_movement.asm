@@ -337,9 +337,9 @@ DoPlayerMovement::
 	db FACE_UP | FACE_LEFT    ; COLL_HOP_UP_LEFT
 
 .CheckWarp:
-; BUG: No bump noise if standing on tile $3E (see docs/bugs_and_glitches.md)
-
 	ld a, [wWalkingDirection]
+	cp STANDING
+	jr z, .not_warp
 	ld e, a
 	ld d, 0
 	ld hl, .EdgeWarps
@@ -347,13 +347,9 @@ DoPlayerMovement::
 	ld a, [wPlayerTile]
 	cp [hl]
 	jr nz, .not_warp
-
 	ld a, TRUE
 	ld [wWalkingIntoEdgeWarp], a
 	ld a, [wWalkingDirection]
-	cp STANDING
-	jr z, .not_warp
-
 	ld e, a
 	ld a, [wPlayerDirection]
 	rrca
@@ -363,7 +359,6 @@ DoPlayerMovement::
 	jr nz, .not_warp
 	call WarpCheck
 	jr nc, .not_warp
-
 	call .StandInPlace
 	scf
 	ld a, PLAYERMOVEMENT_WARP
@@ -410,7 +405,6 @@ DoPlayerMovement::
 	dw .BackJumpStep
 	dw .FinishFacing
 	assert_table_length NUM_STEPS
-
 .SlowStep:
 	slow_step DOWN
 	slow_step UP
@@ -537,7 +531,6 @@ ENDM
 	player_action LEFT,     FACE_LEFT,   -1,  0, wTileLeft
 	player_action UP,       FACE_UP,      0, -1, wTileUp
 	player_action DOWN,     FACE_DOWN,    0,  1, wTileDown
-
 .CheckNPC:
 ; Returns 0 if there is an NPC in front that you can't move
 ; Returns 1 if there is no NPC in front

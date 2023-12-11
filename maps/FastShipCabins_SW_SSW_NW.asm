@@ -11,7 +11,6 @@ FastShipCabins_SW_SSW_NW_MapScripts:
 
 TrainerFirebreatherLyle:
 	trainer FIREBREATHER, LYLE, EVENT_BEAT_FIREBREATHER_LYLE, FirebreatherLyleSeenText, FirebreatherLyleBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -22,7 +21,6 @@ TrainerFirebreatherLyle:
 
 TrainerBugCatcherKen:
 	trainer BUG_CATCHER, KEN, EVENT_BEAT_BUG_CATCHER_KEN, BugCatcherKenSeenText, BugCatcherKenBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -33,7 +31,6 @@ TrainerBugCatcherKen:
 
 TrainerBeautyCassie:
 	trainer BEAUTY, CASSIE, EVENT_BEAT_BEAUTY_CASSIE, BeautyCassieSeenText, BeautyCassieBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -44,7 +41,6 @@ TrainerBeautyCassie:
 
 TrainerGuitaristClyde:
 	trainer GUITARIST, CLYDE, EVENT_BEAT_GUITARIST_CLYDE, GuitaristClydeSeenText, GuitaristClydeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	special CheckMobileAdapterStatusSpecial
@@ -54,7 +50,6 @@ TrainerGuitaristClyde:
 	waitbutton
 	closetext
 	end
-
 .mobile
 	opentext
 	writetext GuitaristClydeAfterBattleMobileText
@@ -69,7 +64,6 @@ FastShipBed:
 	closetext
 	special FadeBlackQuickly
 	special ReloadSpritesNoPalettes
-	special StubbedTrainerRankings_Healings
 	special HealParty
 	playmusic MUSIC_HEAL
 	pause 60
@@ -87,7 +81,6 @@ FastShipBed:
 	iftrue .CanArrive
 .AlreadyArrived:
 	end
-
 .CanArrive:
 	playsound SFX_ELEVATOR_END
 	pause 30
@@ -99,7 +92,6 @@ FastShipBed:
 	closetext
 	setevent EVENT_FAST_SHIP_HAS_ARRIVED
 	end
-
 .ArrivedOlivine:
 	opentext
 	writetext FastShipArrivedOlivineText

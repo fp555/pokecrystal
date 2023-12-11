@@ -58,13 +58,11 @@ MrPokemonsHouse_MrPokemonScript:
 	waitbutton
 	closetext
 	end
-
 .AlwaysNewDiscoveries:
 	writetext MrPokemonText_AlwaysNewDiscoveries
 	waitbutton
 	closetext
 	end
-
 .RedScale:
 	writetext MrPokemonText_GimmeTheScale
 	yesorno
@@ -73,7 +71,6 @@ MrPokemonsHouse_MrPokemonScript:
 	iffalse .full
 	takeitem RED_SCALE
 	sjump .AlwaysNewDiscoveries
-
 .refused
 	writetext MrPokemonText_Disappointed
 	waitbutton
@@ -111,7 +108,6 @@ MrPokemonsHouse_OakScript:
 	special FadeBlackQuickly
 	special ReloadSpritesNoPalettes
 	playmusic MUSIC_HEAL
-	special StubbedTrainerRankings_Healings
 	special HealParty
 	pause 60
 	special FadeInQuickly
@@ -134,11 +130,9 @@ MrPokemonsHouse_OakScript:
 	iftrue .RivalTakesCyndaquil
 	setevent EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB
 	end
-
 .RivalTakesChikorita:
 	setevent EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB
 	end
-
 .RivalTakesCyndaquil:
 	setevent EVENT_CYNDAQUIL_POKEBALL_IN_ELMS_LAB
 	end

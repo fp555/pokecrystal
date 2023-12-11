@@ -59,7 +59,6 @@ StdScripts::
 
 PokecenterNurseScript:
 ; EVENT_WELCOMED_TO_POKECOM_CENTER is never set
-
 	opentext
 	checktime MORN
 	iftrue .morn
@@ -68,7 +67,6 @@ PokecenterNurseScript:
 	checktime NITE
 	iftrue .nite
 	sjump .ok
-
 .morn
 	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
 	iftrue .morn_comcenter
@@ -79,7 +77,6 @@ PokecenterNurseScript:
 	farwritetext PokeComNurseMornText
 	promptbutton
 	sjump .ok
-
 .day
 	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
 	iftrue .day_comcenter
@@ -90,7 +87,6 @@ PokecenterNurseScript:
 	farwritetext PokeComNurseDayText
 	promptbutton
 	sjump .ok
-
 .nite
 	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
 	iftrue .nite_comcenter
@@ -101,18 +97,14 @@ PokecenterNurseScript:
 	farwritetext PokeComNurseNiteText
 	promptbutton
 	sjump .ok
-
 .ok
 	; only do this once
 	clearevent EVENT_WELCOMED_TO_POKECOM_CENTER
-
 	farwritetext NurseAskHealText
 	yesorno
 	iffalse .done
-
 	farwritetext NurseTakePokemonText
 	pause 20
-	special StubbedTrainerRankings_Healings
 	turnobject LAST_TALKED, LEFT
 	pause 10
 	special HealParty
@@ -123,7 +115,6 @@ PokecenterNurseScript:
 	special RestartMapMusic
 	turnobject LAST_TALKED, DOWN
 	pause 10
-
 	checkphonecall ; elm already called about pokerus
 	iftrue .no
 	checkflag ENGINE_CAUGHT_POKERUS
@@ -131,22 +122,17 @@ PokecenterNurseScript:
 	special CheckPokerus
 	iftrue .pokerus
 .no
-
 	farwritetext NurseReturnPokemonText
 	pause 20
-
 .done
 	farwritetext NurseGoodbyeText
-
 	turnobject LAST_TALKED, UP
 	pause 10
 	turnobject LAST_TALKED, DOWN
 	pause 10
-
 	waitbutton
 	closetext
 	end
-
 .pokerus
 	; already cleared earlier in the script
 	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
@@ -155,12 +141,10 @@ PokecenterNurseScript:
 	waitbutton
 	closetext
 	sjump .pokerus_done
-
 .pokerus_comcenter
 	farwritetext PokeComNursePokerusText
 	waitbutton
 	closetext
-
 .pokerus_done
 	setflag ENGINE_CAUGHT_POKERUS
 	specialphonecall SPECIALCALL_POKERUS

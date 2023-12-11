@@ -1,33 +1,6 @@
 ; These functions deal with miscellaneous statistics
 ; which were used for Trainer Rankings in Pokémon News.
 
-StubbedTrainerRankings_HallOfFame2::
-; Copies certain values at the time the player enters the Hall of Fame.
-	ret
-	ld a, BANK(sTrainerRankingGameTimeHOF)
-	call OpenSRAM
-	ld hl, wGameTimeHours
-	ld de, sTrainerRankingGameTimeHOF
-	ld bc, 4
-	call CopyBytes
-	ld hl, sTrainerRankingStepCount
-	ld de, sTrainerRankingStepCountHOF
-	ld bc, 4
-	call CopyBytes
-	; sTrainerRankingHealings is only a 3-byte value.
-	; One extraneous byte is copied from sTrainerRankingMysteryGift.
-	ld hl, sTrainerRankingHealings
-	ld de, sTrainerRankingHealingsHOF
-	ld bc, 4
-	call CopyBytes
-	ld hl, sTrainerRankingBattles
-	ld de, sTrainerRankingBattlesHOF
-	ld bc, 3
-	call CopyBytes
-	call UpdateTrainerRankingsChecksum
-	call CloseSRAM
-	ret
-
 StubbedTrainerRankings_MagikarpLength:
 	ret
 	ld a, BANK(sTrainerRankingLongestMagikarp)
@@ -174,11 +147,6 @@ StubbedTrainerRankings_TrainerBattles:
 	ld hl, sTrainerRankingTrainerBattles
 	jp StubbedTrainerRankings_Increment3Byte
 
-StubbedTrainerRankings_HallOfFame::
-	ret
-	ld hl, sTrainerRankingHOFEntries
-	jp StubbedTrainerRankings_Increment3Byte
-
 StubbedTrainerRankings_WildMonsCaught:
 	ret
 	ld hl, sTrainerRankingWildMonsCaught
@@ -202,11 +170,6 @@ StubbedTrainerRankings_MonsEvolved:
 StubbedTrainerRankings_FruitPicked:
 	ret
 	ld hl, sTrainerRankingFruitPicked
-	jp StubbedTrainerRankings_Increment3Byte
-
-StubbedTrainerRankings_Healings:
-	ret
-	ld hl, sTrainerRankingHealings
 	jp StubbedTrainerRankings_Increment3Byte
 
 StubbedTrainerRankings_MysteryGift:

@@ -40,7 +40,6 @@ TeamRocketBaseB2FTransmitterDoorCallback:
 	checkevent EVENT_OPENED_DOOR_TO_ROCKET_HIDEOUT_TRANSMITTER
 	iftrue .OpenDoor
 	endcallback
-
 .OpenDoor:
 	changeblock 14, 12, $07 ; floor
 	endcallback
@@ -54,6 +53,7 @@ RocketBaseBossFRight:
 	moveobject TEAMROCKETBASEB2F_ROCKET1, 21, 16
 	moveobject TEAMROCKETBASEB2F_DRAGON, 10, 13
 	moveobject TEAMROCKETBASEB2F_LANCE, 10, 13
+
 RocketBaseBossFScript:
 	appear TEAMROCKETBASEB2F_ROCKET_GIRL
 	appear TEAMROCKETBASEB2F_ROCKET1
@@ -159,13 +159,13 @@ LanceHealsScript1:
 LanceHealsScript2:
 	turnobject PLAYER, RIGHT
 	turnobject TEAMROCKETBASEB2F_LANCE, LEFT
+
 LanceHealsCommon:
 	opentext
 	writetext LanceHealsText1
 	waitbutton
 	closetext
 	special FadeOutPalettes
-	special StubbedTrainerRankings_Healings
 	playsound SFX_FULL_HEAL
 	special HealParty
 	special FadeInPalettes
@@ -180,7 +180,6 @@ LanceHealsCommon:
 	applymovement TEAMROCKETBASEB2F_LANCE, RocketBaseLanceLeavesAfterHealMovement
 	disappear TEAMROCKETBASEB2F_LANCE
 	end
-
 .FacingRight:
 	applymovement TEAMROCKETBASEB2F_LANCE, RocketBaseLanceLeavesAfterHealRightMovement
 	disappear TEAMROCKETBASEB2F_LANCE
@@ -188,7 +187,6 @@ LanceHealsCommon:
 
 TrainerGruntM17:
 	trainer GRUNTM, GRUNTM_17, EVENT_BEAT_ROCKET_GRUNTM_17, GruntM17SeenText, GruntM17BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -199,7 +197,6 @@ TrainerGruntM17:
 
 TrainerGruntM18:
 	trainer GRUNTM, GRUNTM_18, EVENT_BEAT_ROCKET_GRUNTM_18, GruntM18SeenText, GruntM18BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -210,7 +207,6 @@ TrainerGruntM18:
 
 TrainerGruntM19:
 	trainer GRUNTM, GRUNTM_19, EVENT_BEAT_ROCKET_GRUNTM_19, GruntM19SeenText, GruntM19BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -314,7 +310,6 @@ RocketBaseElectrodeScript:
 
 TeamRocketBaseB2FLockedDoor:
 	conditional_event EVENT_OPENED_DOOR_TO_ROCKET_HIDEOUT_TRANSMITTER, .Script
-
 .Script:
 	opentext
 	checkevent EVENT_LEARNED_HAIL_GIOVANNI
@@ -323,7 +318,6 @@ TeamRocketBaseB2FLockedDoor:
 	waitbutton
 	closetext
 	end
-
 .KnowsPassword:
 	writetext RocketBaseDoorKnowPasswordText
 	waitbutton
@@ -343,7 +337,6 @@ TeamRocketBaseB2FTransmitterScript:
 	waitbutton
 	closetext
 	end
-
 .Deactivated:
 	writetext RocketBaseB2FDeactivateTransmitterText
 	waitbutton
@@ -729,11 +722,6 @@ RocketBaseLanceElectrodeDoneText:
 	para "I found it here,"
 	line "but I don't have"
 	cont "any need for it."
-	done
-
-RocketBaseReceivedHM06Text: ; unreferenced
-	text "<PLAYER> received"
-	line "HM06."
 	done
 
 RocketBaseLanceWhirlpoolText:

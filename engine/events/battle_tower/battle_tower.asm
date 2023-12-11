@@ -15,9 +15,7 @@ Function1700c4:
 	push af
 	ld a, BANK(w3_d202TrainerData) ; aka BANK(w3_dffc) and BANK(w3_d202Name)
 	ldh [rSVBK], a
-
 	call Function17042c
-
 	ld a, BANK(s5_be45) ; aka BANK(s5_be46), BANK(s5_aa41), and BANK(s5_aa5d)
 	call OpenSRAM
 	ld a, 1
@@ -56,7 +54,6 @@ Function170114:
 	call .Function170121
 	farcall Function11805f
 	ret
-
 .Function170121:
 	ld a, BANK(s5_a948)
 	call OpenSRAM
@@ -66,116 +63,6 @@ Function170114:
 	call CopyBytes
 	call CloseSRAM
 	call Function170c8b
-	ret
-
-Function170139: ; unreferenced
-; Convert the 4-digit decimal number at s5_aa41 into binary
-	ld a, BANK(s5_aa41)
-	call OpenSRAM
-	ld de, s5_aa41
-	ld h, 0
-	ld l, h
-	ld bc, 1000
-	call .DecToBin
-	ld bc, 100
-	call .DecToBin
-	ld bc, 10
-	call .DecToBin
-	ld a, [de]
-	ld c, a
-	ld b, 0
-	add hl, bc
-	call CloseSRAM
-; Store that number in wc608
-	ld a, h
-	ld [wc608], a
-	ld a, l
-	ld [wc608 + 1], a
-	ld hl, wBT_OTTempMon1DVs
-	ld a, [wPlayerID]
-	ld [hli], a
-	ld a, [wPlayerID + 1]
-	ld [hli], a
-	ld a, [wSecretID]
-	ld [hli], a
-	ld a, [wSecretID + 1]
-	ld [hli], a
-	ld e, l
-	ld d, h
-	ld hl, wPlayerName
-	ld bc, NAME_LENGTH_JAPANESE - 1
-	call CopyBytes
-	ld bc, wPlayerID
-	ld de, wPlayerGender
-	farcall GetMobileOTTrainerClass
-	ld de, wBT_OTTempMon1CaughtGender
-	ld a, c
-	ld [de], a
-	inc de
-	ld a, LOW(wPartyMons)
-	ld [wcd49], a
-	ld a, HIGH(wPartyMons)
-	ld [wcd4a], a
-	ld a, LOW(wPartyMonNicknames)
-	ld [wcd4b], a
-	ld a, HIGH(wPartyMonNicknames)
-	ld [wcd4c], a
-	ld a, 3
-.CopyLoop:
-	push af
-	ld a, [wcd49]
-	ld l, a
-	ld a, [wcd4a]
-	ld h, a
-	ld bc, PARTYMON_STRUCT_LENGTH
-	call CopyBytes
-	ld a, l
-	ld [wcd49], a
-	ld a, h
-	ld [wcd4a], a
-	ld a, [wcd4b]
-	ld l, a
-	ld a, [wcd4c]
-	ld h, a
-	ld bc, 6
-	call CopyBytes
-	ld a, l
-	ld [wcd4b], a
-	ld a, h
-	ld [wcd4c], a
-	pop af
-	dec a
-	jr nz, .CopyLoop
-
-	ld a, BANK(sEZChatBeginBattleMessage)
-	call OpenSRAM
-	ld hl, sEZChatBattleMessages
-	ld bc, EASY_CHAT_MESSAGE_LENGTH * 3
-	call CopyBytes
-	call CloseSRAM
-
-	ld a, BANK(s5_a894) ; aka BANK(s5_a948)
-	call OpenSRAM
-	ld hl, s5_a894
-	ld bc, 6
-	call CopyBytes
-	ld hl, wc608
-	ld de, s5_a948
-	ld bc, 246
-	call CopyBytes
-	call CloseSRAM
-	ret
-
-.DecToBin:
-	ld a, [de]
-	inc de
-	and a
-	ret z
-
-.digit_loop
-	add hl, bc
-	dec a
-	jr nz, .digit_loop
 	ret
 
 BattleTowerBattle:
@@ -203,10 +90,8 @@ _BattleTowerBattle:
 	cp TRUE
 	jr nz, .loop
 	ret
-
 .do_dw
 	jumptable .dw, wBattleTowerBattleEnded
-
 .dw
 	dw RunBattleTowerTrainer
 	dw SkipBattleTowerTrainer
@@ -216,21 +101,16 @@ RunBattleTowerTrainer:
 	push af
 	ld hl, wOptions
 	set BATTLE_SHIFT, [hl] ; SET MODE
-
 	ld a, [wInBattleTowerBattle]
 	push af
 	or 1
 	ld [wInBattleTowerBattle], a
-
 	xor a
 	ld [wLinkMode], a
-	farcall StubbedTrainerRankings_Healings
 	farcall HealParty
 	call ReadBTTrainerParty
 	call Clears5_a89a
-
 	predef StartBattle
-
 	farcall LoadPokemonData
 	farcall HealParty
 	ld a, [wBattleResult]
@@ -248,7 +128,6 @@ RunBattleTowerTrainer:
 	ld [hli], a
 	ld a, "@"
 	ld [hl], a
-
 .lost
 	pop af
 	ld [wInBattleTowerBattle], a
@@ -259,16 +138,14 @@ RunBattleTowerTrainer:
 	ret
 
 ReadBTTrainerParty:
-; Initialise the BattleTower-Trainer and his mon
+	; Initialise the BattleTower-Trainer and his mon
 	call CopyBTTrainer_FromBT_OT_TowBT_OTTemp
-
-; Check the nicknames for illegal characters, and replace bad nicknames
-; with their species names.
+	; Check the nicknames for illegal characters, and replace bad nicknames
+	; with their species names.
 	ld de, wBT_OTTempMon1Name
 	ld c, MON_NAME_LENGTH
 	farcall CheckStringForErrors
 	jr nc, .skip_mon_1
-
 	ld a, [wBT_OTTempMon1]
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
@@ -277,7 +154,6 @@ ReadBTTrainerParty:
 	ld de, wBT_OTTempMon1Name
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 .skip_mon_1
 	ld de, wBT_OTTempMon2Name
 	ld c, MON_NAME_LENGTH
@@ -291,7 +167,6 @@ ReadBTTrainerParty:
 	ld de, wBT_OTTempMon2Name
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 .skip_mon_2
 	ld de, wBT_OTTempMon3Name
 	ld c, MON_NAME_LENGTH
@@ -305,33 +180,29 @@ ReadBTTrainerParty:
 	ld de, wBT_OTTempMon3Name
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 .skip_mon_3
-; Add the terminator character to each of these names
+	; Add the terminator character to each of these names
 	ld a, "@"
 	ld [wBT_OTTempMon1Name + MON_NAME_LENGTH - 1], a
 	ld [wBT_OTTempMon2Name + MON_NAME_LENGTH - 1], a
 	ld [wBT_OTTempMon3Name + MON_NAME_LENGTH - 1], a
-; Fix errors in the movesets
+	; Fix errors in the movesets
 	call CheckBTMonMovesForErrors
-; Repair the trainer name if needed, then copy it to wOTPlayerName
+	; Repair the trainer name if needed, then copy it to wOTPlayerName
 	ld de, wBT_OTTempName
 	ld c, NAME_LENGTH - 1
 	farcall CheckStringForErrors
 	jr nc, .trainer_name_okay
 	ld hl, BT_ChrisName
 	jr .done_trainer_name
-
 .trainer_name_okay
 	ld hl, wBT_OTTempName
-
 .done_trainer_name
 	ld de, wOTPlayerName
 	ld bc, NAME_LENGTH - 1
 	call CopyBytes
 	ld a, "@"
 	ld [de], a
-
 	ld hl, wBT_OTTempTrainerClass
 	ld a, [hli]
 	ld [wOtherTrainerClass], a
@@ -339,7 +210,6 @@ ReadBTTrainerParty:
 	ld [wBGMapBuffer], a
 	ld a, HIGH(wOTPartyMonNicknames)
 	ld [wBGMapBuffer + 1], a
-
 	; Copy mon into Memory from the address in hl
 	ld de, wOTPartyMon1Species
 	ld bc, wOTPartyCount
@@ -375,110 +245,6 @@ ReadBTTrainerParty:
 	ld [bc], a
 	ret
 
-ValidateBTParty: ; unreferenced
-; Check for and fix errors in party data
-	ld hl, wBT_OTTempMon1Species
-	ld d, BATTLETOWER_PARTY_LENGTH
-.pkmn_loop
-	push de
-	push hl
-	ld b, h
-	ld c, l
-	ld a, [hl]
-	and a
-for x, $ff, NUM_POKEMON, -1
-	jr z, .invalid
-	cp x
-endr
-	jr nz, .valid
-
-.invalid
-	ld a, SMEARGLE
-	ld [hl], a
-
-.valid
-	ld [wCurSpecies], a
-	call GetBaseData
-	ld a, BANK(s5_b2fb)
-	call OpenSRAM
-	ld a, [s5_b2fb] ; s5_b2fb ; max level?
-	call CloseSRAM
-	ld e, a
-	ld hl, MON_LEVEL
-	add hl, bc
-	ld a, [hl]
-	cp MIN_LEVEL
-	ld a, MIN_LEVEL
-	jr c, .load
-	ld a, [hl]
-	cp e
-	jr c, .dont_load
-	ld a, e
-
-.load
-	ld [hl], a
-
-.dont_load
-	ld [wCurPartyLevel], a
-	ld hl, MON_MOVES
-	add hl, bc
-	ld d, NUM_MOVES - 1
-	ld a, [hli]
-	and a
-	jr z, .not_move
-	cp NUM_ATTACKS + 1
-	jr nc, .not_move
-	jr .valid_move
-
-.not_move
-	dec hl
-	ld a, POUND
-	ld [hli], a
-	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	jr .done_moves
-
-.valid_move
-	ld a, [hl]
-	cp NUM_ATTACKS + 1
-	jr c, .next
-	ld [hl], $0
-
-.next
-	inc hl
-	dec d
-	jr nz, .valid_move
-
-.done_moves
-	ld hl, MON_MAXHP
-	add hl, bc
-	ld d, h
-	ld e, l
-	push hl
-	push de
-	ld hl, MON_STAT_EXP - 1
-	add hl, bc
-	ld b, TRUE
-	predef CalcMonStats
-	pop de
-	pop hl
-	dec de
-	dec de
-	ld a, [hli]
-	ld [de], a
-	inc de
-	ld a, [hl]
-	ld [de], a
-	pop hl
-	ld bc, NICKNAMED_MON_STRUCT_LENGTH
-	add hl, bc
-	pop de
-	dec d
-	jp nz, .pkmn_loop
-	ret
-
 BT_ChrisName:
 	db "CHRIS@"
 
@@ -499,7 +265,6 @@ Function17042c:
 	jr z, .empty
 	cp (Unknown_170470.end - Unknown_170470) + 1
 	jr nc, .copy_data
-
 	push hl
 	ld hl, Unknown_170470
 	dec a
@@ -508,33 +273,28 @@ Function17042c:
 	add hl, de
 	ld a, [hl]
 	pop hl
-
 	; If Unknown_170470[a-1] <= b, overwrite the current trainer's data
 	; with Unknown_17047e, and exit the inner loop.
 	cp b
 	jr c, .copy_data
 	jr z, .copy_data
 	jr .next_iteration
-
 .empty
 	; If a == 0 and b >= $fc, overwrite the current trainer's data with
 	; Unknown_17047e, and exit the inner loop.
 	ld a, b
 	cp NUM_POKEMON + 1
 	jr nc, .copy_data
-
 .next_iteration
 	dec c
 	jr nz, .loop2
 	jr .next_trainer
-
 .copy_data
 	pop de
 	push de
 	ld hl, Unknown_17047e
 	ld bc, BATTLETOWER_TRAINERDATALENGTH
 	call CopyBytes
-
 .next_trainer
 	pop hl
 	ld de, BATTLE_TOWER_STRUCT_LENGTH
@@ -552,15 +312,12 @@ CopyBTTrainer_FromBT_OT_TowBT_OTTemp:
 	push af
 	ld a, BANK(wBT_OTTrainer)
 	ldh [rSVBK], a
-
 	ld hl, wBT_OTTrainer
 	ld de, wBT_OTTemp
 	ld bc, BATTLE_TOWER_STRUCT_LENGTH
 	call CopyBytes
-
 	pop af
 	ldh [rSVBK], a
-
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
 	ld a, BATTLETOWER_CHALLENGE_IN_PROGRESS
@@ -568,26 +325,8 @@ CopyBTTrainer_FromBT_OT_TowBT_OTTemp:
 	ld hl, sNrOfBeatenBattleTowerTrainers
 	inc [hl]
 	call CloseSRAM
+
 SkipBattleTowerTrainer:
-	ret
-
-Function1704ca: ; unreferenced
-	ld a, [s5_be46]
-	cp BATTLETOWER_STREAK_LENGTH
-	jr c, .not_max
-	ld a, BATTLETOWER_STREAK_LENGTH - 1
-
-.not_max
-	ld hl, s5_aa8e + BATTLE_TOWER_STRUCT_LENGTH * (BATTLETOWER_STREAK_LENGTH - 1)
-	ld de, -BATTLE_TOWER_STRUCT_LENGTH
-.loop
-	and a
-	jr z, .done
-	add hl, de
-	dec a
-	jr .loop
-
-.done
 	ret
 
 Function1704e1:
@@ -597,7 +336,6 @@ Function1704e1:
 	call .JumptableLoop
 	call CloseSubmenu
 	ret
-
 .JumptableLoop:
 	call ClearBGPalettes
 	call ClearSprites
@@ -610,32 +348,25 @@ Function1704e1:
 	call .DoJumptable
 	farcall ReloadMapPart
 	jr .loop
-
 .done
 	ret
-
 .DoJumptable:
 	jumptable .dw, wJumptableIndex
-
 .dw
 	dw .Jumptable_0
 	dw .Jumptable_1
 	dw .Jumptable_2
-
 .Jumptable_0:
 	ld a, BANK(s5_a89c)
 	call OpenSRAM
-
 	ld hl, s5_a89c
 	ld de, wStringBuffer3
 	ld bc, 22
 	call CopyBytes
-
 	ld hl, s5_a8b2
 	ld de, wc608
 	ld bc, 150
 	call CopyBytes
-
 	call CloseSRAM
 	hlcoord 1, 1
 	ld de, wStringBuffer3
@@ -652,11 +383,9 @@ Function1704e1:
 	call .DrawBorder
 	call .PlaceTextItems
 	jr .NextJumptableFunction
-
 .Jumptable_1:
 	call SetPalettes
 	call .NextJumptableFunction
-
 .Jumptable_2:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -672,7 +401,6 @@ Function1704e1:
 	and D_DOWN
 	jr nz, .pressed_down
 	ret
-
 .pressed_up
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	and a
@@ -681,7 +409,6 @@ Function1704e1:
 	ld [wNrOfBeatenBattleTowerTrainers], a
 	call .PlaceTextItems
 	ret
-
 .pressed_down
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	cp 60
@@ -690,17 +417,14 @@ Function1704e1:
 	ld [wNrOfBeatenBattleTowerTrainers], a
 	call .PlaceTextItems
 	ret
-
 .pressed_a_or_b
 	ld hl, wJumptableIndex
 	set 7, [hl]
 	ret
-
 .NextJumptableFunction:
 	ld hl, wJumptableIndex
 	inc [hl]
 	ret
-
 .DrawBorder:
 	hlcoord 0, 4
 	ld a, "┌"
@@ -741,7 +465,6 @@ Function1704e1:
 	dec c
 	jr nz, .right_border_loop
 	ret
-
 .PlaceTextItems:
 	call .ClearBox
 	call .PlaceUpDownArrows
@@ -767,7 +490,6 @@ Function1704e1:
 	ld a, [bc]
 	and a
 	jr z, .fill_with_e3
-; .copy
 	ld a, 5
 .loop3a
 	push af
@@ -779,7 +501,6 @@ Function1704e1:
 	dec a
 	jr nz, .loop3a
 	jr .rejoin
-
 .fill_with_e3
 	ld a, 5
 .loop3b
@@ -791,7 +512,6 @@ Function1704e1:
 	pop af
 	dec a
 	jr nz, .loop3b
-
 .rejoin
 	ld de, wcd49
 	push bc
@@ -809,7 +529,6 @@ Function1704e1:
 	dec a
 	jr nz, .loop1
 	ret
-
 .ClearBox:
 	hlcoord 1, 5
 	xor a
@@ -825,7 +544,6 @@ Function1704e1:
 	dec b
 	jr nz, .clearbox_row
 	ret
-
 .PlaceUpDownArrows:
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	and a
@@ -833,7 +551,6 @@ Function1704e1:
 	hlcoord 18, 5
 	ld a, "▲"
 	ld [hl], a
-
 .nope
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	cp 60
@@ -842,16 +559,13 @@ Function1704e1:
 	ld a, "▼"
 	ld [hl], a
 	ret
-
 .String_Mail:
 	db "ルーム@"
-
 .String_PastReaders:
 	db "れきだいりーダーいちらん@"
 
 BattleTowerAction:
 	jumptable .dw, wScriptVar
-
 .dw
 	dw BattleTowerAction_CheckExplanationRead
 	dw BattleTowerAction_SetExplanationRead
@@ -886,27 +600,23 @@ BattleTowerAction:
 	dw BattleTower_RandomlyChooseReward
 	dw BattleTower_SaveOptions
 
-; Reset the save memory for BattleTower-Trainers (Counter and all 7 TrainerBytes)
 ResetBattleTowerTrainersSRAM:
+; Reset the save memory for BattleTower-Trainers
+; (Counter and all 7 TrainerBytes)
 	ld a, BANK(sBTTrainers)
 	call OpenSRAM
-
 	ld a, $ff
 	ld hl, sBTTrainers
 	ld bc, BATTLETOWER_STREAK_LENGTH
 	call ByteFill
-
 	xor a
 	ld [sNrOfBeatenBattleTowerTrainers], a
-
 	call CloseSRAM
-
 	ret
 
 BattleTower_GiveReward:
 	ld a, BANK(sBattleTowerReward)
 	call OpenSRAM
-
 	ld a, [sBattleTowerReward]
 	call CloseSRAM
 	ld [wScriptVar], a
@@ -978,7 +688,6 @@ BattleTowerAction_CheckExplanationRead:
 	ld a, [wScriptVar]
 	and a
 	ret z
-
 	ld a, BANK(sBattleTowerSaveFileFlags)
 	call OpenSRAM
 	ld a, [sBattleTowerSaveFileFlags]
@@ -1011,6 +720,8 @@ BattleTowerAction_SetByteToQuickSaveChallenge:
 
 BattleTowerAction_SetByteToCancelChallenge:
 	ld c, BATTLETOWER_NO_CHALLENGE
+	; fallthrough
+
 SetBattleTowerChallengeState:
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
@@ -1105,7 +816,6 @@ BattleTowerAction_17:
 	and a
 	jr nz, .asm_170853
 	ret
-
 .asm_170849
 	ld hl, wCurDay
 	ld a, 140
@@ -1138,7 +848,8 @@ SaveBattleTowerLevelGroup:
 	call CloseSRAM
 	ret
 
-LoadBattleTowerLevelGroup: ; Load level group choice
+LoadBattleTowerLevelGroup:
+; Load level group choice
 	ld a, BANK(sBTChoiceOfLevelGroup)
 	call OpenSRAM
 	ldh a, [rSVBK]
@@ -1160,10 +871,8 @@ BattleTower_CheckSaveFileExistsAndIsYours:
 	jr z, .yes
 	xor a ; FALSE
 	jr .nope
-
 .yes
 	ld a, TRUE
-
 .nope
 	ld [wScriptVar], a
 	ret
@@ -1296,7 +1005,6 @@ endr
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .different
 	pop af
 	pop hl
@@ -1338,7 +1046,6 @@ BattleTowerAction_10:
 	ld h, [hl]
 	ld l, a
 	jp hl
-
 .invalid
 	ld a, BANK(s5_a800)
 	call OpenSRAM
@@ -1346,7 +1053,6 @@ BattleTowerAction_10:
 	ld [s5_a800], a
 	call CloseSRAM
 	ret
-
 .Jumptable:
 	dw .NoAction
 	dw .NoAction
@@ -1354,17 +1060,14 @@ BattleTowerAction_10:
 	dw .DoAction1
 	dw .Action4
 	dw .Action5
-
 .DoAction1:
 	ld a, BANK(s5_a800)
 	call OpenSRAM
 	ld a, 1
 	ld [s5_a800], a
 	call CloseSRAM
-
 .NoAction:
 	ret
-
 .Action4:
 	ld a, BANK(s5_b023) ; aka BANK(sOfferReqGender) and BANK(sOfferReqSpecies)
 	call OpenSRAM
@@ -1382,7 +1085,6 @@ BattleTowerAction_10:
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .Action5:
 	ld a, 0 ; ???
 	call OpenSRAM
@@ -1416,12 +1118,10 @@ BattleTowerAction_10:
 	ld a, [de]
 	and a
 	ret nz
-
 .no_scene
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .different
 	call CloseSRAM
 	ld a, BANK(s5_a800)
@@ -1440,7 +1140,6 @@ BattleTowerAction_10:
 	jr z, .no_scene_2
 	xor a
 	ld [de], a
-
 .no_scene_2
 	ret
 
@@ -1450,6 +1149,8 @@ BattleTowerAction_11:
 
 BattleTowerAction_12:
 	ld c, TRUE
+	; fallthrough
+
 Set_s5_aa8d:
 	ld a, BANK(s5_aa8d)
 	call OpenSRAM
@@ -1471,7 +1172,6 @@ BattleTowerAction_14:
 	ld a, [wScriptVar]
 	and a
 	ret z
-
 	ld a, BANK(sBattleTowerSaveFileFlags)
 	call OpenSRAM
 	ld a, [sBattleTowerSaveFileFlags]
@@ -1546,9 +1246,8 @@ LoadOpponentTrainerAndPokemonWithOTSprite:
 	add hl, bc
 	ld a, [hl]
 	ld [wBTTempOTSprite], a
-
-; Load sprite of the opponent trainer
-; because s/he is chosen randomly and appears out of nowhere
+	; Load sprite of the opponent trainer
+	; because s/he is chosen randomly and appears out of nowhere
 	ld a, [wScriptVar]
 	dec a
 	sla a
@@ -1583,10 +1282,8 @@ CheckForBattleTowerRules:
 	jr c, .ready
 	xor a ; FALSE
 	jr .end
-
 .ready
 	ld a, TRUE
-
 .end
 	ld [wScriptVar], a
 	ret

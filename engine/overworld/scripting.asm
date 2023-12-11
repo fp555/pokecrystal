@@ -16,7 +16,6 @@ ScriptEvents::
 	call CheckScript
 	jr nz, .loop
 	ret
-
 .modes
 	dw EndScript
 	dw RunScriptCommand
@@ -29,13 +28,10 @@ EndScript:
 
 WaitScript:
 	call StopScript
-
 	ld hl, wScriptDelay
 	dec [hl]
 	ret nz
-
 	farcall UnfreezeAllObjects
-
 	ld a, SCRIPT_READ
 	ld [wScriptMode], a
 	call StartScript
@@ -43,13 +39,10 @@ WaitScript:
 
 WaitScriptMovement:
 	call StopScript
-
 	ld hl, wVramState
 	bit 7, [hl]
 	ret nz
-
 	farcall UnfreezeAllObjects
-
 	ld a, SCRIPT_READ
 	ld [wScriptMode], a
 	call StartScript
@@ -308,6 +301,7 @@ Script_jumptext:
 
 JumpTextFacePlayerScript:
 	faceplayer
+
 JumpTextScript:
 	opentext
 	repeattext -1, -1
@@ -364,7 +358,6 @@ Script_repeattext:
 	ld l, a
 	call MapTextbox
 	ret
-
 .done
 	ret
 
@@ -2172,10 +2165,6 @@ Script_warpcheck:
 	farcall EnableEvents
 	ret
 
-Script_enableevents: ; unreferenced
-	farcall EnableEvents
-	ret
-
 Script_newloadmap:
 	call GetScriptByte
 	ldh [hMapEntryMethod], a
@@ -2201,9 +2190,6 @@ Script_writeunusedbyte:
 	call GetScriptByte
 	ld [wUnusedScriptByte], a
 	ret
-
-UnusedClosetextScript: ; unreferenced
-	closetext
 
 Script_closetext:
 	call _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
@@ -2253,7 +2239,6 @@ Script_end:
 	call ExitScriptSubroutine
 	jr c, .resume
 	ret
-
 .resume
 	xor a
 	ld [wScriptRunning], a
@@ -2275,7 +2260,6 @@ Script_endcallback:
 
 ExitScriptSubroutine:
 ; Return carry if there's no parent to return to.
-
 	ld hl, wScriptStackSize
 	ld a, [hl]
 	and a
@@ -2317,8 +2301,6 @@ Script_endall:
 Script_halloffame:
 	ld hl, wGameTimerPaused
 	res GAME_TIMER_PAUSED_F, [hl]
-	farcall StubbedTrainerRankings_HallOfFame
-	farcall StubbedTrainerRankings_HallOfFame2
 	farcall HallOfFame
 	ld hl, wGameTimerPaused
 	set GAME_TIMER_PAUSED_F, [hl]
@@ -2326,6 +2308,8 @@ Script_halloffame:
 
 Script_credits:
 	farcall RedCredits
+	; fallthrough
+
 ReturnFromCredits:
 	call Script_endall
 	ld a, MAPSTATUS_DONE
@@ -2351,11 +2335,3 @@ Script_checksave:
 	ld a, c
 	ld [wScriptVar], a
 	ret
-
-Script_checkver_duplicate: ; unreferenced
-	ld a, [.gs_version]
-	ld [wScriptVar], a
-	ret
-
-.gs_version:
-	db GS_VERSION

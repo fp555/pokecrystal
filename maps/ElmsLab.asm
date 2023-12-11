@@ -56,7 +56,6 @@ ElmsLabWalkUpToElmScript:
 	iftrue .ElmGetsEmail
 	writetext ElmText_Refused
 	sjump .MustSayYes
-
 .ElmGetsEmail:
 	writetext ElmText_Accepted
 	promptbutton
@@ -94,11 +93,13 @@ ProfElmScript:
 	iftrue ElmCheckMasterBall
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue ElmGiveTicketScript
+
 ElmCheckMasterBall:
 	checkevent EVENT_GOT_MASTER_BALL_FROM_ELM
 	iftrue ElmCheckEverstone
 	checkflag ENGINE_RISINGBADGE
 	iftrue ElmGiveMasterBallScript
+
 ElmCheckEverstone:
 	checkevent EVENT_GOT_EVERSTONE_FROM_ELM
 	iftrue ElmScript_CallYou
@@ -131,6 +132,7 @@ ElmCheckTogepiEgg:
 	iffalse ElmCheckGotEggAgain
 	checkevent EVENT_TOGEPI_HATCHED
 	iftrue ElmEggHatchedScript
+
 ElmCheckGotEggAgain:
 	checkevent EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE ; why are we checking it again?
 	iftrue ElmWaitingEggHatchScript
@@ -298,7 +300,6 @@ ElmsLabHealingMachine:
 	waitbutton
 	closetext
 	end
-
 .CanHeal:
 	writetext ElmsLabHealingMachineText2
 	yesorno
@@ -307,7 +308,6 @@ ElmsLabHealingMachine:
 	end
 
 ElmsLabHealingMachine_HealParty:
-	special StubbedTrainerRankings_Healings
 	special HealParty
 	playmusic MUSIC_NONE
 	setval HEALMACHINE_ELMS_LAB
@@ -378,6 +378,7 @@ ShowElmTogepiScript:
 	promptbutton
 	writetext ShowElmTogepiText3
 	promptbutton
+
 ElmGiveEverstoneScript:
 	writetext ElmGiveEverstoneText1
 	promptbutton
@@ -392,6 +393,7 @@ ElmGiveEverstoneScript:
 ElmScript_CallYou:
 	writetext ElmText_CallYou
 	waitbutton
+
 ElmScript_NoRoomForEverstone:
 	closetext
 	end
@@ -550,6 +552,7 @@ MeetCopScript2:
 
 MeetCopScript:
 	applymovement PLAYER, MeetCopScript_WalkUp
+
 CopScript:
 	turnobject ELMSLAB_OFFICER, LEFT
 	opentext
@@ -1207,12 +1210,6 @@ ElmGiveTicketText2:
 
 	para "Give my regards to"
 	line "PROF.OAK in KANTO!"
-	done
-
-ElmsLabMonEggText: ; unreferenced
-	text "It's the #MON"
-	line "EGG being studied"
-	cont "by PROF.ELM."
 	done
 
 AideText_GiveYouPotion:

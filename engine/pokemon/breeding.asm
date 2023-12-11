@@ -15,7 +15,6 @@ CheckBreedmonCompatibility:
 	ld b, $1
 	jr nz, .breedmon2
 	inc b
-
 .breedmon2
 	push bc
 	ld a, [wBreedMon2Species]
@@ -32,11 +31,9 @@ CheckBreedmonCompatibility:
 	ld a, $1
 	jr nz, .compare_gender
 	inc a
-
 .compare_gender
 	cp b
 	jr nz, .compute
-
 .genderless
 	ld c, $0
 	ld a, [wBreedMon1Species]
@@ -46,12 +43,10 @@ CheckBreedmonCompatibility:
 	cp DITTO
 	jr nz, .done
 	jr .compute
-
 .ditto1
 	ld a, [wBreedMon2Species]
 	cp DITTO
 	jr z, .done
-
 .compute
 	call .CheckDVs
 	ld c, 255
@@ -78,15 +73,12 @@ CheckBreedmonCompatibility:
 	ld a, c
 	sub 77
 	ld c, a
-
 .done
 	ld a, c
 	ld [wBreedingCompatibility], a
 	ret
-
 .CheckDVs:
-; If Defense DVs match and the lower 3 bits of the Special DVs match,
-; avoid breeding
+; If Defense DVs match and the lower 3 bits of the Special DVs match, avoid breeding
 	ld a, [wBreedMon1DVs]
 	and %1111
 	ld b, a
@@ -101,7 +93,6 @@ CheckBreedmonCompatibility:
 	and %111
 	cp b
 	ret
-
 .CheckBreedingGroupCompatibility:
 ; If either mon is in the No Eggs group,
 ; they are not compatible.
@@ -111,16 +102,14 @@ CheckBreedmonCompatibility:
 	ld a, [wBaseEggGroups]
 	cp EGG_NONE * $11
 	jr z, .Incompatible
-
 	ld a, [wBreedMon1Species]
 	ld [wCurSpecies], a
 	call GetBaseData
 	ld a, [wBaseEggGroups]
 	cp EGG_NONE * $11
 	jr z, .Incompatible
-
-; Ditto is automatically compatible with everything.
-; If not Ditto, load the breeding groups into b/c and d/e.
+	; Ditto is automatically compatible with everything.
+	; If not Ditto, load the breeding groups into b/c and d/e.
 	ld a, [wBreedMon2Species]
 	cp DITTO
 	jr z, .Compatible
@@ -134,7 +123,6 @@ CheckBreedmonCompatibility:
 	and $f0
 	swap a
 	ld c, a
-
 	ld a, [wBreedMon1Species]
 	cp DITTO
 	jr z, .Compatible
@@ -150,23 +138,19 @@ CheckBreedmonCompatibility:
 	and $f0
 	swap a
 	ld e, a
-
 	ld a, d
 	cp b
 	jr z, .Compatible
 	cp c
 	jr z, .Compatible
-
 	ld a, e
 	cp b
 	jr z, .Compatible
 	cp c
 	jr z, .Compatible
-
 .Incompatible:
 	and a
 	ret
-
 .Compatible:
 	scf
 	ret
@@ -187,7 +171,6 @@ DoEggStep::
 	ld a, 1
 	and a
 	ret
-
 .next
 	push de
 	ld de, PARTYMON_STRUCT_LENGTH
@@ -208,7 +191,6 @@ HatchEggs:
 	ld hl, wPartyMon1Happiness
 	xor a
 	ld [wCurPartyMon], a
-
 .loop
 	ld a, [de]
 	inc de
@@ -222,9 +204,7 @@ HatchEggs:
 	and a
 	jp nz, .next
 	ld [hl], $78
-
 	push de
-
 	farcall SetEggMonCaughtData
 	farcall StubbedTrainerRankings_EggsHatched
 	ld a, [wCurPartyMon]
@@ -235,7 +215,6 @@ HatchEggs:
 	ld [wCurPartySpecies], a
 	dec a
 	call SetSeenAndCaughtMon
-
 	ld a, [wCurPartySpecies]
 	cp TOGEPI
 	jr nz, .nottogepi
@@ -244,9 +223,7 @@ HatchEggs:
 	ld b, SET_FLAG
 	call EventFlagAction
 .nottogepi
-
 	pop de
-
 	ld a, [wCurPartySpecies]
 	dec de
 	ld [de], a
@@ -324,7 +301,6 @@ HatchEggs:
 	call YesNoBox
 	pop de
 	jr c, .nonickname
-
 	ld a, TRUE
 	ld [wUnusedEggHatchFlag], a
 	xor a
@@ -336,12 +312,10 @@ HatchEggs:
 	ld de, wStringBuffer1
 	call InitName
 	jr .next
-
 .nonickname
 	ld hl, wStringBuffer1
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-
 .next
 	ld hl, wCurPartyMon
 	inc [hl]
@@ -350,10 +324,8 @@ HatchEggs:
 	add hl, de
 	pop de
 	jp .loop
-
 .done
 	ret
-
 .Text_HatchEgg:
 	; Huh? @ @
 	text_far Text_BreedHuh
@@ -375,15 +347,12 @@ HatchEggs:
 	pop hl
 	ld hl, .BreedEggHatchText
 	ret
-
 .BreedClearboxText:
 	text_far _BreedClearboxText
 	text_end
-
 .BreedEggHatchText:
 	text_far _BreedEggHatchText
 	text_end
-
 .BreedAskNicknameText:
 	text_far _BreedAskNicknameText
 	text_end
@@ -409,12 +378,10 @@ InitEggMoves:
 	call GetEggMove
 	jr nc, .skip
 	call LoadEggMove
-
 .skip
 	inc de
 	dec b
 	jr nz, .loop
-
 .done
 	ret
 
@@ -440,7 +407,6 @@ GetEggMove:
 	jr z, .done_carry
 	inc hl
 	jr .loop
-
 .reached_end
 	call GetBreedmonMovePointer
 	ld b, NUM_MOVES
@@ -452,7 +418,6 @@ GetEggMove:
 	dec b
 	jr z, .inherit_tmhm
 	jr .loop2
-
 .found_eggmove
 	ld a, [wEggMonSpecies]
 	dec a
@@ -483,7 +448,6 @@ GetEggMove:
 	jr z, .done_carry
 	inc hl
 	jr .loop4
-
 .inherit_tmhm
 	ld hl, TMHMMoves
 .loop5
@@ -501,12 +465,10 @@ GetEggMove:
 	ld a, c
 	and a
 	jr z, .done
-
 .done_carry
 	pop bc
 	scf
 	ret
-
 .done
 	pop bc
 	and a
@@ -535,7 +497,6 @@ LoadEggMove:
 	inc de
 	ld a, [hli]
 	ld [de], a
-
 .done
 	dec hl
 	ld [hl], b
@@ -559,7 +520,6 @@ GetHeritableMoves:
 	ret z
 	ld hl, wBreedMon1Moves
 	ret
-
 .ditto1
 	ld a, [wCurPartySpecies]
 	push af
@@ -575,7 +535,6 @@ GetHeritableMoves:
 	jr c, .inherit_mon2_moves
 	jr nz, .inherit_mon2_moves
 	jr .inherit_mon1_moves
-
 .ditto2
 	ld a, [wCurPartySpecies]
 	push af
@@ -590,13 +549,11 @@ GetHeritableMoves:
 	predef GetGender
 	jr c, .inherit_mon1_moves
 	jr nz, .inherit_mon1_moves
-
 .inherit_mon2_moves
 	ld hl, wBreedMon2Moves
 	pop af
 	ld [wCurPartySpecies], a
 	ret
-
 .inherit_mon1_moves
 	ld hl, wBreedMon1Moves
 	pop af
@@ -614,18 +571,17 @@ GetBreedmonMovePointer:
 	ld a, [wBreedMotherOrNonDitto]
 	and a
 	ret z
-
 .ditto
 	ld hl, wBreedMon2Moves
 	ret
 
 GetEggFrontpic:
-; BUG: A hatching Unown egg would not show the right letter (see docs/bugs_and_glitches.md)
 	push de
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
 	call GetBaseData
-	ld hl, wBattleMonDVs
+	ld a, MON_DVS
+	call GetPartyParamLocation
 	predef GetUnownLetter
 	pop de
 	predef_jump GetMonFrontpic
@@ -635,7 +591,8 @@ GetHatchlingFrontpic:
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
 	call GetBaseData
-	ld hl, wBattleMonDVs
+	ld a, MON_DVS
+	call GetPartyParamLocation
 	predef GetUnownLetter
 	pop de
 	predef_jump GetAnimatedFrontpic
@@ -737,7 +694,6 @@ EggHatch_AnimationSequence:
 	call DelayFrames
 	call EggHatch_CrackShell
 	jr .outerloop
-
 .done
 	ld de, SFX_EGG_HATCH
 	call PlaySFX
@@ -809,25 +765,20 @@ Hatch_InitShellFragments:
 	ld b, a
 	push hl
 	push bc
-
 	ld a, SPRITE_ANIM_OBJ_EGG_HATCH
 	call InitSpriteAnimStruct
-
 	ld hl, SPRITEANIMSTRUCT_TILE_ID
 	add hl, bc
 	ld [hl], $0
-
 	pop de
 	ld a, e
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
 	add [hl]
 	ld [hl], a
-
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc
 	ld [hl], d
-
 	pop hl
 	jr .loop
 .done
@@ -920,33 +871,20 @@ DayCareMonCompatibilityText:
 	ld hl, .BreedFriendlyText
 	jr nc, .done
 	ld hl, .BreedShowsInterestText
-
 .done
 	ret
-
 .BreedBrimmingWithEnergyText:
 	text_far _BreedBrimmingWithEnergyText
 	text_end
-
 .BreedNoInterestText:
 	text_far _BreedNoInterestText
 	text_end
-
 .BreedAppearsToCareForText:
 	text_far _BreedAppearsToCareForText
 	text_end
-
 .BreedFriendlyText:
 	text_far _BreedFriendlyText
 	text_end
-
 .BreedShowsInterestText:
 	text_far _BreedShowsInterestText
 	text_end
-
-DayCareMonPrintEmptyString: ; unreferenced
-	ld hl, .string
-	ret
-
-.string
-	db "@"

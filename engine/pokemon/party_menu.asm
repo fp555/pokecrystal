@@ -65,7 +65,6 @@ WritePartyMenuTilemap:
 	pop af
 	ld [wOptions], a
 	ret
-
 .Jumptable:
 ; entries correspond to PARTYMENUQUALITY_* constants
 	dw PlacePartyNicknames
@@ -101,14 +100,12 @@ PlacePartyNicknames:
 	inc b
 	dec c
 	jr nz, .loop
-
 .end
 	dec hl
 	dec hl
 	ld de, .CancelString
 	call PlaceString
 	ret
-
 .CancelString:
 	db "CANCEL@"
 
@@ -166,7 +163,6 @@ PlacePartymonHPBar:
 	ld e, a
 	ld c, a
 	ret
-
 .not_fainted
 	dec hl
 	ld a, [hli]
@@ -210,7 +206,6 @@ PlacePartyMenuHPDigits:
 	inc de
 	lb bc, 2, 3
 	call PrintNum
-
 .next
 	pop hl
 	ld de, 2 * SCREEN_WIDTH
@@ -247,12 +242,11 @@ PlacePartyMonLevel:
 	ld a, "<LV>"
 	ld [hli], a
 	lb bc, PRINTNUM_LEFTALIGN | 1, 2
-	; jr .okay
+	jr .okay
 .ThreeDigits:
 	lb bc, PRINTNUM_LEFTALIGN | 1, 3
-; .okay
+.okay
 	call PrintNum
-
 .next
 	pop hl
 	ld de, SCREEN_WIDTH * 2
@@ -284,7 +278,6 @@ PlacePartyMonStatus:
 	ld d, h
 	pop hl
 	call PlaceStatusString
-
 .next
 	pop hl
 	ld de, SCREEN_WIDTH * 2
@@ -318,7 +311,6 @@ PlacePartyMonTMHMCompatibility:
 	pop hl
 	call .PlaceAbleNotAble
 	call PlaceString
-
 .next
 	pop hl
 	ld de, SCREEN_WIDTH * 2
@@ -328,21 +320,17 @@ PlacePartyMonTMHMCompatibility:
 	dec c
 	jr nz, .loop
 	ret
-
 .PlaceAbleNotAble:
 	ld a, c
 	and a
 	jr nz, .able
 	ld de, .string_not_able
 	ret
-
 .able
 	ld de, .string_able
 	ret
-
 .string_able
 	db "ABLE@"
-
 .string_not_able
 	db "NOT ABLE@"
 
@@ -373,7 +361,6 @@ PlacePartyMonEvoStoneCompatibility:
 	call .DetermineCompatibility
 	pop hl
 	call PlaceString
-
 .next
 	pop hl
 	ld de, 2 * SCREEN_WIDTH
@@ -383,9 +370,7 @@ PlacePartyMonEvoStoneCompatibility:
 	dec c
 	jr nz, .loop
 	ret
-
 .DetermineCompatibility:
-; BUG: Only the first three evolution entries can have Stone compatibility reported correctly (see docs/bugs_and_glitches.md)
 	ld de, wStringBuffer1
 	ld a, BANK(EvosAttacksPointers)
 	ld bc, 2
@@ -396,7 +381,7 @@ PlacePartyMonEvoStoneCompatibility:
 	ld l, a
 	ld de, wStringBuffer1
 	ld a, BANK("Evolutions and Attacks")
-	ld bc, 10
+	ld bc, STRING_BUFFER_LENGTH
 	call FarCopyBytes
 	ld hl, wStringBuffer1
 .loop2

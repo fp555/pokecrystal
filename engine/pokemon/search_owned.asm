@@ -40,12 +40,20 @@ MonCheck:
 CheckOwnMonAnywhere:
 ; Check if the player owns any monsters of the species in wScriptVar.
 ; It must exist in either party or PC, and have the player's OT and ID.
+	ld a, [wPartyCount]
 	; If there are no monsters in the party,
 	; the player must not own any yet.
-	ld a, [wPartyCount]
 	and a
 	ret z
-; BUG: CheckOwnMon does not check the Day-Care (see docs/bugs_and_glitches.md)
+	; check day-care
+	ld hl, wBreedMon1Species
+	ld bc, wBreedMon1OT
+	call CheckOwnMon
+	ret c ; found!
+	ld hl, wBreedMon2Species
+	ld bc, wBreedMon2OT
+	call CheckOwnMon
+	ret c ; found!
 	ld d, a
 	ld e, 0
 	ld hl, wPartyMon1Species

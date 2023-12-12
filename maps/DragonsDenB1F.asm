@@ -28,20 +28,17 @@ DragonsDenB1FCheckRivalCallback:
 	iftrue .CheckDay
 	disappear DRAGONSDENB1F_RIVAL
 	endcallback
-
 .CheckDay:
 	readvar VAR_WEEKDAY
 	ifequal TUESDAY, .AppearRival
 	ifequal THURSDAY, .AppearRival
 	disappear DRAGONSDENB1F_RIVAL
 	endcallback
-
 .AppearRival:
 	appear DRAGONSDENB1F_RIVAL
 	endcallback
 
 DragonsDenB1F_ClairScene:
-; BUG: Clair can give TM24 Dragonbreath twice (see docs/bugs_and_glitches.md)
 	appear DRAGONSDENB1F_CLAIR
 	opentext
 	writetext ClairText_Wait
@@ -68,7 +65,6 @@ DragonsDenB1F_ClairScene:
 	waitbutton
 	closetext
 	sjump .FinishClair
-
 .BagFull:
 	writetext ClairText_NoRoom
 	waitbutton
@@ -84,7 +80,6 @@ DragonsDenB1F_ClairScene:
 
 TrainerCooltrainermDarin:
 	trainer COOLTRAINERM, DARIN, EVENT_BEAT_COOLTRAINERM_DARIN, CooltrainermDarinSeenText, CooltrainermDarinBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -95,7 +90,6 @@ TrainerCooltrainermDarin:
 
 TrainerCooltrainerfCara:
 	trainer COOLTRAINERF, CARA, EVENT_BEAT_COOLTRAINERF_CARA, CooltrainerfCaraSeenText, CooltrainerfCaraBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -106,7 +100,6 @@ TrainerCooltrainerfCara:
 
 TrainerTwinsLeaandpia1:
 	trainer TWINS, LEAANDPIA1, EVENT_BEAT_TWINS_LEA_AND_PIA, TwinsLeaandpia1SeenText, TwinsLeaandpia1BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -117,7 +110,6 @@ TrainerTwinsLeaandpia1:
 
 TrainerTwinsLeaandpia2:
 	trainer TWINS, LEAANDPIA1, EVENT_BEAT_TWINS_LEA_AND_PIA, TwinsLeaandpia2SeenText, TwinsLeaandpia2BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -140,7 +132,6 @@ DragonsDenB1FDragonFangScript:
 	itemnotify
 	closetext
 	end
-
 .BagFull:
 	opentext
 	getitemname STRING_BUFFER_3, DRAGON_FANG
@@ -163,7 +154,6 @@ DragonsDenB1FRivalScript:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
 	special RestartMapMusic
 	end
-
 .RivalTalkAgain:
 	writetext RivalText_Training2
 	waitbutton

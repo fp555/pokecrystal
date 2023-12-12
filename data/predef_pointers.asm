@@ -8,7 +8,6 @@ ENDM
 
 PredefPointers::
 	add_predef LearnMove
-	add_predef DummyPredef1
 	add_predef HealParty ; this is both a special and a predef
 	add_predef SmallFarFlagAction
 	add_predef ComputeHPBarPixels

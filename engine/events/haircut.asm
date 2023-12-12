@@ -6,7 +6,6 @@ BillsGrandfather:
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	jp CopyPokemonName_Buffer1_Buffer3
-
 .cancel
 	xor a
 	ld [wScriptVar], a
@@ -44,7 +43,6 @@ HaircutOrGrooming:
 	inc hl
 	inc hl
 	jr .loop
-
 .ok
 	inc hl
 	ld a, [hli]
@@ -52,12 +50,10 @@ HaircutOrGrooming:
 	ld c, [hl]
 	call ChangeHappiness
 	ret
-
 .nope
 	xor a
 	ld [wScriptVar], a
 	ret
-
 .egg
 	ld a, 1
 	ld [wScriptVar], a
@@ -70,6 +66,3 @@ CopyPokemonName_Buffer1_Buffer3:
 	ld de, wStringBuffer3
 	ld bc, MON_NAME_LENGTH
 	jp CopyBytes
-
-DummyPredef1:
-	ret

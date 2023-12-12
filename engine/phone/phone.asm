@@ -1,31 +1,26 @@
 AddPhoneNumber::
-	call _CheckCellNum
+	call CheckCellNum
 	jr c, .cant_add
 	call Phone_FindOpenSlot
 	jr nc, .cant_add
 	ld [hl], c
 	xor a
 	ret
-
 .cant_add
 	scf
 	ret
 
 DelCellNum::
-	call _CheckCellNum
+	call CheckCellNum
 	jr nc, .not_in_list
 	xor a
 	ld [hl], a
 	ret
-
 .not_in_list
 	scf
 	ret
 
 CheckCellNum::
-	jp _CheckCellNum ; useless
-
-_CheckCellNum:
 	ld hl, wPhoneList
 	ld b, CONTACT_LIST_SIZE
 .loop
@@ -36,7 +31,6 @@ _CheckCellNum:
 	jr nz, .loop
 	xor a
 	ret
-
 .got_it
 	dec hl
 	scf
@@ -54,7 +48,6 @@ Phone_FindOpenSlot:
 	jr nz, .loop
 	xor a
 	ret
-
 .FoundOpenSpace:
 	dec hl
 	scf
@@ -70,21 +63,18 @@ GetRemainingSpaceInPhoneList:
 	jr z, .done
 	cp c
 	jr z, .continue
-
 	push bc
 	push hl
 	ld c, a
-	call _CheckCellNum
+	call CheckCellNum
 	jr c, .permanent
 	ld hl, wRegisteredPhoneNumbers
 	inc [hl]
 .permanent
 	pop hl
 	pop bc
-
 .continue
 	jr .loop
-
 .done
 	ld a, CONTACT_LIST_SIZE
 	ld hl, wRegisteredPhoneNumbers
@@ -93,44 +83,25 @@ GetRemainingSpaceInPhoneList:
 
 INCLUDE "data/phone/permanent_numbers.asm"
 
-BrokenPlaceFarString:
-; This routine is not in bank 0 and will fail or crash if called.
-	ldh a, [hROMBank]
-	push af
-	ld a, b
-	rst Bankswitch
-
-	call PlaceString
-
-	pop af
-	rst Bankswitch
-	ret
-
 CheckPhoneCall::
 ; Check if the phone is ringing in the overworld.
-
 	call CheckStandingOnEntrance
 	jr z, .no_call
-
 	call .timecheck
 	nop
 	jr nc, .no_call
-
 	; 50% chance for a call
 	call Random
 	ld b, a
 	and %01111111
 	cp b
 	jr nz, .no_call
-
 	call GetMapPhoneService
 	and a
 	jr nz, .no_call
-
 	call GetAvailableCallers
 	call ChooseRandomCaller
 	jr nc, .no_call
-
 	ld e, a
 	call LoadCallerScript
 	ld a, BANK(Script_ReceivePhoneCall)
@@ -138,11 +109,9 @@ CheckPhoneCall::
 	call CallScript
 	scf
 	ret
-
 .no_call
 	xor a
 	ret
-
 .timecheck
 	farcall CheckReceiveCallTimer
 	ret
@@ -152,33 +121,30 @@ CheckPhoneContactTimeOfDay:
 	push bc
 	push de
 	push af
-
 	farcall CheckTime
 	pop af
 	and ANYTIME
 	and c
-
 	pop de
 	pop bc
 	pop hl
 	ret
 
 ChooseRandomCaller:
-; If no one is available to call, don't return anything.
+	; If no one is available to call, don't return anything.
 	ld a, [wNumAvailableCallers]
 	and a
 	jr z, .NothingToSample
-
-; Store the number of available callers in c.
+	; Store the number of available callers in c.
 	ld c, a
-; Sample a random number between 0 and 31.
+	; Sample a random number between 0 and 31.
 	call Random
 	ldh a, [hRandomAdd]
 	swap a
 	and $1f
-; Compute that number modulo the number of available callers.
+	; Compute that number modulo the number of available callers.
 	call SimpleDivide
-; Return the caller ID you just sampled.
+	; Return the caller ID you just sampled.
 	ld c, a
 	ld b, 0
 	ld hl, wAvailableCallers
@@ -186,7 +152,6 @@ ChooseRandomCaller:
 	ld a, [hl]
 	scf
 	ret
-
 .NothingToSample:
 	xor a
 	ret
@@ -201,7 +166,6 @@ GetAvailableCallers:
 	call ByteFill
 	ld de, wPhoneList
 	ld a, CONTACT_LIST_SIZE
-
 .loop
 	ld [wPhoneListIndex], a
 	ld a, [de]
@@ -243,7 +207,6 @@ CheckSpecialPhoneCall::
 	ld a, [wSpecialPhoneCallID]
 	and a
 	jr z, .NoPhoneCall
-
 	dec a
 	ld c, a
 	ld b, 0
@@ -255,7 +218,6 @@ CheckSpecialPhoneCall::
 	ld l, a
 	call _hl_
 	jr nc, .NoPhoneCall
-
 	call .DoSpecialPhoneCall
 	inc hl
 	inc hl
@@ -281,11 +243,9 @@ CheckSpecialPhoneCall::
 .NoPhoneCall:
 	xor a
 	ret
-
 .script
 	pause 30
 	sjump Script_ReceivePhoneCall
-
 .DoSpecialPhoneCall:
 	ld a, [wSpecialPhoneCallID]
 	dec a
@@ -304,7 +264,6 @@ SpecialCallOnlyWhenOutside:
 	jr z, .outside
 	xor a
 	ret
-
 .outside
 	scf
 	ret
@@ -350,7 +309,6 @@ MakePhoneCallFromPokegear:
 	ld b, BANK(PhoneScript_JustTalkToThem)
 	ld hl, PhoneScript_JustTalkToThem
 	jr .DoPhoneCall
-
 .GetPhoneScript:
 	ld hl, PHONE_CONTACT_SCRIPT1_BANK
 	add hl, de
@@ -361,13 +319,11 @@ MakePhoneCallFromPokegear:
 	ld h, [hl]
 	ld l, a
 	jr .DoPhoneCall
-
 .OutOfArea:
 	ld b, BANK(LoadOutOfAreaScript)
 	ld de, LoadOutOfAreaScript
 	call ExecuteCallbackScript
 	ret
-
 .DoPhoneCall:
 	ld a, b
 	ld [wPhoneScriptBank], a
@@ -398,7 +354,6 @@ LoadCallerScript:
 	ld a, BANK(WrongNumber)
 	ld hl, WrongNumber
 	jr .proceed
-
 .actualcaller
 	ld hl, PhoneContacts
 	ld bc, PHONE_CONTACT_SIZE
@@ -439,21 +394,11 @@ Script_SpecialBillCall::
 	ld e, PHONE_BILL
 	jp LoadCallerScript
 
-Script_SpecialElmCall: ; unreferenced
-	callasm .LoadElmScript
-	pause 30
-	sjump Script_ReceivePhoneCall
-
-.LoadElmScript:
-	ld e, PHONE_ELM
-	jp LoadCallerScript
-
 RingTwice_StartCall:
 	call .Ring
 	call .Ring
 	farcall StubbedTrainerRankings_PhoneCalls
 	ret
-
 .Ring:
 	call Phone_StartRinging
 	call Phone_Wait20Frames
@@ -463,7 +408,6 @@ RingTwice_StartCall:
 	call Phone_Wait20Frames
 	call .CallerTextboxWithName
 	ret
-
 .CallerTextboxWithName:
 	ld a, [wCurCaller]
 	ld b, a
@@ -481,7 +425,6 @@ PhoneCall::
 	call .Ring
 	farcall StubbedTrainerRankings_PhoneCalls
 	ret
-
 .Ring:
 	call Phone_StartRinging
 	call Phone_Wait20Frames
@@ -491,21 +434,18 @@ PhoneCall::
 	call Phone_Wait20Frames
 	call .CallerTextboxWithName
 	ret
-
 .CallerTextboxWithName:
 	call Phone_CallerTextbox
 	hlcoord 1, 2
 	ld [hl], "☎"
 	inc hl
 	inc hl
-; BUG: The unused phonecall script command may crash (see docs/bugs_and_glitches.md)
-	ld a, [wPhoneScriptBank]
-	ld b, a
 	ld a, [wPhoneCaller]
 	ld e, a
 	ld a, [wPhoneCaller + 1]
 	ld d, a
-	call BrokenPlaceFarString
+	ld a, [wPhoneScriptBank]
+	call PlaceFarString
 	ret
 
 Phone_NoSignal:
@@ -516,6 +456,8 @@ Phone_NoSignal:
 HangUp::
 	call HangUp_Beep
 	call HangUp_Wait20Frames
+	;  fallthrough
+
 Phone_CallEnd:
 	call HangUp_BoopOn
 	call HangUp_Wait20Frames
@@ -529,11 +471,6 @@ Phone_CallEnd:
 	call HangUp_Wait20Frames
 	call HangUp_BoopOff
 	call HangUp_Wait20Frames
-	ret
-
-HangUp_ShutDown: ; unreferenced
-	ld de, SFX_SHUT_DOWN_PC
-	call PlaySFX
 	ret
 
 HangUp_Beep:
@@ -635,7 +572,6 @@ GetCallerName:
 	ld a, c
 	and a
 	jr z, .NotTrainer
-
 	call Phone_GetTrainerName
 	push hl
 	push bc
@@ -649,7 +585,6 @@ GetCallerName:
 	call Phone_GetTrainerClassName
 	call PlaceString
 	ret
-
 .NotTrainer:
 	push hl
 	ld c, b
@@ -721,12 +656,4 @@ PhoneScript_JustTalkToThem:
 
 PhoneJustTalkToThemText:
 	text_far _PhoneJustTalkToThemText
-	text_end
-
-PhoneThankYouTextScript: ; unreferenced
-	writetext PhoneThankYouText
-	end
-
-PhoneThankYouText:
-	text_far _PhoneThankYouText
 	text_end

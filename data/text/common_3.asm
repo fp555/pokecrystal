@@ -890,10 +890,6 @@ _PhoneJustTalkToThemText::
 	line "that person!"
 	done
 
-_PhoneThankYouText::
-	text "Thank you!"
-	done
-
 _PasswordAskResetText::
 	text "Select CONTINUE &"
 	line "reset settings."

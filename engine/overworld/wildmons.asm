@@ -7,7 +7,6 @@ LoadWildMonData:
 	ld [hli], a
 	ld [hl], a
 	jr .done_copy
-
 .copy
 	inc hl
 	inc hl
@@ -44,14 +43,12 @@ FindNest:
 	call .RoamMon1
 	call .RoamMon2
 	ret
-
 .kanto
 	decoord 0, 0
 	ld hl, KantoGrassWildMons
 	call .FindGrass
 	ld hl, KantoWaterWildMons
 	jp .FindWater
-
 .FindGrass:
 	ld a, [hl]
 	cp -1
@@ -69,13 +66,11 @@ FindNest:
 	jr nc, .next_grass
 	ld [de], a
 	inc de
-
 .next_grass
 	pop hl
 	ld bc, GRASS_WILDDATA_LENGTH
 	add hl, bc
 	jr .FindGrass
-
 .FindWater:
 	ld a, [hl]
 	cp -1
@@ -91,13 +86,11 @@ FindNest:
 	jr nc, .next_water
 	ld [de], a
 	inc de
-
 .next_water
 	pop hl
 	ld bc, WATER_WILDDATA_LENGTH
 	add hl, bc
 	jr .FindWater
-
 .SearchMapForMon:
 	inc hl
 .ScanMapLoop:
@@ -112,11 +105,9 @@ FindNest:
 	jr nz, .ScanMapLoop
 	and a
 	ret
-
 .found
 	pop af
 	jp .AppendNest
-
 .AppendNest:
 	push de
 	call GetWorldMapLocation
@@ -135,12 +126,10 @@ FindNest:
 	pop de
 	scf
 	ret
-
 .found_nest
 	pop de
 	and a
 	ret
-
 .RoamMon1:
 	ld a, [wRoamMon1Species]
 	ld b, a
@@ -156,7 +145,6 @@ FindNest:
 	ld [de], a
 	inc de
 	ret
-
 .RoamMon2:
 	ld a, [wRoamMon2Species]
 	ld b, a
@@ -183,7 +171,6 @@ TryWildEncounter::
 	jr nc, .no_battle
 	xor a
 	ret
-
 .no_battle
 	xor a ; BATTLETYPE_NORMAL
 	ld [wTempWildMonSpecies], a
@@ -191,7 +178,6 @@ TryWildEncounter::
 	ld a, 1
 	and a
 	ret
-
 .EncounterRate:
 	call GetMapEncounterRate
 	call ApplyMusicEffectOnEncounterRate
@@ -225,7 +211,6 @@ ApplyMusicEffectOnEncounterRate::
 	ret nz
 	srl b
 	ret
-
 .double
 	sla b
 	ret
@@ -244,7 +229,6 @@ ApplyCleanseTagEffectOnEncounterRate::
 	dec c
 	jr nz, .loop
 	ret
-
 .cleansetag
 	srl b
 	ret
@@ -254,7 +238,6 @@ ChooseWildEncounter:
 	jp nc, .nowildbattle
 	call CheckEncounterRoamMon
 	jp c, .startwildbattle
-
 	inc hl
 	inc hl
 	inc hl
@@ -267,7 +250,6 @@ ChooseWildEncounter:
 	ld bc, NUM_GRASSMON * 2
 	call AddNTimes
 	ld de, GrassMonProbTable
-
 .watermon
 ; hl contains the pointer to the wild mon data, let's save that to the stack
 	push hl
@@ -279,14 +261,13 @@ ChooseWildEncounter:
 	ld b, a
 	ld h, d
 	ld l, e
-; This next loop chooses which mon to load up.
+	; This next loop chooses which mon to load up.
 .prob_bracket_loop
 	ld a, [hli]
 	cp b
 	jr nc, .got_it
 	inc hl
 	jr .prob_bracket_loop
-
 .got_it
 	ld c, [hl]
 	ld b, 0
@@ -294,10 +275,11 @@ ChooseWildEncounter:
 	add hl, bc ; this selects our mon
 	ld a, [hli]
 	ld b, a
-; If the Pokemon is encountered by surfing, we need to give the levels some variety.
+	; If the Pokemon is encountered by surfing
+	; we need to give the levels some variety.
 	call CheckOnWater
 	jr nz, .ok
-; Check if we buff the wild mon, and by how much.
+	; Check if we buff the wild mon, and by how much.
 	call Random
 	cp 35 percent
 	jr c, .ok
@@ -311,35 +293,28 @@ ChooseWildEncounter:
 	cp 95 percent
 	jr c, .ok
 	inc b
-; Store the level
+	; Store the level
 .ok
-; BUG: ChooseWildEncounter doesn't really validate the wild Pokemon species (see docs/bugs_and_glitches.md)
 	ld a, b
 	ld [wCurPartyLevel], a
 	ld b, [hl]
+	ld a, b
 	call ValidateTempWildMonSpecies
 	jr c, .nowildbattle
-
-	ld a, b
 	cp UNOWN
 	jr nz, .done
-
 	ld a, [wUnlockedUnowns]
 	and a
 	jr z, .nowildbattle
-
 .done
 	jr .loadwildmon
-
 .nowildbattle
 	ld a, 1
 	and a
 	ret
-
 .loadwildmon
 	ld a, b
 	ld [wTempWildMonSpecies], a
-
 .startwildbattle
 	xor a
 	ret
@@ -347,11 +322,11 @@ ChooseWildEncounter:
 INCLUDE "data/wild/probabilities.asm"
 
 CheckRepelEffect::
-; If there is no active Repel, there's no need to be here.
+	; If there is no active Repel, there's no need to be here.
 	ld a, [wRepelEffect]
 	and a
 	jr z, .encounter
-; Get the first Pokemon in your party that isn't fainted.
+	; Get the first Pokemon in your party that isn't fainted.
 	ld hl, wPartyMon1HP
 	ld bc, PARTYMON_STRUCT_LENGTH - 1
 .loop
@@ -360,19 +335,16 @@ CheckRepelEffect::
 	jr nz, .ok
 	add hl, bc
 	jr .loop
-
 .ok
 ; to PartyMonLevel
 rept 4
 	dec hl
 endr
-
 	ld a, [wCurPartyLevel]
 	cp [hl]
 	jr nc, .encounter
 	and a
 	ret
-
 .encounter
 	scf
 	ret
@@ -428,7 +400,6 @@ _SwarmWildmonCheck:
 	jr nc, _NoSwarmWildmon
 	scf
 	ret
-
 .CheckYanma:
 	push hl
 	ld hl, wSwarmFlags
@@ -474,7 +445,6 @@ LookUpWildmonsForMapDE:
 	ld a, e
 	cp [hl]
 	jr z, .yup
-
 .next
 	pop hl
 	add hl, bc
@@ -492,52 +462,46 @@ LookUpWildmonsForMapDE:
 
 InitRoamMons:
 ; initialize wRoamMon structs
-
-; species
+	; species
 	ld a, RAIKOU
 	ld [wRoamMon1Species], a
 	ld a, ENTEI
 	ld [wRoamMon2Species], a
-
-; level
+	; level
 	ld a, 40
 	ld [wRoamMon1Level], a
 	ld [wRoamMon2Level], a
-
-; raikou starting map
+	; raikou starting map
 	ld a, GROUP_ROUTE_42
 	ld [wRoamMon1MapGroup], a
 	ld a, MAP_ROUTE_42
 	ld [wRoamMon1MapNumber], a
-
-; entei starting map
+	; entei starting map
 	ld a, GROUP_ROUTE_37
 	ld [wRoamMon2MapGroup], a
 	ld a, MAP_ROUTE_37
 	ld [wRoamMon2MapNumber], a
-
-; hp
+	; hp
 	xor a ; generate new stats
 	ld [wRoamMon1HP], a
 	ld [wRoamMon2HP], a
-
 	ret
 
 CheckEncounterRoamMon:
 	push hl
-; Don't trigger an encounter if we're on water.
+	; Don't trigger an encounter if we're on water.
 	call CheckOnWater
 	jr z, .DontEncounterRoamMon
-; Load the current map group and number to de
+	; Load the current map group and number to de
 	call CopyCurrMapDE
-; Randomly select a beast.
+	; Randomly select a beast.
 	call Random
 	cp 100 ; 25/64 chance
 	jr nc, .DontEncounterRoamMon
 	and %00000011 ; Of that, a 3/4 chance.  Running total: 75/256, or around 29.3%.
 	jr z, .DontEncounterRoamMon
 	dec a ; 1/3 chance that it's Entei, 1/3 chance that it's Raikou
-; Compare its current location with yours
+	; Compare its current location with yours
 	ld hl, wRoamMon1MapGroup
 	ld c, a
 	ld b, 0
@@ -550,7 +514,7 @@ CheckEncounterRoamMon:
 	ld a, e
 	cp [hl]
 	jr nz, .DontEncounterRoamMon
-; We've decided to take on a beast, so stage its information for battle.
+	; We've decided to take on a beast, so stage its information for battle.
 	dec hl
 	dec hl
 	dec hl
@@ -560,11 +524,9 @@ CheckEncounterRoamMon:
 	ld [wCurPartyLevel], a
 	ld a, BATTLETYPE_ROAMING
 	ld [wBattleType], a
-
 	pop hl
 	scf
 	ret
-
 .DontEncounterRoamMon:
 	pop hl
 	and a
@@ -582,7 +544,6 @@ UpdateRoamMons:
 	ld [wRoamMon1MapGroup], a
 	ld a, c
 	ld [wRoamMon1MapNumber], a
-
 .SkipRaikou:
 	ld a, [wRoamMon2MapGroup]
 	cp GROUP_N_A
@@ -595,7 +556,6 @@ UpdateRoamMons:
 	ld [wRoamMon2MapGroup], a
 	ld a, c
 	ld [wRoamMon2MapNumber], a
-
 .SkipEntei:
 	ld a, [wRoamMon3MapGroup]
 	cp GROUP_N_A
@@ -608,18 +568,16 @@ UpdateRoamMons:
 	ld [wRoamMon3MapGroup], a
 	ld a, c
 	ld [wRoamMon3MapNumber], a
-
 .Finished:
 	jp _BackUpMapIndices
-
 .Update:
 	ld hl, RoamMaps
 .loop
-; Are we at the end of the table?
+	; Are we at the end of the table?
 	ld a, [hl]
 	cp -1
 	ret z
-; Is this the correct entry?
+	; Is this the correct entry?
 	ld a, b
 	cp [hl]
 	jr nz, .next
@@ -627,24 +585,26 @@ UpdateRoamMons:
 	ld a, c
 	cp [hl]
 	jr z, .yes
-; We don't have the correct entry yet, so let's continue.  A 0 terminates each entry.
+	; We don't have the correct entry yet, so let's continue.
+	; A 0 terminates each entry.
 .next
 	ld a, [hli]
 	and a
 	jr nz, .next
 	jr .loop
-
-; We have the correct entry now, so let's choose a random map from it.
 .yes
+; We have the correct entry now, so let's choose a random map from it.
 	inc hl
 	ld d, h
 	ld e, l
 .update_loop
 	ld h, d
 	ld l, e
-; Choose which map to warp to.
+	; Choose which map to warp to.
 	call Random
-	and %00011111 ; 1/8n chance it moves to a completely random map, where n is the number of roaming connections from the current map.
+	; 1/8n chance it moves to a completely random map
+	; where n is the number of roaming connections from the current map.
+	and %00011111
 	jr z, JumpRoamMon
 	and %11
 	cp [hl]
@@ -662,7 +622,6 @@ UpdateRoamMons:
 	cp [hl]
 	jr z, .update_loop
 	dec hl
-
 .done
 	ld a, [hli]
 	ld b, a
@@ -678,7 +637,6 @@ JumpRoamMons:
 	ld [wRoamMon1MapGroup], a
 	ld a, c
 	ld [wRoamMon1MapNumber], a
-
 .SkipRaikou:
 	ld a, [wRoamMon2MapGroup]
 	cp GROUP_N_A
@@ -688,7 +646,6 @@ JumpRoamMons:
 	ld [wRoamMon2MapGroup], a
 	ld a, c
 	ld [wRoamMon2MapNumber], a
-
 .SkipEntei:
 	ld a, [wRoamMon3MapGroup]
 	cp GROUP_N_A
@@ -698,7 +655,6 @@ JumpRoamMons:
 	ld [wRoamMon3MapGroup], a
 	ld a, c
 	ld [wRoamMon3MapNumber], a
-
 .Finished:
 	jp _BackUpMapIndices
 
@@ -723,8 +679,8 @@ JumpRoamMon:
 	and a
 	jr nz, .innerloop3
 	jr .innerloop2
-; Check to see if the selected map is the one the player is currently in.  If so, try again.
 .ok
+; Check to see if the selected map is the one the player is currently in.  If so, try again.
 	ld a, [wMapGroup]
 	cp [hl]
 	jr nz, .done
@@ -733,8 +689,8 @@ JumpRoamMon:
 	cp [hl]
 	jr z, .loop
 	dec hl
-; Return the map group and number in bc.
 .done
+; Return the map group and number in bc.
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
@@ -761,14 +717,13 @@ ValidateTempWildMonSpecies:
 	jr nc, .nowildmon ; >= 252
 	and a ; 1 <= Species <= 251
 	ret
-
 .nowildmon
 	scf
 	ret
 
+RandomUnseenWildMon:
 ; Finds a rare wild Pokemon in the route of the trainer calling, then checks if it's been Seen already.
 ; The trainer will then tell you about the Pokemon if you haven't seen it.
-RandomUnseenWildMon:
 	farcall GetCallerLocation
 	ld d, b
 	ld e, c
@@ -779,7 +734,6 @@ RandomUnseenWildMon:
 	ld hl, KantoGrassWildMons
 	call LookUpWildmonsForMapDE
 	jr nc, .done
-
 .GetGrassmon:
 	push hl
 	ld bc, 5 + 4 * 2 ; Location of the level of the 5th wild Pokemon in that map
@@ -796,7 +750,7 @@ RandomUnseenWildMon:
 	ld b, 0
 	add hl, bc
 	add hl, bc
-; We now have the pointer to one of the last (rarest) three wild Pokemon found in that area.
+	; We now have the pointer to one of the last (rarest) three wild Pokemon found in that area.
 	inc hl
 	ld c, [hl] ; Contains the species index of this rare Pokemon
 	pop hl
@@ -811,14 +765,14 @@ RandomUnseenWildMon:
 	inc hl
 	dec b
 	jr nz, .loop2
-; This Pokemon truly is rare.
+	; This Pokemon truly is rare.
 	push bc
 	dec c
 	ld a, c
 	call CheckSeenMon
 	pop bc
 	jr nz, .done
-; Since we haven't seen it, have the caller tell us about it.
+	; Since we haven't seen it, have the caller tell us about it.
 	ld de, wStringBuffer1
 	call CopyName1
 	ld a, c
@@ -829,12 +783,10 @@ RandomUnseenWildMon:
 	xor a
 	ld [wScriptVar], a
 	ret
-
 .done
 	ld a, $1
 	ld [wScriptVar], a
 	ret
-
 .JustSawSomeRareMonText:
 	text_far _JustSawSomeRareMonText
 	text_end
@@ -849,7 +801,6 @@ RandomPhoneWildMon:
 	jr c, .ok
 	ld hl, KantoGrassWildMons
 	call LookUpWildmonsForMapDE
-
 .ok
 	ld bc, 5 + 0 * 2
 	add hl, bc
@@ -861,7 +812,6 @@ RandomPhoneWildMon:
 	jr z, .done
 	add hl, bc
 	jr .loop
-
 .done
 	call Random
 	and %11
@@ -890,7 +840,6 @@ RandomPhoneMon:
 	add hl, bc
 	ld a, BANK(TrainerGroups)
 	call GetFarWord
-
 .skip_trainer
 	dec e
 	jr z, .skipped
@@ -902,14 +851,12 @@ RandomPhoneMon:
 	jr nz, .skip
 	jr .skip_trainer
 .skipped
-
 .skip_name
 	ld a, BANK(Trainers)
 	call GetFarByte
 	inc hl
 	cp "@"
 	jr nz, .skip_name
-
 	ld a, BANK(Trainers)
 	call GetFarByte
 	inc hl
@@ -925,7 +872,6 @@ RandomPhoneMon:
 	; TRAINERTYPE_ITEM_MOVES
 	ld bc, 2 + 1 + NUM_MOVES ; level, species, item, moves
 .got_mon_length
-
 	ld e, 0
 	push hl
 .count_mon
@@ -936,13 +882,11 @@ RandomPhoneMon:
 	cp -1
 	jr nz, .count_mon
 	pop hl
-
 .rand
 	call Random
 	maskbits PARTY_LENGTH
 	cp e
 	jr nc, .rand
-
 	inc a
 .get_mon
 	dec a
@@ -950,7 +894,6 @@ RandomPhoneMon:
 	add hl, bc
 	jr .get_mon
 .got_mon
-
 	inc hl ; species
 	ld a, BANK(Trainers)
 	call GetFarByte

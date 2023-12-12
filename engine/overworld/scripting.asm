@@ -466,12 +466,10 @@ GiveItemScript:
 	waitbutton
 	itemnotify
 	end
-
 .Full:
 	promptbutton
 	pocketisfull
 	end
-
 .ReceivedItemText:
 	text_far _ReceivedItemText
 	text_end
@@ -1076,12 +1074,10 @@ ShowEmoteScript:
 	pause 0
 	applymovementlasttalked .Hide
 	end
-
 .Show:
 	show_emote
 	step_sleep 1
 	step_end
-
 .Hide:
 	hide_emote
 	step_sleep 1
@@ -1099,7 +1095,6 @@ Script_earthquake:
 	ld b, BANK(.script)
 	ld de, .script
 	jp ScriptCall
-
 .script
 	applymovement PLAYER, wEarthquakeMovementDataBuffer
 	end
@@ -1175,13 +1170,11 @@ Script_reloadmapafterbattle:
 	ld b, BANK(Script_BattleWhiteout)
 	ld hl, Script_BattleWhiteout
 	jp ScriptJump
-
 .notblackedout
 	bit 0, d
 	jr z, .was_wild
 	farcall MomTriesToBuySomething
 	jr .done
-
 .was_wild
 	ld a, [wBattleResult]
 	bit BATTLERESULT_BOX_FULL, a
@@ -1233,12 +1226,13 @@ Script_memcall:
 	; fallthrough
 
 ScriptCall:
-; BUG: ScriptCall can overflow wScriptStack and crash (see docs/bugs_and_glitches.md)
-
-	push de
 	ld hl, wScriptStackSize
-	ld e, [hl]
+	ld a, [hl]
+	cp 5
+	ret nc
+	push de
 	inc [hl]
+	ld e, a
 	ld d, 0
 	ld hl, wScriptStack
 	add hl, de
@@ -1394,7 +1388,6 @@ Script_checkscene:
 	jr z, .no_scene
 	ld [wScriptVar], a
 	ret
-
 .no_scene
 	ld a, $ff
 	ld [wScriptVar], a
@@ -1412,7 +1405,6 @@ Script_checkmapscene:
 	ld a, [de]
 	ld [wScriptVar], a
 	ret
-
 .no_scene
 	ld a, $ff
 	ld [wScriptVar], a
@@ -1484,7 +1476,6 @@ Script_random:
 	ld [wScriptVar], a
 	and a
 	ret z
-
 	ld c, a
 	call .Divide256byC
 	and a
@@ -1501,13 +1492,11 @@ Script_random:
 	cp b
 	jr nc, .loop
 	jr .finish
-
 .no_restriction
 	push bc
 	call Random
 	pop bc
 	ldh a, [hRandomAdd]
-
 .finish
 	push af
 	ld a, [wScriptVar]
@@ -1516,7 +1505,6 @@ Script_random:
 	call SimpleDivide
 	ld [wScriptVar], a
 	ret
-
 .Divide256byC:
 	xor a
 	ld b, a
@@ -1559,7 +1547,6 @@ Script_checkver:
 	ld a, [.gs_version]
 	ld [wScriptVar], a
 	ret
-
 .gs_version:
 	db GS_VERSION
 
@@ -1883,7 +1870,6 @@ Script_delcellnum:
 
 Script_checkcellnum:
 ; returns false if the cell number is not in your phone
-
 	xor a
 	ld [wScriptVar], a
 	call GetScriptByte
@@ -1903,7 +1889,6 @@ Script_specialphonecall:
 
 Script_checkphonecall:
 ; returns false if no special phone call is stored
-
 	ld a, [wSpecialPhoneCallID]
 	and a
 	jr z, .ok
@@ -1939,7 +1924,6 @@ Script_givepoke:
 
 Script_giveegg:
 ; if no room in the party, return 0 in wScriptVar; else, return 2
-
 	xor a ; PARTYMON
 	ld [wScriptVar], a
 	ld [wMonType], a
@@ -2048,7 +2032,7 @@ Script_warpfacing:
 	set PLAYERSPRITESETUP_CUSTOM_FACING_F, a
 	or c
 	ld [wPlayerSpriteSetupFlags], a
-; fallthrough
+	; fallthrough
 
 Script_warp:
 ; This seems to be some sort of error handling case.
@@ -2070,7 +2054,6 @@ Script_warp:
 	call LoadMapStatus
 	call StopScript
 	ret
-
 .not_ok
 	call GetScriptByte
 	call GetScriptByte
@@ -2112,7 +2095,7 @@ Script_writecmdqueue:
 	ld d, a
 	ld a, [wScriptBank]
 	ld b, a
-	farcall WriteCmdQueue ; no need to farcall
+	call WriteCmdQueue ; no need to farcall
 	ret
 
 Script_delcmdqueue:
@@ -2120,7 +2103,7 @@ Script_delcmdqueue:
 	ld [wScriptVar], a
 	call GetScriptByte
 	ld b, a
-	farcall DelCmdQueue ; no need to farcall
+	call DelCmdQueue ; no need to farcall
 	ret c
 	ld a, TRUE
 	ld [wScriptVar], a

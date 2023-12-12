@@ -12,7 +12,6 @@ OverworldLoop::
 	jr nz, .loop
 .done
 	ret
-
 .Jumptable:
 ; entries correspond to MAPSTATUS_* constants
 	dw StartMap
@@ -33,41 +32,6 @@ EnableEvents::
 CheckBit5_ScriptFlags2:
 	ld hl, wScriptFlags2
 	bit 5, [hl]
-	ret
-
-DisableWarpsConnxns: ; unreferenced
-	ld hl, wScriptFlags2
-	res 2, [hl]
-	ret
-
-DisableCoordEvents: ; unreferenced
-	ld hl, wScriptFlags2
-	res 1, [hl]
-	ret
-
-DisableStepCount: ; unreferenced
-	ld hl, wScriptFlags2
-	res 0, [hl]
-	ret
-
-DisableWildEncounters: ; unreferenced
-	ld hl, wScriptFlags2
-	res 4, [hl]
-	ret
-
-EnableWarpsConnxns: ; unreferenced
-	ld hl, wScriptFlags2
-	set 2, [hl]
-	ret
-
-EnableCoordEvents: ; unreferenced
-	ld hl, wScriptFlags2
-	set 1, [hl]
-	ret
-
-EnableStepCount: ; unreferenced
-	ld hl, wScriptFlags2
-	set 0, [hl]
 	ret
 
 EnableWildEncounters:
@@ -105,6 +69,8 @@ StartMap:
 	call ByteFill
 	farcall InitCallReceiveDelay
 	call ClearJoypad
+	; fallthrough
+
 EnterMap:
 	xor a
 	ld [wXYComparePointer], a
@@ -112,42 +78,32 @@ EnterMap:
 	call SetUpFiveStepWildEncounterCooldown
 	farcall RunMapSetupScript
 	call DisableEvents
-
 	ldh a, [hMapEntryMethod]
 	cp MAPSETUP_CONNECTION
 	jr nz, .dont_enable
 	call EnableEvents
 .dont_enable
-
 	ldh a, [hMapEntryMethod]
 	cp MAPSETUP_RELOADMAP
 	jr nz, .dontresetpoison
 	xor a
 	ld [wPoisonStepCount], a
 .dontresetpoison
-
 	xor a ; end map entry
 	ldh [hMapEntryMethod], a
 	ld a, MAPSTATUS_HANDLE
 	ld [wMapStatus], a
 	ret
 
-UnusedWait30Frames: ; unreferenced
-	ld c, 30
-	call DelayFrames
-	ret
-
 HandleMap:
 	call ResetOverworldDelay
 	call HandleMapTimeAndJoypad
-	farcall HandleCmdQueue ; no need to farcall
+	call HandleCmdQueue
 	call MapEvents
-
-; Not immediately entering a connected map will cause problems.
+	; Not immediately entering a connected map will cause problems.
 	ld a, [wMapStatus]
 	cp MAPSTATUS_HANDLE
 	ret nz
-
 	call HandleMapObjects
 	call NextOverworldFrame
 	call HandleMapBackground
@@ -159,18 +115,15 @@ MapEvents:
 	ld hl, .Jumptable
 	rst JumpTable
 	ret
-
 .Jumptable:
 ; entries correspond to MAPEVENTS_* constants
 	dw .events
 	dw .no_events
-
 .events:
 	call PlayerEvents
 	call DisableEvents
 	farcall ScriptEvents
 	ret
-
 .no_events:
 	ret
 
@@ -194,7 +147,6 @@ HandleMapTimeAndJoypad:
 	ld a, [wMapEventStatus]
 	cp MAPEVENTS_OFF
 	ret z
-
 	call UpdateTime
 	call GetJoypad
 	call TimeOfDayPals
@@ -225,7 +177,6 @@ CheckPlayerState:
 	ld a, MAPEVENTS_ON
 	ld [wMapEventStatus], a
 	ret
-
 .noevents
 	ld a, MAPEVENTS_OFF
 	ld [wMapEventStatus], a
@@ -240,39 +191,29 @@ _CheckObjectEnteringVisibleRange:
 
 PlayerEvents:
 	xor a
-; If there's already a player event, don't interrupt it.
+	; If there's already a player event, don't interrupt it.
 	ld a, [wScriptRunning]
 	and a
 	ret nz
-
 	call Dummy_CheckScriptFlags2Bit5 ; This is a waste of time
-
 	call CheckTrainerBattle_GetPlayerEvent
 	jr c, .ok
-
 	call CheckTileEvent
 	jr c, .ok
-
 	call RunMemScript
 	jr c, .ok
-
 	call RunSceneScript
 	jr c, .ok
-
 	call CheckTimeEvents
 	jr c, .ok
-
 	call OWPlayerInput
 	jr c, .ok
-
 	xor a
 	ret
-
 .ok
 	push af
 	farcall EnableScriptMode
 	pop af
-
 	ld [wScriptRunning], a
 	call DoPlayerEvent
 	ld a, [wScriptRunning]
@@ -280,10 +221,8 @@ PlayerEvents:
 	jr z, .ok2
 	cp PLAYEREVENT_JOYCHANGEFACING
 	jr z, .ok2
-
 	xor a
 	ld [wLandmarkSignTimer], a
-
 .ok2
 	scf
 	ret
@@ -293,58 +232,43 @@ CheckTrainerBattle_GetPlayerEvent:
 	nop
 	call CheckTrainerBattle
 	jr nc, .nope
-
 	ld a, PLAYEREVENT_SEENBYTRAINER
 	scf
 	ret
-
 .nope
 	xor a
 	ret
 
 CheckTileEvent:
 ; Check for warps, coord events, or wild battles.
-
 	call CheckWarpConnxnScriptFlag
 	jr z, .connections_disabled
-
 	farcall CheckMovingOffEdgeOfMap
 	jr c, .map_connection
-
 	call CheckWarpTile
 	jr c, .warp_tile
-
 .connections_disabled
 	call CheckCoordEventScriptFlag
 	jr z, .coord_events_disabled
-
 	call CheckCurrentMapCoordEvents
 	jr c, .coord_event
-
 .coord_events_disabled
 	call CheckStepCountScriptFlag
 	jr z, .step_count_disabled
-
 	call CountStep
 	ret c
-
 .step_count_disabled
 	call CheckWildEncountersScriptFlag
 	jr z, .ok
-
 	call RandomEncounter
 	ret c
-	jr .ok ; pointless
-
 .ok
 	xor a
 	ret
-
 .map_connection
 	ld a, PLAYEREVENT_CONNECTION
 	scf
 	ret
-
 .warp_tile
 	ld a, [wPlayerTile]
 	call CheckPitTile
@@ -352,12 +276,10 @@ CheckTileEvent:
 	ld a, PLAYEREVENT_FALL
 	scf
 	ret
-
 .not_pit
 	ld a, PLAYEREVENT_WARP
 	scf
 	ret
-
 .coord_event
 	ld hl, wCurCoordEventScriptAddr
 	ld a, [hli]
@@ -382,16 +304,6 @@ SetUpFiveStepWildEncounterCooldown:
 	ld [wWildEncounterCooldown], a
 	ret
 
-SetMinTwoStepWildEncounterCooldown:
-; dummied out
-	ret
-	ld a, [wWildEncounterCooldown]
-	cp 2
-	ret nc
-	ld a, 2
-	ld [wWildEncounterCooldown], a
-	ret
-
 Dummy_CheckScriptFlags2Bit5:
 	call CheckBit5_ScriptFlags2
 	ret z
@@ -402,12 +314,10 @@ RunSceneScript:
 	ld a, [wCurMapSceneScriptCount]
 	and a
 	jr z, .nope
-
 	ld c, a
 	call CheckScenes
 	cp c
 	jr nc, .nope
-
 	ld e, a
 	ld d, 0
 	ld hl, wCurMapSceneScriptsPointer
@@ -417,22 +327,17 @@ RunSceneScript:
 rept SCENE_SCRIPT_SIZE
 	add hl, de
 endr
-
 	call GetMapScriptsBank
 	call GetFarWord
 	call GetMapScriptsBank
 	call CallScript
-
 	ld hl, wScriptFlags
 	res 3, [hl]
-
 	farcall EnableScriptMode
 	farcall ScriptEvents
-
 	ld hl, wScriptFlags
 	bit 3, [hl]
 	jr z, .nope
-
 	ld hl, wDeferredScriptAddr
 	ld a, [hli]
 	ld h, [hl]
@@ -441,7 +346,6 @@ endr
 	call CallScript
 	scf
 	ret
-
 .nope
 	xor a
 	ret
@@ -450,35 +354,25 @@ CheckTimeEvents:
 	ld a, [wLinkMode]
 	and a
 	jr nz, .nothing
-
 	ld hl, wStatusFlags2
 	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, [hl]
 	jr z, .do_daily
-
 	farcall CheckBugContestTimer
 	jr c, .end_bug_contest
 	xor a
 	ret
-
 .do_daily
 	farcall CheckDailyResetTimer
 	farcall CheckPokerusTick
 	farcall CheckPhoneCall
 	ret c
-
 .nothing
 	xor a
 	ret
-
 .end_bug_contest
 	ld a, BANK(BugCatchingContestOverScript)
 	ld hl, BugCatchingContestOverScript
 	call CallScript
-	scf
-	ret
-
-.unused ; unreferenced
-	ld a, $8 ; ???
 	scf
 	ret
 
@@ -487,21 +381,16 @@ OWPlayerInput:
 	ret c
 	and a
 	jr nz, .NoAction
-
-; Can't perform button actions while sliding on ice.
+	; Can't perform button actions while sliding on ice.
 	farcall CheckStandingOnIce
 	jr c, .NoAction
-
 	call CheckAPressOW
 	jr c, .Action
-
 	call CheckMenuOW
 	jr c, .Action
-
 .NoAction:
 	xor a
 	ret
-
 .Action:
 	push af
 	farcall StopPlayerForEvent
@@ -534,7 +423,6 @@ TryObjectEvent:
 	jr c, .IsObject
 	xor a
 	ret
-
 .IsObject:
 	call PlayTalkObject
 	ldh a, [hObjectStructIndex]
@@ -543,28 +431,23 @@ TryObjectEvent:
 	add hl, bc
 	ld a, [hl]
 	ldh [hLastTalked], a
-
 	ldh a, [hLastTalked]
 	call GetMapObject
 	ld hl, MAPOBJECT_TYPE
 	add hl, bc
 	ld a, [hl]
 	and MAPOBJECT_TYPE_MASK
-
-; BUG: TryObjectEvent arbitrary code execution (see docs/bugs_and_glitches.md)
 	push bc
 	ld de, 3
 	ld hl, ObjectEventTypeArray
 	call IsInArray
-	jr nc, .nope
 	pop bc
-
+	jr nc, .nope
 	inc hl
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	jp hl
-
 .nope
 	xor a
 	ret
@@ -581,7 +464,6 @@ ObjectEventTypeArray:
 	dbw OBJECTTYPE_6, .six
 	assert_table_length NUM_OBJECT_TYPES
 	db -1 ; end
-
 .script
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
@@ -591,7 +473,6 @@ ObjectEventTypeArray:
 	call GetMapScriptsBank
 	call CallScript
 	ret
-
 .itemball
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
@@ -605,25 +486,20 @@ ObjectEventTypeArray:
 	ld a, PLAYEREVENT_ITEMBALL
 	scf
 	ret
-
 .trainer
 	call TalkToTrainer
 	ld a, PLAYEREVENT_TALKTOTRAINER
 	scf
 	ret
-
 .three
 	xor a
 	ret
-
 .four
 	xor a
 	ret
-
 .five
 	xor a
 	ret
-
 .six
 	xor a
 	ret
@@ -633,7 +509,6 @@ TryBGEvent:
 	jr c, .is_bg_event
 	xor a
 	ret
-
 .is_bg_event:
 	ld a, [wCurBGEventType]
 	ld hl, BGEventJumptable
@@ -652,23 +527,18 @@ BGEventJumptable:
 	dw .itemifset
 	dw .copy
 	assert_table_length NUM_BGEVENTS
-
 .up:
 	ld b, OW_UP
 	jr .checkdir
-
 .down:
 	ld b, OW_DOWN
 	jr .checkdir
-
 .right:
 	ld b, OW_RIGHT
 	jr .checkdir
-
 .left:
 	ld b, OW_LEFT
 	jr .checkdir
-
 .checkdir:
 	ld a, [wPlayerDirection]
 	and %1100
@@ -684,7 +554,6 @@ BGEventJumptable:
 	call CallScript
 	scf
 	ret
-
 .itemifset:
 	call CheckBGEventFlag
 	jp nz, .dontread
@@ -698,7 +567,6 @@ BGEventJumptable:
 	call CallScript
 	scf
 	ret
-
 .copy:
 	call CheckBGEventFlag
 	jr nz, .dontread
@@ -707,12 +575,10 @@ BGEventJumptable:
 	ld bc, wHiddenItemDataEnd - wHiddenItemData
 	call FarCopyBytes
 	jr .dontread
-
 .ifset:
 	call CheckBGEventFlag
 	jr z, .dontread
 	jr .thenread
-
 .ifnotset:
 	call CheckBGEventFlag
 	jr nz, .dontread
@@ -728,7 +594,6 @@ BGEventJumptable:
 	call CallScript
 	scf
 	ret
-
 .dontread:
 	xor a
 	ret
@@ -770,31 +635,22 @@ PlayerMovementPointers:
 	dw .exit_water
 	dw .jump
 	assert_table_length NUM_PLAYER_MOVEMENTS
-
 .normal:
 .finish:
+.jump
 	xor a
 	ld c, a
 	ret
-
-.jump:
-	call SetMinTwoStepWildEncounterCooldown
-	xor a
-	ld c, a
-	ret
-
 .warp:
 	ld a, PLAYEREVENT_WARP
 	ld c, a
 	scf
 	ret
-
 .turn:
 	ld a, PLAYEREVENT_JOYCHANGEFACING
 	ld c, a
 	scf
 	ret
-
 .force_turn:
 ; force the player to move in some direction
 	ld a, BANK(Script_ForcedMovement)
@@ -803,7 +659,6 @@ PlayerMovementPointers:
 	ld c, a
 	scf
 	ret
-
 .continue:
 .exit_water:
 	ld a, -1
@@ -816,23 +671,18 @@ CheckMenuOW:
 	ldh [hMenuReturn], a
 	ldh [hUnusedByte], a
 	ldh a, [hJoyPressed]
-
 	bit SELECT_F, a
 	jr nz, .Select
-
 	bit START_F, a
 	jr z, .NoMenu
-
 	ld a, BANK(StartMenuScript)
 	ld hl, StartMenuScript
 	call CallScript
 	scf
 	ret
-
 .NoMenu:
 	xor a
 	ret
-
 .Select:
 	call PlayTalkObject
 	ld a, BANK(SelectMenuScript)
@@ -855,10 +705,8 @@ SelectMenuCallback:
 	ifequal HMENURETURN_SCRIPT, .Script
 	ifequal HMENURETURN_ASM, .Asm
 	end
-
 .Script:
 	memjump wQueuedScriptBank
-
 .Asm:
 	memcallasm wQueuedScriptBank
 	end
@@ -868,15 +716,12 @@ CountStep:
 	ld a, [wLinkMode]
 	and a
 	jr nz, .done
-
 	; If there is a special phone call, don't count the step.
 	farcall CheckSpecialPhoneCall
 	jr c, .doscript
-
 	; If Repel wore off, don't count the step.
 	call DoRepelStep
 	jr c, .doscript
-
 	; Count the step for poison and total steps
 	ld hl, wPoisonStepCount
 	inc [hl]
@@ -884,9 +729,7 @@ CountStep:
 	inc [hl]
 	; Every 256 steps, increase the happiness of all your Pokemon.
 	jr nz, .skip_happiness
-
 	farcall StepHappiness
-
 .skip_happiness
 	; Every 256 steps, offset from the happiness incrementor by 128 steps,
 	; decrease the hatch counter of all your eggs until you reach the first
@@ -894,43 +737,30 @@ CountStep:
 	ld a, [wStepCount]
 	cp $80
 	jr nz, .skip_egg
-
 	farcall DoEggStep
 	jr nz, .hatch
-
 .skip_egg
 	; Increase the EXP of (both) DayCare Pokemon by 1.
 	farcall DayCareStep
-
 	; Every 4 steps, deal damage to all poisoned Pokemon.
 	ld hl, wPoisonStepCount
 	ld a, [hl]
 	cp 4
 	jr c, .skip_poison
 	ld [hl], 0
-
 	farcall DoPoisonStep
 	jr c, .doscript
-
 .skip_poison
 	farcall DoBikeStep
-
 .done
 	xor a
 	ret
-
 .doscript
 	ld a, -1
 	scf
 	ret
-
 .hatch
 	ld a, PLAYEREVENT_HATCH
-	scf
-	ret
-
-.whiteout ; unreferenced
-	ld a, PLAYEREVENT_WHITEOUT
 	scf
 	ret
 
@@ -938,11 +768,9 @@ DoRepelStep:
 	ld a, [wRepelEffect]
 	and a
 	ret z
-
 	dec a
 	ld [wRepelEffect], a
 	ret nz
-
 	ld a, BANK(RepelWoreOffScript)
 	ld hl, RepelWoreOffScript
 	call CallScript
@@ -953,13 +781,10 @@ DoPlayerEvent:
 	ld a, [wScriptRunning]
 	and a
 	ret z
-
 	cp PLAYEREVENT_MAPSCRIPT ; run script
 	ret z
-
 	cp NUM_PLAYER_EVENTS
 	ret nc
-
 	ld c, a
 	ld b, 0
 	ld hl, PlayerEventScriptPointers
@@ -993,9 +818,6 @@ PlayerEventScriptPointers:
 InvalidEventScript:
 	end
 
-UnusedPlayerEventScript: ; unreferenced
-	end
-
 HatchEggScript:
 	callasm OverworldHatchEgg
 	end
@@ -1012,7 +834,6 @@ FallIntoMapScript:
 	playsound SFX_STRENGTH
 	scall LandAfterPitfallScript
 	end
-
 .SkyfallMovement:
 	skyfall
 	step_end
@@ -1038,11 +859,11 @@ WarpToSpawnPoint::
 	ret
 
 RunMemScript::
-; If there is no script here, we don't need to be here.
+	; If there is no script here, we don't need to be here.
 	ld a, [wMapReentryScriptQueueFlag]
 	and a
 	ret z
-; Execute the script at (wMapReentryScriptBank):(wMapReentryScriptAddress).
+	; Execute the script at (wMapReentryScriptBank):(wMapReentryScriptAddress).
 	ld hl, wMapReentryScriptAddress
 	ld a, [hli]
 	ld h, [hl]
@@ -1050,7 +871,7 @@ RunMemScript::
 	ld a, [wMapReentryScriptBank]
 	call CallScript
 	scf
-; Clear the buffer for the next script.
+	; Clear the buffer for the next script.
 	push af
 	xor a
 	ld hl, wMapReentryScriptQueueFlag
@@ -1060,15 +881,15 @@ RunMemScript::
 	ret
 
 LoadScriptBDE::
-; If there's already a script here, don't overwrite.
+	; If there's already a script here, don't overwrite.
 	ld hl, wMapReentryScriptQueueFlag
 	ld a, [hl]
 	and a
 	ret nz
-; Set the flag
+	; Set the flag
 	ld [hl], 1
 	inc hl
-; Load the script pointer b:de into (wMapReentryScriptBank):(wMapReentryScriptAddress)
+	; Load the script pointer b:de into (wMapReentryScriptBank):(wMapReentryScriptAddress)
 	ld [hl], b
 	inc hl
 	ld [hl], e
@@ -1085,28 +906,24 @@ TryTileCollisionEvent::
 	; farcall copies c back into a.
 	farcall CheckFacingTileForStdScript
 	jr c, .done
-
 	; CheckCutTreeTile expects a == [wFacingTileID], which
 	; it still is after the previous farcall.
 	call CheckCutTreeTile
 	jr nz, .whirlpool
 	farcall TryCutOW
 	jr .done
-
 .whirlpool
 	ld a, [wFacingTileID]
 	call CheckWhirlpoolTile
 	jr nz, .waterfall
 	farcall TryWhirlpoolOW
 	jr .done
-
 .waterfall
 	ld a, [wFacingTileID]
 	call CheckWaterfallTile
 	jr nz, .headbutt
 	farcall TryWaterfallOW
 	jr .done
-
 .headbutt
 	ld a, [wFacingTileID]
 	call CheckHeadbuttTreeTile
@@ -1114,16 +931,13 @@ TryTileCollisionEvent::
 	farcall TryHeadbuttOW
 	jr c, .done
 	jr .noevent
-
 .surf
 	farcall TrySurfOW
 	jr nc, .noevent
 	jr .done
-
 .noevent
 	xor a
 	ret
-
 .done
 	call PlayClickSFX
 	ld a, $ff
@@ -1132,7 +946,6 @@ TryTileCollisionEvent::
 
 RandomEncounter::
 ; Random encounter
-
 	call CheckWildEncounterCooldown
 	jr c, .nope
 	call CanUseSweetScent
@@ -1143,27 +956,22 @@ RandomEncounter::
 	farcall TryWildEncounter
 	jr nz, .nope
 	jr .ok
-
 .bug_contest
 	call _TryWildEncounter_BugContest
 	jr nc, .nope
 	jr .ok_bug_contest
-
 .nope
 	ld a, 1
 	and a
 	ret
-
 .ok
 	ld a, BANK(WildBattleScript)
 	ld hl, WildBattleScript
 	jr .done
-
 .ok_bug_contest
 	ld a, BANK(BugCatchingContestBattleScript)
 	ld hl, BugCatchingContestBattleScript
 	jr .done
-
 .done
 	call CallScript
 	scf
@@ -1186,14 +994,12 @@ CanUseSweetScent::
 	jr z, .ice_check
 	farcall CheckGrassCollision
 	jr nc, .no
-
 .ice_check
 	ld a, [wPlayerTile]
 	call CheckIceTile
 	jr z, .no
 	scf
 	ret
-
 .no
 	and a
 	ret
@@ -1207,13 +1013,11 @@ _TryWildEncounter_BugContest:
 
 ChooseWildEncounter_BugContest::
 ; Pick a random mon out of ContestMons.
-
 .loop
 	call Random
 	cp 100 << 1
 	jr nc, .loop
 	srl a
-
 	ld hl, ContestMons
 	ld de, 4
 .CheckMon:
@@ -1221,28 +1025,21 @@ ChooseWildEncounter_BugContest::
 	jr c, .GotMon
 	add hl, de
 	jr .CheckMon
-
 .GotMon:
 	inc hl
-
-; Species
+	; Species
 	ld a, [hli]
 	ld [wTempWildMonSpecies], a
-
-; Min level
+	; Min level
 	ld a, [hli]
 	ld d, a
-
-; Max level
+	; Max level
 	ld a, [hl]
-
 	sub d
 	jr nz, .RandomLevel
-
-; If min and max are the same.
+	; If min and max are the same.
 	ld a, d
 	jr .GotLevel
-
 .RandomLevel:
 ; Get a random level between the min and max.
 	ld c, a
@@ -1251,10 +1048,8 @@ ChooseWildEncounter_BugContest::
 	ldh a, [hRandomAdd]
 	call SimpleDivide
 	add d
-
 .GotLevel:
 	ld [wCurPartyLevel], a
-
 	xor a
 	ret
 
@@ -1264,7 +1059,6 @@ TryWildEncounter_BugContest:
 	ld b, 40 percent
 	jr z, .ok
 	ld b, 20 percent
-
 .ok
 	farcall ApplyMusicEffectOnEncounterRate
 	farcall ApplyCleanseTagEffectOnEncounterRate
@@ -1287,18 +1081,15 @@ DoBikeStep::
 	ld hl, wStatusFlags2
 	bit STATUSFLAGS2_BIKE_SHOP_CALL_F, [hl]
 	jr z, .NoCall
-
 	; If we're not on the bike, we don't have to be here.
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
 	jr nz, .NoCall
-
 	; If we're not in an area of phone service, we don't
 	; have to be here.
 	call GetMapPhoneService
 	and a
 	jr nz, .NoCall
-
 	; Check the bike step count and check whether we've
 	; taken 65536 of them yet.
 	ld hl, wBikeStep
@@ -1310,26 +1101,22 @@ DoBikeStep::
 	ld a, e
 	cp 255
 	jr z, .dont_increment
-
 .increment
 	inc de
 	ld [hl], e
 	dec hl
 	ld [hl], d
-
 .dont_increment
 	; If we've taken at least 1024 steps, have the bike
 	;  shop owner try to call us.
 	ld a, d
 	cp HIGH(1024)
 	jr c, .NoCall
-
 	; If a call has already been queued, don't overwrite
 	; that call.
 	ld a, [wSpecialPhoneCallID]
 	and a
 	jr nz, .NoCall
-
 	; Queue the call.
 	ld a, SPECIALCALL_BIKESHOP
 	ld [wSpecialPhoneCallID], a
@@ -1339,7 +1126,6 @@ DoBikeStep::
 	res STATUSFLAGS2_BIKE_SHOP_CALL_F, [hl]
 	scf
 	ret
-
 .NoCall:
 	xor a
 	ret

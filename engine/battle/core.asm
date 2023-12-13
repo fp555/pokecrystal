@@ -4503,25 +4503,20 @@ UpdatePlayerHUD::
 DrawPlayerHUD:
 	xor a
 	ldh [hBGMapMode], a
-
 	; Clear the area
 	hlcoord 9, 7
 	lb bc, 5, 11
 	call ClearBox
-
 	farcall DrawPlayerHUDBorder
-
 	hlcoord 18, 9
 	ld [hl], $73 ; vertical bar
 	call PrintPlayerHUD
-
 	; HP bar
 	hlcoord 10, 9
 	ld b, 1
 	xor a ; PARTYMON
 	ld [wMonType], a
 	predef DrawPlayerHP
-
 	; Exp bar
 	push de
 	ld a, [wCurBattleMon]
@@ -4529,7 +4524,6 @@ DrawPlayerHUD:
 	call GetPartyLocation
 	ld d, h
 	ld e, l
-
 	hlcoord 10, 11
 	ld a, [wTempMonLevel]
 	ld b, a
@@ -4552,16 +4546,13 @@ CheckDanger:
 	ld a, [wPlayerHPPal]
 	cp HP_RED
 	jr z, .danger
-
 .no_danger
 	ld hl, wLowHealthAlarm
-	res DANGER_ON_F, [hl]
+	ld [hl], 0
 	jr .done
-
 .danger
 	ld hl, wLowHealthAlarm
 	set DANGER_ON_F, [hl]
-
 .done
 	ret
 
@@ -4570,9 +4561,7 @@ PrintPlayerHUD:
 	hlcoord 10, 7
 	call Battle_DummyFunction
 	call PlaceString
-
 	push bc
-
 	ld a, [wCurBattleMon]
 	ld hl, wPartyMon1DVs
 	call GetPartyLocation
@@ -4593,10 +4582,8 @@ PrintPlayerHUD:
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
 	call GetBaseData
-
 	pop hl
 	dec hl
-
 	ld a, TEMPMON
 	ld [wMonType], a
 	callfar GetGender
@@ -4605,7 +4592,6 @@ PrintPlayerHUD:
 	ld a, "♂"
 	jr nz, .got_gender_char
 	ld a, "♀"
-
 .got_gender_char
 	hlcoord 17, 8
 	ld [hl], a
@@ -4621,7 +4607,6 @@ PrintPlayerHUD:
 	cp " "
 	jr nz, .copy_level ; male or female
 	dec hl ; genderless
-
 .copy_level
 	ld a, [wBattleMonLevel]
 	ld [wTempMonLevel], a
@@ -4641,13 +4626,10 @@ UpdateEnemyHUD::
 DrawEnemyHUD:
 	xor a
 	ldh [hBGMapMode], a
-
 	hlcoord 1, 0
 	lb bc, 4, 11
 	call ClearBox
-
 	farcall DrawEnemyHUDBorder
-
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurSpecies], a
 	ld [wCurPartySpecies], a
@@ -4659,7 +4641,6 @@ DrawEnemyHUD:
 	ld h, b
 	ld l, c
 	dec hl
-
 	ld hl, wEnemyMonDVs
 	ld de, wTempMonDVs
 	ld a, [wEnemySubStatus5]
@@ -4672,7 +4653,6 @@ DrawEnemyHUD:
 	inc de
 	ld a, [hl]
 	ld [de], a
-
 	ld a, TEMPMON
 	ld [wMonType], a
 	callfar GetGender
@@ -4681,11 +4661,9 @@ DrawEnemyHUD:
 	ld a, "♂"
 	jr nz, .got_gender
 	ld a, "♀"
-
 .got_gender
 	hlcoord 9, 1
 	ld [hl], a
-
 	hlcoord 6, 1
 	push af
 	push hl
@@ -4703,7 +4681,6 @@ DrawEnemyHUD:
 	ld [wTempMonLevel], a
 	call PrintLevel
 .skip_level
-
 	ld hl, wEnemyMonHP
 	ld a, [hli]
 	ldh [hMultiplicand + 1], a
@@ -4711,12 +4688,10 @@ DrawEnemyHUD:
 	ldh [hMultiplicand + 2], a
 	or [hl]
 	jr nz, .not_fainted
-
 	ld c, a
 	ld e, a
 	ld d, HP_BAR_LENGTH
 	jp .draw_bar
-
 .not_fainted
 	xor a
 	ldh [hMultiplicand + 0], a
@@ -4747,7 +4722,6 @@ DrawEnemyHUD:
 	ldh [hProduct + 3], a
 	ld a, b
 	ldh [hProduct + 2], a
-
 .less_than_256_max
 	ldh a, [hProduct + 2]
 	ldh [hDividend + 0], a
@@ -4761,7 +4735,6 @@ DrawEnemyHUD:
 	ld a, HP_BAR_LENGTH
 	ld d, a
 	ld c, a
-
 .draw_bar
 	xor a
 	ld [wWhichHPBar], a
@@ -4791,7 +4764,6 @@ BattleMenu:
 	xor a
 	ldh [hBGMapMode], a
 	call LoadTempTilemapToTilemap
-
 	ld a, [wBattleType]
 	cp BATTLETYPE_DEBUG
 	jr z, .ok
@@ -4802,7 +4774,6 @@ BattleMenu:
 	call EmptyBattleTextbox
 	call LoadTilemapToTempTilemap
 .ok
-
 .loop
 	ld a, [wBattleType]
 	cp BATTLETYPE_CONTEST
@@ -4810,7 +4781,6 @@ BattleMenu:
 	farcall ContestBattleMenu
 	jr .next
 .not_contest
-
 	; Auto input: choose "ITEM"
 	ld a, [wInputType]
 	or a
@@ -4819,7 +4789,6 @@ BattleMenu:
 .skip_dude_pack_select
 	call LoadBattleMenu2
 	ret c
-
 .next
 	ld a, $1
 	ldh [hBGMapMode], a
@@ -4844,17 +4813,14 @@ BattleMenu_Fight:
 LoadBattleMenu2:
 	call IsMobileBattle
 	jr z, .mobile
-
 	farcall LoadBattleMenu
 	and a
 	ret
-
 .mobile
 	farcall Mobile_LoadBattleMenu
 	ld a, [wcd2b]
 	and a
 	ret z
-
 	ld hl, wcd2a
 	bit 4, [hl]
 	jr nz, .error
@@ -4870,41 +4836,33 @@ BattleMenu_Pack:
 	ld a, [wLinkMode]
 	and a
 	jp nz, .ItemsCantBeUsed
-
 	ld a, [wInBattleTowerBattle]
 	and a
 	jp nz, .ItemsCantBeUsed
-
 	call LoadStandardMenuHeader
-
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jr z, .tutorial
 	cp BATTLETYPE_CONTEST
 	jr z, .contest
-
 	farcall BattlePack
 	ld a, [wBattlePlayerAction]
 	and a ; BATTLEPLAYERACTION_USEMOVE?
 	jr z, .didnt_use_item
 	jr .got_item
-
 .tutorial
 	farcall TutorialPack
 	ld a, POKE_BALL
 	ld [wCurItem], a
 	call DoItemEffect
 	jr .got_item
-
 .contest
 	ld a, PARK_BALL
 	ld [wCurItem], a
 	call DoItemEffect
-
 .got_item
 	call .UseItem
 	ret
-
 .didnt_use_item
 	call ClearPalettes
 	call DelayFrame
@@ -4916,12 +4874,10 @@ BattleMenu_Pack:
 	call FinishBattleAnim
 	call LoadTilemapToTempTilemap
 	jp BattleMenu
-
 .ItemsCantBeUsed:
 	ld hl, BattleText_ItemsCantBeUsedHere
 	call StdBattleTextbox
 	jp BattleMenu
-
 .UseItem:
 	ld a, [wWildMon]
 	and a
@@ -4931,7 +4887,6 @@ BattleMenu_Pack:
 	cp BALL
 	jr z, .ball
 	call ClearBGPalettes
-
 .ball
 	xor a
 	ldh [hBGMapMode], a
@@ -4941,7 +4896,6 @@ BattleMenu_Pack:
 	cp BATTLETYPE_TUTORIAL
 	jr z, .tutorial2
 	call GetBattleMonBackpic
-
 .tutorial2
 	call GetEnemyMonFrontpic
 	ld a, $1
@@ -4954,7 +4908,6 @@ BattleMenu_Pack:
 	call FinishBattleAnim
 	and a
 	ret
-
 .run
 	xor a
 	ld [wWildMon], a
@@ -4968,10 +4921,14 @@ BattleMenu_Pack:
 
 BattleMenu_PKMN:
 	call LoadStandardMenuHeader
+	; fallthrough
+
 BattleMenuPKMN_ReturnFromStats:
 	call ExitMenu
 	call LoadStandardMenuHeader
 	call ClearBGPalettes
+	; fallthrough
+
 BattleMenuPKMN_Loop:
 	call SetUpBattlePartyMenu_Loop
 	xor a
@@ -4992,18 +4949,15 @@ BattleMenuPKMN_Loop:
 	cp $3 ; CANCEL
 	jr z, .Cancel
 	jr .loop
-
 .PressedB:
 	call CheckMobileBattleError
 	jr c, .Cancel
 	jr BattleMenuPKMN_Loop
-
 .Stats:
 	call Battle_StatsScreen
 	call CheckMobileBattleError
 	jr c, .Cancel
 	jp BattleMenuPKMN_ReturnFromStats
-
 .Cancel:
 	call ClearSprites
 	call ClearPalettes
@@ -5014,51 +4968,41 @@ BattleMenuPKMN_Loop:
 	call GetMemSGBLayout
 	call SetPalettes
 	jp BattleMenu
-
 .GetMenu:
 	call IsMobileBattle
 	jr z, .mobile
 	farcall BattleMonMenu
 	ret
-
 .mobile
 	farcall MobileBattleMonMenu
 	ret
 
 Battle_StatsScreen:
 	call DisableLCD
-
 	ld hl, vTiles2 tile $31
 	ld de, vTiles0
 	ld bc, $11 tiles
 	call CopyBytes
-
 	ld hl, vTiles2
 	ld de, vTiles0 tile $11
 	ld bc, $31 tiles
 	call CopyBytes
-
 	call EnableLCD
-
 	call ClearSprites
 	call LowVolume
 	xor a ; PARTYMON
 	ld [wMonType], a
 	farcall BattleStatsScreenInit
 	call MaxVolume
-
 	call DisableLCD
-
 	ld hl, vTiles0
 	ld de, vTiles2 tile $31
 	ld bc, $11 tiles
 	call CopyBytes
-
 	ld hl, vTiles0 tile $11
 	ld de, vTiles2
 	ld bc, $31 tiles
 	call CopyBytes
-
 	call EnableLCD
 	ret
 
@@ -5071,7 +5015,6 @@ TryPlayerSwitch:
 	ld hl, BattleText_MonIsAlreadyOut
 	call StdBattleTextbox
 	jp BattleMenuPKMN_Loop
-
 .check_trapped
 	ld a, [wPlayerWrapCount]
 	and a
@@ -5079,12 +5022,10 @@ TryPlayerSwitch:
 	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_CANT_RUN, a
 	jr z, .try_switch
-
 .trapped
 	ld hl, BattleText_MonCantBeRecalled
 	call StdBattleTextbox
 	jp BattleMenuPKMN_Loop
-
 .try_switch
 	call CheckIfCurPartyMonIsFitToFight
 	jp z, BattleMenuPKMN_Loop
@@ -5101,6 +5042,8 @@ TryPlayerSwitch:
 	call SetPalettes
 	ld a, [wCurPartyMon]
 	ld [wCurBattleMon], a
+	; fallthrough
+
 PlayerSwitch:
 	ld a, 1
 	ld [wPlayerIsSwitching], a
@@ -5110,18 +5053,15 @@ PlayerSwitch:
 	call LoadStandardMenuHeader
 	call LinkBattleSendReceiveAction
 	call CloseWindow
-
 .not_linked
 	call ParseEnemyAction
 	ld a, [wLinkMode]
 	and a
 	jr nz, .linked
-
 .switch
 	call BattleMonEntrance
 	and a
 	ret
-
 .linked
 	ld a, [wBattleAction]
 	cp BATTLEACTION_STRUGGLE
@@ -5134,7 +5074,6 @@ PlayerSwitch:
 	jr nz, .dont_run
 	call WildFled_EnemyFled_LinkBattleCanceled
 	ret
-
 .dont_run
 	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
@@ -5143,7 +5082,6 @@ PlayerSwitch:
 	call EnemyMonEntrance
 	and a
 	ret
-
 .player_1
 	call EnemyMonEntrance
 	call BattleMonEntrance

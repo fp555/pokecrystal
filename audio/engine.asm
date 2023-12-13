@@ -1,7 +1,5 @@
 ; The entire sound engine. Uses section "audio" in WRAM.
-
 ; Interfaces are in bank 0.
-
 ; Notable functions:
 ; 	FadeMusic
 ; 	PlayStereoSFX
@@ -20,14 +18,12 @@ _InitSound::
 	ld [hli], a ; rNR51 ; sfx channels
 	ld a, $80 ; all channels on
 	ld [hli], a ; rNR52 ; music channels
-
 	ld hl, rNR10 ; sound channel registers
 	ld e, NUM_MUSIC_CHANS
 .clearsound
 ;   sound channel   1      2      3      4
 	xor a
 	ld [hli], a ; rNR10, rNR20, rNR30, rNR40 ; sweep = 0
-
 	ld [hli], a ; rNR11, rNR21, rNR31, rNR41 ; length/wavepattern = 0
 	ld a, $8
 	ld [hli], a ; rNR12, rNR22, rNR32, rNR42 ; envelope = 0
@@ -37,7 +33,6 @@ _InitSound::
 	ld [hli], a ; rNR14, rNR24, rNR34, rNR44 ; restart sound (freq hi = 0)
 	dec e
 	jr nz, .clearsound
-
 	ld hl, wAudio
 	ld de, wAudioEnd - wAudio
 .clearaudio
@@ -47,7 +42,6 @@ _InitSound::
 	ld a, e
 	or d
 	jr nz, .clearaudio
-
 	ld a, MAX_VOLUME
 	ld [wVolume], a
 	call MusicOn
@@ -105,7 +99,6 @@ _UpdateSound::
 	jr c, .noteover
 	dec [hl]
 	jr .continue_sound_update
-
 .noteover
 	; reset vibrato delay
 	ld hl, CHANNEL_VIBRATO_DELAY
@@ -197,7 +190,6 @@ _UpdateSound::
 	ld [wCurChannel], a
 	cp NUM_CHANNELS ; are we done?
 	jp nz, .loop ; do it all again
-
 	call PlayDanger
 	; fade music in/out
 	call FadeMusic
@@ -221,26 +213,26 @@ UpdateChannels:
 	ld h, [hl]
 	ld l, a
 	jp hl
-
 .ChannelFunctions:
 	table_width 2, UpdateChannels.ChannelFunctions
-; music channels
+	; music channels
 	dw .Channel1
 	dw .Channel2
 	dw .Channel3
 	dw .Channel4
 	assert_table_length NUM_MUSIC_CHANS
-; sfx channels
-; identical to music channels, except .Channel5 is not disabled by the low-HP danger sound
-; (instead, PlayDanger does not play the danger sound if sfx is playing)
+	; sfx channels
+	; identical to music channels, except .Channel5 is not disabled by the low-HP danger sound
+	; (instead, PlayDanger does not play the danger sound if sfx is playing)
 	dw .Channel5
 	dw .Channel6
 	dw .Channel7
 	dw .Channel8
 	assert_table_length NUM_CHANNELS
-
 .Channel1:
 	ld a, [wLowHealthAlarm]
+	cp $ff
+	jr z, .Channel5
 	bit DANGER_ON_F, a
 	ret nz
 .Channel5:
@@ -248,7 +240,6 @@ UpdateChannels:
 	add hl, bc
 	bit NOTE_PITCH_SWEEP, [hl]
 	jr z, .noPitchSweep
-	;
 	ld a, [wPitchSweep]
 	ldh [rNR10], a
 .noPitchSweep
@@ -261,7 +252,6 @@ UpdateChannels:
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	jr nz, .ch1_vibrato_override
 	jr .ch1_check_duty_override
-
 .ch1_frequency_override
 	ld a, [wCurTrackFrequency]
 	ldh [rNR13], a
@@ -277,7 +267,6 @@ UpdateChannels:
 	or d
 	ldh [rNR11], a
 	ret
-
 .ch1_vibrato_override
 	ld a, [wCurTrackDuty]
 	ld d, a
@@ -288,7 +277,6 @@ UpdateChannels:
 	ld a, [wCurTrackFrequency]
 	ldh [rNR13], a
 	ret
-
 .ch1_rest
 	ldh a, [rNR52]
 	and %10001110 ; ch1 off
@@ -296,7 +284,6 @@ UpdateChannels:
 	ld hl, rNR10
 	call ClearChannel
 	ret
-
 .ch1_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -310,7 +297,6 @@ UpdateChannels:
 	or $80
 	ldh [rNR14], a
 	ret
-
 .Channel2:
 .Channel6:
 	ld hl, CHANNEL_NOTE_FLAGS
@@ -330,14 +316,6 @@ UpdateChannels:
 	or d
 	ldh [rNR21], a
 	ret
-
-.ch2_frequency_override ; unreferenced
-	ld a, [wCurTrackFrequency]
-	ldh [rNR23], a
-	ld a, [wCurTrackFrequency + 1]
-	ldh [rNR24], a
-	ret
-
 .ch2_vibrato_override
 	ld a, [wCurTrackDuty]
 	ld d, a
@@ -348,7 +326,6 @@ UpdateChannels:
 	ld a, [wCurTrackFrequency]
 	ldh [rNR23], a
 	ret
-
 .ch2_rest
 	ldh a, [rNR52]
 	and %10001101 ; ch2 off
@@ -356,7 +333,6 @@ UpdateChannels:
 	ld hl, rNR21 - 1 ; there is no rNR20
 	call ClearChannel
 	ret
-
 .ch2_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -370,7 +346,6 @@ UpdateChannels:
 	or $80 ; initial (restart)
 	ldh [rNR24], a
 	ret
-
 .Channel3:
 .Channel7:
 	ld hl, CHANNEL_NOTE_FLAGS
@@ -382,19 +357,10 @@ UpdateChannels:
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	jr nz, .ch3_vibrato_override
 	ret
-
-.ch3_frequency_override ; unreferenced
-	ld a, [wCurTrackFrequency]
-	ldh [rNR33], a
-	ld a, [wCurTrackFrequency + 1]
-	ldh [rNR34], a
-	ret
-
 .ch3_vibrato_override
 	ld a, [wCurTrackFrequency]
 	ldh [rNR33], a
 	ret
-
 .ch3_rest
 	ldh a, [rNR52]
 	and %10001011 ; ch3 off
@@ -402,7 +368,6 @@ UpdateChannels:
 	ld hl, rNR30
 	call ClearChannel
 	ret
-
 .ch3_noise_sampling
 	ld a, $3f ; sound length
 	ldh [rNR31], a
@@ -417,7 +382,6 @@ UpdateChannels:
 	or $80
 	ldh [rNR34], a
 	ret
-
 .load_wave_pattern
 	push hl
 	ld a, [wCurTrackVolumeEnvelope]
@@ -471,7 +435,6 @@ endr
 	sla a
 	ldh [rNR32], a
 	ret
-
 .Channel4:
 .Channel8:
 	ld hl, CHANNEL_NOTE_FLAGS
@@ -481,12 +444,6 @@ endr
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch4_noise_sampling
 	ret
-
-.ch4_frequency_override ; unreferenced
-	ld a, [wCurTrackFrequency]
-	ldh [rNR43], a
-	ret
-
 .ch4_rest
 	ldh a, [rNR52]
 	and %10000111 ; ch4 off
@@ -494,7 +451,6 @@ endr
 	ld hl, rNR41 - 1 ; there is no rNR40
 	call ClearChannel
 	ret
-
 .ch4_noise_sampling
 	ld a, $3f ; sound length
 	ldh [rNR41], a
@@ -522,7 +478,6 @@ _CheckSFX:
 	jr nz, .sfxon
 	and a
 	ret
-
 .sfxon
 	scf
 	ret
@@ -531,30 +486,21 @@ PlayDanger:
 	ld a, [wLowHealthAlarm]
 	bit DANGER_ON_F, a
 	ret z
-
+	cp $ff
+	ret z
 	; Don't do anything if SFX is being played
-	and ~(1 << DANGER_ON_F)
 	ld d, a
 	call _CheckSFX
 	jr c, .increment
-
+	ld a, d
 	; Play the high tone
-	and a
-	jr z, .begin
-
+	and $1f
+	ld hl, DangerSoundHigh
+	jr z, .applychannel
 	; Play the low tone
 	cp 16
-	jr z, .halfway
-
-	jr .increment
-
-.halfway
+	jr nz, .increment
 	ld hl, DangerSoundLow
-	jr .applychannel
-
-.begin
-	ld hl, DangerSoundHigh
-
 .applychannel
 	xor a
 	ldh [rNR10], a
@@ -566,18 +512,22 @@ PlayDanger:
 	ldh [rNR13], a
 	ld a, [hli]
 	ldh [rNR14], a
-
 .increment
 	ld a, d
+	and $e0
+	ld e, a
+	ld a, d
+	and $1f
 	inc a
 	cp 30 ; Ending frame
 	jr c, .noreset
-	xor a
+	add 2
 .noreset
-	; Make sure the danger sound is kept on
-	or 1 << DANGER_ON_F
+	add e
+	jr nz, .load
+	dec a
+.load
 	ld [wLowHealthAlarm], a
-
 	; Enable channel 1 if it's off
 	ld a, [wSoundOutput]
 	and $11
@@ -606,9 +556,7 @@ FadeMusic:
 ;	song fades out at the given rate
 ;	load song id in wMusicFadeID
 ;	fade new song in
-; notes:
-;	max # frames per volume level is $3f
-
+; notes: max # frames per volume level is $3f
 	; fading?
 	ld a, [wMusicFade]
 	and a
@@ -621,7 +569,6 @@ FadeMusic:
 	dec a
 	ld [wMusicFadeCount], a
 	ret
-
 .update
 	ld a, [wMusicFade]
 	ld d, a
@@ -639,7 +586,6 @@ FadeMusic:
 	jr z, .novolume
 	dec a
 	jr .updatevolume
-
 .novolume
 	; make sure volume is off
 	xor a
@@ -667,7 +613,6 @@ FadeMusic:
 	xor a
 	ld [wMusicFade], a
 	ret
-
 .bicycle
 	push bc
 	; restart sound
@@ -688,7 +633,6 @@ FadeMusic:
 	ld hl, wMusicFade
 	set MUSIC_FADE_IN_F, [hl]
 	ret
-
 .fadein
 	; are we done?
 	cp MAX_VOLUME & $f
@@ -696,13 +640,11 @@ FadeMusic:
 	; inc volume
 	inc a
 	jr .updatevolume
-
 .maxvolume
 	; we're done
 	xor a
 	ld [wMusicFade], a
 	ret
-
 .updatevolume
 	; hi = lo
 	ld d, a

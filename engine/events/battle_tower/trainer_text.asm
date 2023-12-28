@@ -7,16 +7,7 @@ BattleTowerText::
 	push af
 	ld a, BANK(wBT_OTTrainerClass)
 	ldh [rSVBK], a
-if DEF(_CRYSTAL11)
 	ld hl, wBT_OTTrainerClass
-else
-; BUG: Instead of loading the trainer class,
-; Crystal 1.0 loads the 6th character in the trainer's
-; name, then uses it to get the trainer's gender.
-; As a consequence, the enemy trainer's dialog will
-; always be sampled from the female array.
-	ld hl, wBT_OTName + NAME_LENGTH_JAPANESE - 1
-endc
 	ld a, [hl]
 	dec a
 	ld e, a
@@ -32,11 +23,9 @@ endc
 	cp 25
 	jr c, .okay0
 	sub 25
-
 .okay0
 	ld hl, BTMaleTrainerTexts
 	jr .proceed
-
 .female
 	; generate a random number between 0 and 14
 	ldh a, [hRandomAdd]
@@ -44,20 +33,16 @@ endc
 	cp 15
 	jr c, .okay1
 	sub 15
-
 .okay1
 	ld hl, BTFemaleTrainerTexts
-
 .proceed
 	ld b, 0
 	dec c
 	jr nz, .restore
 	ld [wBT_TrainerTextIndex], a
 	jr .okay2
-
 .restore
 	ld a, [wBT_TrainerTextIndex]
-
 .okay2
 	push af
 	add hl, bc
@@ -91,7 +76,6 @@ BTMaleTrainerTexts:
 	dw .Greetings
 	dw .PlayerLost
 	dw .PlayerWon
-
 .Greetings:
 	dw BTGreetingM1Text
 	dw BTGreetingM2Text
@@ -118,7 +102,6 @@ BTMaleTrainerTexts:
 	dw BTGreetingM23Text
 	dw BTGreetingM24Text
 	dw BTGreetingM25Text
-
 .PlayerLost:
 	dw BTLossM1Text
 	dw BTLossM2Text
@@ -145,7 +128,6 @@ BTMaleTrainerTexts:
 	dw BTLossM23Text
 	dw BTLossM24Text
 	dw BTLossM25Text
-
 .PlayerWon:
 	dw BTWinM1Text
 	dw BTWinM2Text
@@ -177,7 +159,6 @@ BTFemaleTrainerTexts:
 	dw .Greetings
 	dw .PlayerLost
 	dw .PlayerWon
-
 .Greetings:
 	dw BTGreetingF1Text
 	dw BTGreetingF2Text
@@ -194,7 +175,6 @@ BTFemaleTrainerTexts:
 	dw BTGreetingF13Text
 	dw BTGreetingF14Text
 	dw BTGreetingF15Text
-
 .PlayerLost:
 	dw BTLossF1Text
 	dw BTLossF2Text
@@ -211,7 +191,6 @@ BTFemaleTrainerTexts:
 	dw BTLossF13Text
 	dw BTLossF14Text
 	dw BTLossF15Text
-
 .PlayerWon:
 	dw BTWinF1Text
 	dw BTWinF2Text

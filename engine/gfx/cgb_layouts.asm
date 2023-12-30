@@ -474,7 +474,6 @@ _CGB_Diploma:
 	ld bc, 16 palettes
 	ld a, BANK(wBGPals1)
 	call FarCopyWRAM
-
 	ld hl, PalPacket_Diploma + 1
 	call CopyFourPalettes
 	call WipeAttrmap
@@ -594,9 +593,11 @@ _CGB_TrainerCard:
 	ld a, PRYCE
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld a, PREDEFPAL_CGB_BADGE
-	call GetPredefPal
-	call LoadHLPaletteIntoDE
+	; load the colors
+	ld hl, .JohtoBadgePalettes
+	ld bc, 8 palettes
+	ld a, BANK(wOBPals1)
+	call FarCopyWRAM
 	; fill screen with opposite-gender palette for the card border
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
@@ -671,6 +672,8 @@ _CGB_TrainerCard:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
+.JohtoBadgePalettes:
+INCLUDE "gfx/trainer_card/johto_badges.pal"
 	
 _CGB_TrainerCardKanto:
 	ld de, wBGPals1
@@ -698,9 +701,11 @@ _CGB_TrainerCardKanto:
 	ld a, BLUE
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld a, PREDEFPAL_CGB_BADGE
-	call GetPredefPal
-	call LoadHLPaletteIntoDE
+	; load the colors
+	ld hl, .KantoBadgePalettes
+	ld bc, 8 palettes
+	ld a, BANK(wOBPals1)
+	call FarCopyWRAM
 	; fill screen with opposite-gender palette for the card border
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
@@ -767,6 +772,8 @@ _CGB_TrainerCardKanto:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
+.KantoBadgePalettes:
+INCLUDE "gfx/trainer_card/kanto_badges.pal"
 
 _CGB_MoveList:
 	ld de, wBGPals1
@@ -857,10 +864,8 @@ _CGB_PackPals:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-.ChrisPackPals:
-INCLUDE "gfx/pack/pack.pal"
-.KrisPackPals:
-INCLUDE "gfx/pack/pack_f.pal"
+.ChrisPackPals: INCLUDE "gfx/pack/pack.pal"
+.KrisPackPals: INCLUDE "gfx/pack/pack_f.pal"
 
 _CGB_Pokepic:
 	call _CGB_MapPals
@@ -928,9 +933,7 @@ _CGB_GamefreakLogo:
 	call ApplyAttrmap
 	call ApplyPals
 	ret
-
-.GamefreakDittoPalette:
-INCLUDE "gfx/splash/ditto.pal"
+.GamefreakDittoPalette: INCLUDE "gfx/splash/ditto.pal"
 
 _CGB_PlayerOrMonFrontpicPals:
 	ld de, wBGPals1

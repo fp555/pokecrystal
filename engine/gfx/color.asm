@@ -697,8 +697,8 @@ PushSGBBorder:
 	ret
 
 SGB_ClearVRAM:
-	ld hl, VRAM_Begin
-	ld bc, VRAM_End - VRAM_Begin
+	ld hl, STARTOF(VRAM)
+	ld bc, SIZEOF(VRAM)
 	xor a
 	call ByteFill
 	ret
@@ -914,7 +914,7 @@ LoadMapPals:
 	jr c, .got_pals
 	; Which palette group is based on whether we're outside or inside
 	ld a, [wEnvironment]
-	and 7
+	maskbits NUM_ENVIRONMENTS + 1
 	ld e, a
 	ld d, 0
 	ld hl, EnvironmentColorsPointers

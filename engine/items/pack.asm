@@ -501,11 +501,14 @@ TossMenu:
 
 ResetPocketCursorPositions: ; unreferenced
 	ld a, [wCurPocket]
-	and a ; ITEM_POCKET
+	assert ITEM_POCKET == 0
+	and a
 	jr z, .items
-	dec a ; BALL_POCKET
+	assert BALL_POCKET == 1
+	dec a
 	jr z, .balls
-	dec a ; KEY_ITEM_POCKET
+	assert KEY_ITEM_POCKET == 2
+	dec a
 	jr z, .key
 	ret
 
@@ -572,9 +575,9 @@ GiveItem:
 	farcall InitPartyMenuGFX
 .loop
 	farcall WritePartyMenuTilemap
-	farcall PrintPartyMenuText
+	farcall PlacePartyMenuText
 	call WaitBGMap
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call DelayFrame
 	farcall PartyMenuSelect
 	jr c, .finish
@@ -1437,7 +1440,7 @@ Pack_InitColors:
 	call WaitBGMap
 	ld b, SCGB_PACKPALS
 	call GetSGBLayout
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call DelayFrame
 	ret
 

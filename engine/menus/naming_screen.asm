@@ -54,7 +54,7 @@ NamingScreen:
 	call .GetNamingScreenSetup
 	call WaitBGMap
 	call WaitTop
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call NamingScreen_InitNameEntry
 	ret
 .GetNamingScreenSetup:

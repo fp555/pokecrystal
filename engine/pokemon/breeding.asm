@@ -179,7 +179,7 @@ DoEggStep::
 	jr .loop
 
 OverworldHatchEgg::
-	call RefreshScreen
+	call ReanchorMap
 	call LoadStandardMenuHeader
 	call HatchEggs
 	call ExitAllMenus
@@ -273,7 +273,7 @@ HatchEggs:
 	ld [hli], a
 	ld a, [de]
 	ld [hl], a
-	ld hl, MON_ID
+	ld hl, MON_OT_ID
 	add hl, bc
 	ld a, [wPlayerID]
 	ld [hli], a
@@ -330,8 +330,8 @@ HatchEggs:
 	; Huh? @ @
 	text_far Text_BreedHuh
 	text_asm
-	ld hl, wVramState
-	res 0, [hl]
+	ld hl, wStateFlags
+	res SPRITE_UPDATES_DISABLED_F, [hl]
 	push hl
 	push de
 	push bc
@@ -616,7 +616,7 @@ Hatch_UpdateFrontpicBGMapCenter:
 	predef PlaceGraphic
 	pop af
 	call Hatch_LoadFrontpicPal
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	jp WaitBGMap
 
 EggHatch_DoAnimFrame:

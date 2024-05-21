@@ -163,7 +163,7 @@ CheckOwnMon:
 ; bc, pointer to PartyMonNOT
 ; wScriptVar should contain the species we're looking for
 ; outputs:
-; sets carry if monster matches species, ID, and OT name.
+; sets carry if monster matches species, Trainer ID, and OT name.
 	push bc
 	push hl
 	push de
@@ -174,8 +174,8 @@ CheckOwnMon:
 	ld b, [hl]
 	cp b
 	jr nz, .notfound
-	; check ID number
-	ld bc, MON_ID
+	; check Trainer ID number
+	ld bc, MON_OT_ID
 	add hl, bc
 	ld a, [wPlayerID]
 	cp [hl]

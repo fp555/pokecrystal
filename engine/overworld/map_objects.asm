@@ -191,14 +191,14 @@ CopyCoordsTileToLastCoordsTile:
 	ld hl, OBJECT_LAST_MAP_Y
 	add hl, bc
 	ld [hl], a
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld a, [hl]
 	ld hl, OBJECT_LAST_TILE
 	add hl, bc
 	ld [hl], a
 	call SetTallGrassFlags
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld a, [hl]
 	and a
@@ -224,12 +224,12 @@ UpdateTallGrassFlags:
 	add hl, bc
 	bit OVERHEAD_F, [hl]
 	jr z, .ok
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld a, [hl]
 	call SetTallGrassFlags
 .ok
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld a, [hl]
 	and a
@@ -313,9 +313,9 @@ GetNextTile:
 	ld [hl], a
 	ld e, a
 	push bc
-	call GetCoordTile
+	call GetCoordTileCollision
 	pop bc
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld [hl], a
 	ret
@@ -494,9 +494,9 @@ StepFunction_Reset:
 	add hl, bc
 	ld e, [hl]
 	push bc
-	call GetCoordTile
+	call GetCoordTileCollision
 	pop bc
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld [hl], a
 	call CopyCoordsTileToLastCoordsTile
@@ -648,7 +648,7 @@ MovementFunction_Strength:
 	dw .stop
 
 .start:
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld a, [hl]
 	call CheckPitTile
@@ -2159,8 +2159,8 @@ CopyTempObjectData:
 	ret
 
 UpdateAllObjectsFrozen::
-	ld a, [wVramState]
-	bit 0, a
+	ld a, [wStateFlags]
+	bit SPRITE_UPDATES_DISABLED_F, a
 	ret z
 	ld bc, wObjectStructs
 	xor a
@@ -2270,9 +2270,9 @@ UpdateObjectTile:
 	ld hl, OBJECT_MAP_Y
 	add hl, bc
 	ld e, [hl]
-	call GetCoordTile
+	call GetCoordTileCollision
 	pop bc
-	ld hl, OBJECT_TILE
+	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld [hl], a
 	farcall UpdateTallGrassFlags ; no need to farcall
@@ -2715,8 +2715,8 @@ ResetObject:
 	db SPRITEMOVEDATA_STANDING_RIGHT
 
 _UpdateSprites::
-	ld a, [wVramState]
-	bit 0, a
+	ld a, [wStateFlags]
+	bit SPRITE_UPDATES_DISABLED_F, a
 	ret z
 	xor a
 	ldh [hUsedSpriteIndex], a
@@ -2731,8 +2731,8 @@ _UpdateSprites::
 	ret
 
 .fill
-	ld a, [wVramState]
-	bit 1, a
+	ld a, [wStateFlags]
+	bit LAST_12_SPRITE_OAM_STRUCTS_RESERVED_F, a
 	ld b, NUM_SPRITE_OAM_STRUCTS * SPRITEOAMSTRUCT_LENGTH
 	jr z, .ok
 	ld b, (NUM_SPRITE_OAM_STRUCTS - 12) * SPRITEOAMSTRUCT_LENGTH
@@ -2744,7 +2744,7 @@ _UpdateSprites::
 	ld h, HIGH(wShadowOAM)
 	ld de, SPRITEOAMSTRUCT_LENGTH
 	ld a, b
-	ld c, SCREEN_HEIGHT_PX + 2 * TILE_WIDTH
+	ld c, OAM_YCOORD_HIDDEN
 .loop
 	ld [hl], c ; y
 	add hl, de

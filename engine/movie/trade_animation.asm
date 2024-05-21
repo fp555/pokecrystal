@@ -128,10 +128,10 @@ RunTradeAnimScript:
 	push af
 	xor a
 	ldh [hMapAnims], a
-	ld hl, wVramState
+	ld hl, wStateFlags
 	ld a, [hl]
 	push af
-	res 0, [hl]
+	res SPRITE_UPDATES_DISABLED_F, [hl]
 	ld hl, wOptions
 	ld a, [hl]
 	push af
@@ -148,7 +148,7 @@ RunTradeAnimScript:
 	pop af
 	ld [wOptions], a
 	pop af
-	ld [wVramState], a
+	ld [wStateFlags], a
 	pop af
 	ldh [hMapAnims], a
 	ret
@@ -167,8 +167,8 @@ RunTradeAnimScript:
 	jr z, .NotCGB
 	ld a, $1
 	ldh [rVBK], a
-	ld hl, vTiles0
-	ld bc, VRAM_End - VRAM_Begin
+	ld hl, STARTOF(VRAM)
+	ld bc, SIZEOF(VRAM)
 	xor a
 	call ByteFill
 	ld a, $0
@@ -176,7 +176,7 @@ RunTradeAnimScript:
 
 .NotCGB:
 	hlbgcoord 0, 0
-	ld bc, VRAM_End - vBGMap0
+	ld bc, STARTOF(VRAM) + SIZEOF(VRAM) - vBGMap0
 	ld a, " "
 	call ByteFill
 	ld hl, TradeGameBoyLZ
@@ -470,7 +470,7 @@ TradeAnim_TubeToPlayer8:
 	call DisableLCD
 	callfar ClearSpriteAnims
 	hlbgcoord 0, 0
-	ld bc, VRAM_End - vBGMap0
+	ld bc, STARTOF(VRAM) + SIZEOF(VRAM) - vBGMap0
 	ld a, " "
 	call ByteFill
 	xor a

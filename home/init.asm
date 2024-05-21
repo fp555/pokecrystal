@@ -54,8 +54,8 @@ Init::
 	xor a
 	ldh [rLCDC], a
 	; Clear WRAM bank 0
-	ld hl, WRAM0_Begin
-	ld bc, WRAM0_End - WRAM0_Begin
+	ld hl, STARTOF(WRAM0)
+	ld bc, SIZEOF(WRAM0)
 .ByteFill:
 	ld [hl], 0
 	inc hl
@@ -70,8 +70,8 @@ Init::
 	ldh a, [hSystemBooted]
 	push af
 	xor a
-	ld hl, HRAM_Begin
-	ld bc, HRAM_End - HRAM_Begin
+	ld hl, STARTOF(HRAM)
+	ld bc, SIZEOF(HRAM)
 	call ByteFill
 	pop af
 	ldh [hSystemBooted], a
@@ -145,8 +145,8 @@ ClearVRAM::
 	xor a ; 0
 	ldh [rVBK], a
 .clear
-	ld hl, VRAM_Begin
-	ld bc, VRAM_End - VRAM_Begin
+	ld hl, STARTOF(VRAM)
+	ld bc, SIZEOF(VRAM)
 	xor a
 	call ByteFill
 	ret
@@ -159,8 +159,8 @@ ClearWRAM::
 	push af
 	ldh [rSVBK], a
 	xor a
-	ld hl, WRAM1_Begin
-	ld bc, WRAM1_End - WRAM1_Begin
+	ld hl, STARTOF(WRAMX)
+	ld bc, SIZEOF(WRAMX)
 	call ByteFill
 	pop af
 	inc a

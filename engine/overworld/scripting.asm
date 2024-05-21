@@ -39,8 +39,8 @@ WaitScript:
 
 WaitScriptMovement:
 	call StopScript
-	ld hl, wVramState
-	bit 7, [hl]
+	ld hl, wStateFlags
+	bit SCRIPTED_MOVEMENT_STATE_F, [hl]
 	ret nz
 	farcall UnfreezeAllObjects
 	ld a, SCRIPT_READ
@@ -129,7 +129,7 @@ ScriptCommandTable:
 	dw Script_itemnotify                 ; 45
 	dw Script_pocketisfull               ; 46
 	dw Script_opentext                   ; 47
-	dw Script_refreshscreen              ; 48
+	dw Script_reanchormap                ; 48
 	dw Script_closetext                  ; 49
 	dw Script_writeunusedbyte            ; 4a
 	dw Script_farwritetext               ; 4b
@@ -181,7 +181,7 @@ ScriptCommandTable:
 	dw Script_changemapblocks            ; 79
 	dw Script_changeblock                ; 7a
 	dw Script_reloadmap                  ; 7b
-	dw Script_reloadmappart              ; 7c
+	dw Script_refreshmap                 ; 7c
 	dw Script_writecmdqueue              ; 7d
 	dw Script_delcmdqueue                ; 7e
 	dw Script_playmusic                  ; 7f
@@ -916,8 +916,8 @@ ApplyObjectFacing:
 	pop de
 	ld a, e
 	call SetSpriteDirection
-	ld hl, wVramState
-	bit 6, [hl]
+	ld hl, wStateFlags
+	bit TEXT_STATE_F, [hl]
 	jr nz, .text_state
 	call .DisableTextTiles
 .text_state
@@ -930,7 +930,7 @@ ApplyObjectFacing:
 	ret
 
 .DisableTextTiles:
-	call LoadMapPart
+	call LoadOverworldTilemap
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 .loop
@@ -1181,7 +1181,7 @@ Script_reloadmapafterbattle:
 	jr z, .done
 	ld b, BANK(Script_SpecialBillCall)
 	ld de, Script_SpecialBillCall
-	farcall LoadScriptBDE
+	farcall LoadMemScript
 .done
 	jp Script_reloadmap
 
@@ -2130,12 +2130,12 @@ Script_changeblock:
 	call BufferScreen
 	ret
 
-Script_reloadmappart::
+Script_refreshmap::
 	xor a
 	ldh [hBGMapMode], a
-	call OverworldTextModeSwitch
+	call LoadOverworldTilemapAndAttrmapPals
 	call GetMovementPermissions
-	farcall ReloadMapPart
+	farcall HDMATransferTilemapAndAttrmap_Overworld
 	call UpdateSprites
 	ret
 
@@ -2161,8 +2161,8 @@ Script_opentext:
 	call OpenText
 	ret
 
-Script_refreshscreen:
-	call RefreshScreen
+Script_reanchormap:
+	call ReanchorMap
 	call GetScriptByte
 	ret
 
@@ -2172,7 +2172,7 @@ Script_writeunusedbyte:
 	ret
 
 Script_closetext:
-	call _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
+	call HDMATransferTilemapAndAttrmap_Menu
 	call CloseText
 	ret
 
@@ -2279,10 +2279,10 @@ Script_endall:
 
 Script_halloffame:
 	ld hl, wGameTimerPaused
-	res GAME_TIMER_PAUSED_F, [hl]
+	res GAME_TIMER_COUNTING_F, [hl]
 	farcall HallOfFame
 	ld hl, wGameTimerPaused
-	set GAME_TIMER_PAUSED_F, [hl]
+	set GAME_TIMER_COUNTING_F, [hl]
 	jr ReturnFromCredits
 
 Script_credits:

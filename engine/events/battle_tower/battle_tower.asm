@@ -346,7 +346,7 @@ Function1704e1:
 	bit 7, a
 	jr nz, .done
 	call .DoJumptable
-	farcall ReloadMapPart
+	farcall HDMATransferTilemapAndAttrmap_Overworld
 	jr .loop
 .done
 	ret
@@ -384,7 +384,7 @@ Function1704e1:
 	call .PlaceTextItems
 	jr .NextJumptableFunction
 .Jumptable_1:
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call .NextJumptableFunction
 .Jumptable_2:
 	ld hl, hJoyPressed

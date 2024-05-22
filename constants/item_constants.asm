@@ -196,6 +196,8 @@
 	const MUSIC_MAIL   ; bc
 	const MIRAGE_MAIL  ; bd
 	const ITEM_BE      ; be
+	const ITEM_BF      ; bf
+	const ITEM_C0      ; c0
 DEF NUM_ITEMS EQU const_value - 1
 
 DEF __tmhm_value__ = 1
@@ -217,36 +219,34 @@ ENDM
 
 ; see data/moves/tmhm_moves.asm for moves
 DEF TM01 EQU const_value
-	add_tm DYNAMICPUNCH ; bf
-	add_tm HEADBUTT     ; c0
-	add_tm CURSE        ; c1
-	add_tm ROLLOUT      ; c2
-	const ITEM_C3       ; c3
-	add_tm ROAR         ; c4
-	add_tm TOXIC        ; c5
-	add_tm ZAP_CANNON   ; c6
-	add_tm ROCK_SMASH   ; c7
-	add_tm PSYCH_UP     ; c8
-	add_tm HIDDEN_POWER ; c9
-	add_tm SUNNY_DAY    ; ca
-	add_tm SWEET_SCENT  ; cb
-	add_tm SNORE        ; cc
-	add_tm BLIZZARD     ; cd
-	add_tm HYPER_BEAM   ; ce
-	add_tm ICY_WIND     ; cf
-	add_tm PROTECT      ; d0
-	add_tm RAIN_DANCE   ; d1
-	add_tm GIGA_DRAIN   ; d2
-	add_tm ENDURE       ; d3
-	add_tm FRUSTRATION  ; d4
-	add_tm SOLARBEAM    ; d5
-	add_tm IRON_TAIL    ; d6
-	add_tm DRAGONBREATH ; d7
-	add_tm THUNDER      ; d8
-	add_tm EARTHQUAKE   ; d9
-	add_tm RETURN       ; da
-	add_tm DIG          ; db
-	const ITEM_DC       ; dc
+	add_tm DYNAMICPUNCH ; c1
+	add_tm HEADBUTT     ; c2
+	add_tm CURSE        ; c3
+	add_tm ROLLOUT      ; c4
+	add_tm ROAR         ; c5
+	add_tm TOXIC        ; c6
+	add_tm ZAP_CANNON   ; c7
+	add_tm ROCK_SMASH   ; c8
+	add_tm PSYCH_UP     ; c9
+	add_tm HIDDEN_POWER ; ca
+	add_tm SUNNY_DAY    ; cb
+	add_tm SWEET_SCENT  ; cc
+	add_tm SNORE        ; cd
+	add_tm BLIZZARD     ; ce
+	add_tm HYPER_BEAM   ; cf
+	add_tm ICY_WIND     ; d0
+	add_tm PROTECT      ; d1
+	add_tm RAIN_DANCE   ; d2
+	add_tm GIGA_DRAIN   ; d3
+	add_tm ENDURE       ; d4
+	add_tm FRUSTRATION  ; d5
+	add_tm SOLARBEAM    ; d6
+	add_tm IRON_TAIL    ; d7
+	add_tm DRAGONBREATH ; d8
+	add_tm THUNDER      ; d9
+	add_tm EARTHQUAKE   ; da
+	add_tm RETURN       ; db
+	add_tm DIG          ; dc
 	add_tm PSYCHIC_M    ; dd
 	add_tm SHADOW_BALL  ; de
 	add_tm MUD_SLAP     ; df
@@ -313,8 +313,3 @@ DEF NUM_TM_HM_TUTOR EQU NUM_TMS + NUM_HMS + NUM_TUTORS
 
 DEF USE_SCRIPT_VAR EQU $00
 DEF ITEM_FROM_MEM  EQU $ff
-
-; leftovers from red
-DEF SAFARI_BALL    EQU $08 ; MOON_STONE
-DEF MOON_STONE_RED EQU $0a ; BURN_HEAL
-DEF FULL_HEAL_RED  EQU $34 ; X_SPEED

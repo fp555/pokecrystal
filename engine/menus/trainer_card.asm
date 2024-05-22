@@ -99,7 +99,7 @@ TrainerCard_Page1_LoadGFX:
 	call WaitBGMap
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call WaitBGMap
 	ld de, CardStatusGFX
 	ld hl, vTiles2 tile $29
@@ -129,7 +129,7 @@ TrainerCard_Page2_LoadGFX:
 	call WaitBGMap
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call WaitBGMap
 	ld de, LeaderGFX
 	ld hl, vTiles2 tile $29
@@ -184,7 +184,7 @@ TrainerCard_Page3_LoadGFX:
 	call WaitBGMap
 	ld b, SCGB_TRAINER_CARD_KANTO
 	call GetSGBLayout
-	call SetPalettes
+	call SetDefaultBGPAndOBP
 	call WaitBGMap
 	ld de, LeaderGFX2
 	ld hl, vTiles2 tile $29

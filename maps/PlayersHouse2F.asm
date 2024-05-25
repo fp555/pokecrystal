@@ -11,25 +11,14 @@ PlayersHouse2F_MapScripts:
 	callback MAPCALLBACK_NEWMAP, PlayersHouse2FInitializeRoomCallback
 	callback MAPCALLBACK_TILES, PlayersHouse2FSetUpTileDecorationsCallback
 
-PlayersHouse2FNoopScene: ; unreferenced
-	end
-
 PlayersHouse2FInitializeRoomCallback:
 	special ToggleDecorationsVisibility
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_8
-	checkevent EVENT_INITIALIZED_EVENTS
-	iftrue .SkipInitialization
-	jumpstd InitializeEventsScript
-	endcallback
-
-.SkipInitialization:
 	endcallback
 
 PlayersHouse2FSetUpTileDecorationsCallback:
 	special ToggleMaptileDecorations
 	endcallback
-
-	db 0, 0, 0 ; unused
 
 PlayersHouseDoll1Script::
 	describedecoration DECODESC_LEFT_DOLL
@@ -45,7 +34,6 @@ PlayersHouseGameConsoleScript:
 
 PlayersHousePosterScript:
 	conditional_event EVENT_PLAYERS_ROOM_POSTER, .Script
-
 .Script:
 	describedecoration DECODESC_POSTER
 
@@ -68,10 +56,8 @@ PlayersHouseRadioScript:
 	closetext
 	setevent EVENT_LISTENED_TO_INITIAL_RADIO
 	end
-
 .NormalRadio:
 	jumpstd Radio1Script
-
 .AbbreviatedRadio:
 	opentext
 	writetext PlayersRadioText4

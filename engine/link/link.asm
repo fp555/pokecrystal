@@ -1099,7 +1099,7 @@ Link_ConvertPartyStruct1to2:
 	push bc
 	ld a, [hli]
 	ld b, a
-	call TimeCapsule_ReplaceTeruSama
+	call TimeCapsule_ReplaceCatchRate
 	ld a, b
 	ld [de], a
 	inc de
@@ -1168,29 +1168,15 @@ Link_ConvertPartyStruct1to2:
 	inc de
 	ret
 
-TimeCapsule_ReplaceTeruSama:
+TimeCapsule_ReplaceCatchRate:
+; read gen 1 catch rate as an item
 	ld a, b
 	and a
 	ret z
-	push hl
-	ld hl, TimeCapsule_CatchRateItems
-.loop
-	ld a, [hli]
-	and a
-	jr z, .end
-	cp b
-	jr z, .found
-	inc hl
-	jr .loop
-
-.found
-	ld b, [hl]
-
-.end
-	pop hl
+	; all pokémon from TimeCapsule
+	; will have this item
+	ld b, GOLD_BERRY
 	ret
-
-INCLUDE "data/items/catch_rate_items.asm"
 
 Link_CopyOTData:
 .loop

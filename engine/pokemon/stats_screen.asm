@@ -655,7 +655,6 @@ LoadPinkPage:
 	hlcoord 19, 16
 	ld [hl], $41 ; right exp bar end cap
 	ret
-
 .PrintNextLevel:
 	ld a, [wTempMonLevel]
 	push af
@@ -668,7 +667,6 @@ LoadPinkPage:
 	pop af
 	ld [wTempMonLevel], a
 	ret
-
 .CalcExpToNextLevel:
 	ld a, [wTempMonLevel]
 	cp MAX_LEVEL
@@ -690,7 +688,6 @@ LoadPinkPage:
 	sbc [hl]
 	ld [wExpToNextLevel], a
 	ret
-
 .AlreadyAtMaxLevel:
 	ld hl, wExpToNextLevel
 	xor a
@@ -698,23 +695,17 @@ LoadPinkPage:
 	ld [hli], a
 	ld [hl], a
 	ret
-
 .Status_Type:
 	db   "STATUS/"
 	next "TYPE/@"
-
 .OK_str:
 	db "OK @"
-
 .ExpPointStr:
 	db "EXP POINTS@"
-
 .LevelUpStr:
 	db "LEVEL UP@"
-
 .ToStr:
 	db "TO@"
-
 .PkrsStr:
 	db "#RUS@"
 
@@ -741,25 +732,21 @@ LoadGreenPage:
 	ld [wListMovesLineSpacing], a
 	predef ListMovePP
 	ret
-
 .GetItemName:
 	ld de, .ThreeDashes
 	ld a, [wTempMonItem]
 	and a
 	ret z
 	ld b, a
-	farcall TimeCapsule_ReplaceTeruSama
+	farcall TimeCapsule_ReplaceCatchRate
 	ld a, b
 	ld [wNamedObjectIndex], a
 	call GetItemName
 	ret
-
 .Item:
 	db "ITEM@"
-
 .ThreeDashes:
 	db "---@"
-
 .Move:
 	db "MOVE@"
 
@@ -778,7 +765,6 @@ LoadBluePage:
 	ld bc, 6
 	predef PrintTempMonStats
 	ret
-
 .PlaceOTInfo:
 	ld de, IDNoString
 	hlcoord 0, 9
@@ -810,7 +796,6 @@ LoadBluePage:
 	ld [hl], a
 .done
 	ret
-
 .OTNamePointers:
 	dw wPartyMonOTs
 	dw wOTPartyMonOTs
@@ -831,24 +816,20 @@ StatsScreen_PlaceFrontpic:
 	and a
 	jr z, .no_cry
 	jr .cry
-
 .egg
 	call .AnimateEgg
 	call SetDefaultBGPAndOBP
 	ret
-
 .no_cry
 	call .AnimateMon
 	call SetDefaultBGPAndOBP
 	ret
-
 .cry
 	call SetDefaultBGPAndOBP
 	call .AnimateMon
 	ld a, [wCurPartySpecies]
 	call PlayMonCry2
 	ret
-
 .AnimateMon:
 	ld hl, wStatsScreenFlags
 	set 5, [hl]
@@ -858,14 +839,12 @@ StatsScreen_PlaceFrontpic:
 	hlcoord 0, 0
 	call PrepMonFrontpic
 	ret
-
 .unown
 	xor a
 	ld [wBoxAlignment], a
 	hlcoord 0, 0
 	call _PrepMonFrontpic
 	ret
-
 .AnimateEgg:
 	ld a, [wCurPartySpecies]
 	cp UNOWN
@@ -874,13 +853,11 @@ StatsScreen_PlaceFrontpic:
 	ld [wBoxAlignment], a
 	call .get_animation
 	ret
-
 .unownegg
 	xor a
 	ld [wBoxAlignment], a
 	call .get_animation
 	ret
-
 .get_animation
 	ld a, [wCurPartySpecies]
 	call IsAPokemon
@@ -901,14 +878,12 @@ StatsScreen_GetAnimationParam:
 	ld hl, .Jumptable
 	rst JumpTable
 	ret
-
 .Jumptable:
 	dw .PartyMon
 	dw .OTPartyMon
 	dw .BoxMon
 	dw .Tempmon
 	dw .Wildmon
-
 .PartyMon:
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMon1
@@ -917,11 +892,9 @@ StatsScreen_GetAnimationParam:
 	ld b, h
 	ld c, l
 	jr .CheckEggFaintedFrzSlp
-
 .OTPartyMon:
 	xor a
 	ret
-
 .BoxMon:
 	ld hl, sBoxMons
 	ld bc, PARTYMON_STRUCT_LENGTH
@@ -936,11 +909,8 @@ StatsScreen_GetAnimationParam:
 	call CloseSRAM
 	pop af
 	ret
-
 .Tempmon:
 	ld bc, wTempMonSpecies
-	jr .CheckEggFaintedFrzSlp ; utterly pointless
-
 .CheckEggFaintedFrzSlp:
 	ld a, [wCurPartySpecies]
 	cp EGG
@@ -951,12 +921,10 @@ StatsScreen_GetAnimationParam:
 	xor a
 	scf
 	ret
-
 .Wildmon:
 	ld a, $1
 	and a
 	ret
-
 .FaintedFrzSlp:
 	xor a
 	ret
@@ -983,9 +951,6 @@ StatsScreen_LoadTextboxSpaceGFX:
 	pop de
 	pop hl
 	ret
-
-StatsScreenSpaceGFX: ; unreferenced
-INCBIN "gfx/font/space.2bpp"
 
 EggStatsScreen:
 	xor a

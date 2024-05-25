@@ -13,7 +13,7 @@ OverworldLoop::
 .done
 	ret
 .Jumptable:
-; entries correspond to MAPSTATUS_* constants
+	; entries correspond to MAPSTATUS_* constants
 	dw StartMap
 	dw EnterMap
 	dw HandleMap
@@ -70,7 +70,6 @@ StartMap:
 	farcall InitCallReceiveDelay
 	call ClearJoypad
 	; fallthrough
-
 EnterMap:
 	xor a
 	ld [wXYComparePointer], a
@@ -98,7 +97,7 @@ EnterMap:
 HandleMap:
 	call ResetOverworldDelay
 	call HandleMapTimeAndJoypad
-	call HandleCmdQueue
+	call HandleStoneTable
 	call MapEvents
 	; Not immediately entering a connected map will cause problems.
 	ld a, [wMapStatus]
@@ -116,7 +115,7 @@ MapEvents:
 	rst JumpTable
 	ret
 .Jumptable:
-; entries correspond to MAPEVENTS_* constants
+	; entries correspond to MAPEVENTS_* constants
 	dw .events
 	dw .no_events
 .events:
@@ -240,7 +239,7 @@ CheckTrainerEvent:
 	ret
 
 CheckTileEvent:
-; Check for warps, coord events, or wild battles.
+	; Check for warps, coord events, or wild battles.
 	call CheckWarpConnectionsEnabled
 	jr z, .connections_disabled
 	farcall CheckMovingOffEdgeOfMap
@@ -634,7 +633,7 @@ PlayerMovement:
 	ret
 
 PlayerMovementPointers:
-; entries correspond to PLAYERMOVEMENT_* constants
+	; entries correspond to PLAYERMOVEMENT_* constants
 	table_width 2, PlayerMovementPointers
 	dw .normal
 	dw .warp
@@ -662,7 +661,7 @@ PlayerMovementPointers:
 	scf
 	ret
 .force_turn:
-; force the player to move in some direction
+	; force the player to move in some direction
 	ld a, BANK(Script_ForcedMovement)
 	ld hl, Script_ForcedMovement
 	call CallScript
@@ -810,7 +809,7 @@ DoPlayerEvent:
 	ret
 
 PlayerEventScriptPointers:
-; entries correspond to PLAYEREVENT_* constants
+	; entries correspond to PLAYEREVENT_* constants
 	table_width 3, PlayerEventScriptPointers
 	dba InvalidEventScript      ; PLAYEREVENT_NONE
 	dba SeenByTrainerScript     ; PLAYEREVENT_SEENBYTRAINER
@@ -891,7 +890,7 @@ RunMemScript::
 	ret
 
 LoadMemScript::
-; If there's already a script here, don't overwrite.
+	; If there's already a script here, don't overwrite.
 	ld hl, wMapReentryScriptQueueFlag
 	ld a, [hl]
 	and a
@@ -1140,4 +1139,4 @@ DoBikeStep::
 	xor a
 	ret
 
-INCLUDE "engine/overworld/cmd_queue.asm"
+INCLUDE "engine/overworld/stone_table.asm"

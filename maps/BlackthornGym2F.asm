@@ -12,33 +12,25 @@ BlackthornGym2F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_CMDQUEUE, BlackthornGym2FSetUpStoneTableCallback
+	callback MAPCALLBACK_STONETABLE, BlackthornGym2FSetUpStoneTableCallback
 
 BlackthornGym2FSetUpStoneTableCallback:
-	writecmdqueue .CommandQueue
+	usestonetable .StoneTable
 	endcallback
-
-.CommandQueue:
-	cmdqueue CMDQUEUE_STONETABLE, .StoneTable ; check if any stones are sitting on a warp
-
 .StoneTable:
 	stonetable 5, BLACKTHORNGYM2F_BOULDER1, .Boulder1
 	stonetable 3, BLACKTHORNGYM2F_BOULDER2, .Boulder2
 	stonetable 4, BLACKTHORNGYM2F_BOULDER3, .Boulder3
 	db -1 ; end
-
 .Boulder1:
 	disappear BLACKTHORNGYM2F_BOULDER1
 	sjump .Fall
-
 .Boulder2:
 	disappear BLACKTHORNGYM2F_BOULDER2
 	sjump .Fall
-
 .Boulder3:
 	disappear BLACKTHORNGYM2F_BOULDER3
 	sjump .Fall
-
 .Fall:
 	pause 30
 	scall .FX
@@ -47,7 +39,6 @@ BlackthornGym2FSetUpStoneTableCallback:
 	waitbutton
 	closetext
 	end
-
 .FX:
 	playsound SFX_STRENGTH
 	earthquake 80
@@ -58,7 +49,6 @@ BlackthornGymBoulder:
 
 TrainerCooltrainermCody:
 	trainer COOLTRAINERM, CODY, EVENT_BEAT_COOLTRAINERM_CODY, CooltrainermCodySeenText, CooltrainermCodyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -69,7 +59,6 @@ TrainerCooltrainermCody:
 
 TrainerCooltrainerfFran:
 	trainer COOLTRAINERF, FRAN, EVENT_BEAT_COOLTRAINERF_FRAN, CooltrainerfFranSeenText, CooltrainerfFranBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext

@@ -1,22 +1,18 @@
 HandleStoneQueue::
 	ldh a, [hROMBank]
 	push af
-
 	call SwitchToMapScriptsBank
 	call .WarpAction
-
 	pop bc
 	ld a, b
 	rst Bankswitch
 	ret
-
 .WarpAction:
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, de
 	ld a, [hl]
 	cp $ff
 	jr z, .nope
-
 	ld l, a
 	push hl
 	call .IsObjectOnWarp
@@ -30,31 +26,25 @@ HandleStoneQueue::
 	farcall EnableScriptMode
 	scf
 	ret
-
 .nope
 	and a
 	ret
-
 .IsObjectOnWarp:
 	push de
-
 	ld hl, OBJECT_MAP_X
 	add hl, de
 	ld a, [hl]
 	ld hl, OBJECT_MAP_Y
 	add hl, de
 	ld e, [hl]
-
 	sub 4
 	ld d, a
 	ld a, e
 	sub 4
 	ld e, a
 	call .check_on_warp
-
 	pop de
 	ret
-
 .check_on_warp
 	ld hl, wCurMapWarpEventsPointer
 	ld a, [hli]
@@ -63,7 +53,6 @@ HandleStoneQueue::
 	ld a, [wCurMapWarpEventCount]
 	and a
 	jr z, .nope2
-
 .loop
 	push af
 	ld a, [hl]
@@ -74,7 +63,6 @@ HandleStoneQueue::
 	cp d
 	jr nz, .not_on_warp
 	jr .found_warp
-
 .not_on_warp
 	ld a, WARP_EVENT_SIZE
 	add l
@@ -82,15 +70,12 @@ HandleStoneQueue::
 	jr nc, .no_carry
 	inc h
 .no_carry
-
 	pop af
 	dec a
 	jr nz, .loop
-
 .nope2
 	and a
 	ret
-
 .found_warp
 	pop af
 	ld d, a
@@ -99,14 +84,10 @@ HandleStoneQueue::
 	inc a
 	scf
 	ret
-
 .IsObjectInStoneTable:
 	inc e
-	ld hl, CMDQUEUE_ADDR
-	add hl, bc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
+	ld h, b
+	ld l, c
 .loop2
 	ld a, [hli]
 	cp $ff
@@ -120,19 +101,15 @@ HandleStoneQueue::
 	ld h, [hl]
 	ld l, a
 	jr .yes
-
 .next_inc3
 	inc hl
-
 .next_inc2
 	inc hl
 	inc hl
 	jr .loop2
-
 .nope3
 	and a
 	ret
-
 .yes
 	scf
 	ret

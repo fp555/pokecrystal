@@ -6,9 +6,12 @@ HandleNewMap:
 	call ResetBikeFlags
 	ld a, MAPCALLBACK_NEWMAP
 	call RunMapCallback
+	; fallthrough
 HandleContinueMap:
-	farcall ClearCmdQueue
-	ld a, MAPCALLBACK_CMDQUEUE
+	xor a
+	ld [wStoneTableAddress], a
+	ld [wStoneTableAddress+1], a
+	ld a, MAPCALLBACK_STONETABLE
 	call RunMapCallback
 	call GetMapTimeOfDay
 	ld [wMapTimeOfDay], a
@@ -26,7 +29,6 @@ EnterMapConnection:
 	cp RIGHT
 	jp z, .east
 	ret
-
 .west
 	ld a, [wWestConnectedMapGroup]
 	ld [wMapGroup], a
@@ -49,19 +51,16 @@ EnterMapConnection:
 	add 6
 	ld e, a
 	ld d, 0
-
 .loop
 	add hl, de
 	dec c
 	jr nz, .loop
-
 .skip_to_load
 	ld a, l
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
 	jp .done
-
 .east
 	ld a, [wEastConnectedMapGroup]
 	ld [wMapGroup], a
@@ -84,19 +83,16 @@ EnterMapConnection:
 	add 6
 	ld e, a
 	ld d, 0
-
 .loop2
 	add hl, de
 	dec c
 	jr nz, .loop2
-
 .skip_to_load2
 	ld a, l
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
 	jp .done
-
 .north
 	ld a, [wNorthConnectedMapGroup]
 	ld [wMapGroup], a
@@ -121,7 +117,6 @@ EnterMapConnection:
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
 	jp .done
-
 .south
 	ld a, [wSouthConnectedMapGroup]
 	ld [wMapGroup], a
@@ -159,7 +154,6 @@ EnterMapWarp:
 	ld a, [wNextMapNumber]
 	ld [wMapNumber], a
 	ret
-
 .SaveDigWarp:
 	call GetMapEnvironment
 	call CheckOutdoorMap
@@ -171,9 +165,8 @@ EnterMapWarp:
 	call GetAnyMapEnvironment
 	call CheckIndoorMap
 	ret nz
-
-; MOUNT_MOON_SQUARE and TIN_TOWER_ROOF are outdoor maps within indoor maps.
-; Dig and Escape Rope should not take you to them.
+	; MOUNT_MOON_SQUARE and TIN_TOWER_ROOF are outdoor maps within indoor maps.
+	; Dig and Escape Rope should not take you to them.
 	ld a, [wPrevMapGroup]
 	cp GROUP_MOUNT_MOON_SQUARE
 	jr nz, .not_mt_moon_square_or_tin_tower_roof
@@ -184,7 +177,6 @@ EnterMapWarp:
 	cp MAP_TIN_TOWER_ROOF
 	ret z
 .not_mt_moon_square_or_tin_tower_roof
-
 	ld a, [wPrevWarp]
 	ld [wDigWarpNumber], a
 	ld a, [wPrevMapGroup]
@@ -192,7 +184,6 @@ EnterMapWarp:
 	ld a, [wPrevMapNumber]
 	ld [wDigMapNumber], a
 	ret
-
 .SetSpawn:
 	call GetMapEnvironment
 	call CheckOutdoorMap
@@ -208,8 +199,7 @@ EnterMapWarp:
 	ld b, a
 	ld a, [wNextMapNumber]
 	ld c, a
-
-; Respawn in Pokémon Centers.
+	; Respawn in Pokémon Centers.
 	call GetAnyMapTileset
 	ld a, c
 	cp TILESET_POKECENTER
@@ -218,7 +208,6 @@ EnterMapWarp:
 	jr z, .pokecenter_pokecom
 	ret
 .pokecenter_pokecom
-
 	ld a, [wPrevMapGroup]
 	ld [wLastSpawnMapGroup], a
 	ld a, [wPrevMapNumber]
@@ -236,7 +225,6 @@ LoadMapTimeOfDay:
 	call .ClearBGMap
 	call .PushAttrmap
 	ret
-
 .ClearBGMap:
 	ld a, HIGH(vBGMap0)
 	ld [wBGMapAnchor + 1], a
@@ -245,33 +233,27 @@ LoadMapTimeOfDay:
 	ldh [hSCY], a
 	ldh [hSCX], a
 	farcall ApplyBGMapAnchorToObjects
-
 	ldh a, [rVBK]
 	push af
 	ld a, $1
 	ldh [rVBK], a
-
 	xor a
 	ld bc, vBGMap1 - vBGMap0
 	hlbgcoord 0, 0
 	call ByteFill
-
 	pop af
 	ldh [rVBK], a
-
 	ld a, "■"
 	ld bc, vBGMap1 - vBGMap0
 	hlbgcoord 0, 0
 	call ByteFill
 	ret
-
 .PushAttrmap:
 	decoord 0, 0
 	call .copy
 	ldh a, [hCGB]
 	and a
 	ret z
-
 	decoord 0, 0, wAttrmap
 	ld a, $1
 	ldh [rVBK], a
@@ -344,7 +326,6 @@ CheckMovingOffEdgeOfMap::
 	jr z, .right
 	and a
 	ret
-
 .down
 	ld a, [wPlayerMapY]
 	sub 4
@@ -355,7 +336,6 @@ CheckMovingOffEdgeOfMap::
 	jr z, .ok
 	and a
 	ret
-
 .up
 	ld a, [wPlayerMapY]
 	sub 4
@@ -363,7 +343,6 @@ CheckMovingOffEdgeOfMap::
 	jr z, .ok
 	and a
 	ret
-
 .left
 	ld a, [wPlayerMapX]
 	sub 4
@@ -371,7 +350,6 @@ CheckMovingOffEdgeOfMap::
 	jr z, .ok
 	and a
 	ret
-
 .right
 	ld a, [wPlayerMapX]
 	sub 4
@@ -382,7 +360,6 @@ CheckMovingOffEdgeOfMap::
 	jr z, .ok
 	and a
 	ret
-
 .ok
 	scf
 	ret
@@ -392,7 +369,7 @@ GetMapScreenCoords::
 	ld a, [wXCoord]
 	bit 0, a
 	jr nz, .odd_x
-; even x
+	; even x
 	srl a
 	add 1
 	jr .got_block_x
@@ -410,7 +387,7 @@ GetMapScreenCoords::
 	ld a, [wYCoord]
 	bit 0, a
 	jr nz, .odd_y
-; even y
+	; even y
 	srl a
 	add 1
 	jr .got_block_y

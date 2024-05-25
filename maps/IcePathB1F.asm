@@ -9,42 +9,33 @@ IcePathB1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_CMDQUEUE, IcePathB1FSetUpStoneTableCallback
+	callback MAPCALLBACK_STONETABLE, IcePathB1FSetUpStoneTableCallback
 
 IcePathB1FSetUpStoneTableCallback:
-	writecmdqueue .CommandQueue
+	usestonetable .StoneTable
 	endcallback
-
-.CommandQueue:
-	cmdqueue CMDQUEUE_STONETABLE, .StoneTable ; check if any stones are sitting on a warp
-
 .StoneTable:
 	stonetable 3, ICEPATHB1F_BOULDER1, .Boulder1
 	stonetable 4, ICEPATHB1F_BOULDER2, .Boulder2
 	stonetable 5, ICEPATHB1F_BOULDER3, .Boulder3
 	stonetable 6, ICEPATHB1F_BOULDER4, .Boulder4
 	db -1 ; end
-
 .Boulder1:
 	disappear ICEPATHB1F_BOULDER1
 	clearevent EVENT_BOULDER_IN_ICE_PATH_1A
 	sjump .FinishBoulder
-
 .Boulder2:
 	disappear ICEPATHB1F_BOULDER2
 	clearevent EVENT_BOULDER_IN_ICE_PATH_2A
 	sjump .FinishBoulder
-
 .Boulder3:
 	disappear ICEPATHB1F_BOULDER3
 	clearevent EVENT_BOULDER_IN_ICE_PATH_3A
 	sjump .FinishBoulder
-
 .Boulder4:
 	disappear ICEPATHB1F_BOULDER4
 	clearevent EVENT_BOULDER_IN_ICE_PATH_4A
 	sjump .FinishBoulder
-
 .FinishBoulder:
 	pause 30
 	scall .BoulderFallsThrough
@@ -53,7 +44,6 @@ IcePathB1FSetUpStoneTableCallback:
 	waitbutton
 	closetext
 	end
-
 .BoulderFallsThrough:
 	playsound SFX_STRENGTH
 	earthquake 80

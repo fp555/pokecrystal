@@ -45,7 +45,6 @@ VioletGymFalknerScript:
 	waitbutton
 	closetext
 	end
-
 .SpeechAfterTM:
 	writetext FalknerFightDoneText
 	waitbutton
@@ -57,16 +56,13 @@ VioletGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
 TrainerBirdKeeperRod:
 	trainer BIRD_KEEPER, ROD, EVENT_BEAT_BIRD_KEEPER_ROD, BirdKeeperRodSeenText, BirdKeeperRodBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -77,7 +73,6 @@ TrainerBirdKeeperRod:
 
 TrainerBirdKeeperAbe:
 	trainer BIRD_KEEPER, ABE, EVENT_BEAT_BIRD_KEEPER_ABE, BirdKeeperAbeSeenText, BirdKeeperAbeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -95,7 +90,6 @@ VioletGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .VioletGymGuideWinScript:
 	writetext VioletGymGuideWinText
 	waitbutton
@@ -152,12 +146,8 @@ ReceivedZephyrBadgeText:
 	done
 
 FalknerZephyrBadgeText:
-	text "ZEPHYRBADGE"
-	line "raises the attack"
-	cont "power of #MON."
-
-	para "It also enables"
-	line "#MON to use"
+	text "ZEPHYRBADGE lets"
+	line "your #MON use"
 
 	para "FLASH, if they"
 	line "have it, anytime."

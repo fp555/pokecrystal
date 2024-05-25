@@ -46,7 +46,6 @@ GoldenrodGymWhitneyScript:
 	waitbutton
 	closetext
 	end
-
 .StoppedCrying:
 	checkevent EVENT_GOT_TM45_ATTRACT
 	iftrue .GotAttract
@@ -71,7 +70,6 @@ GoldenrodGymWhitneyScript:
 	waitbutton
 	closetext
 	end
-
 .GotAttract:
 	writetext WhitneyGoodCryText
 	waitbutton
@@ -83,16 +81,13 @@ GoldenrodGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
 TrainerLassCarrie:
 	trainer LASS, CARRIE, EVENT_BEAT_LASS_CARRIE, LassCarrieSeenText, LassCarrieBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -116,7 +111,6 @@ WhitneyCriesScript:
 
 TrainerLassBridget:
 	trainer LASS, BRIDGET, EVENT_BEAT_LASS_BRIDGET, LassBridgetSeenText, LassBridgetBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -127,7 +121,6 @@ TrainerLassBridget:
 
 TrainerBeautyVictoria:
 	trainer BEAUTY, VICTORIA, EVENT_BEAT_BEAUTY_VICTORIA, BeautyVictoriaSeenText, BeautyVictoriaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -138,7 +131,6 @@ TrainerBeautyVictoria:
 
 TrainerBeautySamantha:
 	trainer BEAUTY, SAMANTHA, EVENT_BEAT_BEAUTY_SAMANTHA, BeautySamanthaSeenText, BeautySamanthaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -156,7 +148,6 @@ GoldenrodGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .GoldenrodGymGuideWinScript:
 	opentext
 	writetext GoldenrodGymGuideWinText
@@ -239,10 +230,6 @@ WhitneyPlainBadgeText:
 
 	para "STRENGTH outside"
 	line "of battle."
-
-	para "It also boosts"
-	line "your #MON's"
-	cont "SPEED."
 
 	para "Oh, you can have"
 	line "this too!"

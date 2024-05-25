@@ -30,7 +30,7 @@ OlivineGymJasmineScript:
 .FightDone:
 	checkevent EVENT_GOT_TM23_IRON_TAIL
 	iftrue .GotIronTail
-	writetext Jasmine_BadgeSpeech
+	writetext Jasmine_TakeThisToo
 	promptbutton
 	verbosegiveitem TM_IRON_TAIL
 	iffalse .NoRoomForIronTail
@@ -39,7 +39,6 @@ OlivineGymJasmineScript:
 	waitbutton
 	closetext
 	end
-
 .GotIronTail:
 	writetext Jasmine_GoodLuck
 	waitbutton
@@ -51,10 +50,8 @@ OlivineGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
@@ -69,14 +66,12 @@ OlivineGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .OlivineGymGuideWinScript:
 	opentext
 	writetext OlivineGymGuideWinText
 	waitbutton
 	closetext
 	end
-
 .OlivineGymGuidePreScript:
 	opentext
 	writetext OlivineGymGuidePreText
@@ -136,18 +131,9 @@ Text_ReceivedMineralBadge:
 	line "MINERALBADGE."
 	done
 
-Jasmine_BadgeSpeech:
-	text "MINERALBADGE"
-	line "raises #MON's"
-	cont "DEFENSE."
-
+Jasmine_TakeThisToo:
 	para "…Um… Please take"
 	line "this too…"
-	done
-
-Text_ReceivedTM09: ; unreferenced
-	text "<PLAYER> received"
-	line "TM09."
 	done
 
 Jasmine_IronTailSpeech:

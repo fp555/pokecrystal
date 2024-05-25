@@ -2601,7 +2601,6 @@ AskUseNextPokemon:
 	and a
 	dec a
 	ret nz
-
 	ld hl, BattleText_UseNextMon
 	call StdBattleTextbox
 .loop
@@ -2611,7 +2610,6 @@ AskUseNextPokemon:
 	jr c, .pressed_b
 	and a
 	ret
-
 .pressed_b
 	ld a, [wMenuCursorY]
 	cp $1 ; YES
@@ -2631,7 +2629,6 @@ ForcePlayerMonChoice:
 	ld a, BATTLEPLAYERACTION_USEITEM
 	ld [wBattlePlayerAction], a
 	call LinkBattleSendReceiveAction
-
 .skip_link
 	xor a ; BATTLEPLAYERACTION_USEMOVE
 	ld [wBattlePlayerAction], a
@@ -2641,7 +2638,6 @@ ForcePlayerMonChoice:
 	ld a, [hli]
 	or [hl]
 	jr nz, .send_out_pokemon
-
 .enemy_fainted_mobile_error
 	call ClearSprites
 	call ClearBGPalettes
@@ -2654,7 +2650,6 @@ ForcePlayerMonChoice:
 	xor a
 	ld c, a
 	ret
-
 .send_out_pokemon
 	call ClearSprites
 	ld a, [wCurBattleMon]
@@ -3769,7 +3764,6 @@ InitBattleMon:
 	ld bc, PARTYMON_STRUCT_LENGTH - MON_ATK
 	call CopyBytes
 	call ApplyStatusEffectOnPlayerStats
-	call BadgeStatBoosts
 	ret
 
 BattleCheckPlayerShininess:
@@ -3926,7 +3920,6 @@ SendOutPlayerMon:
 	ld [wBattleAnimParam], a
 	ld de, ANIM_SEND_OUT_MON
 	call Call_PlayBattleAnim
-
 .not_shiny
 	ld a, MON_SPECIES
 	call GetPartyParamLocation
@@ -3938,7 +3931,6 @@ SendOutPlayerMon:
 	ld [wCryTracks], a
 	ld a, [wCurPartySpecies]
 	call PlayStereoCry
-
 .statused
 	call UpdatePlayerHUD
 	ld a, $1
@@ -4106,7 +4098,6 @@ HandleHealingItems:
 	call HandleHPHealingItem
 	call UseHeldStatusHealingItem
 	jp UseConfusionHealingItem
-
 .player_1
 	call SetEnemyTurn
 	call HandleHPHealingItem
@@ -4129,7 +4120,6 @@ HandleHPHealingItem:
 	jr z, .go
 	ld de, wBattleMonHP + 1
 	ld hl, wBattleMonMaxHP
-
 .go
 ; If, and only if, Pokemon's HP is less than half max, use the item.
 ; Store current HP in Buffer 3/4
@@ -4151,13 +4141,11 @@ HandleHPHealingItem:
 	jr z, .equal
 	jr c, .less
 	ret
-
 .equal
 	inc hl
 	cp [hl]
 	dec hl
 	ret nc
-
 .less
 	call ItemRecoveryAnim
 	; store max HP in wHPBuffer1
@@ -4183,7 +4171,6 @@ HandleHPHealingItem:
 	ld [wHPBuffer3 + 1], a
 	ld a, [hl]
 	ld [wHPBuffer3], a
-
 .okay
 	ld a, [wHPBuffer3 + 1]
 	ld [de], a
@@ -4196,10 +4183,10 @@ HandleHPHealingItem:
 	hlcoord 2, 2
 	jr z, .got_hp_bar_coords
 	hlcoord 10, 9
-
 .got_hp_bar_coords
 	ld [wWhichHPBar], a
 	predef AnimateHPBar
+	; fallthrough
 UseOpponentItem:
 	call RefreshBattleHuds
 	callfar GetOpponentItem
@@ -4263,14 +4250,12 @@ UseHeldStatusHealingItem:
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVarAddr
 	res SUBSTATUS_CONFUSED, [hl]
-
 .skip_confuse
 	ld hl, CalcEnemyStats
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .got_pointer
 	ld hl, CalcPlayerStats
-
 .got_pointer
 	call SwitchTurnCore
 	ld a, BANK(CalcPlayerStats) ; aka BANK(CalcEnemyStats)
@@ -4295,7 +4280,6 @@ UseConfusionHealingItem:
 	jr z, .heal_status
 	cp HELD_HEAL_STATUS
 	ret nz
-
 .heal_status
 	ld a, [hl]
 	ld [wNamedObjectIndex], a
@@ -4317,7 +4301,6 @@ UseConfusionHealingItem:
 	ret z
 	ld [hl], $0
 	ret
-
 .do_partymon
 	call GetPartymonItem
 	xor a
@@ -4332,16 +4315,13 @@ HandleStatBoostingHeldItems:
 	jr z, .player_1
 	call .DoPlayer
 	jp .DoEnemy
-
 .player_1
 	call .DoEnemy
 	jp .DoPlayer
-
 .DoPlayer:
 	call GetPartymonItem
 	ld a, $0
 	jp .HandleItem
-
 .DoEnemy:
 	call GetOTPartymonItem
 	ld a, $1
@@ -4387,7 +4367,6 @@ HandleStatBoostingHeldItems:
 	call StdBattleTextbox
 	callfar BattleCommand_StatUpMessage
 	ret
-
 .finish
 	pop bc
 	pop de
@@ -6359,86 +6338,6 @@ ApplyStatLevelMultiplier:
 
 INCLUDE "data/battle/stat_multipliers_2.asm"
 
-BadgeStatBoosts:
-; Raise the stats of the battle mon in wBattleMon
-; depending on which badges have been obtained.
-; Every other badge boosts a stat, starting from the first.
-; GlacierBadge also boosts Special Defense, although the relevant code is buggy (see below).
-; 	ZephyrBadge:  Attack
-; 	PlainBadge:   Speed
-; 	MineralBadge: Defense
-; 	GlacierBadge: Special Attack and Special Defense
-; The boosted stats are in order, except PlainBadge and MineralBadge's boosts are swapped.
-	ld a, [wLinkMode]
-	and a
-	ret nz
-	ld a, [wInBattleTowerBattle]
-	and a
-	ret nz
-	ld a, [wJohtoBadges]
-	; Swap badges 3 (PlainBadge) and 5 (MineralBadge).
-	ld d, a
-	and (1 << PLAINBADGE)
-	add a
-	add a
-	ld b, a
-	ld a, d
-	and (1 << MINERALBADGE)
-	rrca
-	rrca
-	ld c, a
-	ld a, d
-	and ((1 << ZEPHYRBADGE) | (1 << HIVEBADGE) | (1 << FOGBADGE) | (1 << STORMBADGE) | (1 << GLACIERBADGE) | (1 << RISINGBADGE))
-	or b
-	or c
-	ld b, a
-	ld hl, wBattleMonAttack
-	ld c, 4
-.CheckBadge:
-	ld a, b
-	srl b
-	push af
-	call c, BoostStat
-	pop af
-	inc hl
-	inc hl
-	; Check every other badge.
-	srl b
-	dec c
-	jr nz, .CheckBadge
-	srl a
-	call c, BoostStat
-	ret
-
-BoostStat:
-; Raise stat at hl by 1/8.
-	ld a, [hli]
-	ld d, a
-	ld e, [hl]
-	srl d
-	rr e
-	srl d
-	rr e
-	srl d
-	rr e
-	ld a, [hl]
-	add e
-	ld [hld], a
-	ld a, [hl]
-	adc d
-	ld [hli], a
-	; Cap at 999.
-	ld a, [hld]
-	sub LOW(MAX_STAT_VALUE)
-	ld a, [hl]
-	sbc HIGH(MAX_STAT_VALUE)
-	ret c
-	ld a, HIGH(MAX_STAT_VALUE)
-	ld [hli], a
-	ld a, LOW(MAX_STAT_VALUE)
-	ld [hld], a
-	ret
-
 _LoadBattleFontsHPBar:
 	callfar LoadBattleFontsHPBar
 	ret
@@ -6460,10 +6359,8 @@ _BattleRandom::
 	ld a, [wLinkMode]
 	and a
 	jp z, Random
-
-; The PRNG operates in streams of 10 values.
-
-; Which value are we trying to pull?
+	; The PRNG operates in streams of 10 values.
+	; Which value are we trying to pull?
 	push hl
 	push bc
 	ld a, [wLinkBattleRNCount]
@@ -6473,48 +6370,40 @@ _BattleRandom::
 	add hl, bc
 	inc a
 	ld [wLinkBattleRNCount], a
-
-; If we haven't hit the end yet, we're good
+	; If we haven't hit the end yet, we're good
 	cp 10 - 1 ; Exclude last value. See the closing comment
 	ld a, [hl]
 	pop bc
 	pop hl
 	ret c
-
-; If we have, we have to generate new pseudorandom data
-; Instead of having multiple PRNGs, ten seeds are used
+	; If we have, we have to generate new pseudorandom data
+	; Instead of having multiple PRNGs, ten seeds are used
 	push hl
 	push bc
 	push af
-
-; Reset count to 0
+	; Reset count to 0
 	xor a
 	ld [wLinkBattleRNCount], a
 	ld hl, wLinkBattleRNs
 	ld b, 10 ; number of seeds
-
-; Generate next number in the sequence for each seed
-; a[n+1] = (a[n] * 5 + 1) % 256
+	; Generate next number in the sequence for each seed
+	; a[n+1] = (a[n] * 5 + 1) % 256
 .loop
 	; get last #
 	ld a, [hl]
-
 	; a * 5 + 1
 	ld c, a
 	add a
 	add a
 	add c
 	inc a
-
 	; update #
 	ld [hli], a
 	dec b
 	jr nz, .loop
-
-; This has the side effect of pulling the last value first,
-; then wrapping around. As a result, when we check to see if
-; we've reached the end, we check the one before it.
-
+	; This has the side effect of pulling the last value first,
+	; then wrapping around. As a result, when we check to see if
+	; we've reached the end, we check the one before it.
 	pop af
 	pop bc
 	pop hl
@@ -6550,28 +6439,23 @@ FinishBattleAnim:
 	ret
 
 GiveExperiencePoints:
-; Give experience.
-; Don't give experience if linked or in the Battle Tower.
+	; Don't give experience if linked or in the Battle Tower.
 	ld a, [wLinkMode]
 	and a
 	ret nz
-
 	ld a, [wInBattleTowerBattle]
 	bit 0, a
 	ret nz
-
 	call .EvenlyDivideExpAmongParticipants
 	xor a
 	ld [wCurPartyMon], a
 	ld bc, wPartyMon1Species
-
 .loop
 	ld hl, MON_HP
 	add hl, bc
 	ld a, [hli]
 	or [hl]
 	jp z, .next_mon ; fainted
-
 	push bc
 	ld hl, wBattleParticipantsNotFainted
 	ld a, [wCurPartyMon]
@@ -6583,8 +6467,7 @@ GiveExperiencePoints:
 	and a
 	pop bc
 	jp z, .next_mon
-
-; give stat exp
+	; give stat exp
 	ld hl, MON_STAT_EXP + 1
 	add hl, bc
 	ld d, h
@@ -6604,7 +6487,6 @@ GiveExperiencePoints:
 	jr z, .stat_exp_maxed_out
 	ld [de], a
 	inc de
-
 .no_carry_stat_exp
 	push hl
 	push bc
@@ -6626,13 +6508,11 @@ GiveExperiencePoints:
 	ld [de], a
 	inc de
 	jr .stat_exp_awarded
-
 .stat_exp_maxed_out
 	ld a, $ff
 	ld [de], a
 	inc de
 	ld [de], a
-
 .stat_exp_awarded
 	inc de
 	inc de
@@ -6650,7 +6530,7 @@ GiveExperiencePoints:
 	ldh [hDivisor], a
 	ld b, 4
 	call Divide
-; Boost Experience for traded Pokemon
+	; Boost Experience for traded Pokemon
 	pop bc
 	ld hl, MON_OT_ID
 	add hl, bc
@@ -6662,18 +6542,16 @@ GiveExperiencePoints:
 	cp [hl]
 	ld a, 0
 	jr z, .no_boost
-
 .boosted
 	call BoostExp
 	ld a, 1
-
 .no_boost
-; Boost experience for a Trainer Battle
+	; Boost experience for a Trainer Battle
 	ld [wStringBuffer2 + 2], a
 	ld a, [wBattleMode]
 	dec a
 	call nz, BoostExp
-; Boost experience for Lucky Egg
+	; Boost experience for Lucky Egg
 	push bc
 	ld a, MON_ITEM
 	call GetPartyParamLocation
@@ -6716,7 +6594,6 @@ GiveExperiencePoints:
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-
 .no_exp_overflow
 	ld a, [wCurPartyMon]
 	ld e, a
@@ -6752,9 +6629,8 @@ GiveExperiencePoints:
 	ld [hli], a
 	ld a, d
 	ld [hld], a
-
 .not_max_exp
-; Check if the mon leveled up
+	; Check if the mon leveled up
 	xor a ; PARTYMON
 	ld [wMonType], a
 	predef CopyMonToTempMon
@@ -6767,7 +6643,7 @@ GiveExperiencePoints:
 	jp nc, .next_mon
 	cp d
 	jp z, .next_mon
-; <NICKNAME> grew to level ##!
+	; <NICKNAME> grew to level ##!
 	ld [wTempLevel], a
 	ld a, [wCurPartyLevel]
 	push af
@@ -6840,19 +6716,16 @@ GiveExperiencePoints:
 	ld de, wPlayerStats
 	ld bc, PARTYMON_STRUCT_LENGTH - MON_ATK
 	call CopyBytes
-
 .transformed
 	xor a ; FALSE
 	ld [wApplyStatLevelMultipliersToEnemy], a
 	call ApplyStatLevelMultiplierOnAllStats
 	callfar ApplyStatusEffectOnPlayerStats
-	callfar BadgeStatBoosts
 	callfar UpdatePlayerHUD
 	call EmptyBattleTextbox
 	call LoadTilemapToTempTilemap
 	ld a, $1
 	ldh [hBGMapMode], a
-
 .skip_active_mon_update
 	farcall LevelUpHappinessMod
 	ld a, [wCurBattleMon]
@@ -6866,7 +6739,6 @@ GiveExperiencePoints:
 	ld hl, BattleText_StringBuffer1GrewToLevel
 	call StdBattleTextbox
 	call LoadTilemapToTempTilemap
-
 .skip_exp_bar_animation
 	xor a ; PARTYMON
 	ld [wMonType], a
@@ -6891,7 +6763,6 @@ GiveExperiencePoints:
 	ld c, a
 	ld a, [wTempLevel]
 	ld b, a
-
 .level_loop
 	inc b
 	ld a, b
@@ -6911,7 +6782,6 @@ GiveExperiencePoints:
 	predef SmallFarFlagAction
 	pop af
 	ld [wCurPartyLevel], a
-
 .next_mon
 	ld a, [wPartyCount]
 	ld b, a
@@ -6925,12 +6795,10 @@ GiveExperiencePoints:
 	ld b, h
 	ld c, l
 	jp .loop
-
 .done
 	jp ResetBattleParticipants
-
 .EvenlyDivideExpAmongParticipants:
-; count number of battle participants
+	; count number of battle participants
 	ld a, [wBattleParticipantsNotFainted]
 	ld b, a
 	ld c, PARTY_LENGTH
@@ -6944,7 +6812,6 @@ GiveExperiencePoints:
 	jr nz, .count_loop
 	cp 2
 	ret c
-
 	ld [wTempByteValue], a
 	ld hl, wEnemyMonBaseStats
 	ld c, wEnemyMonEnd - wEnemyMonBaseStats
@@ -6964,17 +6831,17 @@ GiveExperiencePoints:
 	ret
 
 BoostExp:
-; Multiply experience by 1.5x
+	; Multiply experience by 1.5x
 	push bc
-; load experience value
+	; load experience value
 	ldh a, [hProduct + 2]
 	ld b, a
 	ldh a, [hProduct + 3]
 	ld c, a
-; halve it
+	; halve it
 	srl b
 	rr c
-; add it back to the whole exp value
+	; add it back to the whole exp value
 	add c
 	ldh [hProduct + 3], a
 	ldh a, [hProduct + 2]
@@ -6990,7 +6857,6 @@ Text_MonGainedExpPoint:
 	ld a, [wStringBuffer2 + 2] ; IsTradedMon
 	and a
 	ret z
-
 	ld hl, BoostedExpPointsText
 	ret
 

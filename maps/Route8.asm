@@ -13,7 +13,6 @@ Route8_MapScripts:
 
 TrainerBikerDwayne:
 	trainer BIKER, DWAYNE, EVENT_BEAT_BIKER_DWAYNE, BikerDwayneSeenText, BikerDwayneBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -24,7 +23,6 @@ TrainerBikerDwayne:
 
 TrainerBikerHarris:
 	trainer BIKER, HARRIS, EVENT_BEAT_BIKER_HARRIS, BikerHarrisSeenText, BikerHarrisBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -35,7 +33,6 @@ TrainerBikerHarris:
 
 TrainerBikerZeke:
 	trainer BIKER, ZEKE, EVENT_BEAT_BIKER_ZEKE, BikerZekeSeenText, BikerZekeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -46,7 +43,6 @@ TrainerBikerZeke:
 
 TrainerSupernerdSam:
 	trainer SUPER_NERD, SAM, EVENT_BEAT_SUPER_NERD_SAM, SupernerdSamSeenText, SupernerdSamBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -57,7 +53,6 @@ TrainerSupernerdSam:
 
 TrainerSupernerdTom:
 	trainer SUPER_NERD, TOM, EVENT_BEAT_SUPER_NERD_TOM, SupernerdTomSeenText, SupernerdTomBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -154,9 +149,9 @@ SupernerdTomBeatenText:
 	done
 
 SupernerdTomAfterBattleText:
-	text "GYM BADGES give"
+	text "Do GYM BADGES give"
 	line "you advantages in"
-	cont "battles."
+	cont "battles?"
 	done
 
 Route8LockedDoorText:

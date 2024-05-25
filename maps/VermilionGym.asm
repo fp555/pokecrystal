@@ -35,7 +35,6 @@ VermilionGymSurgeScript:
 	waitbutton
 	closetext
 	end
-
 .FightDone:
 	writetext LtSurgeFightDoneText
 	waitbutton
@@ -44,7 +43,6 @@ VermilionGymSurgeScript:
 
 TrainerGentlemanGregory:
 	trainer GENTLEMAN, GREGORY, EVENT_BEAT_GENTLEMAN_GREGORY, GentlemanGregorySeenText, GentlemanGregoryBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -55,7 +53,6 @@ TrainerGentlemanGregory:
 
 TrainerGuitaristVincent:
 	trainer GUITARIST, VINCENT, EVENT_BEAT_GUITARIST_VINCENT, GuitaristVincentSeenText, GuitaristVincentBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -66,7 +63,6 @@ TrainerGuitaristVincent:
 
 TrainerJugglerHorton:
 	trainer JUGGLER, HORTON, EVENT_BEAT_JUGGLER_HORTON, JugglerHortonSeenText, JugglerHortonBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -84,7 +80,6 @@ VermilionGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .VermilionGymGuideWinScript:
 	writetext VermilionGymGuideWinText
 	waitbutton
@@ -139,11 +134,7 @@ ReceivedThunderBadgeText:
 	done
 
 LtSurgeThunderBadgeText:
-	text "SURGE: THUNDER-"
-	line "BADGE increases"
-	cont "#MON's speed. "
-
-	para "Consider it proof"
+	text "Consider it proof"
 	line "that you defeated"
 
 	para "me. You wear it"

@@ -61,16 +61,13 @@ MahoganyGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
 TrainerSkierRoxanne:
 	trainer SKIER, ROXANNE, EVENT_BEAT_SKIER_ROXANNE, SkierRoxanneSeenText, SkierRoxanneBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -81,7 +78,6 @@ TrainerSkierRoxanne:
 
 TrainerSkierClarissa:
 	trainer SKIER, CLARISSA, EVENT_BEAT_SKIER_CLARISSA, SkierClarissaSeenText, SkierClarissaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -92,7 +88,6 @@ TrainerSkierClarissa:
 
 TrainerBoarderRonald:
 	trainer BOARDER, RONALD, EVENT_BEAT_BOARDER_RONALD, BoarderRonaldSeenText, BoarderRonaldBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -103,7 +98,6 @@ TrainerBoarderRonald:
 
 TrainerBoarderBrad:
 	trainer BOARDER, BRAD, EVENT_BEAT_BOARDER_BRAD, BoarderBradSeenText, BoarderBradBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -114,7 +108,6 @@ TrainerBoarderBrad:
 
 TrainerBoarderDouglas:
 	trainer BOARDER, DOUGLAS, EVENT_BEAT_BOARDER_DOUGLAS, BoarderDouglasSeenText, BoarderDouglasBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -132,7 +125,6 @@ MahoganyGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .MahoganyGymGuideWinScript:
 	writetext MahoganyGymGuideWinText
 	waitbutton
@@ -198,11 +190,7 @@ Text_ReceivedGlacierBadge:
 	done
 
 PryceText_GlacierBadgeSpeech:
-	text "That BADGE will"
-	line "raise the SPECIAL"
-	cont "stats of #MON."
-
-	para "It also lets your"
+	text "That BADGE lets your"
 	line "#MON use WHIRL-"
 	cont "POOL to get across"
 	cont "real whirlpools."

@@ -16,7 +16,6 @@ DoEnemyTurn:
 	cp BATTLEACTION_SWITCH1
 	ret nc
 	; fallthrough
-
 DoTurn:
 ; Read in and execute the user's move effects for this turn.
 	xor a
@@ -2967,13 +2966,11 @@ FarPlayBattleAnimation:
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	ret nz
 	; fallthrough
-
 PlayFXAnimID:
 	ld a, e
 	ld [wFXAnimID], a
 	ld a, d
 	ld [wFXAnimID + 1], a
-
 	ld c, 3
 	call DelayFrames
 	callfar PlayBattleAnim
@@ -2986,14 +2983,12 @@ DoEnemyDamage:
 	ld a, [hl]
 	or b
 	jr z, .did_no_damage
-
 	ld a, c
 	and a
 	jr nz, .ignore_substitute
 	ld a, [wEnemySubStatus4]
 	bit SUBSTATUS_SUBSTITUTE, a
 	jp nz, DoSubstituteDamage
-
 .ignore_substitute
 	; Subtract wCurDamage from wEnemyMonHP.
 	;  store original HP in little endian wHPBuffer2
@@ -3027,7 +3022,6 @@ if DEF(_DEBUG)
 else
 	jr nc, .no_underflow
 endc
-
 	ld a, [wHPBuffer2 + 1]
 	ld [hli], a
 	ld a, [wHPBuffer2]
@@ -3036,7 +3030,6 @@ endc
 	ld hl, wEnemyMonHP
 	ld [hli], a
 	ld [hl], a
-
 .no_underflow
 	ld hl, wEnemyMonMaxHP
 	ld a, [hli]
@@ -3048,7 +3041,6 @@ endc
 	ld [wHPBuffer3 + 1], a
 	ld a, [hl]
 	ld [wHPBuffer3], a
-
 	hlcoord 2, 2
 	xor a
 	ld [wWhichHPBar], a
@@ -3063,14 +3055,12 @@ DoPlayerDamage:
 	ld a, [hl]
 	or b
 	jr z, .did_no_damage
-
 	ld a, c
 	and a
 	jr nz, .ignore_substitute
 	ld a, [wPlayerSubStatus4]
 	bit SUBSTATUS_SUBSTITUTE, a
 	jp nz, DoSubstituteDamage
-
 .ignore_substitute
 	; Subtract wCurDamage from wBattleMonHP.
 	;  store original HP in little endian wHPBuffer2
@@ -3089,7 +3079,6 @@ DoPlayerDamage:
 	ld [wBattleMonHP], a
 	ld [wHPBuffer3 + 1], a
 	jr nc, .no_underflow
-
 	ld a, [wHPBuffer2 + 1]
 	ld [hli], a
 	ld a, [wHPBuffer2]
@@ -3101,14 +3090,12 @@ DoPlayerDamage:
 	ld hl, wHPBuffer3
 	ld [hli], a
 	ld [hl], a
-
 .no_underflow
 	ld hl, wBattleMonMaxHP
 	ld a, [hli]
 	ld [wHPBuffer1 + 1], a
 	ld a, [hl]
 	ld [wHPBuffer1], a
-
 	hlcoord 10, 9
 	ld a, 1
 	ld [wWhichHPBar], a
@@ -3119,33 +3106,27 @@ DoPlayerDamage:
 DoSubstituteDamage:
 	ld hl, SubTookDamageText
 	call StdBattleTextbox
-
 	ld de, wEnemySubstituteHP
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .got_hp
 	ld de, wPlayerSubstituteHP
 .got_hp
-
 	ld hl, wCurDamage
 	ld a, [hli]
 	and a
 	jr nz, .broke
-
 	ld a, [de]
 	sub [hl]
 	ld [de], a
 	jr z, .broke
 	jr nc, .done
-
 .broke
 	ld a, BATTLE_VARS_SUBSTATUS4_OPP
 	call GetBattleVarAddr
 	res SUBSTATUS_SUBSTITUTE, [hl]
-
 	ld hl, SubFadedText
 	call StdBattleTextbox
-
 	call BattleCommand_SwitchTurn
 	call BattleCommand_LowerSubNoAnim
 	ld a, BATTLE_VARS_SUBSTATUS3
@@ -3153,7 +3134,6 @@ DoSubstituteDamage:
 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
 	call z, AppearUserLowerSub
 	call BattleCommand_SwitchTurn
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVarAddr
 	cp EFFECT_MULTI_HIT
@@ -3178,12 +3158,10 @@ UpdateMoveData:
 	call GetBattleVarAddr
 	ld d, h
 	ld e, l
-
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVar
 	ld [wCurSpecies], a
 	ld [wNamedObjectIndex], a
-
 	dec a
 	call GetMoveData
 	call GetMoveName
@@ -3194,13 +3172,11 @@ BattleCommand_SleepTarget:
 	ld a, b
 	cp HELD_PREVENT_SLEEP
 	jr nz, .not_protected_by_item
-
 	ld a, [hl]
 	ld [wNamedObjectIndex], a
 	call GetItemName
 	ld hl, ProtectedByText
 	jr .fail
-
 .not_protected_by_item
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVarAddr
@@ -3210,29 +3186,21 @@ BattleCommand_SleepTarget:
 	and SLP_MASK
 	ld hl, AlreadyAsleepText
 	jr nz, .fail
-
 	ld a, [wAttackMissed]
 	and a
 	jp nz, PrintDidntAffect2
-
 	ld hl, DidntAffect1Text
-	call .CheckAIRandomFail
-	jr c, .fail
-
 	ld a, [de]
 	and a
 	jr nz, .fail
-
 	call CheckSubstituteOpp
 	jr nz, .fail
-
 	call AnimateCurrentMove
 	ld b, SLP_MASK
 	ld a, [wInBattleTowerBattle]
 	and a
 	jr z, .random_loop
 	ld b, %011
-
 .random_loop
 	call BattleRandom
 	and b
@@ -3243,48 +3211,16 @@ BattleCommand_SleepTarget:
 	ld [de], a
 	call UpdateOpponentInParty
 	call RefreshBattleHuds
-
 	ld hl, FellAsleepText
 	call StdBattleTextbox
-
 	farcall UseHeldStatusHealingItem
-
 	jp z, OpponentCantMove
 	ret
-
 .fail
 	push hl
 	call AnimateFailedMove
 	pop hl
 	jp StdBattleTextbox
-
-.CheckAIRandomFail:
-	; Enemy turn
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .dont_fail
-
-	; Not in link battle
-	ld a, [wLinkMode]
-	and a
-	jr nz, .dont_fail
-
-	ld a, [wInBattleTowerBattle]
-	and a
-	jr nz, .dont_fail
-
-	; Not locked-on by the enemy
-	ld a, [wPlayerSubStatus5]
-	bit SUBSTATUS_LOCK_ON, a
-	jr nz, .dont_fail
-
-	call BattleRandom
-	cp 25 percent + 1 ; 25% chance AI fails
-	ret c
-
-.dont_fail
-	xor a
-	ret
 
 BattleCommand_PoisonTarget:
 	call CheckSubstituteOpp
@@ -3352,22 +3288,6 @@ BattleCommand_Poison:
 	call GetBattleVar
 	and a
 	jr nz, .failed
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .dont_sample_failure
-	ld a, [wLinkMode]
-	and a
-	jr nz, .dont_sample_failure
-	ld a, [wInBattleTowerBattle]
-	and a
-	jr nz, .dont_sample_failure
-	ld a, [wPlayerSubStatus5]
-	bit SUBSTATUS_LOCK_ON, a
-	jr nz, .dont_sample_failure
-	call BattleRandom
-	cp 25 percent + 1 ; 25% chance AI fails
-	jr c, .failed
-.dont_sample_failure
 	call CheckSubstituteOpp
 	jr nz, .failed
 	ld a, [wAttackMissed]
@@ -3928,34 +3848,11 @@ BattleCommand_StatDown:
 	; Sharply lower the stat if applicable.
 	ld a, [wLoweredStat]
 	and $f0
-	jr z, .ComputerMiss
+	jr z, .GotAmountToLower
 	dec b
-	jr nz, .ComputerMiss
+	jr nz, .GotAmountToLower
 	inc b
-.ComputerMiss:
-	; Computer opponents have a 25% chance of failing.
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .DidntMiss
-	ld a, [wLinkMode]
-	and a
-	jr nz, .DidntMiss
-	ld a, [wInBattleTowerBattle]
-	and a
-	jr nz, .DidntMiss
-	; Lock-On still always works.
-	ld a, [wPlayerSubStatus5]
-	bit SUBSTATUS_LOCK_ON, a
-	jr nz, .DidntMiss
-	; Attacking moves that also lower accuracy are unaffected.
-	ld a, BATTLE_VARS_MOVE_EFFECT
-	call GetBattleVar
-	cp EFFECT_ACCURACY_DOWN_HIT
-	jr z, .DidntMiss
-	call BattleRandom
-	cp 25 percent + 1 ; 25% chance AI fails
-	jr c, .Failed
-.DidntMiss:
+.GotAmountToLower
 	call CheckSubstituteOpp
 	jr nz, .Failed
 	ld a, [wAttackMissed]
@@ -5306,22 +5203,6 @@ BattleCommand_Paralyze:
 	ld hl, ProtectedByText
 	jp StdBattleTextbox
 .no_item_protection
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .dont_sample_failure
-	ld a, [wLinkMode]
-	and a
-	jr nz, .dont_sample_failure
-	ld a, [wInBattleTowerBattle]
-	and a
-	jr nz, .dont_sample_failure
-	ld a, [wPlayerSubStatus5]
-	bit SUBSTATUS_LOCK_ON, a
-	jr nz, .dont_sample_failure
-	call BattleRandom
-	cp 25 percent + 1 ; 25% chance AI fails
-	jr c, .failed
-.dont_sample_failure
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVarAddr
 	and a
@@ -5387,7 +5268,6 @@ BattleCommand_DoubleUndergroundDamage:
 	bit SUBSTATUS_UNDERGROUND, a
 	ret z
 	; fallthrough
-
 DoubleDamage:
 	ld hl, wCurDamage + 1
 	sla [hl]
@@ -5600,7 +5480,6 @@ PrintButItFailed:
 FailMove:
 	call AnimateFailedMove
 	; fallthrough
-
 FailMimic:
 	ld hl, ButItFailedText ; 'but it failed!'
 	ld de, ItFailedText    ; 'it failed!'
@@ -5784,7 +5663,6 @@ BattleCommand_HealDay:
 BattleCommand_HealNite:
 	ld b, NITE_F
 	; fallthrough
-
 BattleCommand_TimeBasedHealContinue:
 ; Time- and weather-sensitive heal.
 	ld hl, wBattleMonMaxHP
@@ -6004,11 +5882,9 @@ LoadMoveAnim:
 	and a
 	ret z
 	; fallthrough
-
 LoadAnim:
 	ld [wFXAnimID], a
 	; fallthrough
-
 PlayUserBattleAnim:
 	push hl
 	push de
@@ -6056,7 +5932,6 @@ BattleCommand_ClearText:
 ; Used in multi-hit moves.
 	ld hl, .text
 	jp BattleTextbox
-
 .text:
 	text_end
 

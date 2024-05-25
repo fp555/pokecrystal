@@ -25,7 +25,6 @@ Route39Miltank:
 
 TrainerPokefanmDerek:
 	trainer POKEFANM, DEREK1, EVENT_BEAT_POKEFANM_DEREK, PokefanmDerekSeenText, PokefanmDerekBeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_POKEFANM_DEREK
 	endifjustbattled
@@ -43,7 +42,6 @@ TrainerPokefanmDerek:
 	setevent EVENT_DEREK_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall .AskNumber2
 .AskForNumber:
@@ -53,58 +51,46 @@ TrainerPokefanmDerek:
 	gettrainername STRING_BUFFER_3, POKEFANM, DEREK1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .HasNugget:
 	scall .Gift
 	verbosegiveitem NUGGET
 	iffalse .NoRoom
 	clearflag ENGINE_DEREK_HAS_NUGGET
 	sjump .NumberAccepted
-
 .NoRoom:
 	sjump .PackFull
-
 .WantsPikachu:
 	writetext PokefanMDerekPikachuIsItText
 	waitbutton
 	closetext
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .Gift:
 	jumpstd GiftMScript
 	end
-
 .PackFull:
 	jumpstd PackFullMScript
 	end
 
 TrainerPokefanfRuth:
 	trainer POKEFANF, RUTH, EVENT_BEAT_POKEFANF_RUTH, PokefanfRuthSeenText, PokefanfRuthBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -115,7 +101,6 @@ TrainerPokefanfRuth:
 
 TrainerSailorEugene:
 	trainer SAILOR, EUGENE, EVENT_BEAT_SAILOR_EUGENE, SailorEugeneSeenText, SailorEugeneBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -126,7 +111,6 @@ TrainerSailorEugene:
 
 TrainerPsychicNorman:
 	trainer PSYCHIC_T, NORMAN, EVENT_BEAT_PSYCHIC_NORMAN, PsychicNormanSeenText, PsychicNormanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -152,13 +136,11 @@ TrainerPokefanfJaime:
 	setevent EVENT_BEAT_POKEFANF_JAIME
 	closetext
 	end
-
 .Beaten:
 	writetext PokefanfJaimeAfterBattleText
 	waitbutton
 	closetext
 	end
-
 .NotNight:
 	writetext PokefanfJaimeHopeItGetsDarkText
 	waitbutton
@@ -364,6 +346,6 @@ Route39_MapEvents:
 	object_event  6, 11, SPRITE_TAUROS, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route39Miltank, -1
 	object_event  4, 15, SPRITE_TAUROS, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route39Miltank, -1
 	object_event  8, 13, SPRITE_TAUROS, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route39Miltank, -1
-	object_event 13,  7, SPRITE_STANDING_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerPsychicNorman, -1
+	object_event 13,  7, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerPsychicNorman, -1
 	object_event  9,  3, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route39FruitTree, -1
 	object_event  4, 22, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, TrainerPokefanfJaime, -1

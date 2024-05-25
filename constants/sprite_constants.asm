@@ -97,13 +97,11 @@
 	const SPRITE_SILVER_TROPHY ; 5d
 	const SPRITE_KRIS ; 5e
 	const SPRITE_KRIS_BIKE ; 5f
-	const SPRITE_KURT_OUTSIDE ; 60
-	const SPRITE_SUICUNE ; 61
-	const SPRITE_ENTEI ; 62
-	const SPRITE_RAIKOU ; 63
-	const SPRITE_STANDING_YOUNGSTER ; 64
-	const SPRITE_CHRIS_SURF ; 65
-	const SPRITE_KRIS_SURF ; 66
+	const SPRITE_SUICUNE ; 60
+	const SPRITE_ENTEI ; 61
+	const SPRITE_RAIKOU ; 62
+	const SPRITE_CHRIS_SURF ; 63
+	const SPRITE_KRIS_SURF ; 64
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; SpriteMons indexes (see data/sprites/sprite_mons.asm)

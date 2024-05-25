@@ -93,7 +93,6 @@ CianwoodCityChucksWife:
 	waitbutton
 	closetext
 	end
-
 .BeatChuck:
 	writetext ChucksWifeGiveHMText
 	promptbutton
@@ -117,9 +116,6 @@ CianwoodCityPokefanM:
 
 CianwoodCityLass:
 	jumptextfaceplayer CianwoodCityLassText
-
-CianwoodCityUnusedScript: ; unreferenced
-	jumptextfaceplayer CianwoodCityUnusedText
 
 CianwoodCitySign:
 	jumptext CianwoodCitySignText
@@ -264,16 +260,6 @@ CianwoodCityLassText:
 	line "MON."
 	done
 
-CianwoodCityUnusedText:
-	text "There are several"
-	line "islands between"
-	cont "here and OLIVINE."
-
-	para "A mythical sea"
-	line "creature supposed-"
-	cont "ly lives there."
-	done
-
 EusineSuicuneText:
 	text "EUSINE: Yo,"
 	line "<PLAYER>."
@@ -403,7 +389,7 @@ CianwoodCity_MapEvents:
 	bg_event  5, 29, BGEVENT_ITEM, CianwoodCityHiddenMaxEther
 
 	def_object_events
-	object_event 21, 37, SPRITE_STANDING_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CianwoodCityYoungster, -1
+	object_event 21, 37, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CianwoodCityYoungster, -1
 	object_event 17, 33, SPRITE_POKEFAN_M, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CianwoodCityPokefanM, -1
 	object_event 14, 42, SPRITE_LASS, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CianwoodCityLass, -1
 	object_event  8, 16, SPRITE_ROCK, SPRITEMOVEDATA_SMASHABLE_ROCK, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CianwoodCityRock, -1

@@ -40,6 +40,11 @@ WantsToBattleText::
 	line "wants to battle!"
 	prompt
 
+PluralWantToBattleText::
+	text "<ENEMY>"
+	line "want to battle!"
+	prompt
+
 BattleText_WildFled:
 	text "Wild @"
 	text_ram wEnemyMonNickname
@@ -178,6 +183,11 @@ BattleText_EnemyWasDefeated:
 	line "was defeated!"
 	prompt
 
+BattleText_PluralEnemyWereDefeated:
+	text "<ENEMY>"
+	line "were defeated!"
+	prompt
+
 TiedAgainstText:
 	text "Tied against"
 	line "<ENEMY>!"
@@ -199,12 +209,6 @@ SentAllToMomText:
 	text "Sent all to MOM!"
 	prompt
 
-UnusedRivalLossText: ; unreferenced
-	text "<RIVAL>: Huh? I"
-	line "should've chosen"
-	cont "your #MON!"
-	prompt
-
 BattleText_MonFainted:
 	text_ram wBattleMonNickname
 	text_start
@@ -215,12 +219,6 @@ BattleText_UseNextMon:
 	text "Use next #MON?"
 	done
 
-UnusedRivalWinText: ; unreferenced
-	text "<RIVAL>: Yes!"
-	line "I guess I chose a"
-	cont "good #MON!"
-	prompt
-
 LostAgainstText:
 	text "Lost against"
 	line "<ENEMY>!"
@@ -229,6 +227,17 @@ LostAgainstText:
 BattleText_EnemyIsAboutToUseWillPlayerChangeMon:
 	text "<ENEMY>"
 	line "is about to use"
+	cont "@"
+	text_ram wEnemyMonNickname
+	text "."
+
+	para "Will <PLAYER>"
+	line "change #MON?"
+	done
+
+BattleText_PluralEnemiesAreAboutToUseWillPlayerChangeMon:
+	text "<ENEMY>"
+	line "are about to use"
 	cont "@"
 	text_ram wEnemyMonNickname
 	text "."
@@ -348,8 +357,6 @@ BattleText_StringBuffer1GrewToLevel:
 	text "!@"
 	sound_dex_fanfare_50_79
 	text_end
-
-	text_end ; unreferenced
 
 BattleText_WildMonIsEating:
 	text "Wild @"
@@ -1101,8 +1108,3 @@ BattleText_LinkErrorBattleCanceled:
 	para "The battle has"
 	line "been canceled…"
 	prompt
-
-BattleText_NoTimeLeftToday: ; unreferenced
-	text "There is no time"
-	line "left today!"
-	done

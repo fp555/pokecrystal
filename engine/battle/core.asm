@@ -1955,52 +1955,41 @@ HandleEnemyMonFaint:
 	ld a, d
 	and a
 	jp z, LostBattle
-
 	ld hl, wBattleMonHP
 	ld a, [hli]
 	or [hl]
 	call nz, UpdatePlayerHUD
-
 	ld a, $1
 	ldh [hBGMapMode], a
 	ld c, 60
 	call DelayFrames
-
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .trainer
-
 	ld a, 1
 	ld [wBattleEnded], a
 	ret
-
 .trainer
 	call CheckEnemyTrainerDefeated
 	jp z, WinTrainerBattle
-
 	ld hl, wBattleMonHP
 	ld a, [hli]
 	or [hl]
 	jr nz, .player_mon_not_fainted
-
 	call AskUseNextPokemon
 	jr nc, .dont_flee
-
 	ld a, 1
 	ld [wBattleEnded], a
 	ret
-
 .dont_flee
 	call ForcePlayerMonChoice
 	call CheckMobileBattleError
 	jp c, WildFled_EnemyFled_LinkBattleCanceled
-
 	ld a, BATTLEPLAYERACTION_USEITEM
 	ld [wBattlePlayerAction], a
 	call HandleEnemySwitch
 	jp z, WildFled_EnemyFled_LinkBattleCanceled
 	jr DoubleSwitch
-
 .player_mon_not_fainted
 	ld a, BATTLEPLAYERACTION_USEITEM
 	ld [wBattlePlayerAction], a
@@ -2022,7 +2011,6 @@ DoubleSwitch:
 	ld a, $1
 	call EnemyPartyMonEntrance
 	jr .done
-
 .player_1
 	ld a, [wCurPartyMon]
 	push af
@@ -2033,7 +2021,6 @@ DoubleSwitch:
 	pop af
 	ld [wCurPartyMon], a
 	call PlayerPartyMonEntrance
-
 .done
 	xor a ; BATTLEPLAYERACTION_USEMOVE
 	ld [wBattlePlayerAction], a
@@ -2050,7 +2037,6 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	xor a
 	ld [hli], a
 	ld [hl], a
-
 .wild
 	ld hl, wPlayerSubStatus3
 	res SUBSTATUS_IN_LOOP, [hl]
@@ -2064,12 +2050,10 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	dec a
 	jr z, .wild2
 	jr .trainer
-
 .wild2
 	call StopDangerSound
 	ld a, $1
 	ld [wBattleLowHealthAlarm], a
-
 .trainer
 	ld hl, wBattleMonHP
 	ld a, [hli]
@@ -2079,7 +2063,6 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	and a
 	jr nz, .player_mon_did_not_faint
 	call UpdateFaintedPlayerMon
-
 .player_mon_did_not_faint
 	call CheckPlayerPartyForFitMon
 	ld a, d
@@ -2102,7 +2085,6 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	inc hl
 	dec b
 	jr nz, .loop
-
 .skip_exp
 	ld hl, wEnemyMonBaseStats
 	ld de, wBackupEnemyMonBaseStats
@@ -2113,7 +2095,6 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	call GiveExperiencePoints
 	call IsAnyMonHoldingExpShare
 	ret z
-
 	ld a, [wBattleParticipantsNotFainted]
 	push af
 	ld a, d
@@ -2145,7 +2126,6 @@ IsAnyMonHoldingExpShare:
 	pop bc
 	pop hl
 	jr z, .next
-
 	push hl
 	push bc
 	ld bc, MON_ITEM
@@ -2153,13 +2133,11 @@ IsAnyMonHoldingExpShare:
 	pop bc
 	ld a, [hl]
 	pop hl
-
 	cp EXP_SHARE
 	jr nz, .next
 	ld a, d
 	or c
 	ld d, a
-
 .next
 	sla c
 	push de
@@ -2168,7 +2146,6 @@ IsAnyMonHoldingExpShare:
 	pop de
 	dec b
 	jr nz, .loop
-
 	ld a, d
 	ld e, 0
 	ld b, PARTY_LENGTH
@@ -2176,7 +2153,6 @@ IsAnyMonHoldingExpShare:
 	srl a
 	jr nc, .okay
 	inc e
-
 .okay
 	dec b
 	jr nz, .loop2
@@ -2297,37 +2273,34 @@ WinTrainerBattle:
 	ld a, b
 	call z, PlayVictoryMusic
 	callfar Battle_GetTrainerName
+	ld hl, BattleText_PluralEnemyWereDefeated
+	call IsPluralTrainer
+	jr z, .got_defeat_phrase
 	ld hl, BattleText_EnemyWasDefeated
+.got_defeat_phrase:
 	call StdBattleTextbox
-
 	call IsMobileBattle
 	jr z, .mobile
 	ld a, [wLinkMode]
 	and a
 	ret nz
-
 	ld a, [wInBattleTowerBattle]
 	bit 0, a
 	jr nz, .battle_tower
-
 	call BattleWinSlideInEnemyTrainerFrontpic
 	ld c, 40
 	call DelayFrames
-
 	ld a, [wBattleType]
 	cp BATTLETYPE_CANLOSE
 	jr nz, .skip_heal
 	predef HealParty
 .skip_heal
-
 	ld a, [wDebugFlags]
 	bit DEBUG_BATTLE_F, a
 	jr nz, .skip_win_loss_text
 	call PrintWinLossText
 .skip_win_loss_text
-
 	jp .give_money
-
 .mobile
 	call BattleWinSlideInEnemyTrainerFrontpic
 	ld c, 40
@@ -2335,7 +2308,6 @@ WinTrainerBattle:
 	ld c, $4 ; win
 	farcall Mobile_PrintOpponentBattleMessage
 	ret
-
 .battle_tower
 	call BattleWinSlideInEnemyTrainerFrontpic
 	ld c, 40
@@ -2353,7 +2325,6 @@ WinTrainerBattle:
 	call ClearTilemap
 	call ClearBGPalettes
 	ret
-
 .give_money
 	ld a, [wAmuletCoin]
 	and a
@@ -2367,7 +2338,6 @@ WinTrainerBattle:
 	cp (1 << MOM_SAVING_SOME_MONEY_F) | (1 << MOM_SAVING_HALF_MONEY_F)
 	jr nz, .okay
 	inc a ; TRUE
-
 .okay
 	ld b, a
 	ld c, 4
@@ -2379,7 +2349,6 @@ WinTrainerBattle:
 	dec c
 	dec b
 	jr .loop
-
 .loop2
 	ld a, c
 	and a
@@ -2387,7 +2356,6 @@ WinTrainerBattle:
 	call .AddMoneyToWallet
 	dec c
 	jr .loop2
-
 .done
 	call .DoubleReward
 	call .DoubleReward
@@ -2406,11 +2374,9 @@ WinTrainerBattle:
 	ld h, [hl]
 	ld l, a
 	jp StdBattleTextbox
-
 .KeepItAll:
 	ld hl, GotMoneyForWinningText
 	jp StdBattleTextbox
-
 .AddMoneyToMom:
 	push bc
 	ld hl, wBattleReward + 2
@@ -2418,7 +2384,6 @@ WinTrainerBattle:
 	call AddBattleMoneyToAccount
 	pop bc
 	ret
-
 .AddMoneyToWallet:
 	push bc
 	ld hl, wBattleReward + 2
@@ -2426,7 +2391,6 @@ WinTrainerBattle:
 	call AddBattleMoneyToAccount
 	pop bc
 	ret
-
 .DoubleReward:
 	ld hl, wBattleReward + 2
 	sla [hl]
@@ -2440,13 +2404,11 @@ WinTrainerBattle:
 	ld [hli], a
 	ld [hl], a
 	ret
-
 .SentToMomTexts:
 ; entries correspond to MOM_SAVING_* constants
 	dw SentSomeToMomText
 	dw SentHalfToMomText
 	dw SentAllToMomText
-
 .CheckMaxedOutMomMoney:
 	ld hl, wMomsMoney + 2
 	ld a, [hld]
@@ -2512,16 +2474,13 @@ PlayVictoryMusic:
 	and a
 	jr z, .lost
 	jr .play_music
-
 .trainer_victory
 	ld de, MUSIC_GYM_VICTORY
 	call IsGymLeader
 	jr c, .play_music
 	ld de, MUSIC_TRAINER_VICTORY
-
 .play_music
 	call PlayMusic
-
 .lost
 	pop de
 	ret
@@ -2532,6 +2491,7 @@ IsKantoGymLeader:
 
 IsGymLeader:
 	ld hl, GymLeaders
+	; fallthrough
 IsGymLeaderCommon:
 	push de
 	ld a, [wOtherTrainerClass]
@@ -2541,6 +2501,12 @@ IsGymLeaderCommon:
 	ret
 
 INCLUDE "data/trainers/leaders.asm"
+
+IsPluralTrainer:
+; return z for plural trainers
+	ld a, [wOtherTrainerClass]
+	cp TWINS
+	ret
 
 HandlePlayerMonFaint:
 	call FaintYourPokemon
@@ -2566,18 +2532,15 @@ HandlePlayerMonFaint:
 	ld a, $1
 	ld [wBattleEnded], a
 	ret
-
 .trainer
 	call CheckEnemyTrainerDefeated
 	jp z, WinTrainerBattle
-
 .notfainted
 	call AskUseNextPokemon
 	jr nc, .switch
 	ld a, $1
 	ld [wBattleEnded], a
 	ret
-
 .switch
 	call ForcePlayerMonChoice
 	call CheckMobileBattleError
@@ -2615,7 +2578,6 @@ UpdateFaintedPlayerMon:
 	cp b
 	jr c, .got_param
 	ld c, HAPPINESS_BEATENBYSTRONGFOE
-
 .got_param
 	ld a, [wCurBattleMon]
 	ld [wCurPartyMon], a
@@ -2633,8 +2595,8 @@ UpdateFaintedPlayerMon:
 AskUseNextPokemon:
 	call EmptyBattleTextbox
 	call LoadTilemapToTempTilemap
-; We don't need to be here if we're in a Trainer battle,
-; as that decision is made for us.
+	; We don't need to be here if we're in a Trainer battle,
+	; as that decision is made for us.
 	ld a, [wBattleMode]
 	and a
 	dec a
@@ -3395,7 +3357,11 @@ OfferSwitch:
 	ld a, [wCurPartyMon]
 	push af
 	callfar Battle_GetTrainerName
+	ld hl, BattleText_PluralEnemiesAreAboutToUseWillPlayerChangeMon
+	call IsPluralTrainer
+	jr z, .got_switch_phrase
 	ld hl, BattleText_EnemyIsAboutToUseWillPlayerChangeMon
+.got_switch_phrase:
 	call StdBattleTextbox
 	lb bc, 1, 7
 	call PlaceYesNoBox
@@ -3419,12 +3385,10 @@ OfferSwitch:
 	ld [wCurPlayerMove], a
 	and a
 	ret
-
 .canceled_switch
 	call ClearPalettes
 	call DelayFrame
 	call _LoadHPBar
-
 .said_no
 	pop af
 	ld [wCurPartyMon], a
@@ -8626,23 +8590,20 @@ BattleStartMessage:
 	ld a, [wBattleMode]
 	dec a
 	jr z, .wild
-
 	ld de, SFX_SHINE
 	call PlaySFX
 	call WaitSFX
-
 	ld c, 20
 	call DelayFrames
-
 	farcall Battle_GetTrainerName
-
+	ld hl, PluralWantToBattleText
+	call IsPluralTrainer
+	jr z, .PrintBattleStartText
 	ld hl, WantsToBattleText
 	jr .PrintBattleStartText
-
 .wild
 	call BattleCheckEnemyShininess
 	jr nc, .not_shiny
-
 	xor a
 	ld [wNumHits], a
 	ld a, 1
@@ -8651,36 +8612,28 @@ BattleStartMessage:
 	ld [wBattleAnimParam], a
 	ld de, ANIM_SEND_OUT_MON
 	call Call_PlayBattleAnim
-
 .not_shiny
 	farcall CheckSleepingTreeMon
 	jr c, .skip_cry
-
 	farcall CheckBattleScene
 	jr c, .cry_no_anim
-
 	hlcoord 12, 0
 	ld d, $0
 	ld e, ANIM_MON_NORMAL
 	predef AnimateFrontpic
 	jr .skip_cry ; cry is played during the animation
-
 .cry_no_anim
 	ld a, $f
 	ld [wCryTracks], a
 	ld a, [wTempEnemyMonSpecies]
 	call PlayStereoCry
-
 .skip_cry
 	ld a, [wBattleType]
 	cp BATTLETYPE_FISH
 	jr nz, .NotFishing
-
 	farcall StubbedTrainerRankings_HookedEncounters
-
 	ld hl, HookedPokemonAttackedText
 	jr .PrintBattleStartText
-
 .NotFishing:
 	ld hl, PokemonFellFromTreeText
 	cp BATTLETYPE_TREE
@@ -8689,17 +8642,13 @@ BattleStartMessage:
 	cp BATTLETYPE_CELEBI
 	jr z, .PrintBattleStartText
 	ld hl, WildPokemonAppearedText
-
 .PrintBattleStartText:
 	push hl
 	farcall BattleStart_TrainerHuds
 	pop hl
 	call StdBattleTextbox
-
 	call IsMobileBattle2
 	ret nz
-
 	ld c, $2 ; start
 	farcall Mobile_PrintOpponentBattleMessage
-
 	ret

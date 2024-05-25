@@ -2742,15 +2742,12 @@ CheckMobileBattleError:
 	ld a, [wLinkMode]
 	cp LINK_MOBILE
 	jr nz, .not_mobile ; It's not a mobile battle
-
 	ld a, [wcd2b]
 	and a
 	jr z, .not_mobile
-
-; We have a mobile battle and something else happened
+	; We have a mobile battle and something else happened
 	scf
 	ret
-
 .not_mobile
 	xor a
 	ret
@@ -2762,6 +2759,7 @@ IsMobileBattle:
 
 SetUpBattlePartyMenu:
 	call ClearBGPalettes
+	; fallthrough
 SetUpBattlePartyMenu_Loop: ; switch to fullscreen menu?
 	farcall LoadPartyMenuGFX
 	farcall InitPartyMenuWithCancel
@@ -2782,7 +2780,6 @@ SelectBattleMon:
 	jr z, .mobile
 	farcall PartyMenuSelect
 	ret
-
 .mobile
 	farcall Mobile_PartyMenuSelect
 	ret
@@ -2804,25 +2801,21 @@ SwitchMonAlreadyOut:
 	ld a, [wCurPartyMon]
 	cp [hl]
 	jr nz, .notout
-
 	ld hl, BattleText_MonIsAlreadyOut
 	call StdBattleTextbox
 	scf
 	ret
-
 .notout
 	xor a
 	ret
 
 ForcePickPartyMonInBattle:
 ; Can't back out.
-
 .pick
 	call PickPartyMonInBattle
 	ret nc
 	call CheckMobileBattleError
 	ret c
-
 	ld de, SFX_WRONG
 	call PlaySFX
 	call WaitSFX
@@ -2839,55 +2832,50 @@ PickSwitchMonInBattle:
 
 ForcePickSwitchMonInBattle:
 ; Can't back out.
-
 .pick
 	call ForcePickPartyMonInBattle
 	call CheckMobileBattleError
 	ret c
 	call SwitchMonAlreadyOut
 	jr c, .pick
-
 	xor a
 	ret
 
 LostBattle:
 	ld a, 1
 	ld [wBattleEnded], a
-
 	ld a, [wInBattleTowerBattle]
 	bit 0, a
 	jr nz, .battle_tower
-
-	ld a, [wBattleType]
-	cp BATTLETYPE_CANLOSE
-	jr nz, .not_canlose
-
-; Remove the enemy from the screen.
+	ld a, [wBattleMode]
+	dec a ; wild?
+	jr z, .no_loss_text
+	ld hl, wLossTextPointer
+	ld a, [hli]
+	ld h, [hl]
+	or h
+	jr z, .no_loss_text
+	; Remove the enemy from the screen.
 	hlcoord 0, 0
 	lb bc, 8, 21
 	call ClearBox
 	call BattleWinSlideInEnemyTrainerFrontpic
-
 	ld c, 40
 	call DelayFrames
-
 	ld a, [wDebugFlags]
 	bit DEBUG_BATTLE_F, a
 	jr nz, .skip_win_loss_text
 	call PrintWinLossText
 .skip_win_loss_text
 	ret
-
 .battle_tower
-; Remove the enemy from the screen.
+	; Remove the enemy from the screen.
 	hlcoord 0, 0
 	lb bc, 8, 21
 	call ClearBox
 	call BattleWinSlideInEnemyTrainerFrontpic
-
 	ld c, 40
 	call DelayFrames
-
 	call EmptyBattleTextbox
 	ld c, BATTLETOWERTEXT_WIN_TEXT
 	farcall BattleTowerText
@@ -2895,18 +2883,15 @@ LostBattle:
 	call ClearTilemap
 	call ClearBGPalettes
 	ret
-
-.not_canlose
+.no_loss_text
 	ld a, [wLinkMode]
 	and a
 	jr nz, .LostLinkBattle
-
-; Grayscale
+	; Grayscale
 	ld b, SCGB_BATTLE_GRAYSCALE
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
 	jr .end
-
 .LostLinkBattle:
 	call UpdateEnemyMonInParty
 	call CheckEnemyTrainerDefeated
@@ -2917,29 +2902,23 @@ LostBattle:
 	add DRAW
 	ld [wBattleResult], a
 	jr .text
-
 .not_tied
 	ld hl, LostAgainstText
 	call IsMobileBattle
 	jr z, .mobile
-
 .text
 	call StdBattleTextbox
-
 .end
 	scf
 	ret
-
 .mobile
-; Remove the enemy from the screen.
+	; Remove the enemy from the screen.
 	hlcoord 0, 0
 	lb bc, 8, 21
 	call ClearBox
 	call BattleWinSlideInEnemyTrainerFrontpic
-
 	ld c, 40
 	call DelayFrames
-
 	ld c, $3 ; lost
 	farcall Mobile_PrintOpponentBattleMessage
 	scf
@@ -2960,15 +2939,12 @@ MonFaintedAnimation:
 	push af
 	set JOYPAD_DISABLE_MON_FAINT_F, a
 	ld [wJoypadDisable], a
-
 	ld b, 7
-
 .OuterLoop:
 	push bc
 	push de
 	push hl
 	ld b, 6
-
 .InnerLoop:
 	push bc
 	push hl
@@ -2989,7 +2965,6 @@ MonFaintedAnimation:
 	pop bc
 	dec b
 	jr nz, .InnerLoop
-
 	ld bc, 20
 	add hl, bc
 	ld de, .Spaces
@@ -3001,11 +2976,9 @@ MonFaintedAnimation:
 	pop bc
 	dec b
 	jr nz, .OuterLoop
-
 	pop af
 	ld [wJoypadDisable], a
 	ret
-
 .Spaces:
 	db "       @"
 
@@ -3031,7 +3004,6 @@ SlideBattlePicOut:
 	dec c
 	jr nz, .loop
 	ret
-
 .DoFrame:
 	ldh a, [hMapObjectIndex]
 	ld c, a
@@ -3044,7 +3016,6 @@ SlideBattlePicOut:
 	dec c
 	jr nz, .forward
 	ret
-
 .back
 	ld a, [hld]
 	ld [hli], a

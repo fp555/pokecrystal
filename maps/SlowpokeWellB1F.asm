@@ -19,7 +19,6 @@ SlowpokeWellB1FKurtScript:
 
 TrainerGruntM29:
 	trainer GRUNTM, GRUNTM_29, EVENT_BEAT_ROCKET_GRUNTM_29, GruntM29SeenText, GruntM29BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -30,7 +29,6 @@ TrainerGruntM29:
 
 TrainerGruntM1:
 	trainer GRUNTM, GRUNTM_1, EVENT_BEAT_ROCKET_GRUNTM_1, GruntM1SeenText, GruntM1BeatenText, 0, .Script
-
 .Script:
 	opentext
 	writetext TrainerGruntM1WhenTalkText
@@ -54,7 +52,6 @@ TrainerGruntM1:
 	waitbutton
 	closetext
 	setevent EVENT_CLEARED_SLOWPOKE_WELL
-	variablesprite SPRITE_AZALEA_ROCKET, SPRITE_RIVAL
 	setmapscene AZALEA_TOWN, SCENE_AZALEATOWN_RIVAL_BATTLE
 	clearevent EVENT_ILEX_FOREST_APPRENTICE
 	clearevent EVENT_ILEX_FOREST_FARFETCHD
@@ -73,7 +70,6 @@ TrainerGruntM1:
 
 TrainerGruntM2:
 	trainer GRUNTM, GRUNTM_2, EVENT_BEAT_ROCKET_GRUNTM_2, GruntM2SeenText, GruntM2BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -84,7 +80,6 @@ TrainerGruntM2:
 
 TrainerGruntF1:
 	trainer GRUNTF, GRUNTF_1, EVENT_BEAT_ROCKET_GRUNTF_1, GruntF1SeenText, GruntF1BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -102,7 +97,6 @@ SlowpokeWellB1FSlowpokeWithMailScript:
 	iftrue .ReadMail
 	closetext
 	end
-
 .ReadMail:
 	writetext SlowpokeWellB1FSlowpokeMailText
 	waitbutton

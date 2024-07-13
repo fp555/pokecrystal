@@ -9,28 +9,23 @@ _ReceiveItem::
 	ld hl, .Pockets
 	rst JumpTable
 	ret
-
 .Pockets:
-; entries correspond to item types
+	; entries correspond to item types
 	dw .Item
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
-
 .Item:
 	ld h, d
 	ld l, e
 	jp PutItemInPocket
-
 .KeyItem:
 	ld h, d
 	ld l, e
 	jp ReceiveKeyItem
-
 .Ball:
 	ld hl, wNumBalls
 	jp PutItemInPocket
-
 .TMHM:
 	ld h, d
 	ld l, e
@@ -50,18 +45,15 @@ _TossItem::
 	ld hl, .Pockets
 	rst JumpTable
 	ret
-
 .Pockets:
-; entries correspond to item types
+	; entries correspond to item types
 	dw .Item
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
-
 .Ball:
 	ld hl, wNumBalls
 	jp RemoveItemFromPocket
-
 .TMHM:
 	ld h, d
 	ld l, e
@@ -69,16 +61,13 @@ _TossItem::
 	ld c, a
 	call GetTMHMNumber
 	jp TossTMHM
-
 .KeyItem:
 	ld h, d
 	ld l, e
 	jp TossKeyItem
-
 .Item:
 	ld h, d
 	ld l, e
-
 .remove
 	jp RemoveItemFromPocket
 
@@ -93,18 +82,15 @@ _CheckItem::
 	ld hl, .Pockets
 	rst JumpTable
 	ret
-
 .Pockets:
-; entries correspond to item types
+	; entries correspond to item types
 	dw .Item
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
-
 .Ball:
 	ld hl, wNumBalls
 	jp CheckTheItem
-
 .TMHM:
 	ld h, d
 	ld l, e
@@ -112,16 +98,13 @@ _CheckItem::
 	ld c, a
 	call GetTMHMNumber
 	jp CheckTMHM
-
 .KeyItem:
 	ld h, d
 	ld l, e
 	jp CheckKeyItems
-
 .Item:
 	ld h, d
 	ld l, e
-
 .nope
 	jp CheckTheItem
 
@@ -141,7 +124,6 @@ GetPocketCapacity:
 	ld a, d
 	cp HIGH(wNumItems)
 	ret z
-
 .not_bag
 	ld c, MAX_PC_ITEMS
 	ld a, e
@@ -150,7 +132,6 @@ GetPocketCapacity:
 	ld a, d
 	cp HIGH(wNumPCItems)
 	ret z
-
 .not_pc
 	ld c, MAX_BALLS
 	ret
@@ -176,11 +157,9 @@ PutItemInPocket:
 	cp b
 	jr z, .ok
 	jr c, .ok
-
 .next
 	inc hl
 	jr .loop
-
 .terminator
 	call GetPocketCapacity
 	ld a, [de]
@@ -188,7 +167,6 @@ PutItemInPocket:
 	jr c, .ok
 	and a
 	ret
-
 .ok
 	ld h, d
 	ld l, e
@@ -209,13 +187,11 @@ PutItemInPocket:
 	jr nc, .newstack
 	ld [hl], a
 	jr .done
-
 .newstack
 	ld [hl], MAX_ITEM_STACK
 	sub MAX_ITEM_STACK
 	ld [wItemQuantity], a
 	jr .loop2
-
 .terminator2
 	dec hl
 	ld a, [wCurItem]
@@ -226,7 +202,6 @@ PutItemInPocket:
 	ld h, d
 	ld l, e
 	inc [hl]
-
 .done
 	scf
 	ret
@@ -250,7 +225,6 @@ RemoveItemFromPocket:
 	ld h, d
 	ld l, e
 	inc hl
-
 .ok
 	ld a, [wCurItem]
 	ld b, a
@@ -262,7 +236,6 @@ RemoveItemFromPocket:
 	jr z, .nope
 	inc hl
 	jr .loop
-
 .skip
 	ld a, [wItemQuantityChange]
 	ld b, a
@@ -287,11 +260,9 @@ RemoveItemFromPocket:
 	ld h, d
 	ld l, e
 	dec [hl]
-
 .yup
 	scf
 	ret
-
 .nope
 	and a
 	ret
@@ -308,7 +279,6 @@ CheckTheItem:
 	jr nz, .loop
 	scf
 	ret
-
 .done
 	and a
 	ret
@@ -328,7 +298,6 @@ ReceiveKeyItem:
 	inc [hl]
 	scf
 	ret
-
 .nope
 	and a
 	ret
@@ -344,12 +313,10 @@ TossKeyItem:
 	call .Toss
 	ret nc
 	jr .ok2
-
 .ok
 	dec [hl]
 	inc hl
 	add hl, de
-
 .ok2
 	ld d, h
 	ld e, l
@@ -362,7 +329,6 @@ TossKeyItem:
 	jr nz, .loop
 	scf
 	ret
-
 .Toss:
 	ld hl, wNumKeyItems
 	ld a, [wCurItem]
@@ -376,7 +342,6 @@ TossKeyItem:
 	jr nz, .loop3
 	xor a
 	ret
-
 .ok3
 	ld a, [wNumKeyItems]
 	dec a
@@ -396,7 +361,6 @@ CheckKeyItems:
 	jr nz, .loop
 	and a
 	ret
-
 .done
 	scf
 	ret
@@ -413,7 +377,6 @@ ReceiveTMHM:
 	ld [hl], a
 	scf
 	ret
-
 .toomany
 	and a
 	ret
@@ -436,11 +399,9 @@ TossTMHM:
 	jr z, .yup
 	dec a
 	ld [wTMHMPocketScrollPosition], a
-
 .yup
 	scf
 	ret
-
 .nope
 	and a
 	ret
@@ -459,15 +420,6 @@ CheckTMHM:
 GetTMHMNumber::
 ; Return the number of a TM/HM by item id c.
 	ld a, c
-; Skip any dummy items.
-	cp ITEM_C3 ; TM04-05
-	jr c, .done
-	cp ITEM_DC ; TM28-29
-	jr c, .skip
-	dec a
-.skip
-	dec a
-.done
 	sub TM01
 	inc a
 	ld c, a
@@ -476,16 +428,6 @@ GetTMHMNumber::
 GetNumberedTMHM:
 ; Return the item id of a TM/HM by number c.
 	ld a, c
-; Skip any gaps.
-	cp ITEM_C3 - (TM01 - 1)
-	jr c, .done
-	cp ITEM_DC - (TM01 - 1) - 1
-	jr c, .skip_one
-; skip two
-	inc a
-.skip_one
-	inc a
-.done
 	add TM01
 	dec a
 	ld c, a
@@ -536,18 +478,14 @@ CheckItemMenu:
 
 GetItemAttr:
 ; Get attribute a of wCurItem.
-
 	push hl
 	push bc
-
 	ld hl, ItemAttributes
 	ld c, a
 	ld b, 0
 	add hl, bc
-
 	xor a
 	ld [wItemAttributeValue], a
-
 	ld a, [wCurItem]
 	dec a
 	ld c, a
@@ -555,7 +493,6 @@ GetItemAttr:
 	call AddNTimes
 	ld a, BANK(ItemAttributes)
 	call GetFarByte
-
 	pop bc
 	pop hl
 	ret

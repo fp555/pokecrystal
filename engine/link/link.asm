@@ -1047,7 +1047,6 @@ Link_ConvertPartyStruct1to2:
 	ld de, wOTPartyMonNicknames
 	ld bc, PARTY_LENGTH * MON_NAME_LENGTH
 	jp CopyBytes
-
 .ConvertToGen2:
 	ld b, h
 	ld c, l
@@ -1099,9 +1098,11 @@ Link_ConvertPartyStruct1to2:
 	pop de
 	push bc
 	ld a, [hli]
-	ld b, a
-	call TimeCapsule_ReplaceCatchRate
-	ld a, b
+	and a
+	jr z, .done
+	; all pokémon from TimeCapsule will have this item
+	ld a, GOLD_BERRY
+.done	
 	ld [de], a
 	inc de
 	pop bc
@@ -1167,16 +1168,6 @@ Link_ConvertPartyStruct1to2:
 	pop hl
 	inc de
 	inc de
-	ret
-
-TimeCapsule_ReplaceCatchRate:
-; read gen 1 catch rate as an item
-	ld a, b
-	and a
-	ret z
-	; all pokémon from TimeCapsule
-	; will have this item
-	ld b, GOLD_BERRY
 	ret
 
 Link_CopyOTData:

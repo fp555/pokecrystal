@@ -6336,7 +6336,8 @@ ApplyStatLevelMultiplier:
 	pop bc
 	ret
 
-INCLUDE "data/battle/stat_multipliers_2.asm"
+StatLevelMultipliers_Applied:
+INCLUDE "data/battle/stat_multipliers.asm"
 
 _LoadBattleFontsHPBar:
 	callfar LoadBattleFontsHPBar

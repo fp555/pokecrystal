@@ -537,6 +537,7 @@ LinkTimeout:
 	xor a
 	ld [hld], a
 	ld [hl], a
+	assert VBLANK_NORMAL == 0
 	ldh [hVBlank], a
 	push de
 	hlcoord 0, 12
@@ -646,7 +647,7 @@ endr
 
 ; Loop through all the patchable link data
 	ld hl, wLinkData + SERIAL_PREAMBLE_LENGTH + NAME_LENGTH + (1 + PARTY_LENGTH + 1) - 1
-	ld de, wPlayerPatchLists + SERIAL_RNS_LENGTH ; ???
+	ld de, wPlayerPatchLists + SERIAL_RNS_LENGTH
 	lb bc, 0, 0
 .patch_loop
 ; Check if we've gone over the entire area
@@ -2366,7 +2367,7 @@ CheckLinkTimeout_Receptionist:
 	xor a
 	ld [hl], a
 	call WaitBGMap
-	ld a, $2
+	ld a, VBLANK_SOUND_ONLY
 	ldh [hVBlank], a
 	call DelayFrame
 	call DelayFrame
@@ -2388,7 +2389,7 @@ CheckLinkTimeout_Gen2:
 	xor a
 	ld [hl], a
 	call WaitBGMap
-	ld a, $2
+	ld a, VBLANK_SOUND_ONLY
 	ldh [hVBlank], a
 	call DelayFrame
 	call DelayFrame
@@ -2616,7 +2617,7 @@ Link_EnsureSync:
 	add $d0
 	ld [wLinkPlayerSyncBuffer], a
 	ld [wLinkPlayerSyncBuffer + 1], a
-	ld a, $2
+	ld a, VBLANK_SOUND_ONLY
 	ldh [hVBlank], a
 	call DelayFrame
 	call DelayFrame

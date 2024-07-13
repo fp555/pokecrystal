@@ -23,7 +23,6 @@ DoBattleTransition:
 	push af
 	vc_hook Reduce_battle_transition_flashing
 	ld [hl], VBLANK_CUTSCENE
-
 .loop
 	ld a, [wJumptableIndex]
 	bit 7, a ; BATTLETRANSITION_END?
@@ -139,7 +138,6 @@ INCBIN "gfx/overworld/trainer_battle_pokeball_tiles.2bpp"
 
 BattleTransitionJumptable:
 	jumptable .Jumptable, wJumptableIndex
-
 .Jumptable:
 	dw StartTrainerBattle_DetermineWhichAnimation ; 00
 	; BATTLETRANSITION_CAVE
@@ -344,8 +342,7 @@ StartTrainerBattle_SineWave:
 .loop
 	push af
 	push de
-	ld a, e
-	call StartTrainerBattle_DrawSineWave
+	call Sine
 	ld [bc], a
 	inc bc
 	pop de
@@ -724,9 +721,6 @@ WipeLYOverrides:
 	dec c
 	jr nz, .loop
 	ret
-
-StartTrainerBattle_DrawSineWave:
-	calc_sine_wave
 
 StartTrainerBattle_ZoomToBlack:
 	vc_hook Stop_reducing_battle_transition_flashing_ZoomToBlack

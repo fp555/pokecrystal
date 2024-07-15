@@ -21,7 +21,7 @@ JosePhoneCalleeScript:
 
 .HasItem:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_27
-	farsjump JoseReminderScript
+	farsjump JoseComePickUpScript
 
 JosePhoneCallerScript:
 	gettrainername STRING_BUFFER_3, BIRD_KEEPER, JOSE2

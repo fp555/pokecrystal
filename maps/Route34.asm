@@ -25,28 +25,23 @@ Route34EggCheckCallback:
 	clearevent EVENT_DAY_CARE_MAN_IN_DAY_CARE
 	setevent EVENT_DAY_CARE_MAN_ON_ROUTE_34
 	sjump .CheckMon1
-
 .PutDayCareManOutside:
 	setevent EVENT_DAY_CARE_MAN_IN_DAY_CARE
 	clearevent EVENT_DAY_CARE_MAN_ON_ROUTE_34
 	sjump .CheckMon1
-
 .CheckMon1:
 	checkflag ENGINE_DAY_CARE_MAN_HAS_MON
 	iffalse .HideMon1
 	clearevent EVENT_DAY_CARE_MON_1
 	sjump .CheckMon2
-
 .HideMon1:
 	setevent EVENT_DAY_CARE_MON_1
 	sjump .CheckMon2
-
 .CheckMon2:
 	checkflag ENGINE_DAY_CARE_LADY_HAS_MON
 	iffalse .HideMon2
 	clearevent EVENT_DAY_CARE_MON_2
 	endcallback
-
 .HideMon2:
 	setevent EVENT_DAY_CARE_MON_2
 	endcallback
@@ -66,7 +61,6 @@ DayCareManScript_Outside:
 	disappear ROUTE34_GRAMPS
 .end_fail
 	end
-
 .walk_around_player
 	applymovement ROUTE34_GRAMPS, Route34MovementData_DayCareManWalksBackInside_WalkAroundPlayer
 	playsound SFX_ENTER_DOOR
@@ -87,10 +81,8 @@ DayCareMon2Script:
 
 TrainerCamperTodd1:
 	trainer CAMPER, TODD1, EVENT_BEAT_CAMPER_TODD, CamperTodd1SeenText, CamperTodd1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_CAMPER_TODD
-	endifjustbattled
 	opentext
 	checkflag ENGINE_TODD_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -105,7 +97,6 @@ TrainerCamperTodd1:
 	setevent EVENT_TODD_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber
 	sjump .FinishAsk
-
 .AskAgain:
 	scall .AskNumber2
 .FinishAsk:
@@ -115,107 +106,77 @@ TrainerCamperTodd1:
 	gettrainername STRING_BUFFER_3, CAMPER, TODD1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext CamperTodd1BeatenText, 0
-	readmem wToddFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_BLACKTHORN
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_CIANWOOD
 	iftrue .LoadFight1
-.LoadFight0:
 	loadtrainer CAMPER, TODD1
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 1
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer CAMPER, TODD2
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 2
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer CAMPER, TODD3
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 3
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer CAMPER, TODD4
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 4
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer CAMPER, TODD5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
-
 .SaleIsOn:
 	writetext CamperToddSaleText
 	waitbutton
 	closetext
 	end
-
 .AskNumber:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .RematchStd:
 	jumpstd RematchMScript
 	end
 
 TrainerPicnickerGina1:
 	trainer PICNICKER, GINA1, EVENT_BEAT_PICNICKER_GINA, PicnickerGina1SeenText, PicnickerGina1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_PICNICKER_GINA
-	endifjustbattled
 	opentext
 	checkflag ENGINE_GINA_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -230,7 +191,6 @@ TrainerPicnickerGina1:
 	setevent EVENT_GINA_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .FinishAsk
-
 .AskAgain:
 	scall .AskNumber2
 .FinishAsk:
@@ -240,67 +200,46 @@ TrainerPicnickerGina1:
 	gettrainername STRING_BUFFER_3, PICNICKER, GINA1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext PicnickerGina1BeatenText, 0
-	readmem wGinaFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_MAHOGANY
 	iftrue .LoadFight1
-.LoadFight0:
 	loadtrainer PICNICKER, GINA1
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 1
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer PICNICKER, GINA2
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 2
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer PICNICKER, GINA3
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 3
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer PICNICKER, GINA4
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 4
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer PICNICKER, GINA5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
-
 .LeafStone:
 	scall .Gift
 	verbosegiveitem LEAF_STONE
@@ -308,42 +247,32 @@ TrainerPicnickerGina1:
 	clearflag ENGINE_GINA_HAS_LEAF_STONE
 	setevent EVENT_GINA_GAVE_LEAF_STONE
 	sjump .NumberAccepted
-
 .BagFull:
 	sjump .PackFull
-
 .AskNumber1:
 	jumpstd AskNumber1FScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2FScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberFScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedFScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullFScript
 	end
-
 .RematchStd:
 	jumpstd RematchFScript
 	end
-
 .Gift:
 	jumpstd GiftFScript
 	end
-
 .PackFull:
 	jumpstd PackFullFScript
 	end
@@ -366,13 +295,11 @@ OfficerKeithScript:
 	setevent EVENT_BEAT_OFFICER_KEITH
 	closetext
 	end
-
 .AfterScript:
 	writetext OfficerKeithAfterText
 	waitbutton
 	closetext
 	end
-
 .NoFight:
 	writetext OfficerKeithDaytimeText
 	waitbutton
@@ -381,7 +308,6 @@ OfficerKeithScript:
 
 TrainerYoungsterSamuel:
 	trainer YOUNGSTER, SAMUEL, EVENT_BEAT_YOUNGSTER_SAMUEL, YoungsterSamuelSeenText, YoungsterSamuelBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -392,7 +318,6 @@ TrainerYoungsterSamuel:
 
 TrainerYoungsterIan:
 	trainer YOUNGSTER, IAN, EVENT_BEAT_YOUNGSTER_IAN, YoungsterIanSeenText, YoungsterIanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -403,7 +328,6 @@ TrainerYoungsterIan:
 
 TrainerPokefanmBrandon:
 	trainer POKEFANM, BRANDON, EVENT_BEAT_POKEFANM_BRANDON, PokefanmBrandonSeenText, PokefanmBrandonBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -414,7 +338,6 @@ TrainerPokefanmBrandon:
 
 TrainerCooltrainerfIrene:
 	trainer COOLTRAINERF, IRENE, EVENT_BEAT_COOLTRAINERF_IRENE, CooltrainerfIreneSeenText, CooltrainerfIreneBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -424,7 +347,6 @@ TrainerCooltrainerfIrene:
 	waitbutton
 	closetext
 	end
-
 .GotSoftSand:
 	writetext CooltrainerfIreneAfterText2
 	waitbutton
@@ -433,7 +355,6 @@ TrainerCooltrainerfIrene:
 
 TrainerCooltrainerfJenn:
 	trainer COOLTRAINERF, JENN, EVENT_BEAT_COOLTRAINERF_JENN, CooltrainerfJennSeenText, CooltrainerfJennBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -443,7 +364,6 @@ TrainerCooltrainerfJenn:
 	waitbutton
 	closetext
 	end
-
 .GotSoftSand:
 	writetext CooltrainerfJennAfterText2
 	waitbutton
@@ -452,7 +372,6 @@ TrainerCooltrainerfJenn:
 
 TrainerCooltrainerfKate:
 	trainer COOLTRAINERF, KATE, EVENT_BEAT_COOLTRAINERF_KATE, CooltrainerfKateSeenText, CooltrainerfKateBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -469,9 +388,6 @@ TrainerCooltrainerfKate:
 .BagFull:
 	closetext
 	end
-
-Route34IlexForestSign: ; unreferenced
-	jumptext Route34IlexForestSignText
 
 Route34Sign:
 	jumptext Route34SignText
@@ -513,17 +429,6 @@ YoungsterSamuelSeenText:
 YoungsterSamuelBeatenText:
 	text "Beaten by a"
 	line "passing stranger!"
-	done
-
-YoungsterSamuelMobileText: ; unreferenced
-	text "Have you been to"
-	line "GOLDENROD CITY?"
-
-	para "Weren't you amazed"
-	line "by how they've"
-
-	para "changed the"
-	line "#MON CENTER?"
 	done
 
 YoungsterSamuelAfterText:

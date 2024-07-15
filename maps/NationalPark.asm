@@ -71,10 +71,8 @@ NationalParkGameboyKidScript:
 
 TrainerSchoolboyJack1:
 	trainer SCHOOLBOY, JACK1, EVENT_BEAT_SCHOOLBOY_JACK, SchoolboyJack1SeenText, SchoolboyJack1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_SCHOOLBOY_JACK
-	endifjustbattled
 	opentext
 	checkflag ENGINE_JACK_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -87,7 +85,6 @@ TrainerSchoolboyJack1:
 	setevent EVENT_JACK_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .RequestNumber
-
 .AskAgain:
 	scall .AskNumber2
 .RequestNumber:
@@ -97,98 +94,70 @@ TrainerSchoolboyJack1:
 	gettrainername STRING_BUFFER_3, SCHOOLBOY, JACK1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext SchoolboyJack1BeatenText, 0
-	readmem wJackFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_OLIVINE
 	iftrue .LoadFight1
-.LoadFight0:
 	loadtrainer SCHOOLBOY, JACK1
 	startbattle
 	reloadmapafterbattle
-	loadmem wJackFightCount, 1
 	clearflag ENGINE_JACK_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer SCHOOLBOY, JACK2
 	startbattle
 	reloadmapafterbattle
-	loadmem wJackFightCount, 2
 	clearflag ENGINE_JACK_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer SCHOOLBOY, JACK3
 	startbattle
 	reloadmapafterbattle
-	loadmem wJackFightCount, 3
 	clearflag ENGINE_JACK_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer SCHOOLBOY, JACK4
 	startbattle
 	reloadmapafterbattle
-	loadmem wJackFightCount, 4
 	clearflag ENGINE_JACK_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer SCHOOLBOY, JACK5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_JACK_READY_FOR_REMATCH
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .RematchStd:
 	jumpstd RematchMScript
 	end
 
 TrainerPokefanmWilliam:
 	trainer POKEFANM, WILLIAM, EVENT_BEAT_POKEFANM_WILLIAM, PokefanmWilliamSeenText, PokefanmWilliamBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -199,10 +168,8 @@ TrainerPokefanmWilliam:
 
 TrainerPokefanfBeverly1:
 	trainer POKEFANF, BEVERLY1, EVENT_BEAT_POKEFANF_BEVERLY, PokefanfBeverly1SeenText, PokefanfBeverly1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_POKEFAN_BEVERLY
-	endifjustbattled
 	opentext
 	checkflag ENGINE_BEVERLY_HAS_NUGGET
 	iftrue .GiveNugget
@@ -217,7 +184,6 @@ TrainerPokefanfBeverly1:
 	setevent EVENT_BEVERLY_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .RequestNumber
-
 .AskAgain:
 	scall .AskNumber2
 .RequestNumber:
@@ -227,58 +193,46 @@ TrainerPokefanfBeverly1:
 	gettrainername STRING_BUFFER_3, POKEFANF, BEVERLY1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .GiveNugget:
 	scall .Gift
 	verbosegiveitem NUGGET
 	iffalse .NoRoom
 	clearflag ENGINE_BEVERLY_HAS_NUGGET
 	sjump .NumberAccepted
-
 .NoRoom:
 	sjump .PackFull
-
 .NoMarill:
 	writetext PokefanFBeverlyMarillFriendText
 	waitbutton
 	closetext
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1FScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2FScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberFScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedFScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullFScript
 	end
-
 .Gift:
 	jumpstd GiftFScript
 	end
-
 .PackFull:
 	jumpstd PackFullFScript
 	end
 
 TrainerLassKrise:
 	trainer LASS, KRISE, EVENT_BEAT_LASS_KRISE, LassKriseSeenText, LassKriseBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext

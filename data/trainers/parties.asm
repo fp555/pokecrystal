@@ -2554,9 +2554,9 @@ FirebreatherGroup:
 JugglerGroup:
 	; JUGGLER (1)
 	db "IRWIN@", TRAINERTYPE_NORMAL
-	db  2, VOLTORB
-	db  6, VOLTORB
+	db  8, VOLTORB
 	db 10, VOLTORB
+	db 12, VOLTORB
 	db 14, VOLTORB
 	db -1 ; end
 
@@ -2577,25 +2577,17 @@ JugglerGroup:
 
 	; JUGGLER (4)
 	db "IRWIN@", TRAINERTYPE_NORMAL
-	db  6, VOLTORB
-	db 10, VOLTORB
+	db 12, VOLTORB
 	db 14, VOLTORB
+	db 16, VOLTORB
 	db 18, VOLTORB
 	db -1 ; end
 
 	; JUGGLER (5)
 	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
+	db 24, VOLTORB
 	db 26, VOLTORB
-	db 30, ELECTRODE
-	db -1 ; end
-
-	; JUGGLER (6)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
+	db 28, VOLTORB
 	db 30, ELECTRODE
 	db -1 ; end
 

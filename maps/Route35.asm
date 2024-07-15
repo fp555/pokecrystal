@@ -18,7 +18,6 @@ Route35_MapScripts:
 
 TrainerBirdKeeperBryan:
 	trainer BIRD_KEEPER, BRYAN, EVENT_BEAT_BIRD_KEEPER_BRYAN, BirdKeeperBryanSeenText, BirdKeeperBryanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -29,11 +28,11 @@ TrainerBirdKeeperBryan:
 
 TrainerJugglerIrwin:
 	trainer JUGGLER, IRWIN1, EVENT_BEAT_JUGGLER_IRWIN, JugglerIrwin1SeenText, JugglerIrwin1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_JUGGLER_IRWIN
-	endifjustbattled
 	opentext
+	checkflag ENGINE_IRWIN_READY_FOR_REMATCH
+	iftrue .WantsBattle
 	checkcellnum PHONE_JUGGLER_IRWIN
 	iftrue Route35NumberAcceptedM
 	checkevent EVENT_IRWIN_ASKED_FOR_PHONE_NUMBER
@@ -43,7 +42,6 @@ TrainerJugglerIrwin:
 	setevent EVENT_IRWIN_ASKED_FOR_PHONE_NUMBER
 	scall Route35AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route35AskNumber2M
 .AskForNumber:
@@ -53,6 +51,30 @@ TrainerJugglerIrwin:
 	gettrainername STRING_BUFFER_3, JUGGLER, IRWIN1
 	scall Route35RegisteredNumberM
 	sjump Route35NumberAcceptedM
+.WantsBattle:
+	scall Route35RematchM
+	winlosstext BugCatcherArnieBeatenText, 0
+	checkevent EVENT_CLEARED_RADIO_TOWER
+	iftrue .LoadFight2
+	checkevent ENGINE_FLYPOINT_CIANWOOD
+	iftrue .LoadFight1
+	loadtrainer BUG_CATCHER, IRWIN1
+	startbattle
+	reloadmapafterbattle
+	clearflag ENGINE_IRWIN_READY_FOR_REMATCH
+	end
+.LoadFight1:
+	loadtrainer BUG_CATCHER, IRWIN2
+	startbattle
+	reloadmapafterbattle
+	clearflag ENGINE_IRWIN_READY_FOR_REMATCH
+	end
+.LoadFight2:
+	loadtrainer BUG_CATCHER, IRWIN3
+	startbattle
+	reloadmapafterbattle
+	clearflag ENGINE_IRWIN_READY_FOR_REMATCH
+	end
 
 Route35AskNumber1M:
 	jumpstd AskNumber1MScript
@@ -84,7 +106,6 @@ Route35RematchM:
 
 TrainerCamperIvan:
 	trainer CAMPER, IVAN, EVENT_BEAT_CAMPER_IVAN, CamperIvanSeenText, CamperIvanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -95,7 +116,6 @@ TrainerCamperIvan:
 
 TrainerCamperElliot:
 	trainer CAMPER, ELLIOT, EVENT_BEAT_CAMPER_ELLIOT, CamperElliotSeenText, CamperElliotBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -106,7 +126,6 @@ TrainerCamperElliot:
 
 TrainerPicnickerBrooke:
 	trainer PICNICKER, BROOKE, EVENT_BEAT_PICNICKER_BROOKE, PicnickerBrookeSeenText, PicnickerBrookeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -117,7 +136,6 @@ TrainerPicnickerBrooke:
 
 TrainerPicnickerKim:
 	trainer PICNICKER, KIM, EVENT_BEAT_PICNICKER_KIM, PicnickerKimSeenText, PicnickerKimBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -128,10 +146,8 @@ TrainerPicnickerKim:
 
 TrainerBugCatcherArnie:
 	trainer BUG_CATCHER, ARNIE1, EVENT_BEAT_BUG_CATCHER_ARNIE, BugCatcherArnieSeenText, BugCatcherArnieBeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_BUG_CATCHER_ARNIE
-	endifjustbattled
 	opentext
 	checkflag ENGINE_ARNIE_READY_FOR_REMATCH
 	iftrue .WantsBattle
@@ -146,7 +162,6 @@ TrainerBugCatcherArnie:
 	setevent EVENT_ARNIE_ASKED_FOR_PHONE_NUMBER
 	scall Route35AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route35AskNumber2M
 .AskForNumber:
@@ -156,67 +171,46 @@ TrainerBugCatcherArnie:
 	gettrainername STRING_BUFFER_3, BUG_CATCHER, ARNIE1
 	scall Route35RegisteredNumberM
 	sjump Route35NumberAcceptedM
-
 .WantsBattle:
 	scall Route35RematchM
 	winlosstext BugCatcherArnieBeatenText, 0
-	readmem wArnieFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_BLACKTHORN
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_LAKE_OF_RAGE
 	iftrue .LoadFight1
-.LoadFight0:
 	loadtrainer BUG_CATCHER, ARNIE1
 	startbattle
 	reloadmapafterbattle
-	loadmem wArnieFightCount, 1
 	clearflag ENGINE_ARNIE_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer BUG_CATCHER, ARNIE2
 	startbattle
 	reloadmapafterbattle
-	loadmem wArnieFightCount, 2
 	clearflag ENGINE_ARNIE_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer BUG_CATCHER, ARNIE3
 	startbattle
 	reloadmapafterbattle
-	loadmem wArnieFightCount, 3
 	clearflag ENGINE_ARNIE_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer BUG_CATCHER, ARNIE4
 	startbattle
 	reloadmapafterbattle
-	loadmem wArnieFightCount, 4
 	clearflag ENGINE_ARNIE_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer BUG_CATCHER, ARNIE5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_ARNIE_READY_FOR_REMATCH
 	end
-
 .YanmaSwarming:
 	writetext BugCatcherArnieYanmaText
 	waitbutton
@@ -225,7 +219,6 @@ TrainerBugCatcherArnie:
 
 TrainerFirebreatherWalt:
 	trainer FIREBREATHER, WALT, EVENT_BEAT_FIREBREATHER_WALT, FirebreatherWaltSeenText, FirebreatherWaltBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -252,13 +245,11 @@ TrainerOfficerDirk:
 	setevent EVENT_BEAT_OFFICER_DIRK
 	closetext
 	end
-
 .AfterBattle:
 	writetext OfficerDirkAfterBattleText
 	waitbutton
 	closetext
 	end
-
 .NotNight:
 	writetext OfficerDirkPrettyToughText
 	waitbutton

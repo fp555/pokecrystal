@@ -146,17 +146,18 @@ EngineFlags:
 	engine_flag wDailyRematchFlags, 10 ; anthony
 	engine_flag wDailyRematchFlags, 11 ; todd
 	engine_flag wDailyRematchFlags, 12 ; gina
-	engine_flag wDailyRematchFlags, 13 ; arnie
-	engine_flag wDailyRematchFlags, 14 ; alan
-	engine_flag wDailyRematchFlags, 15 ; dana
-	engine_flag wDailyRematchFlags, 16 ; chad
-	engine_flag wDailyRematchFlags, 17 ; tully
-	engine_flag wDailyRematchFlags, 18 ; brent
-	engine_flag wDailyRematchFlags, 19 ; tiffany
-	engine_flag wDailyRematchFlags, 20 ; vance
-	engine_flag wDailyRematchFlags, 21 ; wilton
-	engine_flag wDailyRematchFlags, 22 ; parry
-	engine_flag wDailyRematchFlags, 23 ; erin
+	engine_flag wDailyRematchFlags, 13 ; irwin
+	engine_flag wDailyRematchFlags, 14 ; arnie
+	engine_flag wDailyRematchFlags, 15 ; alan
+	engine_flag wDailyRematchFlags, 16 ; dana
+	engine_flag wDailyRematchFlags, 17 ; chad
+	engine_flag wDailyRematchFlags, 18 ; tully
+	engine_flag wDailyRematchFlags, 19 ; brent
+	engine_flag wDailyRematchFlags, 20 ; tiffany
+	engine_flag wDailyRematchFlags, 21 ; vance
+	engine_flag wDailyRematchFlags, 22 ; wilton
+	engine_flag wDailyRematchFlags, 23 ; parry
+	engine_flag wDailyRematchFlags, 24 ; erin
 
 	engine_flag wDailyPhoneItemFlags, 0 ; beverly has nugget
 	engine_flag wDailyPhoneItemFlags, 1 ; jose has star piece
@@ -182,17 +183,18 @@ EngineFlags:
 	engine_flag wDailyPhoneTimeOfDayFlags, 10 ; anthony
 	engine_flag wDailyPhoneTimeOfDayFlags, 11 ; todd
 	engine_flag wDailyPhoneTimeOfDayFlags, 12 ; gina
-	engine_flag wDailyPhoneTimeOfDayFlags, 13 ; arnie
-	engine_flag wDailyPhoneTimeOfDayFlags, 14 ; alan
-	engine_flag wDailyPhoneTimeOfDayFlags, 15 ; dana
-	engine_flag wDailyPhoneTimeOfDayFlags, 16 ; chad
-	engine_flag wDailyPhoneTimeOfDayFlags, 17 ; tully
-	engine_flag wDailyPhoneTimeOfDayFlags, 18 ; brent
-	engine_flag wDailyPhoneTimeOfDayFlags, 19 ; tiffany
-	engine_flag wDailyPhoneTimeOfDayFlags, 20 ; vance
-	engine_flag wDailyPhoneTimeOfDayFlags, 21 ; wilton
-	engine_flag wDailyPhoneTimeOfDayFlags, 22 ; parry
-	engine_flag wDailyPhoneTimeOfDayFlags, 23 ; erin
+	engine_flag wDailyPhoneTimeOfDayFlags, 13 ; irwin
+	engine_flag wDailyPhoneTimeOfDayFlags, 14 ; arnie
+	engine_flag wDailyPhoneTimeOfDayFlags, 15 ; alan
+	engine_flag wDailyPhoneTimeOfDayFlags, 16 ; dana
+	engine_flag wDailyPhoneTimeOfDayFlags, 17 ; chad
+	engine_flag wDailyPhoneTimeOfDayFlags, 18 ; tully
+	engine_flag wDailyPhoneTimeOfDayFlags, 19 ; brenty
+	engine_flag wDailyPhoneTimeOfDayFlags, 20 ; tiffan
+	engine_flag wDailyPhoneTimeOfDayFlags, 21 ; vance
+	engine_flag wDailyPhoneTimeOfDayFlags, 22 ; wilton
+	engine_flag wDailyPhoneTimeOfDayFlags, 23 ; parry
+	engine_flag wDailyPhoneTimeOfDayFlags, 24 ; erin
 
 	engine_flag wPlayerSpriteSetupFlags, PLAYERSPRITESETUP_FEMALE_TO_MALE_F
 

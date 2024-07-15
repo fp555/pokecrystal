@@ -50,6 +50,10 @@ GinaReminderScript:
 	farwritetext GinaReminderText
 	end
 
+IrwinReminderScript:
+	farwritetext IrwinReminderText
+	end
+
 ArnieReminderScript:
 	farwritetext ArnieReminderText
 	end

@@ -287,3 +287,15 @@ IrwinSoMuchToChatAboutText:
 	para "chat about! This"
 	line "is going nowhere!"
 	done
+
+IrwinReminderText:
+	text "Hey, where are you"
+	line "now?"
+
+	para "Let's battle. I'll"
+	line "be waiting for you"
+	cont "on @"
+	text_ram wStringBuffer5
+	text "!"
+	done
+

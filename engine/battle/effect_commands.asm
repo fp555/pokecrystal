@@ -3162,6 +3162,28 @@ UpdateMoveData:
 	call GetMoveName
 	jp CopyName1
 
+CheckForStatusIfAlreadyHasAny:
+	ld a, BATTLE_VARS_STATUS_OPP
+	call GetBattleVarAddr
+	ld d, h
+	ld e, l
+	and SLP_MASK
+	ld hl, AlreadyAsleepText
+	ret nz
+	ld a, [de]
+	bit FRZ, a
+	ld hl, AlreadyFrozenText
+	ret nz
+	bit PAR, a
+	ld hl, AlreadyParalyzedText
+	ret nz
+	bit PSN, a
+	ld hl, AlreadyPoisonedText
+	ret nz
+	bit BRN, a
+	ld hl, AlreadyBurnedText
+	ret
+
 BattleCommand_SleepTarget:
 	call GetOpponentItem
 	ld a, b
@@ -3173,21 +3195,12 @@ BattleCommand_SleepTarget:
 	ld hl, ProtectedByText
 	jr .fail
 .not_protected_by_item
-	ld a, BATTLE_VARS_STATUS_OPP
-	call GetBattleVarAddr
-	ld d, h
-	ld e, l
-	ld a, [de]
-	and SLP_MASK
-	ld hl, AlreadyAsleepText
+	call CheckForStatusIfAlreadyHasAny
 	jr nz, .fail
 	ld a, [wAttackMissed]
 	and a
 	jp nz, PrintDidntAffect2
-	ld hl, DidntAffect1Text
-	ld a, [de]
-	and a
-	jr nz, .fail
+	ld hl, DidntAffectText
 	call CheckSubstituteOpp
 	jr nz, .fail
 	call AnimateCurrentMove
@@ -3262,11 +3275,7 @@ BattleCommand_Poison:
 	ld a, STEEL
 	call CheckIfTargetIsGivenType
 	jp z, .failed
-	ld a, BATTLE_VARS_STATUS_OPP
-	call GetBattleVar
-	ld b, a
-	ld hl, AlreadyPoisonedText
-	and 1 << PSN
+	call CheckForStatusIfAlreadyHasAny
 	jp nz, .failed
 	call GetOpponentItem
 	ld a, b
@@ -3278,13 +3287,14 @@ BattleCommand_Poison:
 	ld hl, ProtectedByText
 	jr .failed
 .do_poison
-	ld hl, DidntAffect1Text
+	ld hl, DidntAffectText
 	ld a, BATTLE_VARS_STATUS_OPP
 	call GetBattleVar
 	and a
 	jr nz, .failed
 	call CheckSubstituteOpp
 	jr nz, .failed
+	ld hl, EvadedText
 	ld a, [wAttackMissed]
 	and a
 	jr nz, .failed
@@ -3831,7 +3841,7 @@ BattleCommand_StatDown:
 	jr z, .GetStatLevel
 	ld hl, wPlayerStatLevels
 .GetStatLevel:
-; Attempt to lower the stat.
+	; Attempt to lower the stat.
 	ld a, [wLoweredStat]
 	and $f
 	ld c, a
@@ -4326,7 +4336,7 @@ BattleCommand_CheckRampage:
 	jp SkipToBattleCommand
 
 BattleCommand_Rampage:
-; No rampage during Sleep Talk.
+	; No rampage during Sleep Talk.
 	ld a, BATTLE_VARS_STATUS
 	call GetBattleVar
 	and SLP_MASK
@@ -5179,9 +5189,7 @@ BattleCommand_Confuse_CheckSnore_Swagger_ConfuseHit:
 	jp PrintDidntAffect2
 
 BattleCommand_Paralyze:
-	ld a, BATTLE_VARS_STATUS_OPP
-	call GetBattleVar
-	bit PAR, a
+	call CheckForStatusIfAlreadyHasAny
 	jr nz, .paralyzed
 	ld a, [wTypeModifier]
 	and $7f
@@ -5197,10 +5205,6 @@ BattleCommand_Paralyze:
 	ld hl, ProtectedByText
 	jp StdBattleTextbox
 .no_item_protection
-	ld a, BATTLE_VARS_STATUS_OPP
-	call GetBattleVarAddr
-	and a
-	jr nz, .failed
 	ld a, [wAttackMissed]
 	and a
 	jr nz, .failed
@@ -5222,8 +5226,9 @@ BattleCommand_Paralyze:
 	ld hl, UseHeldStatusHealingItem
 	jp CallBattleCore
 .paralyzed
+	push hl
 	call AnimateFailedMove
-	ld hl, AlreadyParalyzedText
+	pop hl
 	jp StdBattleTextbox
 .failed
 	jp PrintDidntAffect2
@@ -5480,13 +5485,13 @@ FailMimic:
 	jp FailText_CheckOpponentProtect
 
 PrintDidntAffect:
-	ld hl, DidntAffect1Text
+	ld hl, DidntAffectText
 	jp StdBattleTextbox
 
 PrintDidntAffect2:
 	call AnimateFailedMove
-	ld hl, DidntAffect1Text ; 'it didn't affect'
-	ld de, DidntAffect2Text ; 'it didn't affect'
+	ld hl, EvadedText ; 'evaded the attack'
+	ld de, ProtectingItselfText ; 'protecting itself'
 	jp FailText_CheckOpponentProtect
 
 PrintParalyze:

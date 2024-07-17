@@ -726,6 +726,11 @@ WasBurnedText:
 	line "was burned!"
 	prompt
 
+AlreadyBurnedText:
+	text "<TARGET>'s"
+	line "already burned!"
+	prompt
+
 DefrostedOpponentText:
 	text "<TARGET>"
 	line "was defrosted!"
@@ -734,6 +739,11 @@ DefrostedOpponentText:
 WasFrozenText:
 	text "<TARGET>"
 	line "was frozen solid!"
+	prompt
+
+AlreadyFrozenText:
+	text "<TARGET>'s"
+	line "already frozen!"
 	prompt
 
 WontRiseAnymoreText:
@@ -901,12 +911,7 @@ ItFailedText:
 	text "It failed!"
 	prompt
 
-DidntAffect1Text:
-	text "It didn't affect"
-	line "<TARGET>!"
-	prompt
-
-DidntAffect2Text:
+DidntAffectText:
 	text "It didn't affect"
 	line "<TARGET>!"
 	prompt

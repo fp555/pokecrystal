@@ -4,11 +4,13 @@ MainMenu_Mobile:
 	ld [wMapMusic], a
 	ld de, MUSIC_MOBILE_ADAPTER_MENU
 	call Function4a6c5
+	; fallthrough
 Function49f0a:
 	call ClearBGPalettes
 	call Function4a3a7
 	call Function4a492
 	call ClearBGPalettes
+	; fallthrough
 Function49f16:
 	call MobileMenu_InitMenuBuffers
 	ld c, 12
@@ -35,20 +37,17 @@ Function49f16:
 	ld b, [hl]
 	push bc
 	jr .check_buttons
-
 .joy_loop
 	call ScrollingMenuJoypad
 	ld hl, wMenuCursorY
 	ld b, [hl]
 	push bc
-
 .check_buttons
 	bit A_BUTTON_F, a
 	jr nz, .a_button
 	bit B_BUTTON_F, a
 	jr nz, .b_button
 	jr .next
-
 .a_button
 	ld hl, wMenuCursorY
 	ld a, [hl]
@@ -71,7 +70,6 @@ Function49f16:
 	ld de, MUSIC_MAIN_MENU
 	call Function4a6c5
 	ret
-
 .next
 	ld hl, wMenuCursorY
 	ld a, [hl]
@@ -86,9 +84,6 @@ Function49f16:
 	call ClearBox
 	hlcoord 1, 14
 	call PlaceString
-	jp .useless_jump
-
-.useless_jump
 	call MobileMenu_InitMenuBuffers
 	pop bc
 	ld hl, wMenuCursorY
@@ -108,20 +103,20 @@ MobileString1:
 	db   "@"
 
 MobileStrings2:
-; string 0
 String_0x49fe9:
+	; string 0
 	db   "めいし<WO>つくったり"
 	next "ほぞんしておける　フォルダーです@"
-; string 1
+	; string 1
 	db   "モバイルたいせんや　じぶんのめいしで"
 	next "つかう　あいさつ<WO>つくります@"
-; string 2
+	; string 2
 	db   "あなた<NO>じゅうしょや　ねんれいの"
 	next "せ<TTE>い<WO>かえられます@"
-; string 3
+	; string 3
 	db  "モバイルセンター<NI>せつぞくするとき"
 	next "ひつような　こと<WO>きめます@"
-; string 4
+	; string 4
 	db   "まえ<NO>がめん　<NI>もどります"
 	next "@"
 
@@ -142,11 +137,7 @@ MobileMenu_InitMenuBuffers:
 	ld [hli], a
 	ld a, $20 ; w2DMenuCursorOffsets
 	ld [hli], a
-	; could have done "ld a, A_BUTTON | D_UP | D_DOWN | B_BUTTON" instead
-	ld a, A_BUTTON
-	add D_UP
-	add D_DOWN
-	add B_BUTTON
+	ld a, A_BUTTON | D_UP | D_DOWN | B_BUTTON
 	ld [hli], a ; wMenuJoypadFilter
 	ld a, 1
 	ld [hli], a ; wMenuCursorY, wMenuCursorX
@@ -192,7 +183,7 @@ Function4a0c2:
 	pop af
 	and a
 	jr nz, .skip_save
-	farcall _SaveData
+	farcall SaveData
 .skip_save
 	ld c, 5
 	call DelayFrames
@@ -406,7 +397,6 @@ Function4a28a:
 	call LoadFontsExtra
 	scf
 	ret
-
 .DeleteLoginPassword:
 	call PlaceHollowCursor
 	ld hl, DeleteSavedLoginPasswordText
@@ -441,10 +431,6 @@ Function4a28a:
 	farcall Mobile_HDMATransferTilemapAndAttrmap_Menu
 	xor a
 	ret
-
-MenuHeader_0x4a346: ; unreferenced
-	db MENU_BACKUP_TILES ; flags
-	menu_coords 12, 0, SCREEN_WIDTH - 1, 6
 
 String_4a34b:
 	db   "いれなおす"
@@ -498,15 +484,9 @@ Function4a373:
 	ld [hli], a
 	ret
 
-Function4a39a: ; unreferenced
-	call Function4a485
-	call Function4a492
-	call Function4a3aa
-	call SetDefaultBGPAndOBP
-	ret
-
 Function4a3a7:
 	call Function4a485
+	; fallthrough
 Function4a3aa:
 	hlcoord 0, 0
 	lb bc, 3, 1
@@ -568,31 +548,6 @@ Function4a3aa:
 	lb bc, 1, 1
 	ld a, " "
 	call Function4a6d8
-	ret
-
-Function4a449: ; unreferenced
-	ld bc, 3 * SCREEN_WIDTH
-	ld a, $0
-	hlcoord 0, 0
-	call ByteFill
-	ld bc, 2 * SCREEN_WIDTH
-	ld a, $1
-	call ByteFill
-	ld bc, 2 * SCREEN_WIDTH
-	ld a, $0
-	call ByteFill
-	ld bc, 2 * SCREEN_WIDTH
-	ld a, $1
-	call ByteFill
-	ld bc, SCREEN_WIDTH
-	ld a, $2
-	call ByteFill
-	ld bc, SCREEN_WIDTH
-	ld a, $3
-	call ByteFill
-	ld bc, SCREEN_WIDTH
-	ld a, " "
-	call ByteFill
 	ret
 
 Function4a485:
@@ -752,12 +707,16 @@ Function4a5b0:
 
 String_4a5c5:
 	db "じこしょうかい@"
+
 String_4a5cd:
 	db "たいせん　<GA>はじまるとき@"
+
 String_4a5da:
 	db "たいせん　<NI>かったとき@"
+
 String_4a5e6:
 	db "たいせん　<NI>まけたとき@"
+
 String_4a5f2:
 	db "もどる@"
 

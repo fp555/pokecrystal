@@ -46,7 +46,6 @@ Gen2ToGen1LinkComms:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr nz, .player_1
-
 	ld c, 3
 	call DelayFrames
 	xor a
@@ -55,7 +54,6 @@ Gen2ToGen1LinkComms:
 	ldh [rSC], a
 	ld a, (1 << rSC_ON) | (1 << rSC_CLOCK)
 	ldh [rSC], a
-
 	call DelayFrame
 	xor a
 	ldh [hSerialSend], a
@@ -63,7 +61,6 @@ Gen2ToGen1LinkComms:
 	ldh [rSC], a
 	ld a, (1 << rSC_ON) | (1 << rSC_CLOCK)
 	ldh [rSC], a
-
 .player_1
 	ld de, MUSIC_NONE
 	call PlayMusic
@@ -79,7 +76,6 @@ endc
 	ldh [rIF], a
 	ld a, 1 << SERIAL
 	ldh [rIE], a
-
 	ld hl, wLinkBattleRNPreamble
 	ld de, wEnemyMon
 	ld bc, SERIAL_RN_PREAMBLE_LENGTH + SERIAL_RNS_LENGTH
@@ -87,7 +83,6 @@ endc
 	call Serial_ExchangeBytes
 	ld a, SERIAL_NO_DATA_BYTE
 	ld [de], a
-
 	ld hl, wLinkData
 	ld de, wOTPartyData
 	ld bc, SERIAL_PREAMBLE_LENGTH + NAME_LENGTH + (1 + PARTY_LENGTH + 1) + (REDMON_STRUCT_LENGTH + NAME_LENGTH * 2) * PARTY_LENGTH + 3
@@ -95,20 +90,16 @@ endc
 	call Serial_ExchangeBytes
 	ld a, SERIAL_NO_DATA_BYTE
 	ld [de], a
-
 	ld hl, wPlayerPatchLists
 	ld de, wOTPatchLists
 	ld bc, SERIAL_PATCH_LIST_LENGTH
 	vc_hook Wireless_ExchangeBytes_Gen2toGen1_patch_lists
 	call Serial_ExchangeBytes
-
 	xor a
 	ldh [rIF], a
 	ld a, (1 << JOYPAD) | (1 << SERIAL) | (1 << TIMER) | (1 << VBLANK)
 	ldh [rIE], a
-
 	call Link_CopyRandomNumbers
-
 	ld hl, wOTPartyData
 	call Link_FindFirstNonControlCharacter_SkipZero
 	push hl
@@ -120,11 +111,9 @@ endc
 	jp z, ExitLinkCommunications
 	cp $7
 	jp nc, ExitLinkCommunications
-
 	ld de, wLinkData
 	ld bc, NAME_LENGTH + (1 + PARTY_LENGTH + 1) + (REDMON_STRUCT_LENGTH + NAME_LENGTH * 2) * PARTY_LENGTH + 3
 	call Link_CopyOTData
-
 	ld de, wOTPatchLists
 	ld hl, wTimeCapsulePlayerData
 	ld c, 2
@@ -150,22 +139,18 @@ endc
 	pop bc
 	pop hl
 	jr .loop
-
 .next
 	ld hl, wTimeCapsulePlayerData + SERIAL_PATCH_DATA_SIZE
 	dec c
 	jr nz, .loop
-
 	ld hl, wLinkData
 	ld de, wOTPlayerName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
 	ld de, wOTPartyCount
 	ld a, [hli]
 	ld [de], a
 	inc de
-
 .party_loop
 	ld a, [hli]
 	cp -1
@@ -180,17 +165,14 @@ endc
 	ld [de], a
 	inc de
 	jr .party_loop
-
 .done_party
 	ld [de], a
 	ld hl, wTimeCapsulePlayerData
 	call Link_ConvertPartyStruct1to2
-
 	ld a, LOW(wOTPartyMonOTs)
 	ld [wUnusedNamesPointer], a
 	ld a, HIGH(wOTPartyMonOTs)
 	ld [wUnusedNamesPointer + 1], a
-
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -212,7 +194,6 @@ Gen2ToGen2LinkComms:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr nz, .player_1
-
 	ld c, 3
 	call DelayFrames
 	xor a
@@ -221,7 +202,6 @@ Gen2ToGen2LinkComms:
 	ldh [rSC], a
 	ld a, (1 << rSC_ON) | (1 << rSC_CLOCK)
 	ldh [rSC], a
-
 	call DelayFrame
 	xor a
 	ldh [hSerialSend], a
@@ -229,7 +209,6 @@ Gen2ToGen2LinkComms:
 	ldh [rSC], a
 	ld a, (1 << rSC_ON) | (1 << rSC_CLOCK)
 	ldh [rSC], a
-
 .player_1
 	ld de, MUSIC_NONE
 	call PlayMusic
@@ -245,7 +224,6 @@ endc
 	ldh [rIF], a
 	ld a, 1 << SERIAL
 	ldh [rIE], a
-
 	ld hl, wLinkBattleRNPreamble
 	ld de, wOTLinkBattleRNData
 	ld bc, SERIAL_RN_PREAMBLE_LENGTH + SERIAL_RNS_LENGTH
@@ -253,7 +231,6 @@ endc
 	call Serial_ExchangeBytes
 	ld a, SERIAL_NO_DATA_BYTE
 	ld [de], a
-
 	ld hl, wLinkData
 	ld de, wOTPartyData
 	ld bc, SERIAL_PREAMBLE_LENGTH + NAME_LENGTH + (1 + PARTY_LENGTH + 1) + 2 + (PARTYMON_STRUCT_LENGTH + NAME_LENGTH * 2) * PARTY_LENGTH + 3
@@ -261,13 +238,11 @@ endc
 	call Serial_ExchangeBytes
 	ld a, SERIAL_NO_DATA_BYTE
 	ld [de], a
-
 	ld hl, wPlayerPatchLists
 	ld de, wOTPatchLists
 	ld bc, SERIAL_PATCH_LIST_LENGTH
 	vc_hook Wireless_ExchangeBytes_patch_lists
 	call Serial_ExchangeBytes
-
 	ld a, [wLinkMode]
 	cp LINK_TRADECENTER
 	jr nz, .not_trading
@@ -277,22 +252,18 @@ endc
 	vc_hook Wireless_ExchangeBytes_mail
 	call ExchangeBytes
 .not_trading
-
 	xor a
 	ldh [rIF], a
 	ld a, (1 << JOYPAD) | (1 << SERIAL) | (1 << TIMER) | (1 << VBLANK)
 	ldh [rIE], a
 	ld de, MUSIC_NONE
 	call PlayMusic
-
 	call Link_CopyRandomNumbers
-
 	ld hl, wOTPartyData
 	call Link_FindFirstNonControlCharacter_SkipZero
 	ld de, wLinkData
 	ld bc, NAME_LENGTH + 1 + PARTY_LENGTH + 1 + 2 + (PARTYMON_STRUCT_LENGTH + NAME_LENGTH * 2) * PARTY_LENGTH
 	call Link_CopyOTData
-
 	ld de, wOTPatchLists
 	ld hl, wLinkPlayerData
 	ld c, 2
@@ -318,12 +289,10 @@ endc
 	pop bc
 	pop hl
 	jr .loop1
-
 .next1
 	ld hl, wLinkPlayerData + SERIAL_PATCH_DATA_SIZE
 	dec c
 	jr nz, .loop1
-
 	ld a, [wLinkMode]
 	cp LINK_TRADECENTER
 	jp nz, .skip_mail
@@ -339,13 +308,11 @@ endc
 	cp SERIAL_MAIL_PREAMBLE_BYTE
 	jr z, .loop3
 	dec hl
-
 	ld de, wLinkOTMail
-	ld bc, wLinkDataEnd - wLinkOTMail ; should be wLinkOTMailEnd - wLinkOTMail
+	ld bc, wLinkOTMailEnd - wLinkOTMail
 	call CopyBytes
-
-; Replace SERIAL_MAIL_REPLACEMENT_BYTE with SERIAL_NO_DATA_BYTE across all mail
-; message bodies.
+	; Replace SERIAL_MAIL_REPLACEMENT_BYTE with SERIAL_NO_DATA_BYTE
+	; across all mail message bodies.
 	ld hl, wLinkOTMailMessages
 	ld bc, (MAIL_MSG_LENGTH + 1) * PARTY_LENGTH
 .loop4
@@ -359,7 +326,6 @@ endc
 	ld a, b
 	or c
 	jr nz, .loop4
-
 	ld de, wLinkOTMailPatchSet
 .loop5
 	ld a, [de]
@@ -373,7 +339,6 @@ endc
 	add hl, bc
 	ld [hl], SERIAL_NO_DATA_BYTE
 	jr .loop5
-
 .start_copying_mail
 	ld hl, wLinkOTMail
 	ld de, wLinkReceivedMail
@@ -419,12 +384,10 @@ endc
 	jr nc, .skip
 	farcall ConvertEnglishMailToFrenchGerman
 	jr .next
-
 .skip
 	cp $2
 	jr nc, .next
 	farcall ConvertEnglishMailToSpanishItalian
-
 .next
 	pop de
 	ld hl, MAIL_STRUCT_LENGTH
@@ -437,30 +400,24 @@ endc
 	ld de, wLinkReceivedMailEnd
 	xor a
 	ld [de], a
-
 .skip_mail
 	ld hl, wLinkData
 	ld de, wOTPlayerName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
 	ld de, wOTPartyCount
 	ld bc, 1 + PARTY_LENGTH + 1
 	call CopyBytes
-
 	ld de, wOTPlayerID
 	ld bc, 2
 	call CopyBytes
-
 	ld de, wOTPartyMons
 	ld bc, wOTPartyDataEnd - wOTPartyMons
 	call CopyBytes
-
 	ld a, LOW(wOTPartyMonOTs)
 	ld [wUnusedNamesPointer], a
 	ld a, HIGH(wOTPartyMonOTs)
 	ld [wUnusedNamesPointer + 1], a
-
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -474,7 +431,6 @@ endc
 	ld [wOtherTrainerClass], a
 	call ClearScreen
 	farcall Link_WaitBGMap
-
 	ld hl, wOptions
 	ld a, [hl]
 	push af
@@ -501,10 +457,8 @@ endc
 	ldh [rIE], a
 	pop af
 	ldh [rIF], a
-
 	; LET'S DO THIS
 	predef StartBattle
-
 	ldh a, [rIF]
 	ld h, a
 	xor a
@@ -517,10 +471,8 @@ endc
 	ld [wDisableTextAcceleration], a
 	pop af
 	ld [wOptions], a
-
 	farcall LoadPokemonData
 	jp ExitLinkCommunications
-
 .ready_to_trade
 	ld de, MUSIC_ROUTE_30
 	call PlayMusic
@@ -557,14 +509,13 @@ LinkTimeout:
 	call GetSGBLayout
 	call WaitBGMap2
 	ret
-
 .LinkTimeoutText:
 	text_far _LinkTimeoutText
 	text_end
 
 ExchangeBytes:
-; This is similar to Serial_ExchangeBytes,
-; but without a SERIAL_PREAMBLE_BYTE check.
+	; This is similar to Serial_ExchangeBytes,
+	; but without a SERIAL_PREAMBLE_BYTE check.
 	ld a, TRUE
 	ldh [hSerialIgnoringInitialData], a
 .loop
@@ -587,7 +538,6 @@ ExchangeBytes:
 	xor a
 	ldh [hSerialIgnoringInitialData], a
 	jr .loop
-
 .load
 	ld [de], a
 	inc de
@@ -620,8 +570,7 @@ FixDataForLinkTransfer:
 	ld [hli], a
 	dec b
 	jr nz, .preamble_loop
-
-; Initialize random seed, making sure special bytes are omitted
+	; Initialize random seed, making sure special bytes are omitted
 	assert wLinkBattleRNPreamble + SERIAL_RN_PREAMBLE_LENGTH == wLinkBattleRNs
 	ld b, SERIAL_RNS_LENGTH
 .rn_loop
@@ -631,8 +580,7 @@ FixDataForLinkTransfer:
 	ld [hli], a
 	dec b
 	jr nz, .rn_loop
-
-; Clear the patch list
+	; Clear the patch list
 	ld hl, wPlayerPatchLists
 	ld a, SERIAL_PREAMBLE_BYTE
 rept SERIAL_PATCH_PREAMBLE_LENGTH
@@ -644,19 +592,17 @@ endr
 	ld [hli], a
 	dec b
 	jr nz, .clear_loop
-
-; Loop through all the patchable link data
+	; Loop through all the patchable link data
 	ld hl, wLinkData + SERIAL_PREAMBLE_LENGTH + NAME_LENGTH + (1 + PARTY_LENGTH + 1) - 1
 	ld de, wPlayerPatchLists + SERIAL_RNS_LENGTH
 	lb bc, 0, 0
 .patch_loop
-; Check if we've gone over the entire area
+	; Check if we've gone over the entire area
 	inc c
 	ld a, c
 	cp SERIAL_PATCH_DATA_SIZE + 1
 	jr z, .data1_done
-
-; If we're processing the second patch area, check if we've reached the end
+	; If we're processing the second patch area, check if we've reached the end
 	ld a, b
 	dec a
 	jr nz, .process
@@ -671,9 +617,8 @@ endr
 	cp b
 	pop bc
 	jr z, .data2_done
-
 .process
-; Replace the "no data" byte, and record it in the array
+	; Replace the "no data" byte, and record it in the array
 	inc hl
 	ld a, [hl]
 	cp SERIAL_NO_DATA_BYTE
@@ -683,14 +628,12 @@ endr
 	inc de
 	ld [hl], SERIAL_PATCH_REPLACEMENT_BYTE
 	jr .patch_loop
-
 .data1_done
 	ld a, SERIAL_PATCH_LIST_PART_TERMINATOR
 	ld [de], a
 	inc de
 	lb bc, 1, 0
 	jr .patch_loop
-
 .data2_done
 	ld a, SERIAL_PATCH_LIST_PART_TERMINATOR
 	ld [de], a
@@ -705,11 +648,9 @@ Link_PrepPartyData_Gen1:
 	inc de
 	dec b
 	jr nz, .loop1
-
 	ld hl, wPlayerName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
 	push de
 	ld hl, wPartyCount
 	ld a, [hli]
@@ -734,7 +675,6 @@ Link_PrepPartyData_Gen1:
 	pop de
 	ld hl, 1 + PARTY_LENGTH + 1
 	add hl, de
-
 	ld d, h
 	ld e, l
 	ld hl, wPartyMon1Species
@@ -747,15 +687,12 @@ Link_PrepPartyData_Gen1:
 	pop bc
 	dec c
 	jr nz, .mon_loop
-
 	ld hl, wPartyMonOTs
 	call .copy_ot_nicks
-
 	ld hl, wPartyMonNicknames
 .copy_ot_nicks
 	ld bc, PARTY_LENGTH * NAME_LENGTH
 	jp CopyBytes
-
 .ConvertPartyStruct2to1:
 	ld b, h
 	ld c, l
@@ -790,7 +727,6 @@ Link_PrepPartyData_Gen1:
 	jr z, .steel_type
 	cp MAGNETON
 	jr nz, .skip_steel
-
 .steel_type
 	ld a, ELECTRIC
 	ld [de], a
@@ -798,7 +734,6 @@ Link_PrepPartyData_Gen1:
 	ld [de], a
 	inc de
 	jr .done_steel
-
 .skip_steel
 	push bc
 	dec a
@@ -809,7 +744,6 @@ Link_PrepPartyData_Gen1:
 	ld a, BANK(BaseData)
 	call FarCopyBytes
 	pop bc
-
 .done_steel
 	push bc
 	ld hl, MON_ITEM
@@ -817,24 +751,20 @@ Link_PrepPartyData_Gen1:
 	ld bc, MON_HAPPINESS - MON_ITEM
 	call CopyBytes
 	pop bc
-
 	ld hl, MON_LEVEL
 	add hl, bc
 	ld a, [hl]
 	ld [de], a
 	ld [wCurPartyLevel], a
 	inc de
-
 	push bc
 	ld hl, MON_MAXHP
 	add hl, bc
 	ld bc, MON_SAT - MON_MAXHP
 	call CopyBytes
 	pop bc
-
 	push de
 	push bc
-
 	ld a, [bc]
 	dec a
 	push bc
@@ -846,16 +776,13 @@ Link_PrepPartyData_Gen1:
 	call GetFarByte
 	ld [wBaseSpecialAttack], a
 	pop bc
-
 	ld hl, MON_STAT_EXP - 1
 	add hl, bc
 	ld c, STAT_SATK
 	ld b, TRUE
 	predef CalcMonStatC
-
 	pop bc
 	pop de
-
 	ldh a, [hQuotient + 2]
 	ld [de], a
 	inc de
@@ -875,42 +802,33 @@ Link_PrepPartyData_Gen2:
 	inc de
 	dec b
 	jr nz, .preamble_loop
-
 	ld hl, wPlayerName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
 	ld hl, wPartyCount
 	ld bc, 1 + PARTY_LENGTH + 1
 	call CopyBytes
-
 	ld hl, wPlayerID
 	ld bc, 2
 	call CopyBytes
-
 	ld hl, wPartyMon1Species
 	ld bc, PARTY_LENGTH * PARTYMON_STRUCT_LENGTH
 	call CopyBytes
-
 	ld hl, wPartyMonOTs
 	ld bc, PARTY_LENGTH * NAME_LENGTH
 	call CopyBytes
-
 	ld hl, wPartyMonNicknames
 	ld bc, PARTY_LENGTH * MON_NAME_LENGTH
 	call CopyBytes
-
-; Okay, we did all that.  Now, are we in the trade center?
+	; Okay, we did all that.  Now, are we in the trade center?
 	ld a, [wLinkMode]
 	cp LINK_TRADECENTER
 	ret nz
-
-; Fill 5 bytes at wLinkPlayerMailPreamble with $20
+	; Fill 5 bytes at wLinkPlayerMailPreamble with $20
 	ld de, wLinkPlayerMail
 	ld a, SERIAL_MAIL_PREAMBLE_BYTE
 	call Link_CopyMailPreamble
-
-; Copy all the mail messages to wLinkPlayerMailMessages
+	; Copy all the mail messages to wLinkPlayerMailMessages
 	ld a, BANK(sPartyMail)
 	call OpenSRAM
 	ld hl, sPartyMail
@@ -924,8 +842,7 @@ Link_PrepPartyData_Gen2:
 	pop bc
 	dec b
 	jr nz, .message_loop
-
-; Copy the mail data to wLinkPlayerMailMetadata
+	; Copy the mail data to wLinkPlayerMailMetadata
 	ld hl, sPartyMail
 	ld b, PARTY_LENGTH
 .metadata_loop
@@ -937,8 +854,7 @@ Link_PrepPartyData_Gen2:
 	pop bc
 	dec b
 	jr nz, .metadata_loop
-
-; Translate the messages if necessary
+	; Translate the messages if necessary
 	ld b, PARTY_LENGTH
 	ld de, sPartyMail
 	ld hl, wLinkPlayerMailMessages
@@ -973,8 +889,7 @@ Link_PrepPartyData_Gen2:
 	dec b
 	jr nz, .translate_loop
 	call CloseSRAM
-
-; The SERIAL_NO_DATA_BYTE value isn't allowed anywhere in message text
+	; The SERIAL_NO_DATA_BYTE value isn't allowed anywhere in message text
 	ld hl, wLinkPlayerMailMessages
 	ld bc, (MAIL_MSG_LENGTH + 1) * PARTY_LENGTH
 .message_patch_loop
@@ -988,8 +903,7 @@ Link_PrepPartyData_Gen2:
 	ld a, b
 	or c
 	jr nz, .message_patch_loop
-
-; Calculate the patch offsets for the mail metadata
+	; Calculate the patch offsets for the mail metadata
 	ld hl, wLinkPlayerMailMetadata
 	ld de, wLinkPlayerMailPatchSet
 	ld b, (MAIL_STRUCT_LENGTH - (MAIL_MSG_LENGTH + 1)) * PARTY_LENGTH
@@ -1276,7 +1190,6 @@ LinkTradeOTPartymonMenuLoop:
 	ld hl, wOTPartyMon1Species
 	farcall LinkMonStatsScreen
 	jp LinkTradePartiesMenuMasterLoop
-
 .not_a_button
 	bit D_UP_F, a
 	jr z, .not_d_up
@@ -1298,7 +1211,6 @@ LinkTradeOTPartymonMenuLoop:
 	ld a, [wPartyCount]
 	ld [wMenuCursorY], a
 	jr LinkTrade_PlayerPartyMenu
-
 .not_d_up
 	bit D_DOWN_F, a
 	jp z, LinkTradePartiesMenuMasterLoop
@@ -1334,12 +1246,10 @@ LinkTradePartymonMenuLoop:
 	and a
 	jr nz, .check_joypad
 	jp LinkTradePartiesMenuMasterLoop
-
 .check_joypad
 	bit A_BUTTON_F, a
 	jr z, .not_a_button
 	jp LinkTrade_TradeStatsMenu
-
 .not_a_button
 	bit D_DOWN_F, a
 	jr z, .not_d_down
@@ -1359,7 +1269,6 @@ LinkTradePartymonMenuLoop:
 	ld a, 1
 	ld [wMenuCursorY], a
 	jp LinkTrade_OTPartyMenu
-
 .not_d_down
 	bit D_UP_F, a
 	jr z, LinkTradePartiesMenuMasterLoop
@@ -1396,7 +1305,6 @@ LinkTrade_TradeStatsMenu:
 	ld de, .String_Stats_Trade
 	call PlaceString
 	farcall Link_WaitBGMap
-
 .joy_loop
 	ld a, " "
 	ldcoord_a 11, 16
@@ -1428,7 +1336,6 @@ LinkTrade_TradeStatsMenu:
 	ld [wMenuCursorY], a
 	call SafeLoadTempTilemapToTilemap
 	jp LinkTrade_PlayerPartyMenu
-
 .d_right
 	ld a, " "
 	ldcoord_a 1, 16
@@ -1456,7 +1363,6 @@ LinkTrade_TradeStatsMenu:
 	bit B_BUTTON_F, a
 	jr nz, .b_button
 	jr .try_trade
-
 .show_stats
 	pop af
 	ld [wMenuCursorY], a
@@ -1474,7 +1380,6 @@ LinkTrade_TradeStatsMenu:
 	ld a, " "
 	call LinkEngine_FillBox
 	jp LinkTrade_PlayerPartyMenu
-
 .try_trade
 	call PlaceHollowCursor
 	pop af
@@ -1506,7 +1411,6 @@ LinkTrade_TradeStatsMenu:
 	bccoord 1, 14
 	call PrintTextboxTextAt
 	jr .cancel_trade
-
 .abnormal
 	xor a
 	ld [wUnusedLinkAction], a
@@ -1527,7 +1431,6 @@ LinkTrade_TradeStatsMenu:
 	ld hl, .LinkAbnormalMonText
 	bccoord 1, 14
 	call PrintTextboxTextAt
-
 .cancel_trade
 	hlcoord 0, 12
 	ld b, 4
@@ -1542,14 +1445,11 @@ LinkTrade_TradeStatsMenu:
 	ld c, 100
 	call DelayFrames
 	jp InitTradeMenuDisplay
-
 .LinkTradeCantBattleText:
 	text_far _LinkTradeCantBattleText
 	text_end
-
 .String_Stats_Trade:
 	db "STATS     TRADE@"
-
 .LinkAbnormalMonText:
 	text_far _LinkAbnormalMonText
 	text_end
@@ -1559,7 +1459,6 @@ LinkTradeOTPartymonMenuCheckCancel:
 	cp 1
 	jp nz, LinkTradePartiesMenuMasterLoop
 	call HideCursor
-
 	push hl
 	push bc
 	ld bc, NAME_LENGTH
@@ -1568,7 +1467,6 @@ LinkTradeOTPartymonMenuCheckCancel:
 	pop bc
 	pop hl
 	; fallthrough
-
 LinkTradePartymonMenuCheckCancel:
 .loop1
 	ld a, "▶"
@@ -1589,12 +1487,10 @@ LinkTradePartymonMenuCheckCancel:
 	ld a, [wOTPartyCount]
 	ld [wMenuCursorY], a
 	jp LinkTrade_OTPartyMenu
-
 .d_up
 	ld a, $1
 	ld [wMenuCursorY], a
 	jp LinkTrade_PlayerPartyMenu
-
 .a_button
 	ld a, "▷"
 	ldcoord_a 9, 17
@@ -1605,7 +1501,6 @@ LinkTradePartymonMenuCheckCancel:
 	cp $f
 	jr nz, .loop1
 	; fallthrough
-
 ExitLinkCommunications:
 	call RotateThreePalettesRight
 	call ClearScreen
@@ -1623,25 +1518,6 @@ ExitLinkCommunications:
 	ldh [rSC], a
 	vc_hook ExitLinkCommunications_ret
 	ret
-
-GSPlaceTradeScreenFooter: ; unreferenced
-; Fill the screen footer with pattern tile
-	hlcoord 0, 16
-	ld a, $7e
-	ld bc, 2 * SCREEN_WIDTH
-	call ByteFill
-; Clear out area for cancel string
-	hlcoord 1, 16
-	ld a, " "
-	ld bc, SCREEN_WIDTH - 2
-	call ByteFill
-; Place the string
-	hlcoord 2, 16
-	ld de, .CancelString
-	jp PlaceString
-
-.CancelString:
-	db "CANCEL@"
 
 LinkTradePlaceArrow:
 ; Indicates which pokemon the other player has selected to trade
@@ -1737,7 +1613,6 @@ LinkTrade:
 	ld a, [wMenuCursorY]
 	dec a
 	jr z, .try_trade
-
 .canceled
 	ld a, $1
 	ld [wPlayerLinkAction], a
@@ -1750,7 +1625,6 @@ LinkTrade:
 	call PlaceString
 	farcall PlaceWaitingTextAndSyncAndExchangeNybble
 	jp InitTradeMenuDisplay_Delay
-
 .try_trade
 	ld a, $2
 	ld [wPlayerLinkAction], a
@@ -1758,7 +1632,7 @@ LinkTrade:
 	ld a, [wOtherPlayerLinkMode]
 	dec a
 	jr nz, .do_trade
-; If we're here, the other player canceled the trade
+	; If we're here, the other player canceled the trade
 	hlcoord 0, 12
 	ld b, 4
 	ld c, 18
@@ -1767,7 +1641,6 @@ LinkTrade:
 	ld de, String_TooBadTheTradeWasCanceled
 	call PlaceString
 	jp InitTradeMenuDisplay_Delay
-
 .do_trade
 	ld hl, sPartyMail
 	ld a, [wCurTradePartyMon]
@@ -1791,7 +1664,6 @@ LinkTrade:
 	call CopyBytes
 	pop bc
 	jr .copy_mail
-
 .copy_player_data
 	ld hl, sPartyMail
 	ld a, [wPartyCount]
@@ -1807,14 +1679,13 @@ LinkTrade:
 	ld bc, MAIL_STRUCT_LENGTH
 	call CopyBytes
 	call CloseSRAM
-
-; Buffer player data
-; nickname
+	; Buffer player data
+	; nickname
 	ld hl, wPlayerName
 	ld de, wPlayerTrademonSenderName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-; species
+	; species
 	ld a, [wCurTradePartyMon]
 	ld hl, wPartySpecies
 	ld b, 0
@@ -1823,14 +1694,14 @@ LinkTrade:
 	ld a, [hl]
 	ld [wPlayerTrademonSpecies], a
 	push af
-; OT name
+	; OT name
 	ld a, [wCurTradePartyMon]
 	ld hl, wPartyMonOTs
 	call SkipNames
 	ld de, wPlayerTrademonOTName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-; ID
+	; ID
 	ld hl, wPartyMon1ID
 	ld a, [wCurTradePartyMon]
 	call GetPartyLocation
@@ -1838,7 +1709,7 @@ LinkTrade:
 	ld [wPlayerTrademonID], a
 	ld a, [hl]
 	ld [wPlayerTrademonID + 1], a
-; DVs
+	; DVs
 	ld hl, wPartyMon1DVs
 	ld a, [wCurTradePartyMon]
 	call GetPartyLocation
@@ -1846,7 +1717,7 @@ LinkTrade:
 	ld [wPlayerTrademonDVs], a
 	ld a, [hl]
 	ld [wPlayerTrademonDVs + 1], a
-; caught data
+	; caught data
 	ld a, [wCurTradePartyMon]
 	ld hl, wPartyMon1Species
 	call GetPartyLocation
@@ -1855,14 +1726,13 @@ LinkTrade:
 	farcall GetCaughtGender
 	ld a, c
 	ld [wPlayerTrademonCaughtData], a
-
-; Buffer other player data
-; nickname
+	; Buffer other player data
+	; nickname
 	ld hl, wOTPlayerName
 	ld de, wOTTrademonSenderName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-; species
+	; species
 	ld a, [wCurOTTradePartyMon]
 	ld hl, wOTPartySpecies
 	ld b, 0
@@ -1870,14 +1740,14 @@ LinkTrade:
 	add hl, bc
 	ld a, [hl]
 	ld [wOTTrademonSpecies], a
-; OT name
+	; OT name
 	ld a, [wCurOTTradePartyMon]
 	ld hl, wOTPartyMonOTs
 	call SkipNames
 	ld de, wOTTrademonOTName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-; ID
+	; ID
 	ld hl, wOTPartyMon1ID
 	ld a, [wCurOTTradePartyMon]
 	call GetPartyLocation
@@ -1885,7 +1755,7 @@ LinkTrade:
 	ld [wOTTrademonID], a
 	ld a, [hl]
 	ld [wOTTrademonID + 1], a
-; DVs
+	; DVs
 	ld hl, wOTPartyMon1DVs
 	ld a, [wCurOTTradePartyMon]
 	call GetPartyLocation
@@ -1893,7 +1763,7 @@ LinkTrade:
 	ld [wOTTrademonDVs], a
 	ld a, [hl]
 	ld [wOTTrademonDVs + 1], a
-; caught data
+	; caught data
 	ld a, [wCurOTTradePartyMon]
 	ld hl, wOTPartyMon1Species
 	call GetPartyLocation
@@ -1902,7 +1772,6 @@ LinkTrade:
 	farcall GetCaughtGender
 	ld a, c
 	ld [wOTTrademonCaughtData], a
-
 	ld a, [wCurTradePartyMon]
 	ld [wCurPartyMon], a
 	ld hl, wPartySpecies
@@ -1911,7 +1780,6 @@ LinkTrade:
 	add hl, bc
 	ld a, [hl]
 	ld [wCurTradePartyMon], a
-
 	xor a ; REMOVE_PARTY
 	ld [wPokemonWithdrawDepositParameter], a
 	callfar RemoveMonFromPartyOrBox
@@ -1928,7 +1796,6 @@ LinkTrade:
 	add hl, bc
 	ld a, [hl]
 	ld [wCurOTTradePartyMon], a
-
 	ld c, 100
 	call DelayFrames
 	call ClearTilemap
@@ -1940,10 +1807,8 @@ LinkTrade:
 	jr z, .player_2
 	predef TradeAnimation
 	jr .done_animation
-
 .player_2
 	predef TradeAnimationPlayer2
-
 .done_animation
 	pop af
 	ld c, a
@@ -1969,12 +1834,11 @@ LinkTrade:
 	call LoadTradeScreenBorderGFX
 	call SetTradeRoomBGPals
 	farcall Link_WaitBGMap
-
-; Check if either of the Pokémon sent was a Mew or Celebi, and send a different
-; byte depending on that. Presumably this would've been some prevention against
-; illicit trade machines, but it doesn't seem like a very effective one.
-; Removing this code breaks link compatibility with the vanilla gen2 games, but
-; has otherwise no consequence.
+	; Check if either of the Pokémon sent was a Mew or Celebi, and send a different
+	; byte depending on that. Presumably this would've been some prevention against
+	; illicit trade machines, but it doesn't seem like a very effective one.
+	; Removing this code breaks link compatibility with the vanilla gen2 games, but
+	; has otherwise no consequence.
 	ld b, 1
 	pop af
 	ld c, a
@@ -1990,8 +1854,7 @@ LinkTrade:
 	ld a, [wCurPartySpecies]
 	cp CELEBI
 	jr z, .send_checkbyte
-
-; Send the byte in a loop until the desired byte has been received.
+	; Send the byte in a loop until the desired byte has been received.
 	ld b, 0
 .send_checkbyte
 	ld a, b
@@ -2008,7 +1871,6 @@ LinkTrade:
 	ld a, [wOtherPlayerLinkAction]
 	cp b
 	jr nz, .send_checkbyte
-
 .save
 	farcall SaveAfterLinkTrade
 	farcall StubbedTrainerRankings_Trades
@@ -2066,18 +1928,6 @@ SetTradeRoomBGPals:
 	call SetDefaultBGPAndOBP
 	ret
 
-PlaceTradeScreenTextbox: ; unreferenced
-	hlcoord 0, 0
-	ld b, 6
-	ld c, 18
-	call LinkTextboxAtHL
-	hlcoord 0, 8
-	ld b, 6
-	ld c, 18
-	call LinkTextboxAtHL
-	farcall PlaceTradePartnerNamesAndParty
-	ret
-
 INCLUDE "engine/movie/trade_animation.asm"
 
 CheckTimeCapsuleCompatibility:
@@ -2087,8 +1937,7 @@ CheckTimeCapsuleCompatibility:
 ; 1: At least one Pokémon was introduced in Gen 2
 ; 2: At least one Pokémon has a move that was introduced in Gen 2
 ; 3: At least one Pokémon is holding mail
-
-; If any party Pokémon was introduced in the Gen 2 games, don't let it in.
+	; If any party Pokémon was introduced in the Gen 2 games, don't let it in.
 	ld hl, wPartySpecies
 	ld b, PARTY_LENGTH
 .loop
@@ -2099,8 +1948,7 @@ CheckTimeCapsuleCompatibility:
 	jr nc, .mon_too_new
 	dec b
 	jr nz, .loop
-
-; If any party Pokémon is holding mail, don't let it in.
+	; If any party Pokémon is holding mail, don't let it in.
 .checkitem
 	ld a, [wPartyCount]
 	ld b, a
@@ -2117,8 +1965,7 @@ CheckTimeCapsuleCompatibility:
 	add hl, de
 	dec b
 	jr nz, .itemloop
-
-; If any party Pokémon has a move that was introduced in the Gen 2 games, don't let it in.
+	; If any party Pokémon has a move that was introduced in the Gen 2 games, don't let it in.
 	ld hl, wPartyMon1Moves
 	ld a, [wPartyCount]
 	ld b, a
@@ -2136,13 +1983,11 @@ CheckTimeCapsuleCompatibility:
 	jr nz, .move_loop
 	xor a
 	jr .done
-
 .mon_too_new
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld a, $1
 	jr .done
-
 .move_too_new
 	push bc
 	ld [wNamedObjectIndex], a
@@ -2152,11 +1997,9 @@ CheckTimeCapsuleCompatibility:
 	call GetIncompatibleMonName
 	ld a, $2
 	jr .done
-
 .mon_has_mail
 	call GetIncompatibleMonName
 	ld a, $3
-
 .done
 	ld [wScriptVar], a
 	ret
@@ -2284,7 +2127,6 @@ WaitForLinkedFriend:
 	call DelayFrame
 	call DelayFrame
 	call DelayFrame
-
 .no_link_action
 	ld a, $2
 	ld [wLinkTimeoutFrames + 1], a
@@ -2305,10 +2147,10 @@ WaitForLinkedFriend:
 	ld a, (0 << rSC_ON) | (0 << rSC_CLOCK)
 	ldh [rSC], a
 	ld a, (1 << rSC_ON) | (0 << rSC_CLOCK)
-; This vc_hook causes the Virtual Console to set [hSerialConnectionStatus] to
-; USING_INTERNAL_CLOCK, which allows the player to proceed past the link
-; receptionist's "Please wait." It assumes that hSerialConnectionStatus is at
-; its original address.
+	; This vc_hook causes the Virtual Console to set [hSerialConnectionStatus] to
+	; USING_INTERNAL_CLOCK, which allows the player to proceed past the link
+	; receptionist's "Please wait." It assumes that hSerialConnectionStatus is at
+	; its original address.
 	vc_hook Link_fake_connection_status
 	vc_assert hSerialConnectionStatus == $ffcb, \
 		"hSerialConnectionStatus is no longer located at 00:ffcb."
@@ -2323,7 +2165,6 @@ WaitForLinkedFriend:
 	dec a
 	ld [wLinkTimeoutFrames + 1], a
 	jr z, .done
-
 .not_done
 	ld a, USING_EXTERNAL_CLOCK
 	ldh [rSB], a
@@ -2333,7 +2174,6 @@ WaitForLinkedFriend:
 	ldh [rSC], a
 	call DelayFrame
 	jr .loop
-
 .connected
 	call LinkDataReceived
 	call DelayFrame
@@ -2343,7 +2183,6 @@ WaitForLinkedFriend:
 	ld a, $1
 	ld [wScriptVar], a
 	ret
-
 .done
 	xor a
 	ld [wScriptVar], a
@@ -2371,7 +2210,7 @@ CheckLinkTimeout_Receptionist:
 	jp Link_ResetSerialRegistersAfterLinkClosure
 
 CheckLinkTimeout_Gen2:
-; if wScriptVar = 0 on exit, link connection is closed
+	; if wScriptVar = 0 on exit, link connection is closed
 	ld a, $5
 	ld [wPlayerLinkAction], a
 	ld hl, wLinkTimeoutFrames
@@ -2388,21 +2227,18 @@ CheckLinkTimeout_Gen2:
 	ld a, [wScriptVar]
 	and a
 	jr z, .exit
-
-; Wait for ~$70000 cycles to give the other GB time to be ready
+	; Wait for ~$70000 cycles to give the other GB time to be ready
 	ld bc, $ffff
 .wait
 	dec bc
 	ld a, b
 	or c
 	jr nz, .wait
-
-; If other GB is not ready at this point, disconnect due to timeout
+	; If other GB is not ready at this point, disconnect due to timeout
 	ld a, [wOtherPlayerLinkMode]
 	cp $5
 	jr nz, .timeout
-
-; Another check to increase reliability
+	; Another check to increase reliability
 	ld a, $6
 	ld [wPlayerLinkAction], a
 	ld hl, wLinkTimeoutFrames
@@ -2419,12 +2255,10 @@ endc
 	ld a, [wOtherPlayerLinkMode]
 	cp $6
 	jr z, .exit
-
 .timeout
 	xor a
 	ld [wScriptVar], a
 	ret
-
 .exit
 	xor a
 	ldh [hVBlank], a
@@ -2449,10 +2283,8 @@ Link_CheckCommunicationError:
 	call .AcknowledgeSerial
 	xor a ; FALSE
 	jr .done
-
 .load_true
 	ld a, TRUE
-
 .done
 	ld [wScriptVar], a
 	ld hl, wLinkTimeoutFrames
@@ -2460,7 +2292,6 @@ Link_CheckCommunicationError:
 	ld [hli], a
 	ld [hl], a
 	ret
-
 .CheckConnected:
 	call WaitLinkTransfer
 	ld hl, wLinkTimeoutFrames
@@ -2471,7 +2302,6 @@ Link_CheckCommunicationError:
 	ld a, [hl]
 	inc a
 	ret
-
 .AcknowledgeSerial:
 	vc_patch Wireless_net_delay_7
 if DEF(_CRYSTAL11_VC)
@@ -2486,7 +2316,6 @@ endc
 	dec b
 	jr nz, .loop
 	ret
-
 .ConvertDW:
 	; [wLinkTimeoutFrames] = ((hl - $100) / 4) + $100
 	;                      = (hl / 4) + $c0
@@ -2513,8 +2342,6 @@ TryQuickSave:
 	xor a ; FALSE
 .return_result
 	ld [wScriptVar], a
-	ld c, 30
-	call DelayFrames
 	pop af
 	ld [wChosenCableClubRoom], a
 	ret
@@ -2539,7 +2366,6 @@ CheckBothSelectedSameRoom:
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .fail
 	xor a ; FALSE
 	ld [wScriptVar], a
@@ -2624,7 +2450,6 @@ Link_EnsureSync:
 	and $f0
 	cp $d0
 	jr nz, .receive_loop
-
 .done
 	xor a
 	ldh [hVBlank], a
@@ -2638,22 +2463,6 @@ CableClubCheckWhichChris:
 	ld a, TRUE
 	jr z, .yes
 	dec a ; FALSE
-
 .yes
 	ld [wScriptVar], a
-	ret
-
-GSLinkCommsBorderGFX: ; unreferenced
-INCBIN "gfx/trade/unused_gs_border_tiles.2bpp"
-
-CheckSRAM0Flag: ; unreferenced
-; input: hl = unknown flag array in "SRAM Bank 0"
-	ld a, BANK("SRAM Bank 0")
-	call OpenSRAM
-	ld d, 0
-	ld b, CHECK_FLAG
-	predef SmallFarFlagAction
-	call CloseSRAM
-	ld a, c
-	and a
 	ret

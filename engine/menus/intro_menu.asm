@@ -368,7 +368,7 @@ Continue_MobileAdapterMenu:
 	call DelayFrames
 	ld c, $1
 	farcall InitMobileProfile ; mobile
-	farcall _SaveData
+	farcall SaveData
 	ld a, 8
 	ld [wMusicFade], a
 	ld a, LOW(MUSIC_NONE)

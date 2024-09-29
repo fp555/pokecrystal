@@ -10,12 +10,11 @@ SaveMenu:
 	call AskOverwriteSaveFile
 	jr c, .refused
 	call PauseGameLogic
-	call _SavingDontTurnOffThePower
+	call SavedTheGame
 	call ResumeGameLogic
 	call ExitMenu
 	and a
 	ret
-
 .refused
 	call ExitMenu
 	call GSReloadPalettes
@@ -46,7 +45,6 @@ ChangeBoxSaveGame:
 	call AskOverwriteSaveFile
 	jr c, .refused
 	call PauseGameLogic
-	call SavingDontTurnOffThePower
 	call SaveBox
 	pop de
 	ld a, e
@@ -64,10 +62,9 @@ Link_SaveGame:
 	call AskOverwriteSaveFile
 	jr c, .refused
 	call PauseGameLogic
-	call _SavingDontTurnOffThePower
+	call SavedTheGame
 	call ResumeGameLogic
 	and a
-
 .refused
 	ret
 
@@ -110,8 +107,6 @@ MoveMonWOMail_InsertMon_SaveGame:
 	call ResumeGameLogic
 	ld de, SFX_SAVE
 	call PlaySFX
-	ld c, 24
-	call DelayFrames
 	ret
 
 StartMoveMonWOMail_SaveGame:
@@ -123,11 +118,10 @@ StartMoveMonWOMail_SaveGame:
 	call AskOverwriteSaveFile
 	jr c, .refused
 	call PauseGameLogic
-	call _SavingDontTurnOffThePower
+	call SavedTheGame
 	call ResumeGameLogic
 	and a
 	ret
-
 .refused
 	scf
 	ret
@@ -161,10 +155,9 @@ AddHallOfFameEntry:
 	ld bc, wHallOfFamePokemonListEnd - wHallOfFamePokemonList + 1
 	call CopyBytes
 	call CloseSRAM
-; This vc_hook causes the Virtual Console to set [sGSBallFlag] and [sGSBallFlagBackup]
-; to GS_BALL_AVAILABLE, which enables you to get the GS Ball, take it to Kurt, and
-; encounter Celebi. It assumes that sGSBallFlag and sGSBallFlagBackup are at their
-; original addresses.
+	; This vc_hook causes the Virtual Console to set [sGSBallFlag] and [sGSBallFlagBackup]
+	; to GS_BALL_AVAILABLE, which enables you to get the GS Ball, take it to Kurt, and
+	; encounter Celebi. It assumes that sGSBallFlag and sGSBallFlagBackup are at their original addresses
 	vc_hook Enable_GS_Ball_mobile_event
 	vc_assert BANK(sGSBallFlag) == $1 && sGSBallFlag == $be3c, \
 		"sGSBallFlag is no longer located at 01:be3c."
@@ -174,34 +167,19 @@ AddHallOfFameEntry:
 		"GS_BALL_AVAILABLE is no longer equal to $b."
 	ret
 
-SaveGameData:
-	call _SaveGameData
-	ret
-
 AskOverwriteSaveFile:
 	ld a, [wSaveFileExists]
 	and a
 	jr z, .erase
 	call CompareLoadedAndSavedPlayerID
-	jr z, .yoursavefile
+	ret z
 	ld hl, AnotherSaveFileText
 	call SaveTheGame_yesorno
 	jr nz, .refused
-	jr .erase
-
-.yoursavefile
-	ld hl, AlreadyASaveFileText
-	call SaveTheGame_yesorno
-	jr nz, .refused
-	jr .ok
-
 .erase
 	call ErasePreviousSave
-
-.ok
 	and a
 	ret
-
 .refused
 	scf
 	ret
@@ -236,18 +214,21 @@ CompareLoadedAndSavedPlayerID:
 	cp c
 	ret
 
-_SavingDontTurnOffThePower:
-	call SavingDontTurnOffThePower
 SavedTheGame:
-	call _SaveGameData
-	; wait 32 frames
-	ld c, 32
-	call DelayFrames
+	; instantaneously print message while saving
+	ld hl, wOptions
+	set NO_TEXT_SCROLL, [hl]
+	push hl
+	ld hl, .saving_text
+	call PrintText
+	pop hl
+	res NO_TEXT_SCROLL, [hl]
+	call SaveGameData ; actually save the game
 	; copy the original text speed setting to the stack
 	ld a, [wOptions]
 	push af
-	; set text speed to medium
-	ld a, TEXT_DELAY_MED
+	; set text speed to fast
+	ld a, TEXT_DELAY_FAST
 	ld [wOptions], a
 	; <PLAYER> saved the game!
 	ld hl, SavedTheGameText
@@ -258,12 +239,12 @@ SavedTheGame:
 	ld de, SFX_SAVE
 	call WaitPlaySFX
 	call WaitSFX
-	; wait 30 frames
-	ld c, 30
-	call DelayFrames
 	ret
+.saving_text
+	text "SAVING..."
+	done
 
-_SaveGameData:
+SaveGameData:
 	ld a, TRUE
 	ld [wSaveFileExists], a
 	farcall StageRTCTimeForSave
@@ -311,13 +292,11 @@ UpdateStackTop:
 	ld a, d
 	sbc h
 	jr c, .done
-
 .update
 	ld a, l
 	ld [sStackTop + 0], a
 	ld a, h
 	ld [sStackTop + 1], a
-
 .done
 	call CloseSRAM
 	ret
@@ -332,30 +311,6 @@ FindStackTop:
 	ret nz
 	inc hl
 	jr .loop
-
-SavingDontTurnOffThePower:
-	; Prevent joypad interrupts
-	xor a
-	ldh [hJoypadReleased], a
-	ldh [hJoypadPressed], a
-	ldh [hJoypadSum], a
-	ldh [hJoypadDown], a
-	; Save the text speed setting to the stack
-	ld a, [wOptions]
-	push af
-	; Set the text speed to medium
-	ld a, TEXT_DELAY_MED
-	ld [wOptions], a
-	; SAVING... DON'T TURN OFF THE POWER.
-	ld hl, SavingDontTurnOffThePowerText
-	call PrintText
-	; Restore the text speed setting
-	pop af
-	ld [wOptions], a
-	; Wait for 16 frames
-	ld c, 16
-	call DelayFrames
-	ret
 
 ErasePreviousSave:
 	call EraseBoxes
@@ -401,71 +356,12 @@ EraseHallOfFame:
 	call ByteFill
 	jp CloseSRAM
 
-InitDefaultEZChatMsgs: ; unreferenced
-	ld a, BANK(sEZChatMessages) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
-	call OpenSRAM
-	ld hl, .Data
-	ld de, sEZChatMessages
-	ld bc, EASY_CHAT_MESSAGE_LENGTH * 4
-	call CopyBytes
-	jp CloseSRAM
-
-.Data:
-; introduction
-	db $0d, EZCHAT_GREETINGS,    $00, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
-	db $22, EZCHAT_GREETINGS,    $01, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
-; begin battle
-	db $03, EZCHAT_BATTLE,       $05, EZCHAT_CONDITIONS,   $03, EZCHAT_EXCLAMATIONS
-	db $0e, EZCHAT_CONVERSATION, $03, EZCHAT_GREETINGS,    $00, EZCHAT_POKEMON
-; win battle
-	db $39, EZCHAT_FEELINGS,     $07, EZCHAT_BATTLE,       $00, EZCHAT_EXCLAMATIONS
-	db $04, EZCHAT_FEELINGS,     $01, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
-; lose battle
-	db $0f, EZCHAT_EXCLAMATIONS, $14, EZCHAT_FEELINGS,     $05, EZCHAT_EXCLAMATIONS
-	db $11, EZCHAT_TIME,         $0c, EZCHAT_CONVERSATION, $06, EZCHAT_BATTLE
-
 EraseBattleTowerStatus:
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
 	xor a
 	ld [sBattleTowerChallengeState], a
 	jp CloseSRAM
-
-SaveData:
-	call _SaveData
-	ret
-
-Function14d6c: ; unreferenced
-	ld a, BANK(s4_a60b) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
-	call OpenSRAM
-	ld a, [s4_a60b] ; address of MBC30 bank
-	ld b, $0
-	and a
-	jr z, .ok
-	ld b, $2
-
-.ok
-	ld a, b
-	ld [s4_a60b], a ; address of MBC30 bank
-	call CloseSRAM
-	ret
-
-Function14d83: ; unreferenced
-	ld a, BANK(s4_a60c) ; aka BANK(s4_a60d) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
-	call OpenSRAM
-	xor a
-	ld [s4_a60c], a ; address of MBC30 bank
-	ld [s4_a60d], a ; address of MBC30 bank
-	call CloseSRAM
-	ret
-
-DisableMobileStadium: ; unreferenced
-	ld a, BANK(sMobileStadiumFlag)
-	call OpenSRAM
-	xor a
-	ld [sMobileStadiumFlag], a
-	call CloseSRAM
-	ret
 
 HallOfFame_InitSaveIfNeeded:
 	ld a, [wSavedAtLeastOnce]
@@ -609,7 +505,6 @@ TryLoadSaveFile:
 	call SaveBackupChecksum
 	and a
 	ret
-
 .backup
 	call VerifyBackupChecksum
 	jr nz, .corrupt
@@ -626,7 +521,6 @@ TryLoadSaveFile:
 	call SaveChecksum
 	and a
 	ret
-
 .corrupt
 	ld a, [wOptions]
 	push af
@@ -646,7 +540,6 @@ TryLoadSaveData:
 	ld a, [wSaveFileExists]
 	and a
 	jr z, .backup
-
 	ld a, BANK(sPlayerData)
 	call OpenSRAM
 	ld hl, sPlayerData + wStartDay - wPlayerData
@@ -659,13 +552,11 @@ TryLoadSaveData:
 	ld [de], a
 	call CloseSRAM
 	ret
-
 .backup
 	call CheckBackupSaveFile
 	ld a, [wSaveFileExists]
 	and a
 	jr z, .corrupt
-
 	ld a, BANK(sBackupPlayerData)
 	call OpenSRAM
 	ld hl, sBackupPlayerData + wStartDay - wPlayerData
@@ -678,7 +569,6 @@ TryLoadSaveData:
 	ld [de], a
 	call CloseSRAM
 	ret
-
 .corrupt
 	ld hl, DefaultOptions
 	ld de, wOptions
@@ -705,7 +595,6 @@ CheckPrimarySaveFile:
 	call CloseSRAM
 	ld a, TRUE
 	ld [wSaveFileExists], a
-
 .nope
 	call CloseSRAM
 	ret
@@ -725,7 +614,6 @@ CheckBackupSaveFile:
 	call CopyBytes
 	ld a, $2
 	ld [wSaveFileExists], a
-
 .nope
 	call CloseSRAM
 	ret
@@ -826,30 +714,26 @@ VerifyBackupChecksum:
 	pop af
 	ret
 
-_SaveData:
-	; This is called within two scenarios:
-	;   a) ErasePreviousSave (the process of erasing the save from a previous game file)
-	;   b) unused mobile functionality
-	; It is not part of a regular save.
-
+SaveData:
+; This is called within two scenarios:
+; a) ErasePreviousSave (the process of erasing the save from a previous game file)
+; b) unused mobile functionality
+; It is not part of a regular save.
 	ld a, BANK(sCrystalData)
 	call OpenSRAM
 	ld hl, wCrystalData
 	ld de, sCrystalData
 	ld bc, wCrystalDataEnd - wCrystalData
 	call CopyBytes
-
 	; This block originally had some mobile functionality, but since we're still in
 	; BANK(sCrystalData), it instead overwrites the sixteen wEventFlags starting at 1:s4_a60e with
 	; garbage from wd479. This isn't an issue, since ErasePreviousSave is followed by a regular
 	; save that unwrites the garbage.
-
 	ld hl, wd479
 	ld a, [hli]
 	ld [s4_a60e + 0], a
 	ld a, [hli]
 	ld [s4_a60e + 1], a
-
 	jp CloseSRAM
 
 _LoadData:
@@ -859,10 +743,8 @@ _LoadData:
 	ld de, wCrystalData
 	ld bc, wCrystalDataEnd - wCrystalData
 	call CopyBytes
-
 	; This block originally had some mobile functionality to mirror _SaveData above, but instead it
 	; (harmlessly) writes the aforementioned wEventFlags to the unused wd479.
-
 	ld hl, wd479
 	ld a, [s4_a60e + 0]
 	ld [hli], a
@@ -877,7 +759,6 @@ GetBoxAddress:
 	jr c, .ok
 	xor a
 	ld [wCurBox], a
-
 .ok
 	ld e, a
 	ld d, 0
@@ -899,10 +780,9 @@ endr
 
 SaveBoxAddress:
 ; Save box via wBoxPartialData.
-; We do this in three steps because the size of wBoxPartialData is less than
-; the size of sBox.
+; We do this in three steps because the size of wBoxPartialData is less than the size of sBox.
 	push hl
-; Load the first part of the active box.
+	; Load the first part of the active box.
 	push af
 	push de
 	ld a, BANK(sBox)
@@ -914,7 +794,7 @@ SaveBoxAddress:
 	call CloseSRAM
 	pop de
 	pop af
-; Save it to the target box.
+	; Save it to the target box.
 	push af
 	push de
 	call OpenSRAM
@@ -922,8 +802,7 @@ SaveBoxAddress:
 	ld bc, (wBoxPartialDataEnd - wBoxPartialData)
 	call CopyBytes
 	call CloseSRAM
-
-; Load the second part of the active box.
+	; Load the second part of the active box.
 	ld a, BANK(sBox)
 	call OpenSRAM
 	ld hl, sBox + (wBoxPartialDataEnd - wBoxPartialData)
@@ -933,12 +812,11 @@ SaveBoxAddress:
 	call CloseSRAM
 	pop de
 	pop af
-
 	ld hl, (wBoxPartialDataEnd - wBoxPartialData)
 	add hl, de
 	ld e, l
 	ld d, h
-; Save it to the next part of the target box.
+	; Save it to the next part of the target box.
 	push af
 	push de
 	call OpenSRAM
@@ -946,8 +824,7 @@ SaveBoxAddress:
 	ld bc, (wBoxPartialDataEnd - wBoxPartialData)
 	call CopyBytes
 	call CloseSRAM
-
-; Load the third and final part of the active box.
+	; Load the third and final part of the active box.
 	ld a, BANK(sBox)
 	call OpenSRAM
 	ld hl, sBox + (wBoxPartialDataEnd - wBoxPartialData) * 2
@@ -957,29 +834,26 @@ SaveBoxAddress:
 	call CloseSRAM
 	pop de
 	pop af
-
 	ld hl, (wBoxPartialDataEnd - wBoxPartialData)
 	add hl, de
 	ld e, l
 	ld d, h
-; Save it to the final part of the target box.
+	; Save it to the final part of the target box.
 	call OpenSRAM
 	ld hl, wBoxPartialData
 	ld bc, sBoxEnd - (sBox + (wBoxPartialDataEnd - wBoxPartialData) * 2) ; $8e
 	call CopyBytes
 	call CloseSRAM
-
 	pop hl
 	ret
 
 LoadBoxAddress:
 ; Load box via wBoxPartialData.
-; We do this in three steps because the size of wBoxPartialData is less than
-; the size of sBox.
+; We do this in three steps because the size of wBoxPartialData is less than the size of sBox.
 	push hl
 	ld l, e
 	ld h, d
-; Load part 1
+	; Load part 1
 	push af
 	push hl
 	call OpenSRAM
@@ -996,10 +870,9 @@ LoadBoxAddress:
 	call CloseSRAM
 	pop hl
 	pop af
-
 	ld de, (wBoxPartialDataEnd - wBoxPartialData)
 	add hl, de
-; Load part 2
+	; Load part 2
 	push af
 	push hl
 	call OpenSRAM
@@ -1016,7 +889,7 @@ LoadBoxAddress:
 	call CloseSRAM
 	pop hl
 	pop af
-; Load part 3
+	; Load part 3
 	ld de, (wBoxPartialDataEnd - wBoxPartialData)
 	add hl, de
 	call OpenSRAM
@@ -1031,7 +904,6 @@ LoadBoxAddress:
 	ld bc, sBoxEnd - (sBox + (wBoxPartialDataEnd - wBoxPartialData) * 2) ; $8e
 	call CopyBytes
 	call CloseSRAM
-
 	pop hl
 	ret
 
@@ -1103,16 +975,8 @@ WouldYouLikeToSaveTheGameText:
 	text_far _WouldYouLikeToSaveTheGameText
 	text_end
 
-SavingDontTurnOffThePowerText:
-	text_far _SavingDontTurnOffThePowerText
-	text_end
-
 SavedTheGameText:
 	text_far _SavedTheGameText
-	text_end
-
-AlreadyASaveFileText:
-	text_far _AlreadyASaveFileText
 	text_end
 
 AnotherSaveFileText:

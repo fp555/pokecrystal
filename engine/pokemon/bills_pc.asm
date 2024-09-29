@@ -34,20 +34,17 @@ _DepositPKMN:
 	pop af
 	ld [wOptions], a
 	ret
-
 .RunJumptable:
 	ld a, [wJumptableIndex]
 	ld hl, .Jumptable
 	call BillsPC_Jumptable
 	jp hl
-
 .Jumptable:
 	dw .Init
 	dw .HandleJoypad
 	dw .WhatsUp
 	dw .Submenu
 	dw BillsPC_EndJumptableLoop
-
 .Init:
 	xor a
 	ldh [hBGMapMode], a
@@ -68,7 +65,6 @@ _DepositPKMN:
 	call BillsPC_UpdateSelectionCursor
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .HandleJoypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -90,7 +86,6 @@ _DepositPKMN:
 	call DelayFrame
 	call DelayFrame
 	ret
-
 .a_button
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
@@ -100,17 +95,10 @@ _DepositPKMN:
 	ld a, $2
 	ld [wJumptableIndex], a
 	ret
-
-.go_back ; unreferenced
-	ld hl, wJumptableIndex
-	dec [hl]
-	ret
-
 .b_button
 	ld a, $4
 	ld [wJumptableIndex], a
 	ret
-
 .WhatsUp:
 	xor a
 	ldh [hBGMapMode], a
@@ -125,7 +113,6 @@ _DepositPKMN:
 	ld [wMenuCursorY], a
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .Submenu:
 	ld hl, BillsPCDepositMenuHeader
 	call CopyMenuHeader
@@ -163,7 +150,6 @@ BillsPCDepositFuncDeposit:
 	ld [wBillsPC_CursorPosition], a
 	ld [wBillsPC_ScrollPosition], a
 	ret
-
 .box_full
 	ld de, PCString_WhatsUp
 	call BillsPC_PlaceString
@@ -212,7 +198,6 @@ BillsPCDepositFuncRelease:
 	ld [wBillsPC_ScrollPosition], a
 	pop af
 	ret
-
 .failed_release
 	ld de, PCString_WhatsUp
 	call BillsPC_PlaceString
@@ -230,7 +215,6 @@ BillsPCDepositMenuHeader:
 	menu_coords 9, 4, SCREEN_WIDTH - 1, 13
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -238,21 +222,6 @@ BillsPCDepositMenuHeader:
 	db "STATS@"
 	db "RELEASE@"
 	db "CANCEL@"
-
-BillsPCClearThreeBoxes: ; unreferenced
-	hlcoord 0, 0
-	ld b, 4
-	ld c, 8
-	call ClearBox
-	hlcoord 0, 4
-	ld b, 10
-	ld c, 9
-	call ClearBox
-	hlcoord 0, 14
-	ld b, 2
-	ld c, 8
-	call ClearBox
-	ret
 
 _WithdrawPKMN:
 	ld hl, wOptions
@@ -290,20 +259,17 @@ _WithdrawPKMN:
 	pop af
 	ld [wOptions], a
 	ret
-
 .RunJumptable:
 	ld a, [wJumptableIndex]
 	ld hl, .Jumptable
 	call BillsPC_Jumptable
 	jp hl
-
 .Jumptable:
 	dw .Init
 	dw .Joypad
 	dw .PrepSubmenu
 	dw BillsPC_Withdraw
 	dw BillsPC_EndJumptableLoop
-
 .Init:
 	ld a, NUM_BOXES + 1
 	ld [wBillsPC_LoadedBox], a
@@ -326,7 +292,6 @@ _WithdrawPKMN:
 	call BillsPC_UpdateSelectionCursor
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .Joypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -357,17 +322,10 @@ _WithdrawPKMN:
 	ld a, $2
 	ld [wJumptableIndex], a
 	ret
-
-.go_back ; unreferenced
-	ld hl, wJumptableIndex
-	dec [hl]
-	ret
-
 .b_button
 	ld a, $4
 	ld [wJumptableIndex], a
 	ret
-
 .PrepSubmenu:
 	xor a
 	ldh [hBGMapMode], a
@@ -402,13 +360,11 @@ BillsPC_Withdraw:
 	ld h, [hl]
 	ld l, a
 	jp hl
-
 .dw
 	dw .withdraw ; Withdraw
 	dw .stats ; Stats
 	dw .release ; Release
 	dw .cancel ; Cancel
-
 .withdraw
 	call BillsPC_CheckMail_PreventBlackout
 	jp c, .cancel
@@ -424,7 +380,6 @@ BillsPC_Withdraw:
 	ld de, PCString_WhatsUp
 	call BillsPC_PlaceString
 	ret
-
 .stats
 	call LoadStandardMenuHeader
 	call BillsPC_StatsScreen
@@ -435,7 +390,6 @@ BillsPC_Withdraw:
 	ld a, SCGB_BILLS_PC
 	call BillsPC_ApplyPalettes
 	ret
-
 .release
 	ld a, [wMenuCursorY]
 	push af
@@ -472,18 +426,15 @@ BillsPC_Withdraw:
 	pop af
 	ld [wMenuCursorY], a
 	ret
-
 .cancel
 	ld a, $0
 	ld [wJumptableIndex], a
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 9, 4, SCREEN_WIDTH - 1, 13
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -521,7 +472,6 @@ _MovePKMNWithoutMail:
 	call .RunJumptable
 	call DelayFrame
 	jr .loop
-
 .done
 	call ClearSprites
 	pop af
@@ -531,13 +481,11 @@ _MovePKMNWithoutMail:
 	pop af
 	ld [wOptions], a
 	ret
-
 .RunJumptable:
 	ld a, [wJumptableIndex]
 	ld hl, .Jumptable
 	call BillsPC_Jumptable
 	jp hl
-
 .Jumptable:
 	dw .Init
 	dw .Joypad
@@ -546,7 +494,6 @@ _MovePKMNWithoutMail:
 	dw .PrepInsertCursor
 	dw .Joypad2
 	dw BillsPC_EndJumptableLoop
-
 .Init:
 	xor a
 	ldh [hBGMapMode], a
@@ -567,7 +514,6 @@ _MovePKMNWithoutMail:
 	call BillsPC_UpdateSelectionCursor
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .Joypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -590,7 +536,6 @@ _MovePKMNWithoutMail:
 	call DelayFrame
 	call DelayFrame
 	ret
-
 .d_pad
 	xor a
 	ld [wBillsPC_CursorPosition], a
@@ -598,7 +543,6 @@ _MovePKMNWithoutMail:
 	ld a, $0
 	ld [wJumptableIndex], a
 	ret
-
 .a_button
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
@@ -608,17 +552,10 @@ _MovePKMNWithoutMail:
 	ld a, $2
 	ld [wJumptableIndex], a
 	ret
-
-.go_back ; unreferenced
-	ld hl, wJumptableIndex
-	dec [hl]
-	ret
-
 .b_button
 	ld a, $6
 	ld [wJumptableIndex], a
 	ret
-
 .PrepSubmenu:
 	xor a
 	ldh [hBGMapMode], a
@@ -633,7 +570,6 @@ _MovePKMNWithoutMail:
 	ld [wMenuCursorY], a
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .MoveMonWOMailSubmenu:
 	ld hl, .MenuHeader
 	call CopyMenuHeader
@@ -653,12 +589,10 @@ _MovePKMNWithoutMail:
 	ld h, [hl]
 	ld l, a
 	jp hl
-
 .Jumptable2:
 	dw .Move
 	dw .Stats
 	dw .Cancel
-
 .Move:
 	call BillsPC_CheckMail_PreventBlackout
 	jp c, .Cancel
@@ -671,7 +605,6 @@ _MovePKMNWithoutMail:
 	ld a, $4
 	ld [wJumptableIndex], a
 	ret
-
 .Stats:
 	call LoadStandardMenuHeader
 	call BillsPC_StatsScreen
@@ -682,25 +615,21 @@ _MovePKMNWithoutMail:
 	ld a, SCGB_BILLS_PC
 	call BillsPC_ApplyPalettes
 	ret
-
 .Cancel:
 	ld a, $0
 	ld [wJumptableIndex], a
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 9, 4, SCREEN_WIDTH - 1, 13
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 3 ; items
 	db "MOVE@"
 	db "STATS@"
 	db "CANCEL@"
-
 .PrepInsertCursor:
 	xor a
 	ldh [hBGMapMode], a
@@ -716,7 +645,6 @@ _MovePKMNWithoutMail:
 	call WaitBGMap
 	call BillsPC_IncrementJumptableIndex
 	ret
-
 .Joypad2:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -738,7 +666,6 @@ _MovePKMNWithoutMail:
 	call DelayFrame
 	call DelayFrame
 	ret
-
 .dpad_2
 	xor a
 	ld [wBillsPC_CursorPosition], a
@@ -746,7 +673,6 @@ _MovePKMNWithoutMail:
 	ld a, $4
 	ld [wJumptableIndex], a
 	ret
-
 .a_button_2
 	call BillsPC_CheckSpaceInDestination
 	jr c, .no_space
@@ -754,12 +680,10 @@ _MovePKMNWithoutMail:
 	ld a, $0
 	ld [wJumptableIndex], a
 	ret
-
 .no_space
 	ld hl, wJumptableIndex
 	dec [hl]
 	ret
-
 .b_button_2
 	ld a, [wBillsPC_BackupScrollPosition]
 	ld [wBillsPC_ScrollPosition], a
@@ -849,7 +773,6 @@ MoveMonWithoutMail_DPad:
 	ld a, [hl]
 	and D_DOWN
 	jr nz, BillsPC_PressDown
-
 .check_left_right
 	ld a, [hl]
 	and D_LEFT
@@ -867,14 +790,12 @@ MoveMonWithoutMail_DPad_2:
 	ld e, a
 	and a
 	jr z, .check_left_right
-
 	ld a, [hl]
 	and D_UP
 	jr nz, BillsPC_PressUp
 	ld a, [hl]
 	and D_DOWN
 	jr nz, BillsPC_PressDown
-
 .check_left_right
 	ld a, [hl]
 	and D_LEFT
@@ -891,7 +812,6 @@ BillsPC_PressUp:
 	jr z, .top
 	dec [hl]
 	jr BillsPC_UpDownDidSomething
-
 .top
 	ld hl, wBillsPC_ScrollPosition
 	ld a, [hl]
@@ -907,7 +827,6 @@ BillsPC_PressDown:
 	inc a
 	cp e
 	jr nc, BillsPC_JoypadDidNothing
-
 	ld hl, wBillsPC_CursorPosition
 	ld a, [hl]
 	inc a
@@ -915,7 +834,6 @@ BillsPC_PressDown:
 	jr nc, .not_bottom
 	inc [hl]
 	jr BillsPC_UpDownDidSomething
-
 .not_bottom
 	ld hl, wBillsPC_ScrollPosition
 	inc [hl]
@@ -928,7 +846,6 @@ BillsPC_PressLeft:
 	jr z, .wrap_around
 	dec [hl]
 	jr BillsPC_LeftRightDidSomething
-
 .wrap_around
 	ld [hl], NUM_BOXES
 	jr BillsPC_LeftRightDidSomething
@@ -940,7 +857,6 @@ BillsPC_PressRight:
 	jr z, .wrap_around
 	inc [hl]
 	jr BillsPC_LeftRightDidSomething
-
 .wrap_around
 	ld [hl], 0
 	jr BillsPC_LeftRightDidSomething
@@ -981,14 +897,11 @@ BillsPC_BoxName:
 	hlcoord 8, 0
 	lb bc, 1, 10
 	call Textbox
-
 	ld a, [wBillsPC_LoadedBox]
 	and a
 	jr z, .party
-
 	cp NUM_BOXES + 1
 	jr nz, .gotbox
-
 	ld a, [wCurBox]
 	inc a
 .gotbox
@@ -999,42 +912,30 @@ BillsPC_BoxName:
 	ld e, l
 	ld d, h
 	jr .print
-
 .party
 	ld de, .PartyPKMN
 .print
 	hlcoord 10, 1
 	call PlaceString
 	ret
-
 .PartyPKMN:
 	db "PARTY <PK><MN>@"
 
 PCMonInfo:
-; Display a monster's pic and
-; attributes when highlighting
-; it in a PC menu.
-
-; Includes the neat cascading
+; Display a monster's pic and attributes when highlighting
+; it in a PC menu. Includes the neat cascading
 ; effect when showing the pic.
-
-; Example: Species, level, gender,
-; whether it's holding an item.
-
 	hlcoord 0, 0
 	lb bc, 15, 8
 	call ClearBox
-
 	hlcoord 8, 14
 	lb bc, 1, 3
 	call ClearBox
-
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
 	ret z
 	cp -1
 	ret z
-
 	ld [wTempSpecies], a
 	hlcoord 1, 4
 	xor a
@@ -1055,7 +956,6 @@ PCMonInfo:
 	inc a
 	dec b
 	jr nz, .row
-
 	call BillsPC_LoadMonStats
 	ld a, [wTempSpecies]
 	ld [wCurPartySpecies], a
@@ -1071,14 +971,11 @@ PCMonInfo:
 	ld [wTempSpecies], a
 	cp EGG
 	ret z
-
 	call GetBasePokemonName
 	hlcoord 1, 14
 	call PlaceString
-
 	hlcoord 1, 12
 	call PrintLevel
-
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender
@@ -1090,11 +987,9 @@ PCMonInfo:
 	hlcoord 5, 12
 	ld [hl], a
 .skip_gender
-
 	ld a, [wTempMonItem]
 	and a
 	ret z
-
 	ld d, a
 	callfar ItemIsMail
 	jr c, .mail
@@ -1159,7 +1054,6 @@ BillsPC_LoadMonStats:
 	ld [de], a
 	call CloseSRAM
 	ret
-
 .party
 	ld hl, wPartyMon1Level
 	ld bc, PARTYMON_STRUCT_LENGTH
@@ -1184,7 +1078,6 @@ BillsPC_LoadMonStats:
 	ld a, [hl]
 	ld [de], a
 	ret
-
 .sBox
 	ld a, BANK(sBox)
 	call OpenSRAM
@@ -1194,14 +1087,12 @@ BillsPC_LoadMonStats:
 	call AddNTimes
 	ld a, [hl]
 	ld [wTempMonLevel], a
-
 	ld hl, sBoxMon1Item
 	ld bc, BOXMON_STRUCT_LENGTH
 	ld a, e
 	call AddNTimes
 	ld a, [hl]
 	ld [wTempMonItem], a
-
 	ld hl, sBoxMon1DVs
 	ld bc, BOXMON_STRUCT_LENGTH
 	ld a, e
@@ -1212,7 +1103,6 @@ BillsPC_LoadMonStats:
 	inc de
 	ld a, [hl]
 	ld [de], a
-
 	call CloseSRAM
 	ret
 
@@ -1220,12 +1110,10 @@ BillsPC_RefreshTextboxes:
 	hlcoord 8, 2
 	lb bc, 10, 10
 	call Textbox
-
 	hlcoord 8, 2
 	ld [hl], "└"
 	hlcoord 19, 2
 	ld [hl], "┘"
-
 	ld a, [wBillsPC_ScrollPosition]
 	ld e, a
 	ld d, 0
@@ -1253,10 +1141,8 @@ BillsPC_RefreshTextboxes:
 	dec a
 	jr nz, .loop
 	ret
-
 .CancelString:
 	db "CANCEL@"
-
 .PlaceNickname:
 	ld a, [de]
 	and a
@@ -1266,7 +1152,6 @@ BillsPC_RefreshTextboxes:
 	ld de, .CancelString
 	call PlaceString
 	ret
-
 .get_nickname
 	inc de
 	ld a, [de]
@@ -1306,12 +1191,10 @@ BillsPC_RefreshTextboxes:
 	ld de, wStringBuffer1
 	call PlaceString
 	ret
-
 .boxfail
 	call CloseSRAM
 	pop hl
 	jr .placeholder_string
-
 .party
 	push hl
 	ld hl, wPartySpecies
@@ -1331,11 +1214,9 @@ BillsPC_RefreshTextboxes:
 	ld de, wStringBuffer1
 	call PlaceString
 	ret
-
 .partyfail
 	pop hl
 	jr .placeholder_string
-
 .sBox
 	push hl
 	ld a, BANK(sBox)
@@ -1358,7 +1239,6 @@ BillsPC_RefreshTextboxes:
 	ld de, wStringBuffer1
 	call PlaceString
 	ret
-
 .sBoxFail
 	call CloseSRAM
 	pop hl
@@ -1366,7 +1246,6 @@ BillsPC_RefreshTextboxes:
 	ld de, .Placeholder
 	call PlaceString
 	ret
-
 .Placeholder:
 	db "-----@"
 
@@ -1392,7 +1271,6 @@ MACRO copy_box_data
 	inc a
 	ld [wBillsPCTempBoxCount], a
 	jr .loop\@
-
 .done\@
 	if \1
 		call CloseSRAM
@@ -1425,12 +1303,10 @@ CopyBoxmonSpecies:
 	inc hl
 	copy_box_data 1
 	ret
-
 .party
 	ld hl, wPartySpecies
 	copy_box_data 0
 	ret
-
 .sBox
 	ld a, BANK(sBox)
 	call OpenSRAM
@@ -1457,7 +1333,6 @@ BillsPC_UpdateSelectionCursor:
 	jr nz, .place_cursor
 	call ClearSprites
 	ret
-
 .place_cursor
 	ld hl, .OAM
 	ld de, wShadowOAMSprite00
@@ -1478,7 +1353,6 @@ rept SPRITEOAMSTRUCT_LENGTH - 1
 	inc de
 endr
 	jr .loop
-
 .OAM:
 	dbsprite 10, 4, 0, 6, $00, 0
 	dbsprite 11, 4, 0, 6, $00, 0
@@ -1526,7 +1400,6 @@ rept SPRITEOAMSTRUCT_LENGTH - 1
 	inc de
 endr
 	jr .loop
-
 .OAM:
 	dbsprite 10, 4, 0, 7, $06, 0
 	dbsprite 11, 5, 0, 3, $00, 0 | Y_FLIP
@@ -1540,36 +1413,18 @@ endr
 	dbsprite 19, 4, 0, 7, $07, 0
 	db -1
 
-BillsPC_FillBox: ; unreferenced
-.row
-	push bc
-	push hl
-.col
-	ld [hli], a
-	dec c
-	jr nz, .col
-	pop hl
-	ld bc, SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	dec b
-	jr nz, .row
-	ret
-
 BillsPC_CheckSpaceInDestination:
-; If moving within a box, no need to be here.
+	; If moving within a box, no need to be here.
 	ld hl, wBillsPC_LoadedBox
 	ld a, [wBillsPC_BackupLoadedBox]
 	cp [hl]
 	jr z, .same_box
-
-; Exceeding box or party capacity is a big no-no.
+	; Exceeding box or party capacity is a big no-no.
 	ld a, [wBillsPC_LoadedBox]
 	and a
 	jr z, .party
 	ld e, MONS_PER_BOX + 1
 	jr .compare
-
 .party
 	ld e, PARTY_LENGTH + 1
 .compare
@@ -1579,7 +1434,6 @@ BillsPC_CheckSpaceInDestination:
 .same_box
 	and a
 	ret
-
 .no_room
 	ld de, PCString_TheresNoRoom
 	call BillsPC_PlaceString
@@ -1610,15 +1464,12 @@ BillsPC_CheckMail_PreventBlackout:
 .Okay:
 	and a
 	ret
-
 .HasMail:
 	ld de, PCString_RemoveMail
 	jr .NotOkay
-
 .AllOthersFainted:
 	ld de, PCString_NoMoreUsablePKMN
 	jr .NotOkay
-
 .ItsYourLastPokemon:
 	ld de, PCString_ItsYourLastPKMN
 .NotOkay:
@@ -1637,7 +1488,6 @@ BillsPC_IsMonAnEgg:
 	jr z, .egg
 	and a
 	ret
-
 .egg
 	ld de, PCString_NoReleasingEGGS
 	call BillsPC_PlaceString
@@ -1670,7 +1520,6 @@ StatsScreenDPad:
 	ld [wMenuJoypad], a
 	jr nz, .pressed_down_up
 	jr .pressed_a_b_right_left
-
 .pressed_down_up
 	call _StatsScreenDPad
 	and a
@@ -1687,7 +1536,6 @@ StatsScreenDPad:
 	call BillsPC_CopyMon
 .pressed_a_b_right_left
 	ret
-
 .did_nothing
 	xor a
 	ld [wMenuJoypad], a
@@ -1721,7 +1569,6 @@ BillsPC_CopyMon:
 	call CloseSRAM
 	farcall CalcBufferMonStats
 	ret
-
 .party
 	ld hl, wPartySpecies
 	call CopySpeciesToTemp
@@ -1737,7 +1584,6 @@ BillsPC_CopyMon:
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call CopyBytes
 	ret
-
 .box
 	ld b, a
 	call GetBoxPointer
@@ -1805,7 +1651,6 @@ DepositPokemon:
 	call DelayFrames
 	and a
 	ret
-
 .BoxFull:
 	ld de, PCString_BoxFull
 	call BillsPC_PlaceString
@@ -1860,7 +1705,6 @@ TryWithdrawPokemon:
 	call DelayFrames
 	and a
 	ret
-
 .PartyFull:
 	ld de, PCString_PartyFull
 	call BillsPC_PlaceString
@@ -1882,7 +1726,6 @@ ReleasePKMN_ByePKMN:
 	hlcoord 0, 15
 	lb bc, 1, 18
 	call Textbox
-
 	call WaitBGMap
 	ld a, [wCurPartySpecies]
 	call GetCryIndex
@@ -1891,7 +1734,6 @@ ReleasePKMN_ByePKMN:
 	ld d, b
 	call PlayCry
 .skip_cry
-
 	ld a, [wCurPartySpecies]
 	ld [wTempSpecies], a
 	call GetPokemonName
@@ -1929,8 +1771,6 @@ MovePKMNWithoutMail_InsertMon:
 	hlcoord 1, 16
 	ld de, .Saving_LeaveOn
 	call PlaceString
-	ld c, 20
-	call DelayFrames
 	pop af
 	pop bc
 	pop de
@@ -1942,13 +1782,11 @@ MovePKMNWithoutMail_InsertMon:
 	and a
 	jr nz, .moving_from_box
 	set 0, c
-
 .moving_from_box
 	ld a, [wBillsPC_LoadedBox]
 	and a
 	jr nz, .moving_to_box
 	set 1, c
-
 .moving_to_box
 	ld hl, .Jumptable
 	add hl, bc
@@ -1959,22 +1797,18 @@ MovePKMNWithoutMail_InsertMon:
 	ld de, .dw_return
 	push de
 	jp hl
-
 .dw_return
 	pop af
 	ld e, a
 	farcall MoveMonWOMail_InsertMon_SaveGame
 	ret
-
 .Saving_LeaveOn:
 	db "Saving… Leave ON!@"
-
 .Jumptable:
 	dw .BoxToBox
 	dw .PartyToBox
 	dw .BoxToParty
 	dw .PartyToParty
-
 .BoxToBox:
 	ld hl, wBillsPC_BackupLoadedBox
 	ld a, [wBillsPC_LoadedBox]
@@ -1983,13 +1817,11 @@ MovePKMNWithoutMail_InsertMon:
 	call .CopyFromBox
 	call .CopyToBox
 	ret
-
 .same_box
 	call .CopyFromBox
 	call .CheckTrivialMove
 	call .CopyToBox
 	ret
-
 .PartyToBox:
 	call .CopyFromParty
 	ld a, $1
@@ -1999,18 +1831,15 @@ MovePKMNWithoutMail_InsertMon:
 	ld [wGameLogicPaused], a
 	call .CopyToBox
 	ret
-
 .BoxToParty:
 	call .CopyFromBox
 	call .CopyToParty
 	ret
-
 .PartyToParty:
 	call .CopyFromParty
 	call .CheckTrivialMove
 	call .CopyToParty
 	ret
-
 .CheckTrivialMove:
 	ld a, [wBillsPC_CursorPosition]
 	ld hl, wBillsPC_ScrollPosition
@@ -2027,7 +1856,6 @@ MovePKMNWithoutMail_InsertMon:
 	jr z, .top_of_screen
 	dec [hl]
 	ret
-
 .top_of_screen
 	ld hl, wBillsPC_ScrollPosition
 	ld a, [hl]
@@ -2035,7 +1863,6 @@ MovePKMNWithoutMail_InsertMon:
 	ret z
 	dec [hl]
 	ret
-
 .CopyFromBox:
 	ld a, [wBillsPC_BackupLoadedBox]
 	dec a
@@ -2062,7 +1889,6 @@ MovePKMNWithoutMail_InsertMon:
 	ld [wPokemonWithdrawDepositParameter], a
 	farcall RemoveMonFromPartyOrBox
 	ret
-
 .CopyToBox:
 	ld a, [wBillsPC_LoadedBox]
 	dec a
@@ -2074,7 +1900,6 @@ MovePKMNWithoutMail_InsertMon:
 	ld [wCurPartyMon], a
 	farcall InsertPokemonIntoBox
 	ret
-
 .CopyFromParty:
 	ld a, [wBillsPC_BackupCursorPosition]
 	ld hl, wBillsPC_BackupScrollPosition
@@ -2093,7 +1918,6 @@ MovePKMNWithoutMail_InsertMon:
 	ld [wPokemonWithdrawDepositParameter], a
 	farcall RemoveMonFromPartyOrBox
 	ret
-
 .CopyToParty:
 	ld a, [wBillsPC_CursorPosition]
 	ld hl, wBillsPC_ScrollPosition
@@ -2150,7 +1974,6 @@ GetBoxPointer:
 	ld h, [hl]
 	ld l, a
 	ret
-
 .BoxBankAddresses:
 	table_width 3, GetBoxPointer.BoxBankAddresses
 for n, 1, NUM_BOXES + 1
@@ -2212,7 +2035,6 @@ PCString_ReleasedPKMN: db "Released <PK><MN>.@"
 PCString_Bye: db "Bye,@"
 PCString_Stored: db "Stored @"
 PCString_Got: db "Got @"
-PCString_Non: db "Non.@" ; unreferenced
 PCString_BoxFull: db "The BOX is full.@"
 PCString_PartyFull: db "The party's full!@"
 PCString_NoReleasingEGGS: db "No releasing EGGS!@"
@@ -2257,7 +2079,6 @@ _ChangeBox_MenuHeader:
 	menu_coords 1, 5, 9, 12
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db SCROLLINGMENU_CALL_FUNCTION3_NO_SWITCH | SCROLLINGMENU_ENABLE_FUNCTION3 ; flags
 	db 4, 0 ; rows, columns
@@ -2266,14 +2087,12 @@ _ChangeBox_MenuHeader:
 	dba .PrintBoxNames
 	dba NULL
 	dba BillsPC_PrintBoxCountAndCapacity
-
 .Boxes:
 	db NUM_BOXES
 for x, NUM_BOXES
 	db x + 1
 endr
 	db -1
-
 .PrintBoxNames:
 	push de
 	ld a, [wMenuSelection]
@@ -2310,10 +2129,8 @@ BillsPC_PrintBoxCountAndCapacity:
 	ld de, .OutOf20
 	call PlaceString
 	ret
-
 .Pokemon:
 	db "#MON@"
-
 .OutOf20:
 	db "/{d:MONS_PER_BOX}@" ; "/20@"
 
@@ -2344,11 +2161,9 @@ GetBoxCount:
 	jr z, .newfile
 	ld a, c
 	ret
-
 .newfile
 	xor a
 	ret
-
 .activebox
 	ld a, BANK(sBoxCount)
 	ld b, a
@@ -2357,7 +2172,6 @@ GetBoxCount:
 	ld a, [hl]
 	call CloseSRAM
 	ret
-
 .BoxBankAddresses:
 	table_width 3, GetBoxCount.BoxBankAddresses
 for n, 1, NUM_BOXES + 1
@@ -2379,7 +2193,6 @@ BillsPC_PrintBoxName:
 	hlcoord 11, 2
 	call PlaceString
 	ret
-
 .Current:
 	db "CURRENT@"
 
@@ -2398,7 +2211,6 @@ BillsPC_ChangeBoxSubmenu:
 	jr z, .Print
 	and a
 	ret
-
 .Print:
 	call GetBoxCount
 	and a
@@ -2412,12 +2224,10 @@ BillsPC_ChangeBoxSubmenu:
 	call BillsPC_ClearTilemap
 	and a
 	ret
-
 .EmptyBox:
 	call BillsPC_PlaceEmptyBoxString_SFX
 	and a
 	ret
-
 .Switch:
 	ld a, [wMenuSelection]
 	dec a
@@ -2427,7 +2237,6 @@ BillsPC_ChangeBoxSubmenu:
 	ret z
 	farcall ChangeBoxSaveGame
 	ret
-
 .Name:
 	ld b, NAME_BOX
 	ld de, wBoxNameBuffer
@@ -2449,15 +2258,11 @@ BillsPC_ChangeBoxSubmenu:
 	ld de, wBoxNameBuffer
 	call CopyName2
 	ret
-
-	hlcoord 11, 7 ; unreferenced
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 11, 4, SCREEN_WIDTH - 1, 13
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -2469,14 +2274,12 @@ BillsPC_ChangeBoxSubmenu:
 BillsPC_PlaceChooseABoxString:
 	ld de, .ChooseABox
 	jr BillsPC_PlaceChangeBoxString
-
 .ChooseABox:
 	db "Choose a BOX.@"
 
 BillsPC_PlaceWhatsUpString:
 	ld de, .WhatsUp
 	jr BillsPC_PlaceChangeBoxString
-
 .WhatsUp:
 	db "What's up?@"
 
@@ -2489,7 +2292,6 @@ BillsPC_PlaceEmptyBoxString_SFX:
 	ld c, 50
 	call DelayFrames
 	ret
-
 .NoMonString:
 	db "There's no #MON.@"
 

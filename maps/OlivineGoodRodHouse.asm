@@ -22,21 +22,16 @@ GoodRodGuru:
 	closetext
 	setevent EVENT_GOT_GOOD_ROD
 	end
-
 .DontWantIt:
 	writetext DontWantGoodRodText
 	waitbutton
 	closetext
 	end
-
 .AlreadyGotItem:
 	writetext HaveGoodRodText
 	waitbutton
 	closetext
 	end
-
-GoodRodHouseBookshelf: ; unreferenced
-	jumpstd PictureBookshelfScript
 
 OfferGoodRodText:
 	text "OLIVINE is on the"

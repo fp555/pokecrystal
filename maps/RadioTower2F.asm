@@ -18,9 +18,6 @@ RadioTower2F_MapScripts:
 
 	def_callbacks
 
-RadioTower2FNoopScene: ; unreferenced
-	end
-
 RadioTower2FSuperNerdScript:
 	jumptextfaceplayer RadioTower2FSuperNerdText
 
@@ -33,7 +30,6 @@ RadioTower2FTeacherScript:
 	waitbutton
 	closetext
 	end
-
 .Rockets:
 	writetext RadioTower2FTeacherText_Rockets
 	waitbutton
@@ -45,6 +41,8 @@ RadioTowerJigglypuff:
 	writetext RadioTowerJigglypuffText
 	cry JIGGLYPUFF
 	waitbutton
+	setval JIGGLYPUFF
+	special ShowPokedexEntry
 	closetext
 	end
 
@@ -56,7 +54,6 @@ RadioTower2FBlackBelt2Script:
 
 TrainerGruntM4:
 	trainer GRUNTM, GRUNTM_4, EVENT_BEAT_ROCKET_GRUNTM_4, GruntM4SeenText, GruntM4BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -67,7 +64,6 @@ TrainerGruntM4:
 
 TrainerGruntM5:
 	trainer GRUNTM, GRUNTM_5, EVENT_BEAT_ROCKET_GRUNTM_5, GruntM5SeenText, GruntM5BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -78,7 +74,6 @@ TrainerGruntM5:
 
 TrainerGruntM6:
 	trainer GRUNTM, GRUNTM_6, EVENT_BEAT_ROCKET_GRUNTM_6, GruntM6SeenText, GruntM6BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -89,7 +84,6 @@ TrainerGruntM6:
 
 TrainerGruntF2:
 	trainer GRUNTF, GRUNTF_2, EVENT_BEAT_ROCKET_GRUNTF_2, GruntF2SeenText, GruntF2BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -159,7 +153,6 @@ Buena:
 	readvar VAR_BLUECARDBALANCE
 	ifequal BLUE_CARD_POINT_CAP, .BlueCardCapped1
 	end
-
 .Introduction:
 	writetext RadioTower2FBuenaShowIntroductionText
 	promptbutton
@@ -176,7 +169,6 @@ Buena:
 .Registered0:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	end
-
 .ForgotPassword:
 	writetext RadioTower2FBuenaComeBackAfterListeningText
 	waitbutton
@@ -186,7 +178,6 @@ Buena:
 	pause 20
 	special RestartMapMusic
 	end
-
 .PlayedAlready:
 	writetext RadioTower2FBuenaAlreadyPlayedText
 	waitbutton
@@ -199,7 +190,6 @@ Buena:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	pause 10
 	end
-
 .WrongAnswer:
 	setflag ENGINE_BUENAS_PASSWORD_2
 	opentext
@@ -217,13 +207,11 @@ Buena:
 	pause 20
 	special RestartMapMusic
 	end
-
 .MidRocketTakeover:
 	writetext RadioTower2FBuenaPasswordIsHelpText
 	waitbutton
 	closetext
 	end
-
 .NoBlueCard:
 	writetext RadioTower2FBuenaNoBlueCardText
 	waitbutton
@@ -235,7 +223,6 @@ Buena:
 .Registered2:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	end
-
 .BlueCardCapped0:
 	writetext RadioTower2FBuenaCardIsFullText
 	waitbutton
@@ -247,7 +234,6 @@ Buena:
 .Registered3:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	end
-
 .TooEarly:
 	writetext RadioTower2FBuenaTuneInAfterSixText
 	waitbutton
@@ -258,7 +244,6 @@ Buena:
 	iftrue .OfferedNumberBefore
 .Registered4:
 	end
-
 .BlueCardCapped1:
 	checkcellnum PHONE_BUENA
 	iftrue .HasNumber
@@ -275,7 +260,6 @@ Buena:
 	opentext
 	writetext RadioTower2FBuenaOfferPhoneNumberText
 	sjump .AskForNumber
-
 .OfferedNumberBefore:
 	opentext
 	writetext RadioTower2FBuenaOfferNumberAgainText
@@ -293,14 +277,12 @@ Buena:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	addcellnum PHONE_BUENA
 	end
-
 .NumberDeclined:
 	writetext RadioTower2FBuenaSadRejectedText
 	waitbutton
 	closetext
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	end
-
 .PhoneFull:
 	writetext RadioTower2FBuenaYourPhoneIsFullText
 	waitbutton
@@ -319,7 +301,6 @@ RadioTowerBuenaPrizeReceptionist:
 	special BuenaPrize
 	closetext
 	end
-
 .NoCard:
 	writetext RadioTower2FBuenaReceptionistNoCardText
 	promptbutton

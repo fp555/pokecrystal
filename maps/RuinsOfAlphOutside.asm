@@ -25,17 +25,14 @@ RuinsOfAlphOutsideScientistCallback:
 	checkevent EVENT_MADE_UNOWN_APPEAR_IN_RUINS
 	iftrue .MaybeScientist
 	sjump .NoScientist
-
 .MaybeScientist:
 	readvar VAR_UNOWNCOUNT
 	ifgreater 2, .YesScientist
 	sjump .NoScientist
-
 .YesScientist:
 	appear RUINSOFALPHOUTSIDE_SCIENTIST
 	setscene SCENE_RUINSOFALPHOUTSIDE_GET_UNOWN_DEX
 	endcallback
-
 .NoScientist:
 	disappear RUINSOFALPHOUTSIDE_SCIENTIST
 	setscene SCENE_RUINSOFALPHOUTSIDE_NOOP
@@ -53,6 +50,7 @@ RuinsOfAlphOutsideScientistScene2:
 
 RuinsOfAlphOutsideScientistScript:
 	faceplayer
+	; fallthrough
 RuinsOfAlphOutsideScientistSceneContinue:
 	opentext
 	writetext RuinsOfAlphOutsideScientistText
@@ -101,22 +99,10 @@ RuinsOfAlphOutsideYoungster2Script:
 
 TrainerPsychicNathan:
 	trainer PSYCHIC_T, NATHAN, EVENT_BEAT_PSYCHIC_NATHAN, PsychicNathanSeenText, PsychicNathanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
 	writetext PsychicNathanAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerSuperNerdStan: ; unreferenced
-	trainer SUPER_NERD, STAN, EVENT_BEAT_SUPER_NERD_STAN, SuperNerdStanSeenText, SuperNerdStanBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext SuperNerdStanAfterBattleText
 	waitbutton
 	closetext
 	end

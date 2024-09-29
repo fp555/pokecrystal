@@ -29,7 +29,6 @@ AcademyEarl:
 	waitbutton
 	closetext
 	end
-
 .Done:
 	writetext AcademyEarlNoMoreToTeachText
 	waitbutton
@@ -74,45 +73,37 @@ AcademyBlackboard:
 	ifequal 5, .Freeze
 	closetext
 	end
-
 .Poison:
 	writetext AcademyPoisonText
 	waitbutton
 	sjump .Loop
-
 .Paralysis:
 	writetext AcademyParalysisText
 	waitbutton
 	sjump .Loop
-
 .Sleep:
 	writetext AcademySleepText
 	waitbutton
 	sjump .Loop
-
 .Burn:
 	writetext AcademyBurnText
 	waitbutton
 	sjump .Loop
-
 .Freeze:
 	writetext AcademyFreezeText
 	waitbutton
 	sjump .Loop
-
 .BlackboardMenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 11, 8
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	dn 3, 2 ; rows, columns
 	db 5 ; spacing
 	dba .Text
 	dbw BANK(@), NULL
-
 .Text:
 	db "PSN@"
 	db "PAR@"
@@ -137,9 +128,6 @@ AcademyNotebook:
 .Done:
 	closetext
 	end
-
-AcademyStickerMachine: ; unreferenced
-	jumptext AcademyStickerMachineText
 
 AcademyBookshelf:
 	jumpstd DifficultBookshelfScript
@@ -270,10 +258,6 @@ AcademyBlackboardText:
 	line "battle."
 	done
 
-AcademyBlackboardText2: ; unreferenced
-	text "Read which topic?"
-	done
-
 AcademyPoisonText:
 	text "If poisoned, a"
 	line "#MON steadily"
@@ -398,13 +382,6 @@ AcademyNotebookText3:
 
 	para "I haven't written"
 	line "anymore…"
-	done
-
-AcademyStickerMachineText:
-	text "This super machine"
-	line "prints data out as"
-
-	para "stickers!"
 	done
 
 EarlsPokemonAcademy_MapEvents:

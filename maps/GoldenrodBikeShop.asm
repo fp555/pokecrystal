@@ -6,9 +6,6 @@ GoldenrodBikeShop_MapScripts:
 
 	def_callbacks
 
-GoldenrodBikeShopNoopScene: ; unreferenced
-	end
-
 GoldenrodBikeShopClerkScript:
 	faceplayer
 	opentext
@@ -32,15 +29,11 @@ GoldenrodBikeShopClerkScript:
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext GoldenrodBikeShopClerkRefusedText
 	waitbutton
 	closetext
 	end
-
-GoldenrodBikeShopJustReleasedCompactBike: ; unreferenced
-	jumptext GoldenrodBikeShopJustReleasedCompactBikeText
 
 GoldenrodBikeShopBicycle:
 	jumptext GoldenrodBikeShopBicycleText
@@ -84,13 +77,6 @@ GoldenrodBikeShopClerkRefusedText:
 	text "…sigh… Oh, for"
 	line "the kindness of"
 	cont "people…"
-	done
-
-GoldenrodBikeShopJustReleasedCompactBikeText:
-	text "Just released!"
-
-	para "First-rate compact"
-	line "BICYCLES!"
 	done
 
 GoldenrodBikeShopBicycleText:

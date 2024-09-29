@@ -18,7 +18,6 @@ Route39BarnTwin1Script:
 	closetext
 	turnobject ROUTE39BARN_TWIN1, RIGHT
 	end
-
 .FeedingMooMoo:
 	writetext Route39BarnTwinWereFeedingMoomooText
 	waitbutton
@@ -36,7 +35,6 @@ Route39BarnTwin2Script:
 	closetext
 	turnobject ROUTE39BARN_TWIN2, LEFT
 	end
-
 .FeedingMooMoo:
 	writetext Route39BarnTwinWereFeedingMoomooText
 	waitbutton
@@ -58,7 +56,6 @@ MoomooScript:
 	waitbutton
 	closetext
 	end
-
 .GiveBerry:
 	promptbutton
 	writetext Route39BarnAskGiveBerryText
@@ -77,7 +74,6 @@ MoomooScript:
 	waitbutton
 	closetext
 	end
-
 .ThreeBerries:
 	writetext Route39BarnGaveBerryText
 	promptbutton
@@ -85,7 +81,6 @@ MoomooScript:
 	waitbutton
 	closetext
 	end
-
 .FiveBerries:
 	writetext Route39BarnGaveBerryText
 	promptbutton
@@ -93,7 +88,6 @@ MoomooScript:
 	waitbutton
 	closetext
 	end
-
 .SevenBerries:
 	playmusic MUSIC_HEAL
 	writetext Route39BarnGaveBerryText
@@ -105,23 +99,22 @@ MoomooScript:
 	closetext
 	setevent EVENT_HEALED_MOOMOO
 	end
-
 .NoBerriesInBag:
 	writetext Route39BarnNoBerriesText
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext Route39BarnRefusedBerryText
 	waitbutton
 	closetext
 	end
-
 .HappyCow:
 	writetext MoomooHappyMooText
 	cry MILTANK
 	waitbutton
+	setval MILTANK
+	special ShowPokedexEntry
 	closetext
 	end
 

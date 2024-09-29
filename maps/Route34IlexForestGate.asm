@@ -17,7 +17,6 @@ Route34IsForestRestlessCallback:
 	disappear ROUTE34ILEXFORESTGATE_TEACHER1
 	appear ROUTE34ILEXFORESTGATE_TEACHER2
 	endcallback
-
 .Normal:
 	disappear ROUTE34ILEXFORESTGATE_TEACHER2
 	appear ROUTE34ILEXFORESTGATE_TEACHER1
@@ -59,7 +58,6 @@ Route34IlexForestGateTeacherScript:
 .NoRoom:
 	closetext
 	end
-
 .ForestIsRestless:
 	writetext Route34IlexForestGateTeacher_ForestIsRestless
 	promptbutton
@@ -71,6 +69,8 @@ Route34IlexForestGateButterfreeScript:
 	writetext Route34IlexForestGateButterfreeText
 	cry BUTTERFREE
 	waitbutton
+	setval BUTTERFREE
+	special ShowPokedexEntry
 	closetext
 	end
 

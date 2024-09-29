@@ -20,7 +20,6 @@ CopycatsHouse1FPokefanFScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext CopycatsHouse1FPokefanFText_ReturnedMachinePart
 	waitbutton
@@ -32,6 +31,8 @@ CopycatsHouse1FBlisseyScript:
 	writetext CopycatsHouse1FBlisseyText
 	cry BLISSEY
 	waitbutton
+	setval BLISSEY
+	special ShowPokedexEntry
 	closetext
 	end
 

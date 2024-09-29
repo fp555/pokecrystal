@@ -25,7 +25,6 @@ CeruleanCityCooltrainerMScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext CeruleanCityCooltrainerMText2
 	waitbutton
@@ -40,6 +39,8 @@ CeruleanCitySlowbro:
 	writetext CeruleanCitySlowbroText
 	cry SLOWBRO
 	waitbutton
+	setval SLOWBRO
+	special ShowPokedexEntry
 	closetext
 	end
 
@@ -77,7 +78,6 @@ CeruleanCityFisherScript:
 	waitbutton
 	closetext
 	end
-
 .MetCeruleanRocket:
 	writetext CeruleanCityFisherRocketTipText
 	waitbutton
@@ -93,7 +93,6 @@ CeruleanCityYoungsterScript:
 	checkevent EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY
 	iffalse .BerserkGenePingsItemfinder
 	end
-
 .BerserkGenePingsItemfinder:
 	waitsfx
 	playsound SFX_SECOND_PART_OF_ITEMFINDER

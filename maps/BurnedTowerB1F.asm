@@ -107,7 +107,6 @@ BurnedTowerB1FEusine:
 	ifequal UP, .Movement2
 	applymovement BURNEDTOWERB1F_EUSINE, BurnedTowerB1FEusineMovement1
 	sjump .Finish
-
 .Movement2:
 	applymovement BURNEDTOWERB1F_EUSINE, BurnedTowerB1FEusineMovement2
 .Finish:
@@ -152,12 +151,6 @@ BurnedTowerSuicuneMovement2:
 	fast_jump_step UP
 	big_step UP
 	fast_jump_step RIGHT
-	remove_sliding
-	step_end
-
-BurnedTowerUnusedMovement: ; unreferenced
-	set_sliding
-	big_step DOWN
 	remove_sliding
 	step_end
 

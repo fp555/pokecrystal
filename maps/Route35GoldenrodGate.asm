@@ -36,19 +36,16 @@ RandyScript:
 	waitbutton
 	closetext
 	end
-
 .partyfull
 	writetext Route35GoldenrodGateRandyCantCarryAnotherMonText
 	waitbutton
 	closetext
 	end
-
 .refused
 	writetext Route35GoldenrodGateRandyOhNeverMindThenText
 	waitbutton
 	closetext
 	end
-
 .questcomplete
 	writetext Route35GoldenrodGateRandySomethingForYourTroubleText
 	promptbutton
@@ -73,8 +70,6 @@ GiftSpearowName:
 GiftSpearowOTName:
 	db "RANDY@"
 
-	db 0 ; unused
-
 Route35GoldenrodGatePokefanFScript:
 	faceplayer
 	opentext
@@ -84,7 +79,6 @@ Route35GoldenrodGatePokefanFScript:
 	waitbutton
 	closetext
 	end
-
 .FoughtSudowoodo
 	writetext Route35GoldenrodGatePokefanFText_FoughtSudowoodo
 	waitbutton

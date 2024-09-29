@@ -10,7 +10,6 @@ RuinsOfAlphAerodactylChamberCheckWallScene:
 	checkevent EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER
 	iftrue .OpenWall
 	end
-
 .OpenWall:
 	sdefer RuinsOfAlphAerodactylChamberWallOpenScript
 	end
@@ -26,7 +25,6 @@ RuinsOfAlphAerodactylChamberHiddenDoorsCallback:
 	checkevent EVENT_SOLVED_AERODACTYL_PUZZLE
 	iffalse .FloorClosed
 	endcallback
-
 .FloorClosed:
 	changeblock 2, 2, $01 ; left floor
 	changeblock 4, 2, $02 ; right floor
@@ -52,7 +50,6 @@ RuinsOfAlphAerodactylChamberPuzzle:
 	closetext
 	iftrue .PuzzleComplete
 	end
-
 .PuzzleComplete:
 	setevent EVENT_RUINS_OF_ALPH_INNER_CHAMBER_TOURISTS
 	setevent EVENT_SOLVED_AERODACTYL_PUZZLE
@@ -95,7 +92,6 @@ RuinsOfAlphAerodactylChamberWallPatternRight:
 	special DisplayUnownWords
 	closetext
 	end
-
 .WallOpen:
 	opentext
 	writetext RuinsOfAlphAerodactylChamberWallHoleText
@@ -110,10 +106,6 @@ RuinsOfAlphAerodactylChamberSkyfallTopMovement:
 RuinsOfAlphAerodactylChamberWallPatternLeftText:
 	text "Patterns appeared"
 	line "on the walls…"
-	done
-
-RuinsOfAlphAerodactylChamberUnownText: ; unreferenced
-	text "It's UNOWN text!"
 	done
 
 RuinsOfAlphAerodactylChamberWallPatternRightText:

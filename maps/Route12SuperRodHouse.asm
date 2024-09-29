@@ -24,16 +24,12 @@ Route12SuperRodHouseFishingGuruScript:
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext DontWantSuperRodText
 	waitbutton
 .NoRoom:
 	closetext
 	end
-
-SuperRodHouseBookshelf: ; unreferenced
-	jumpstd PictureBookshelfScript
 
 OfferSuperRodText:
 	text "I'm the FISHING"

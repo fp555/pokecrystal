@@ -137,6 +137,8 @@ AzaleaTownSlowpokeScript:
 	writetext AzaleaTownSlowpokeText2
 	cry SLOWPOKE
 	waitbutton
+	setval SLOWPOKE
+	special ShowPokedexEntry
 	closetext
 	end
 

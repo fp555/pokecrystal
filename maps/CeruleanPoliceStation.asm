@@ -19,6 +19,8 @@ CeruleanDiglett:
 	writetext CeruleanDiglettText
 	cry DIGLETT
 	waitbutton
+	setval DIGLETT
+	special ShowPokedexEntry
 	closetext
 	end
 

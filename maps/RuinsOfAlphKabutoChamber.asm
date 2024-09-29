@@ -14,7 +14,6 @@ RuinsOfAlphKabutoChamberCheckWallScene:
 	checkevent EVENT_WALL_OPENED_IN_KABUTO_CHAMBER
 	iftrue .OpenWall
 	end
-
 .OpenWall:
 	sdefer RuinsOfAlphKabutoChamberWallOpenScript
 	end
@@ -30,7 +29,6 @@ RuinsOfAlphKabutoChamberHiddenDoorsCallback:
 	checkevent EVENT_SOLVED_KABUTO_PUZZLE
 	iffalse .FloorClosed
 	endcallback
-
 .FloorClosed:
 	changeblock 2, 2, $01 ; left floor
 	changeblock 4, 2, $02 ; right floor
@@ -59,7 +57,6 @@ RuinsOfAlphKabutoChamberPuzzle:
 	closetext
 	iftrue .PuzzleComplete
 	end
-
 .PuzzleComplete:
 	setevent EVENT_RUINS_OF_ALPH_INNER_CHAMBER_TOURISTS
 	setevent EVENT_SOLVED_KABUTO_PUZZLE
@@ -97,13 +94,11 @@ RuinsOfAlphKabutoChamberScientistScript:
 	closetext
 	turnobject RUINSOFALPHKABUTOCHAMBER_SCIENTIST, UP
 	end
-
 .WallOpen:
 	writetext RuinsOfAlphKabutoChamberScientistHoleText
 	waitbutton
 	closetext
 	end
-
 .AllUnownCaught:
 	writetext RuinsOfAlphResearchCenterScientist1Text_GotAllUnown
 	waitbutton
@@ -133,7 +128,6 @@ RuinsOfAlphKabutoChamberWallPatternRight:
 	special DisplayUnownWords
 	closetext
 	end
-
 .WallOpen:
 	opentext
 	writetext RuinsOfAlphKabutoChamberWallHoleText
@@ -200,31 +194,9 @@ RuinsOfAlphKabutoChamberScientistTremorText:
 	cont "this wall here…"
 	done
 
-RuinsOfAlphKabutoChamberUnusedText: ; unreferenced
-	text "The patterns on"
-	line "the wall appear to"
-	cont "be words!"
-
-	para "And those sliding"
-	line "stone panels seem"
-
-	para "to be signals of"
-	line "some kind."
-
-	para "I think they make"
-	line "#MON appear,"
-
-	para "but it's not clear"
-	line "yet…"
-	done
-
 RuinsOfAlphKabutoChamberWallPatternLeftText:
 	text "Patterns appeared"
 	line "on the walls…"
-	done
-
-RuinsOfAlphKabutoChamberUnownText: ; unreferenced
-	text "It's UNOWN text!"
 	done
 
 RuinsOfAlphKabutoChamberWallPatternRightText:

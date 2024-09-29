@@ -18,7 +18,6 @@ GameFreakGameDesignerScript:
 	waitbutton
 	closetext
 	end
-
 .CompletedPokedex:
 	promptbutton
 	writetext GameFreakGameDesignerCompletedPokedexText
@@ -42,7 +41,6 @@ GameFreakGraphicArtistScript:
 	waitbutton
 	closetext
 	end
-
 .CanPrintDiploma:
 	writetext GameFreakGraphicArtistPrintDiplomaText
 	yesorno
@@ -50,15 +48,8 @@ GameFreakGraphicArtistScript:
 	special PrintDiploma
 	closetext
 	end
-
 .Refused:
 	writetext GameFreakGraphicArtistRefusedText
-	waitbutton
-	closetext
-	end
-
-.CancelPrinting: ; unreferenced
-	writetext GameFreakGraphicArtistErrorText
 	waitbutton
 	closetext
 	end

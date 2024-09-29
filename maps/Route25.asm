@@ -78,7 +78,6 @@ Route25MistyDate2Script:
 
 TrainerSchoolboyDudley:
 	trainer SCHOOLBOY, DUDLEY, EVENT_BEAT_SCHOOLBOY_DUDLEY, SchoolboyDudleySeenText, SchoolboyDudleyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -89,7 +88,6 @@ TrainerSchoolboyDudley:
 
 TrainerLassEllen:
 	trainer LASS, ELLEN, EVENT_BEAT_LASS_ELLEN, LassEllenSeenText, LassEllenBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -100,7 +98,6 @@ TrainerLassEllen:
 
 TrainerSchoolboyJoe:
 	trainer SCHOOLBOY, JOE, EVENT_BEAT_SCHOOLBOY_JOE, SchoolboyJoeSeenText, SchoolboyJoeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -111,7 +108,6 @@ TrainerSchoolboyJoe:
 
 TrainerLassLaura:
 	trainer LASS, LAURA, EVENT_BEAT_LASS_LAURA, LassLauraSeenText, LassLauraBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -122,7 +118,6 @@ TrainerLassLaura:
 
 TrainerCamperLloyd:
 	trainer CAMPER, LLOYD, EVENT_BEAT_CAMPER_LLOYD, CamperLloydSeenText, CamperLloydBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -133,7 +128,6 @@ TrainerCamperLloyd:
 
 TrainerLassShannon:
 	trainer LASS, SHANNON, EVENT_BEAT_LASS_SHANNON, LassShannonSeenText, LassShannonBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -144,7 +138,6 @@ TrainerLassShannon:
 
 TrainerSupernerdPat:
 	trainer SUPER_NERD, PAT, EVENT_BEAT_SUPER_NERD_PAT, SupernerdPatSeenText, SupernerdPatBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -421,10 +414,6 @@ CooltrainermKevinAfterBattleText:
 BillsHouseSignText:
 	text "SEA COTTAGE"
 	line "BILL'S HOUSE"
-	done
-
-UnusedBillsHouseSignText: ; unreferenced
-	text "BILL'S HOUSE"
 	done
 
 Route25_MapEvents:

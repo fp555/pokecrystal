@@ -24,7 +24,6 @@ CianwoodGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .CianwoodGymGuideWinScript:
 	opentext
 	writetext CianwoodGymGuideWinText
@@ -87,32 +86,6 @@ CianwoodGymGuideWinText:
 	text "<PLAYER>! You won!"
 	line "I could tell by"
 	cont "looking at you!"
-	done
-
-CianwoodPokecenter1FUnusedText1: ; unreferenced
-	text "Don't you get the"
-	line "urge to show off"
-
-	para "your #MON to"
-	line "friends?"
-
-	para "I wish I could"
-	line "show the #MON I"
-
-	para "raised to my pal"
-	line "in VIOLET."
-	done
-
-CianwoodPokecenter1FUnusedText2: ; unreferenced
-	text "I've been battling"
-	line "my pal in VIOLET"
-
-	para "using a MOBILE"
-	line "ADAPTER link."
-
-	para "I'm down 5-7"
-	line "against him. I've"
-	cont "gotta crank it up!"
 	done
 
 CianwoodPokecenter1FSuperNerdText:

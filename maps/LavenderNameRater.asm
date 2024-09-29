@@ -3,12 +3,8 @@
 
 LavenderNameRater_MapScripts:
 	def_scene_scripts
-	scene_script LavenderNameRaterNoopScene ; unusable
 
 	def_callbacks
-
-LavenderNameRaterNoopScene:
-	end
 
 LavenderNameRater:
 	faceplayer
@@ -17,9 +13,6 @@ LavenderNameRater:
 	waitbutton
 	closetext
 	end
-
-LavenderNameRaterUnusedBookshelf: ; unreferenced
-	jumpstd DifficultBookshelfScript
 
 LavenderNameRater_MapEvents:
 	db 0, 0 ; filler

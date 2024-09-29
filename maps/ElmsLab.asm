@@ -574,13 +574,11 @@ ElmsLabWindow:
 	checkevent EVENT_ELM_CALLED_ABOUT_STOLEN_POKEMON
 	iftrue .BreakIn
 	sjump .Normal
-
 .BreakIn:
 	writetext ElmsLabWindowText2
 	waitbutton
 	closetext
 	end
-
 .Normal:
 	writetext ElmsLabWindowText1
 	waitbutton
@@ -604,9 +602,6 @@ ElmsLabTrashcan:
 
 ElmsLabPC:
 	jumptext ElmsLabPCText
-
-ElmsLabTrashcan2: ; unreferenced
-	jumpstd TrashCanScript
 
 ElmsLabBookshelf:
 	jumpstd DifficultBookshelfScript

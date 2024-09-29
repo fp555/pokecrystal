@@ -25,7 +25,6 @@ Route43GateCheckIfRocketsCallback:
 	iftrue .NoRockets
 	setmapscene ROUTE_43, 0 ; Route 43 does not have a scene variable
 	endcallback
-
 .NoRockets:
 	setmapscene ROUTE_43, 1 ; Route 43 does not have a scene variable
 	endcallback
@@ -118,7 +117,6 @@ OfficerScript_GuardWithSludgeBomb:
 	setevent EVENT_GOT_TM36_SLUDGE_BOMB
 	closetext
 	end
-
 .GotSludgeBomb:
 	writetext OfficerText_AvoidGrass
 	waitbutton
@@ -232,11 +230,6 @@ OfficerText_FoundTM:
 	para "It makes me uncom-"
 	line "fortable. Could"
 	cont "you take it away?"
-	done
-
-Text_ReceivedTM30: ; unreferenced
-	text "<PLAYER> received"
-	line "TM30."
 	done
 
 OfficerText_AvoidGrass:

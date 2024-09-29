@@ -11,7 +11,6 @@ RuinsOfAlphHoOhChamberCheckWallScene:
 	checkevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
 	iftrue .OpenWall
 	end
-
 .OpenWall:
 	sdefer RuinsOfAlphHoOhChamberWallOpenScript
 	end
@@ -27,7 +26,6 @@ RuinsOfAlphHoOhChamberHiddenDoorsCallback:
 	checkevent EVENT_SOLVED_HO_OH_PUZZLE
 	iffalse .FloorClosed
 	endcallback
-
 .FloorClosed:
 	changeblock 2, 2, $01 ; left floor
 	changeblock 4, 2, $02 ; right floor
@@ -53,7 +51,6 @@ RuinsOfAlphHoOhChamberPuzzle:
 	closetext
 	iftrue .PuzzleComplete
 	end
-
 .PuzzleComplete:
 	setevent EVENT_RUINS_OF_ALPH_INNER_CHAMBER_TOURISTS
 	setevent EVENT_SOLVED_HO_OH_PUZZLE
@@ -96,7 +93,6 @@ RuinsOfAlphHoOhChamberWallPatternRight:
 	special DisplayUnownWords
 	closetext
 	end
-
 .WallOpen:
 	opentext
 	writetext RuinsOfAlphHoOhChamberWallHoleText
@@ -111,10 +107,6 @@ RuinsOfAlphHoOhChamberSkyfallTopMovement:
 RuinsOfAlphHoOhChamberWallPatternLeftText:
 	text "Patterns appeared"
 	line "on the walls…"
-	done
-
-RuinsOfAlphHoOhChamberUnownText: ; unreferenced
-	text "It's UNOWN text!"
 	done
 
 RuinsOfAlphHoOhChamberWallPatternRightText:

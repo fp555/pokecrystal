@@ -23,7 +23,6 @@ OlivineLighthouseJasmine:
 	waitbutton
 	closetext
 	end
-
 .BroughtSecretpotion:
 	writetext JasmineCureAmphyText
 	yesorno
@@ -73,17 +72,14 @@ OlivineLighthouseJasmine:
 	applymovement OLIVINELIGHTHOUSE6F_JASMINE, OlivineLighthouseJasmineLeavesUpMovement
 	disappear OLIVINELIGHTHOUSE6F_JASMINE
 	end
-
 .FacingDown:
 	applymovement OLIVINELIGHTHOUSE6F_JASMINE, OlivineLighthouseJasmineLeavesDownMovement
 	disappear OLIVINELIGHTHOUSE6F_JASMINE
 	end
-
 .FacingRight:
 	applymovement OLIVINELIGHTHOUSE6F_JASMINE, OlivineLighthouseJasmineLeavesRightMovement
 	disappear OLIVINELIGHTHOUSE6F_JASMINE
 	end
-
 .Refused:
 	writetext JasmineISeeText
 	waitbutton
@@ -95,9 +91,6 @@ OlivineLighthouseJasmine:
 	writetext JasmineAmphyHangOnText
 	waitbutton
 	closetext
-	end
-
-.Unused: ; unreferenced
 	end
 
 OlivineLighthouseAmphy:
@@ -113,11 +106,12 @@ OlivineLighthouseAmphy:
 	waitbutton
 	closetext
 	end
-
 .HealthyNow:
 	writetext AmphyPaluPaluluText
 	cry AMPHAROS
 	waitbutton
+	setval AMPHAROS
+	special ShowPokedexEntry
 	closetext
 	special FadeOutToWhite
 	special FadeInFromWhite

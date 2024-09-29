@@ -15,6 +15,8 @@ PewterNidoran:
 	writetext PewterNidoranText
 	cry NIDORAN_M
 	waitbutton
+	setval NIDORAN_M
+	special ShowPokedexEntry
 	closetext
 	end
 

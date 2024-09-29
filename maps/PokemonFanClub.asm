@@ -33,13 +33,11 @@ PokemonFanClubChairmanScript:
 	waitbutton
 	closetext
 	end
-
 .HeardSpeech:
 	writetext PokemonFanClubChairmanMoreTalesToTellText
 	waitbutton
 	closetext
 	end
-
 .NotListening:
 	writetext PokemonFanClubChairmanHowDisappointingText
 	waitbutton
@@ -61,7 +59,6 @@ PokemonFanClubClefairyGuyScript:
 	waitbutton
 	closetext
 	end
-
 .FoundClefairyDoll:
 	writetext PokemonFanClubClefairyGuyMakingDoWithADollIFoundText
 	checkevent EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
@@ -69,7 +66,6 @@ PokemonFanClubClefairyGuyScript:
 	waitbutton
 	closetext
 	end
-
 .MetCopycat:
 	promptbutton
 	writetext PokemonFanClubClefairyGuyTakeThisDollBackToGirlText
@@ -85,13 +81,11 @@ PokemonFanClubClefairyGuyScript:
 	setevent EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB
 	closetext
 	end
-
 .GotLostItem:
 	writetext PokemonFanClubClefairyGuyGoingToGetARealClefairyText
 	waitbutton
 	closetext
 	end
-
 .NoRoom:
 	writetext PokemonFanClubClefairyGuyPackIsJammedFullText
 	waitbutton
@@ -109,6 +103,8 @@ PokemonFanClubBayleefScript:
 	writetext PokemonFanClubBayleefText
 	cry BAYLEEF
 	waitbutton
+	setval BAYLEEF
+	special ShowPokedexEntry
 	closetext
 	end
 

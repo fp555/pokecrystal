@@ -23,7 +23,6 @@ TradeCenterSetWhichChrisCallback:
 	disappear TRADECENTER_CHRIS2
 	appear TRADECENTER_CHRIS1
 	endcallback
-
 .Chris2:
 	disappear TRADECENTER_CHRIS1
 	appear TRADECENTER_CHRIS2
@@ -38,18 +37,6 @@ TradeCenterConsoleScript:
 	special TradeCenter
 	newloadmap MAPSETUP_LINKRETURN
 	end
-
-TradeCenterFriendScript: ; unreferenced
-	opentext
-	writetext TradeCenterFriendReadyText
-	waitbutton
-	closetext
-	end
-
-TradeCenterFriendReadyText:
-	text "Your friend is"
-	line "ready."
-	done
 
 TradeCenter_MapEvents:
 	db 0, 0 ; filler

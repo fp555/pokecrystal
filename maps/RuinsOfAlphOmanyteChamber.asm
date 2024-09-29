@@ -11,7 +11,6 @@ RuinsOfAlphOmanyteChamberCheckWallScene:
 	checkevent EVENT_WALL_OPENED_IN_OMANYTE_CHAMBER
 	iftrue .OpenWall
 	end
-
 .OpenWall:
 	sdefer RuinsOfAlphOmanyteChamberWallOpenScript
 	end
@@ -27,7 +26,6 @@ RuinsOfAlphOmanyteChamberHiddenDoorsCallback:
 	checkevent EVENT_SOLVED_OMANYTE_PUZZLE
 	iffalse .FloorClosed
 	endcallback
-
 .FloorClosed:
 	changeblock 2, 2, $01 ; left floor
 	changeblock 4, 2, $02 ; right floor
@@ -53,7 +51,6 @@ RuinsOfAlphOmanyteChamberPuzzle:
 	closetext
 	iftrue .PuzzleComplete
 	end
-
 .PuzzleComplete:
 	setevent EVENT_RUINS_OF_ALPH_INNER_CHAMBER_TOURISTS
 	setevent EVENT_SOLVED_OMANYTE_PUZZLE
@@ -96,7 +93,6 @@ RuinsOfAlphOmanyteChamberWallPatternRight:
 	special DisplayUnownWords
 	closetext
 	end
-
 .WallOpen:
 	opentext
 	writetext RuinsOfAlphOmanyteChamberWallHoleText
@@ -111,10 +107,6 @@ RuinsOfAlphOmanyteChamberSkyfallTopMovement:
 RuinsOfAlphOmanyteChamberWallPatternLeftText:
 	text "Patterns appeared"
 	line "on the walls…"
-	done
-
-RuinsOfAlphOmanyteChamberUnownText: ; unreferenced
-	text "It's UNOWN text!"
 	done
 
 RuinsOfAlphOmanyteChamberWallPatternRightText:

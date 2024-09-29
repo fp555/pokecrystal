@@ -14,7 +14,6 @@ DayCareEggCheckCallback:
 	clearevent EVENT_DAY_CARE_MAN_IN_DAY_CARE
 	setevent EVENT_DAY_CARE_MAN_ON_ROUTE_34
 	endcallback
-
 .PutDayCareManOutside:
 	setevent EVENT_DAY_CARE_MAN_IN_DAY_CARE
 	clearevent EVENT_DAY_CARE_MAN_ON_ROUTE_34
@@ -40,14 +39,12 @@ DayCareManScript_Inside:
 	closetext
 	setevent EVENT_GOT_ODD_EGG
 	end
-
 .PartyFull:
 	opentext
 	writetext DayCareText_PartyFull
 	waitbutton
 	closetext
 	end
-
 .AlreadyHaveOddEgg:
 	special DayCareMan
 	waitbutton
@@ -63,7 +60,6 @@ DayCareLadyScript:
 	waitbutton
 	closetext
 	end
-
 .HusbandWasLookingForYou:
 	writetext Text_GrampsLookingForYou
 	waitbutton
@@ -76,29 +72,6 @@ DayCareBookshelf:
 Text_GrampsLookingForYou:
 	text "Gramps was looking"
 	line "for you."
-	done
-
-Text_DayCareManTalksAboutEggTicket: ; unreferenced
-	text "I'm the DAY-CARE"
-	line "MAN."
-
-	para "There's something"
-	line "new in GOLDENROD"
-
-	para "called the TRADE"
-	line "CORNER."
-
-	para "I was given an EGG"
-	line "TICKET that can be"
-
-	para "traded in for a"
-	line "ODD EGG."
-
-	para "But since we run a"
-	line "DAY-CARE, we don't"
-
-	para "need it. You may"
-	line "as well have it."
 	done
 
 DayCareManText_GiveOddEgg:
@@ -123,10 +96,6 @@ DayCareManText_GiveOddEgg:
 
 	para "Then fine, this is"
 	line "yours to keep!"
-	done
-
-DayCareText_ComeAgain: ; unreferenced
-	text "Come again."
 	done
 
 DayCareText_GotOddEgg:

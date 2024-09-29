@@ -38,7 +38,6 @@ Copycat:
 	faceplayer
 	variablesprite SPRITE_COPYCAT, SPRITE_CHRIS
 	sjump .Default_Merge_1
-
 .Default_Female_1:
 	applymovement COPYCATSHOUSE2F_COPYCAT2, CopycatSpinAroundMovementData
 	faceplayer
@@ -52,7 +51,6 @@ Copycat:
 	iftrue .Default_Female_2a
 	writetext CopycatText_Male_1
 	sjump .Default_Merge_2a
-
 .Default_Female_2a:
 	writetext CopycatText_Female_1
 .Default_Merge_2a:
@@ -62,7 +60,6 @@ Copycat:
 	iftrue .Default_Female_3a
 	applymovement COPYCATSHOUSE2F_COPYCAT1, CopycatSpinAroundMovementData
 	sjump .Default_Merge_3a
-
 .Default_Female_3a:
 	applymovement COPYCATSHOUSE2F_COPYCAT2, CopycatSpinAroundMovementData
 .Default_Merge_3a:
@@ -74,14 +71,12 @@ Copycat:
 	waitbutton
 	closetext
 	end
-
 .TalkAboutLostItem:
 	opentext
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .Default_Female_2b
 	writetext CopycatText_Male_2
 	sjump .Default_Merge_2b
-
 .Default_Female_2b:
 	writetext CopycatText_Female_2
 .Default_Merge_2b:
@@ -91,7 +86,6 @@ Copycat:
 	iftrue .Default_Female_3b
 	applymovement COPYCATSHOUSE2F_COPYCAT1, CopycatSpinAroundMovementData
 	sjump .Default_Merge_3b
-
 .Default_Female_3b:
 	applymovement COPYCATSHOUSE2F_COPYCAT2, CopycatSpinAroundMovementData
 .Default_Merge_3b:
@@ -104,7 +98,6 @@ Copycat:
 	closetext
 	setevent EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
 	end
-
 .ReturnLostItem:
 	opentext
 	writetext CopycatText_GiveDoll
@@ -113,7 +106,6 @@ Copycat:
 	setevent EVENT_RETURNED_LOST_ITEM_TO_COPYCAT
 	clearevent EVENT_COPYCATS_HOUSE_2F_DOLL
 	sjump .GivePass
-
 .TryGivePassAgain:
 	opentext
 .GivePass:
@@ -126,7 +118,6 @@ Copycat:
 	waitbutton
 	closetext
 	end
-
 .GotPass:
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .GotPass_Female_1
@@ -134,7 +125,6 @@ Copycat:
 	faceplayer
 	variablesprite SPRITE_COPYCAT, SPRITE_CHRIS
 	sjump .GotPass_Merge_1
-
 .GotPass_Female_1:
 	applymovement COPYCATSHOUSE2F_COPYCAT2, CopycatSpinAroundMovementData
 	faceplayer
@@ -146,7 +136,6 @@ Copycat:
 	iftrue .GotPass_Female_2
 	writetext CopycatText_Male_3
 	sjump .GotPass_Merge_2
-
 .GotPass_Female_2:
 	writetext CopycatText_Female_3
 .GotPass_Merge_2:
@@ -156,7 +145,6 @@ Copycat:
 	iftrue .GotPass_Female_3
 	applymovement COPYCATSHOUSE2F_COPYCAT1, CopycatSpinAroundMovementData
 	sjump .GotPass_Merge_3
-
 .GotPass_Female_3:
 	applymovement COPYCATSHOUSE2F_COPYCAT2, CopycatSpinAroundMovementData
 .GotPass_Merge_3:
@@ -177,6 +165,8 @@ CopycatsDodrio:
 	promptbutton
 	writetext CopycatsDodrioText2
 	waitbutton
+	setval DODRIO
+	special ShowPokedexEntry
 	closetext
 	end
 

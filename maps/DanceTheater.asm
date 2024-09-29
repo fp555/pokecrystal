@@ -16,7 +16,6 @@ DanceTheater_MapScripts:
 
 TrainerKimonoGirlNaoko:
 	trainer KIMONO_GIRL, NAOKO, EVENT_BEAT_KIMONO_GIRL_NAOKO, KimonoGirlNaokoSeenText, KimonoGirlNaokoBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -27,7 +26,6 @@ TrainerKimonoGirlNaoko:
 
 TrainerKimonoGirlSayo:
 	trainer KIMONO_GIRL, SAYO, EVENT_BEAT_KIMONO_GIRL_SAYO, KimonoGirlSayoSeenText, KimonoGirlSayoBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -38,7 +36,6 @@ TrainerKimonoGirlSayo:
 
 TrainerKimonoGirlZuki:
 	trainer KIMONO_GIRL, ZUKI, EVENT_BEAT_KIMONO_GIRL_ZUKI, KimonoGirlZukiSeenText, KimonoGirlZukiBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -49,7 +46,6 @@ TrainerKimonoGirlZuki:
 
 TrainerKimonoGirlKuni:
 	trainer KIMONO_GIRL, KUNI, EVENT_BEAT_KIMONO_GIRL_KUNI, KimonoGirlKuniSeenText, KimonoGirlKuniBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -60,7 +56,6 @@ TrainerKimonoGirlKuni:
 
 TrainerKimonoGirlMiki:
 	trainer KIMONO_GIRL, MIKI, EVENT_BEAT_KIMONO_GIRL_MIKI, KimonoGirlMikiSeenText, KimonoGirlMikiBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -87,7 +82,6 @@ DanceTheaterSurfGuy:
 	checkevent EVENT_BEAT_KIMONO_GIRL_MIKI
 	iffalse .KimonoGirlsUndefeated
 	sjump .GetSurf
-
 .KimonoGirlsUndefeated:
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .PlayerIsFemale
@@ -95,13 +89,11 @@ DanceTheaterSurfGuy:
 	waitbutton
 	closetext
 	end
-
 .PlayerIsFemale:
 	writetext SurfGuyLassieGiftText
 	waitbutton
 	closetext
 	end
-
 .GetSurf:
 	writetext SurfGuyLikeADanceText
 	promptbutton
@@ -123,6 +115,8 @@ DanceTheaterRhydon:
 	writetext RhydonText
 	cry RHYDON
 	waitbutton
+	setval RHYDON
+	special ShowPokedexEntry
 	closetext
 	end
 

@@ -35,7 +35,6 @@ CeladonDeptStore6FVendingMachine:
 	ifequal 3, .Lemonade
 	closetext
 	end
-
 .FreshWater:
 	checkmoney YOUR_MONEY, CELADONDEPTSTORE6F_FRESH_WATER_PRICE
 	ifequal HAVE_LESS, .NotEnoughMoney
@@ -44,7 +43,6 @@ CeladonDeptStore6FVendingMachine:
 	takemoney YOUR_MONEY, CELADONDEPTSTORE6F_FRESH_WATER_PRICE
 	getitemname STRING_BUFFER_3, FRESH_WATER
 	sjump .VendItem
-
 .SodaPop:
 	checkmoney YOUR_MONEY, CELADONDEPTSTORE6F_SODA_POP_PRICE
 	ifequal HAVE_LESS, .NotEnoughMoney
@@ -53,7 +51,6 @@ CeladonDeptStore6FVendingMachine:
 	takemoney YOUR_MONEY, CELADONDEPTSTORE6F_SODA_POP_PRICE
 	getitemname STRING_BUFFER_3, SODA_POP
 	sjump .VendItem
-
 .Lemonade:
 	checkmoney YOUR_MONEY, CELADONDEPTSTORE6F_LEMONADE_PRICE
 	ifequal HAVE_LESS, .NotEnoughMoney
@@ -62,7 +59,6 @@ CeladonDeptStore6FVendingMachine:
 	takemoney YOUR_MONEY, CELADONDEPTSTORE6F_LEMONADE_PRICE
 	getitemname STRING_BUFFER_3, LEMONADE
 	sjump .VendItem
-
 .VendItem:
 	pause 10
 	playsound SFX_ENTER_DOOR
@@ -70,23 +66,19 @@ CeladonDeptStore6FVendingMachine:
 	promptbutton
 	itemnotify
 	sjump .Start
-
 .NotEnoughMoney:
 	writetext CeladonVendingNoMoneyText
 	waitbutton
 	sjump .Start
-
 .NotEnoughSpace:
 	writetext CeladonVendingNoSpaceText
 	waitbutton
 	sjump .Start
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 2, SCREEN_WIDTH - 1, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -97,9 +89,6 @@ CeladonDeptStore6FVendingMachine:
 
 CeladonDeptStore6FDirectory:
 	jumptext CeladonDeptStore6FDirectoryText
-
-CeladonDeptStore6FElevatorButton: ; unreferenced
-	jumpstd ElevatorButtonScript
 
 CeladonVendingText:
 	text "A vending machine!"

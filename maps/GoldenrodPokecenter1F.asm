@@ -18,7 +18,6 @@ GoldenrodPokecenter1F_GSBallSceneLeft:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .gsball
 	end
-
 .gsball
 	checkevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
 	iftrue .cancel
@@ -49,7 +48,6 @@ GoldenrodPokecenter1F_GSBallSceneRight:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .gsball
 	end
-
 .gsball
 	checkevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
 	iftrue .cancel
@@ -102,13 +100,11 @@ GoldenrodPokecenter1FPokefanF:
 	waitbutton
 	closetext
 	end
-
 .NoEonMail:
 	writetext GoldenrodPokecenter1FPokefanFTooBadText
 	waitbutton
 	closetext
 	end
-
 .NoRoom:
 	giveitem EON_MAIL
 	writetext GoldenrodPokecenter1FPokefanFAnotherTimeThenText

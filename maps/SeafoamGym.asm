@@ -4,12 +4,8 @@
 
 SeafoamGym_MapScripts:
 	def_scene_scripts
-	scene_script SeafoamGymNoopScene ; unusable
 
 	def_callbacks
-
-SeafoamGymNoopScene:
-	end
 
 SeafoamGymBlaineScript:
 	faceplayer
@@ -36,7 +32,6 @@ SeafoamGymBlaineScript:
 	waitbutton
 	closetext
 	end
-
 .FightDone:
 	writetext BlaineFightDoneText
 	waitbutton
@@ -53,7 +48,6 @@ SeafoamGymGuideScript:
 	closetext
 	setevent EVENT_TALKED_TO_SEAFOAM_GYM_GUIDE_ONCE
 	end
-
 .TalkedToSeafoamGymGuideScript:
 	writetext SeafoamGymGuideWinText2
 	waitbutton

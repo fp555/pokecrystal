@@ -109,6 +109,8 @@ SlowpokeWellB1FTaillessSlowpokeScript:
 	writetext SlowpokeWellB1FTaillessSlowpokeText
 	cry SLOWPOKE
 	waitbutton
+	setval SLOWPOKE
+	special ShowPokedexEntry
 	closetext
 	end
 

@@ -20,6 +20,8 @@ Route39Miltank:
 	writetext Route39MiltankText
 	cry MILTANK
 	waitbutton
+	setval MILTANK
+	special ShowPokedexEntry
 	closetext
 	end
 

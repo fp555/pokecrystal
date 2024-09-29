@@ -27,6 +27,8 @@ VermilionMachop:
 	writetext VermilionMachopText1
 	cry MACHOP
 	waitbutton
+	setval MACHOP
+	special ShowPokedexEntry
 	closetext
 	earthquake 30
 	opentext
@@ -44,9 +46,10 @@ VermilionSnorlax:
 	iftrue .Awake
 	writetext VermilionCitySnorlaxSleepingText
 	waitbutton
+	setval SNORLAX
+	special ShowPokedexEntry
 	closetext
 	end
-
 .Awake:
 	writetext VermilionCityRadioNearSnorlaxText
 	pause 15
@@ -73,19 +76,16 @@ VermilionGymBadgeGuy:
 	waitbutton
 	closetext
 	end
-
 .SomeBadges:
 	writetext VermilionCityBadgeGuySomeBadgesText
 	waitbutton
 	closetext
 	end
-
 .MostBadges:
 	writetext VermilionCityBadgeGuyMostBadgesText
 	waitbutton
 	closetext
 	end
-
 .AllBadges:
 	writetext VermilionCityBadgeGuyAllBadgesText
 	promptbutton

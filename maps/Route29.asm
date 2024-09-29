@@ -25,11 +25,9 @@ Route29Noop2Scene:
 Route29TuscanyCallback:
 	checkflag ENGINE_ZEPHYRBADGE
 	iftrue .DoesTuscanyAppear
-
 .TuscanyDisappears:
 	disappear ROUTE29_TUSCANY
 	endcallback
-
 .DoesTuscanyAppear:
 	readvar VAR_WEEKDAY
 	ifnotequal TUESDAY, .TuscanyDisappears
@@ -123,13 +121,11 @@ CatchingTutorialDudeScript:
 	closetext
 	setevent EVENT_LEARNED_TO_CATCH_POKEMON
 	end
-
 .BoxFull:
 	writetext CatchingTutorialBoxFullText
 	waitbutton
 	closetext
 	end
-
 .Declined:
 	writetext CatchingTutorialDeclinedText
 	waitbutton
@@ -157,7 +153,6 @@ Route29CooltrainerMScript:
 	waitbutton
 	closetext
 	end
-
 .nite
 	writetext Route29CooltrainerMText_WaitingForMorning
 	waitbutton
@@ -190,6 +185,7 @@ TuscanyScript:
 TuscanyTuesdayScript:
 	writetext TuscanyTuesdayText
 	waitbutton
+	; fallthrough
 TuscanyDoneScript:
 	closetext
 	end
@@ -320,14 +316,6 @@ Route29FisherText:
 
 	para "to record my"
 	line "progress."
-	done
-
-Route29CooltrainerMText_WaitingForDay: ; unreferenced
-	text "I'm waiting for"
-	line "#MON that"
-
-	para "appear only in the"
-	line "daytime."
 	done
 
 Route29CooltrainerMText_WaitingForNight:

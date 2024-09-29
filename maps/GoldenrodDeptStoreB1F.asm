@@ -19,11 +19,9 @@ GoldenRodDeptStoreB1FClearBoxesCallback:
 	checkevent EVENT_RECEIVED_CARD_KEY
 	iftrue .GotCardKey
 	sjump .Continue
-
 .GotCardKey:
 	changeblock 16, 4, $0d ; floor
 	sjump .Continue
-
 .Continue:
 	checkevent EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_2
 	iftrue .Layout2
@@ -31,11 +29,9 @@ GoldenRodDeptStoreB1FClearBoxesCallback:
 	iftrue .Layout3
 	changeblock 10, 8, $0d ; floor
 	endcallback
-
 .Layout2:
 	changeblock 4, 10, $0d ; floor
 	endcallback
-
 .Layout3:
 	changeblock 10, 12, $0d ; floor
 	endcallback
@@ -58,6 +54,8 @@ GoldenrodDeptStoreB1FMachopScript:
 	writetext GoldenrodDeptStoreB1FMachokeText
 	cry MACHOKE
 	waitbutton
+	setval MACHOKE
+	special ShowPokedexEntry
 	closetext
 	end
 

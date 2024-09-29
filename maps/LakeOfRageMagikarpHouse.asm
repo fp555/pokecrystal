@@ -22,20 +22,17 @@ MagikarpLengthRaterScript:
 	closetext
 	setevent EVENT_LAKE_OF_RAGE_EXPLAINED_WEIRD_MAGIKARP
 	end
-
 .ExplainedHistory:
 	writetext MagikarpLengthRaterText_MenInBlack
 	waitbutton
 	closetext
 	end
-
 .ClearedRocketHideout:
 	writetext MagikarpLengthRaterText_WorldsLargestMagikarp
 	waitbutton
 	closetext
 	setevent EVENT_LAKE_OF_RAGE_ASKED_FOR_MAGIKARP
 	end
-
 .AskedForMagikarp:
 	setval MAGIKARP
 	special FindPartyMonThatSpecies
@@ -47,8 +44,7 @@ MagikarpLengthRaterScript:
 	ifequal MAGIKARPLENGTH_REFUSED, .Refused
 	ifequal MAGIKARPLENGTH_TOO_SHORT, .TooShort
 	; MAGIKARPLENGTH_BEAT_RECORD
-	sjump .GetReward
-
+	; fallthrough
 .GetReward:
 	writetext MagikarpLengthRaterText_Memento
 	promptbutton
@@ -59,32 +55,25 @@ MagikarpLengthRaterScript:
 	closetext
 	clearevent EVENT_LAKE_OF_RAGE_ELIXIR_ON_STANDBY
 	end
-
 .NoRoom:
 	closetext
 	setevent EVENT_LAKE_OF_RAGE_ELIXIR_ON_STANDBY
 	end
-
 .TooShort:
 	writetext MagikarpLengthRaterText_TooShort
 	waitbutton
 	closetext
 	end
-
 .NotMagikarp:
 	writetext MagikarpLengthRaterText_NotMagikarp
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext MagikarpLengthRaterText_Refused
 	waitbutton
 	closetext
 	end
-
-LakeOfRageMagikarpHouseUnusedRecordSign: ; unreferenced
-	jumptext LakeOfRageMagikarpHouseUnusedRecordText
 
 MagikarpHouseBookshelf:
 	jumpstd DifficultBookshelfScript
@@ -193,19 +182,6 @@ MagikarpLengthRaterText_Refused:
 	para "enough to show me?"
 	line "Maybe next time."
 	done
-
-LakeOfRageMagikarpHouseUnusedRecordText:
-	text "CURRENT RECORD"
-
-	para "@"
-	text_ram wStringBuffer3
-	text " caught by"
-	line "@"
-	text_ram wStringBuffer4
-	text_end
-
-LakeOfRageMagikarpHouseUnusedDummyText: ; unreferenced
-	text_end
 
 LakeOfRageMagikarpHouse_MapEvents:
 	db 0, 0 ; filler

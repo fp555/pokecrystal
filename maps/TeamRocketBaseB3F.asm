@@ -41,7 +41,6 @@ TeamRocketBaseB3FCheckGiovanniDoorCallback:
 	checkevent EVENT_OPENED_DOOR_TO_GIOVANNIS_OFFICE
 	iftrue .OpenSesame
 	endcallback
-
 .OpenSesame:
 	changeblock 10, 8, $07 ; floor
 	endcallback
@@ -90,6 +89,7 @@ RocketBaseBossLeft:
 
 RocketBaseBossRight:
 	applymovement PLAYER, RocketBasePlayerApproachesBossRightMovement
+	; fallthrough
 RocketBaseBoss:
 	pause 30
 	showemote EMOTE_SHOCK, TEAMROCKETBASEB3F_ROCKET1, 15
@@ -121,6 +121,8 @@ RocketBaseMurkrow:
 	opentext
 	writetext RocketBaseMurkrowText
 	waitbutton
+	setval MURKROW
+	special ShowPokedexEntry
 	closetext
 	setevent EVENT_LEARNED_HAIL_GIOVANNI
 	end
@@ -151,7 +153,6 @@ GruntM28Script:
 
 TrainerScientistRoss:
 	trainer SCIENTIST, ROSS, EVENT_BEAT_SCIENTIST_ROSS, ScientistRossSeenText, ScientistRossBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -162,7 +163,6 @@ TrainerScientistRoss:
 
 TrainerScientistMitch:
 	trainer SCIENTIST, MITCH, EVENT_BEAT_SCIENTIST_MITCH, ScientistMitchSeenText, ScientistMitchBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -173,7 +173,6 @@ TrainerScientistMitch:
 
 TeamRocketBaseB3FLockedDoor:
 	conditional_event EVENT_OPENED_DOOR_TO_GIOVANNIS_OFFICE, .Script
-
 .Script:
 	opentext
 	checkevent EVENT_LEARNED_SLOWPOKETAIL
@@ -181,13 +180,11 @@ TeamRocketBaseB3FLockedDoor:
 	checkevent EVENT_LEARNED_RATICATE_TAIL
 	iffalse .NeedsPassword
 	sjump .OpenSesame
-
 .NeedsPassword:
 	writetext TeamRocketBaseB3FLockedDoorNeedsPasswordText
 	waitbutton
 	closetext
 	end
-
 .OpenSesame:
 	writetext TeamRocketBaseB3FLockedDoorOpenSesameText
 	waitbutton

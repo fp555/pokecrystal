@@ -16,7 +16,6 @@ UnionCave1F_MapScripts:
 
 TrainerPokemaniacLarry:
 	trainer POKEMANIAC, LARRY, EVENT_BEAT_POKEMANIAC_LARRY, PokemaniacLarrySeenText, PokemaniacLarryBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -27,7 +26,6 @@ TrainerPokemaniacLarry:
 
 TrainerHikerRussell:
 	trainer HIKER, RUSSELL, EVENT_BEAT_HIKER_RUSSELL, HikerRussellSeenText, HikerRussellBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -38,7 +36,6 @@ TrainerHikerRussell:
 
 TrainerHikerDaniel:
 	trainer HIKER, DANIEL, EVENT_BEAT_HIKER_DANIEL, HikerDanielSeenText, HikerDanielBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -49,7 +46,6 @@ TrainerHikerDaniel:
 
 TrainerFirebreatherBill:
 	trainer FIREBREATHER, BILL, EVENT_BEAT_FIREBREATHER_BILL, FirebreatherBillSeenText, FirebreatherBillBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -60,7 +56,6 @@ TrainerFirebreatherBill:
 
 TrainerFirebreatherRay:
 	trainer FIREBREATHER, RAY, EVENT_BEAT_FIREBREATHER_RAY, FirebreatherRaySeenText, FirebreatherRayBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -80,9 +75,6 @@ UnionCave1FPotion:
 
 UnionCave1FAwakening:
 	itemball AWAKENING
-
-UnionCave1FUnusedSign: ; unreferenced
-	jumptext UnionCave1FUnusedSignText
 
 HikerRussellSeenText:
 	text "You're headed to"
@@ -191,10 +183,6 @@ FirebreatherRayAfterBattleText:
 	text "It's my #MON's"
 	line "fire that lights"
 	cont "up this cave."
-	done
-
-UnionCave1FUnusedSignText:
-	text "UNION CAVE"
 	done
 
 UnionCave1F_MapEvents:

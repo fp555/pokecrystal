@@ -4,12 +4,8 @@
 
 Route28SteelWingHouse_MapScripts:
 	def_scene_scripts
-	scene_script Route28SteelWingHouseNoopScene ; unusable
 
 	def_callbacks
-
-Route28SteelWingHouseNoopScene:
-	end
 
 Celebrity:
 	faceplayer
@@ -35,6 +31,8 @@ CelebritysFearow:
 	writetext CelebritysFearowText
 	cry FEAROW
 	waitbutton
+	setval FEAROW
+	special ShowPokedexEntry
 	closetext
 	end
 

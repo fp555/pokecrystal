@@ -20,6 +20,8 @@ Speary:
 	writetext SpearyText
 	cry SPEAROW
 	waitbutton
+	setval SPEAROW
+	special ShowPokedexEntry
 	closetext
 	end
 
@@ -28,6 +30,8 @@ Rattey:
 	writetext RatteyText
 	cry RATTATA
 	waitbutton
+	setval RATTATA
+	special ShowPokedexEntry
 	closetext
 	end
 

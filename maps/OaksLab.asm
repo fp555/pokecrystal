@@ -9,9 +9,6 @@ OaksLab_MapScripts:
 
 	def_callbacks
 
-OaksLabNoopScene: ; unreferenced
-	end
-
 Oak:
 	faceplayer
 	opentext
@@ -27,7 +24,6 @@ Oak:
 	ifequal NUM_BADGES, .OpenMtSilver
 	ifequal NUM_JOHTO_BADGES, .Complain
 	sjump .AhGood
-
 .CheckPokedex:
 	writetext OakLabDexCheckText
 	waitbutton
@@ -36,18 +32,15 @@ Oak:
 	waitbutton
 	closetext
 	end
-
 .OpenMtSilver:
 	writetext OakOpenMtSilverText
 	promptbutton
 	setevent EVENT_OPENED_MT_SILVER
 	sjump .CheckPokedex
-
 .Complain:
 	writetext OakNoKantoBadgesText
 	promptbutton
 	sjump .CheckPokedex
-
 .AhGood:
 	writetext OakYesKantoBadgesText
 	promptbutton

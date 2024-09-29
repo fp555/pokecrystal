@@ -21,6 +21,8 @@ MrFujisPsyduck:
 	writetext MrFujisPsyduckText
 	cry PSYDUCK
 	waitbutton
+	setval PSYDUCK
+	special ShowPokedexEntry
 	closetext
 	end
 
@@ -29,6 +31,8 @@ MrFujisNidorino:
 	writetext MrFujisNidorinoText
 	cry NIDORINO
 	waitbutton
+	setval NIDORINO
+	special ShowPokedexEntry
 	closetext
 	end
 
@@ -37,6 +41,8 @@ MrFujisPidgey:
 	writetext MrFujisPidgeyText
 	cry PIDGEY
 	waitbutton
+	setval PIDGEY
+	special ShowPokedexEntry
 	closetext
 	end
 

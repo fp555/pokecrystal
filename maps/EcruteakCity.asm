@@ -38,7 +38,6 @@ EcruteakCityLass2Script:
 	waitbutton
 	closetext
 	end
-
 .ReleasedBeasts:
 	writetext EcruteakCityLass2Text_ReleasedBeasts
 	waitbutton
@@ -54,7 +53,6 @@ EcruteakCityFisherScript:
 	waitbutton
 	closetext
 	end
-
 .JasmineReturned:
 	writetext EcruteakCityFisherText_JasmineReturned
 	waitbutton
@@ -87,26 +85,6 @@ EcruteakCityMartSign:
 
 EcruteakCityHiddenHyperPotion:
 	hiddenitem HYPER_POTION, EVENT_ECRUTEAK_CITY_HIDDEN_HYPER_POTION
-
-UnusedMissingDaughterText: ; unreferenced
-	text "Oh, no. Oh, no…"
-
-	para "My daughter is"
-	line "missing."
-
-	para "No… She couldn't"
-	line "have gone to the"
-	cont "BURNED TOWER."
-
-	para "I told her not to"
-	line "go near it…"
-
-	para "People seem to"
-	line "disappear there…"
-
-	para "Oh, what should I"
-	line "do…?"
-	done
 
 EcruteakCityGramps1Text:
 	text "ECRUTEAK used to"

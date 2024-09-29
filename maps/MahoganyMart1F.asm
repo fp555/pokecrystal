@@ -24,7 +24,6 @@ MahoganyMart1FStaircaseCallback:
 	checkevent EVENT_UNCOVERED_STAIRCASE_IN_MAHOGANY_MART
 	iftrue .ShowStairs
 	endcallback
-
 .ShowStairs:
 	changeblock 6, 2, $1e ; stairs
 	endcallback
@@ -37,7 +36,6 @@ MahoganyMart1FPharmacistScript:
 	pokemart MARTTYPE_STANDARD, MART_MAHOGANY_1
 	closetext
 	end
-
 .LanceEntered:
 	writetext MahoganyMart1FPharmacistText_LanceEntered
 	waitbutton
@@ -53,7 +51,6 @@ MahoganyMart1FBlackBeltScript:
 	waitbutton
 	closetext
 	end
-
 .LanceEntered:
 	writetext MahoganyMart1FBlackBeltText_LanceEntered
 	waitbutton
@@ -153,16 +150,6 @@ MahoganyMart1FLanceApproachHiddenStairsMovement:
 MahoganyMart1FLanceGoDownStairsMovement:
 	slow_step RIGHT
 	step_end
-
-MahoganyMart1FRageCandyBarText: ; unreferenced
-	text "Hello, kiddo!"
-
-	para "How would you like"
-	line "some RAGECANDYBAR?"
-
-	para "It's the thing to"
-	line "eat in MAHOGANY!"
-	done
 
 MahoganyMart1FPharmacistText_LanceEntered:
 	text "Arrgh… You found"

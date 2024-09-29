@@ -26,7 +26,6 @@ RadioTower4FDJMaryScript:
 	waitbutton
 	closetext
 	end
-
 .ClearedRockets:
 	writetext RadioTower4FDJMaryText_ClearedRockets
 	promptbutton
@@ -37,7 +36,6 @@ RadioTower4FDJMaryScript:
 	closetext
 	setevent EVENT_GOT_PINK_BOW_FROM_MARY
 	end
-
 .GotPinkBow:
 	writetext RadioTower4FDJMaryText_After
 	waitbutton
@@ -50,12 +48,13 @@ RadioTowerMeowth:
 	writetext RadioTowerMeowthText
 	cry MEOWTH
 	waitbutton
+	setval MEOWTH
+	special ShowPokedexEntry
 	closetext
 	end
 
 TrainerGruntM10:
 	trainer GRUNTM, GRUNTM_10, EVENT_BEAT_ROCKET_GRUNTM_10, GruntM10SeenText, GruntM10BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -66,7 +65,6 @@ TrainerGruntM10:
 
 TrainerExecutivem2:
 	trainer EXECUTIVEM, EXECUTIVEM_2, EVENT_BEAT_ROCKET_EXECUTIVEM_2, Executivem2SeenText, Executivem2BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -77,7 +75,6 @@ TrainerExecutivem2:
 
 TrainerGruntF4:
 	trainer GRUNTF, GRUNTF_4, EVENT_BEAT_ROCKET_GRUNTF_4, GruntF4SeenText, GruntF4BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -88,7 +85,6 @@ TrainerGruntF4:
 
 TrainerScientistRich:
 	trainer SCIENTIST, RICH, EVENT_BEAT_SCIENTIST_RICH, ScientistRichSeenText, ScientistRichBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext

@@ -35,7 +35,6 @@ FastShip1FEnterShipScript:
 	iftrue .SkipGrandpa
 	setscene SCENE_FASTSHIP1F_MEET_GRANDPA
 	end
-
 .SkipGrandpa:
 	setscene SCENE_FASTSHIP1F_NOOP
 	end
@@ -51,13 +50,11 @@ FastShip1FSailor1Script:
 	waitbutton
 	closetext
 	end
-
 .Olivine:
 	writetext FastShip1FSailor1Text_ToOlivine
 	waitbutton
 	closetext
 	end
-
 .Arrived:
 	checkevent EVENT_FAST_SHIP_DESTINATION_OLIVINE
 	iftrue ._Olivine
@@ -72,7 +69,6 @@ FastShip1FSailor1Script:
 	setmapscene VERMILION_PORT, SCENE_VERMILIONPORT_LEAVE_SHIP
 	warp VERMILION_PORT, 7, 17
 	end
-
 ._Olivine:
 	writetext FastShip1FSailor1Text_InOlivine
 	waitbutton
@@ -85,14 +81,12 @@ FastShip1FSailor1Script:
 	setmapscene OLIVINE_PORT, SCENE_OLIVINEPORT_LEAVE_SHIP
 	warp OLIVINE_PORT, 7, 23
 	end
-
 .LetThePlayerOut:
 	readvar VAR_FACING
 	ifequal RIGHT, .YouAreFacingRight
 	applymovement FASTSHIP1F_SAILOR1, FastShip1F_SailorStepAsideMovement
 	applymovement PLAYER, FastShip1F_PlayerLeavesShipMovement
 	end
-
 .YouAreFacingRight:
 	applymovement FASTSHIP1F_SAILOR1, FastShip1F_SailorStepAsideDownMovement
 	applymovement PLAYER, FastShip1F_PlayerLeavesShipRightMovement
@@ -107,7 +101,6 @@ FastShip1FSailor2Script:
 	waitbutton
 	closetext
 	end
-
 .Vermilion:
 	writetext FastShip1FSailor2Text
 	waitbutton
@@ -185,14 +178,6 @@ FastShip1F_GrandpaRunsOutMovement:
 FastShip1F_PlayerHitByGrandpaMovement:
 	big_step RIGHT
 	turn_head LEFT
-	step_end
-
-FastShip1F_StepUpMovement: ; unreferenced
-	step UP
-	step_end
-
-FastShip1F_StepDownMovement: ; unreferenced
-	step DOWN
 	step_end
 
 FastShip1F_PlayerLeavesShipMovement:

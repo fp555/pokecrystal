@@ -8,8 +8,7 @@ ENDM
 
 SpecialsPointers::
 	add_special WarpToSpawnPoint
-
-; Communications
+	; Communications
 	add_special SetBitsForLinkTradeRequest
 	add_special WaitForLinkedFriend
 	add_special CheckLinkTimeout_Receptionist
@@ -29,8 +28,7 @@ SpecialsPointers::
 	add_special CheckMysteryGift
 	add_special GetMysteryGiftItem
 	add_special UnlockMysteryGift
-
-; Map events
+	; Map events
 	add_special BugContestJudging
 	add_special CheckPartyFullAfterContest
 	add_special ContestDropOffMons
@@ -69,7 +67,7 @@ SpecialsPointers::
 	add_special UpdateSprites ; bank 0
 	add_special UpdatePlayerSprite ; bank 0
 	add_special GameCornerPrizeMonCheckDex
-	add_special UnusedSetSeenMon ; unused
+	add_special ShowPokedexEntry
 	add_special WaitSFX ; bank 0
 	add_special PlayMapMusic ; bank 0
 	add_special RestartMapMusic ; bank 0
@@ -120,8 +118,7 @@ SpecialsPointers::
 	add_special FadeOutMusic
 	add_special Diploma
 	add_special PrintDiploma
-
-; Crystal only
+	; Crystal only
 	add_special Function11ac3e
 	add_special TradeCornerHoldMon
 	add_special Function11b5e8
@@ -178,7 +175,5 @@ SpecialsPointers::
 	add_special AskRememberPassword
 	add_special LoadMapPalettes
 	add_special UnusedFindItemInPCOrBag
-
 	add_special InitialSetDSTFlag
 	add_special InitialClearDSTFlag
-	add_special UnusedDummySpecial ; unused

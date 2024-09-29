@@ -15,9 +15,6 @@ Special::
 
 INCLUDE "data/events/special_pointers.asm"
 
-UnusedDummySpecial:
-	ret
-
 SetPlayerPalette:
 	ld a, [wScriptVar]
 	ld d, a
@@ -39,10 +36,15 @@ GameCornerPrizeMonCheckDex:
 	call ExitAllMenus
 	ret
 
-UnusedSetSeenMon:
+ShowPokedexEntry:
 	ld a, [wScriptVar]
 	dec a
 	call SetSeenMon
+	call FadeToMenu
+	ld a, [wScriptVar]
+	ld [wNamedObjectIndex], a
+	farcall NewPokedexEntry
+	call ExitAllMenus
 	ret
 
 FindPartyMonAboveLevel:
@@ -91,7 +93,6 @@ NameRival:
 	ld de, .DefaultName
 	call InitName
 	ret
-
 .DefaultName:
 	db "SILVER@"
 
@@ -132,7 +133,6 @@ CheckMysteryGift:
 	and a
 	jr z, .no
 	inc a
-
 .no
 	ld [wScriptVar], a
 	call CloseSRAM
@@ -159,13 +159,11 @@ GetMysteryGiftItem:
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .no_room
 	call CloseSRAM
 	xor a
 	ld [wScriptVar], a
 	ret
-
 .ReceiveItemText:
 	text_far _ReceiveItemText
 	text_end
@@ -240,23 +238,18 @@ CheckCoinsAndCoinCase:
 	jr nc, .no_coin_case
 	and a
 	ret
-
 .no_coins
 	ld hl, .NoCoinsText
 	jr .print
-
 .no_coin_case
 	ld hl, .NoCoinCaseText
-
 .print
 	call PrintText
 	scf
 	ret
-
 .NoCoinsText:
 	text_far _NoCoinsText
 	text_end
-
 .NoCoinCaseText:
 	text_far _NoCoinCaseText
 	text_end
@@ -291,13 +284,12 @@ StoreSwarmMapIndices::
 	ld a, c
 	and a
 	jr nz, .yanma
-; swarm dark cave violet entrance
+	; swarm dark cave violet entrance
 	ld a, d
 	ld [wDunsparceMapGroup], a
 	ld a, e
 	ld [wDunsparceMapNumber], a
 	ret
-
 .yanma
 	ld a, d
 	ld [wYanmaMapGroup], a
@@ -322,22 +314,16 @@ CheckLuckyNumberShowFlag:
 	jp ScriptReturnCarry
 
 SnorlaxAwake:
-; Check if the Poké Flute channel is playing, and if the player is standing
-; next to Snorlax.
-
-; outputs:
-; wScriptVar is 1 if the conditions are met, otherwise 0.
-
-; check background music
+; Check if the Poké Flute channel is playing, and if the player is standing next to Snorlax.
+; outputs: wScriptVar is 1 if the conditions are met, otherwise 0.
+	; check background music
 	ld a, [wMapMusic]
 	cp MUSIC_POKE_FLUTE_CHANNEL
 	jr nz, .nope
-
 	ld a, [wXCoord]
 	ld b, a
 	ld a, [wYCoord]
 	ld c, a
-
 	ld hl, .ProximityCoords
 .loop
 	ld a, [hli]
@@ -348,20 +334,16 @@ SnorlaxAwake:
 	ld a, [hli]
 	cp c
 	jr nz, .loop
-
 	ld a, TRUE
 	jr .done
-
 .nextcoord
 	inc hl
 	jr .loop
-
 .nope
 	xor a
 .done
 	ld [wScriptVar], a
 	ret
-
 .ProximityCoords:
 	;   x,  y
 	db 33,  8 ; left
@@ -382,14 +364,12 @@ GameboyCheck:
 	ldh a, [hSGB]
 	and a
 	jr nz, .sgb
-; gb
+	; gb
 	xor a ; GBCHECK_GB
 	jr .done
-
 .sgb
 	ld a, GBCHECK_SGB
 	jr .done
-
 .cgb
 	ld a, GBCHECK_CGB
 .done

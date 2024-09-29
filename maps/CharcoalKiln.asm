@@ -19,13 +19,11 @@ CharcoalKilnBoss:
 	waitbutton
 	closetext
 	end
-
 .SavedSlowpoke:
 	writetext CharcoalKilnBossText2
 	waitbutton
 	closetext
 	end
-
 .GotCut:
 	writetext CharcoalKilnBossText3
 	waitbutton
@@ -43,7 +41,6 @@ CharcoalKilnApprentice:
 	waitbutton
 	closetext
 	end
-
 .Thanks:
 	writetext CharcoalKilnApprenticeText2
 	promptbutton
@@ -52,7 +49,6 @@ CharcoalKilnApprentice:
 	setevent EVENT_GOT_CHARCOAL_IN_CHARCOAL_KILN
 	closetext
 	end
-
 .YoureTheCoolest:
 	writetext CharcoalKilnApprenticeText3
 	waitbutton
@@ -66,6 +62,8 @@ CharcoalKilnFarfetchd:
 	writetext FarfetchdText
 	cry FARFETCH_D
 	waitbutton
+	setval FARFETCH_D
+	special ShowPokedexEntry
 	closetext
 	end
 

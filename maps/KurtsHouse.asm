@@ -23,7 +23,6 @@ KurtsHouseKurtCallback:
 	disappear KURTSHOUSE_TWIN2
 	appear KURTSHOUSE_TWIN1
 	endcallback
-
 .MakingBalls:
 	disappear KURTSHOUSE_KURT1
 	appear KURTSHOUSE_KURT2
@@ -54,7 +53,6 @@ Kurt1:
 	waitsfx
 	special RestartMapMusic
 	end
-
 .RunAround:
 	turnobject PLAYER, DOWN
 	playsound SFX_FLY
@@ -64,7 +62,6 @@ Kurt1:
 	waitsfx
 	special RestartMapMusic
 	end
-
 .ClearedSlowpokeWell:
 	writetext KurtsHouseKurtHonoredToMakeBallsText
 	promptbutton
@@ -118,13 +115,11 @@ Kurt1:
 	iftrue .IMakeBallsFromApricorns
 	closetext
 	end
-
 .IMakeBallsFromApricorns:
 	writetext KurtsHouseKurtBallsFromApricornsText
 	waitbutton
 	closetext
 	end
-
 .AskApricorn:
 	writetext KurtsHouseKurtAskYouHaveAnApricornText
 	promptbutton
@@ -137,34 +132,27 @@ Kurt1:
 	ifequal WHT_APRICORN, .Wht
 	ifequal BLK_APRICORN, .Blk
 	ifequal PNK_APRICORN, .Pnk
-; .Red
+	; .Red
 	setevent EVENT_GAVE_KURT_RED_APRICORN
 	sjump .GaveKurtApricorns
-
 .Blu:
 	setevent EVENT_GAVE_KURT_BLU_APRICORN
 	sjump .GaveKurtApricorns
-
 .Ylw:
 	setevent EVENT_GAVE_KURT_YLW_APRICORN
 	sjump .GaveKurtApricorns
-
 .Grn:
 	setevent EVENT_GAVE_KURT_GRN_APRICORN
 	sjump .GaveKurtApricorns
-
 .Wht:
 	setevent EVENT_GAVE_KURT_WHT_APRICORN
 	sjump .GaveKurtApricorns
-
 .Blk:
 	setevent EVENT_GAVE_KURT_BLK_APRICORN
 	sjump .GaveKurtApricorns
-
 .Pnk:
 	setevent EVENT_GAVE_KURT_PNK_APRICORN
 	sjump .GaveKurtApricorns
-
 .GaveKurtApricorns:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
 	setflag ENGINE_KURT_MAKING_BALLS
@@ -173,22 +161,20 @@ Kurt1:
 	waitbutton
 	closetext
 	end
-
 .Cancel:
 	writetext KurtsHouseKurtThatsALetdownText
 	waitbutton
 	closetext
 	end
-
 ._ThatTurnedOutGreat:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
+	; fallthrough
 .ThatTurnedOutGreat:
 	writetext KurtsHouseKurtTurnedOutGreatText
 	waitbutton
 .NoRoomForBall:
 	closetext
 	end
-
 .GiveLevelBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -198,7 +184,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_RED_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveLureBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -208,7 +193,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_BLU_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveMoonBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -218,7 +202,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_YLW_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveFriendBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -228,7 +211,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_GRN_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveFastBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -238,7 +220,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_WHT_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveHeavyBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -248,7 +229,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_BLK_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .GiveLoveBall:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iftrue KurtMakingBallsScript
@@ -258,7 +238,6 @@ Kurt1:
 	iffalse .NoRoomForBall
 	clearevent EVENT_GAVE_KURT_PNK_APRICORN
 	sjump ._ThatTurnedOutGreat
-
 .CanGiveGSBallToKurt:
 	checkevent EVENT_GAVE_GS_BALL_TO_KURT
 	iftrue .GaveGSBallToKurt
@@ -271,7 +250,6 @@ Kurt1:
 	takeitem GS_BALL
 	setflag ENGINE_KURT_MAKING_BALLS
 	end
-
 .GaveGSBallToKurt:
 	checkflag ENGINE_KURT_MAKING_BALLS
 	iffalse .NotMakingBalls
@@ -281,7 +259,6 @@ Kurt1:
 	waitbutton
 	closetext
 	end
-
 .NotMakingBalls:
 	writetext KurtsHouseKurtThisBallStartedToShakeText
 	waitbutton
@@ -298,11 +275,11 @@ Kurt1:
 	playsound SFX_FLY
 	applymovement KURTSHOUSE_KURT1, KurtsHouseKurtExitHouseMovement
 	sjump .KurtHasLeftTheBuilding
-
 .GSBallRunAround:
 	turnobject PLAYER, DOWN
 	playsound SFX_FLY
 	applymovement KURTSHOUSE_KURT1, KurtsHouseKurtGoAroundPlayerThenExitHouseMovement
+	; fallthrough
 .KurtHasLeftTheBuilding:
 	playsound SFX_EXIT_BUILDING
 	disappear KURTSHOUSE_KURT1
@@ -362,21 +339,18 @@ KurtsGranddaughter1:
 	waitbutton
 	closetext
 	end
-
 .SlowpokeBack:
 	opentext
 	writetext KurtsGranddaughterSlowpokeBackText
 	waitbutton
 	closetext
 	end
-
 .Lonely:
 	opentext
 	writetext KurtsGranddaughterLonelyText
 	waitbutton
 	closetext
 	end
-
 .Dad:
 	opentext
 	writetext KurtsGranddaughterDadText
@@ -386,6 +360,7 @@ KurtsGranddaughter1:
 
 KurtsGranddaughter2:
 	faceplayer
+	; fallthrough
 KurtsGranddaughter2Subscript:
 	opentext
 	checkevent EVENT_GAVE_GS_BALL_TO_KURT
@@ -395,7 +370,6 @@ KurtsGranddaughter2Subscript:
 	closetext
 	turnobject KURTSHOUSE_TWIN2, RIGHT
 	end
-
 .GSBall:
 	writetext KurtsGranddaughterGSBallText
 	waitbutton
@@ -416,6 +390,8 @@ KurtsHouseSlowpoke:
 	writetext KurtsHouseSlowpokeText
 	cry SLOWPOKE
 	waitbutton
+	setval SLOWPOKE
+	special ShowPokedexEntry
 	closetext
 	end
 

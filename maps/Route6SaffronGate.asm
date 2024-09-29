@@ -3,12 +3,8 @@
 
 Route6SaffronGate_MapScripts:
 	def_scene_scripts
-	scene_script Route6SaffronGateNoopScene ; unusable
 
 	def_callbacks
-
-Route6SaffronGateNoopScene:
-	end
 
 Route6SaffronGuardScript:
 	faceplayer
@@ -19,7 +15,6 @@ Route6SaffronGuardScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedPart:
 	writetext Route6SaffronGuardMagnetTrainText
 	waitbutton

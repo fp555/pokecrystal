@@ -27,7 +27,6 @@ ManiaScript:
 	closetext
 	setevent EVENT_GOT_SHUCKIE
 	end
-
 .alreadyhaveshuckie
 	checkflag ENGINE_GOT_SHUCKIE_TODAY
 	iffalse .returnshuckie
@@ -35,19 +34,16 @@ ManiaScript:
 	waitbutton
 	closetext
 	end
-
 .partyfull
 	writetext ManiaText_PartyFull
 	waitbutton
 	closetext
 	end
-
 .refusetotakeshuckie
 	writetext ManiaText_IfHeComesBack
 	waitbutton
 	closetext
 	end
-
 .returnshuckie
 	writetext ManiaText_CanIHaveMyMonBack
 	yesorno
@@ -63,40 +59,27 @@ ManiaScript:
 	closetext
 	setevent EVENT_MANIA_TOOK_SHUCKIE_OR_LET_YOU_KEEP_HIM
 	end
-
 .wrong
 	writetext ManiaText_ShuckleNotThere
 	waitbutton
 	closetext
 	end
-
 .superhappy
 	writetext ManiaText_ShuckleLikesYou
 	waitbutton
 	closetext
 	setevent EVENT_MANIA_TOOK_SHUCKIE_OR_LET_YOU_KEEP_HIM
 	end
-
 .refused
 	writetext ManiaText_SameAsBeingRobbed
 	waitbutton
 	closetext
 	end
-
-.nothingleft ; unreferenced
-	writetext ManiaText_ShuckleIsYourLastMon
-	waitbutton
-	closetext
-	end
-
 .default_postevent
 	writetext ManiaText_HappinessSpeech
 	waitbutton
 	closetext
 	end
-
-ManiasHouseUnusedBookshelf: ; unreferenced
-	jumpstd PictureBookshelfScript
 
 ManiaText_AskLookAfterShuckle:
 	text "I, I'm in shock!"
@@ -187,14 +170,6 @@ ManiaText_HappinessSpeech:
 
 	para "with a person who"
 	line "treats them well."
-	done
-
-ManiaText_ShuckleIsYourLastMon:
-	text "If I take my #-"
-	line "MON back, what are"
-
-	para "you going to use"
-	line "in battle?"
 	done
 
 ManiasHouse_MapEvents:

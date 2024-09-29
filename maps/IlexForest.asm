@@ -33,52 +33,42 @@ IlexForestFarfetchdCallback:
 	ifequal 10, .PositionTen
 .Static:
 	endcallback
-
 .PositionOne:
 	moveobject ILEXFOREST_FARFETCHD, 14, 31
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionTwo:
 	moveobject ILEXFOREST_FARFETCHD, 15, 25
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionThree:
 	moveobject ILEXFOREST_FARFETCHD, 20, 24
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionFour:
 	moveobject ILEXFOREST_FARFETCHD, 29, 22
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionFive:
 	moveobject ILEXFOREST_FARFETCHD, 28, 31
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionSix:
 	moveobject ILEXFOREST_FARFETCHD, 24, 35
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionSeven:
 	moveobject ILEXFOREST_FARFETCHD, 22, 31
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionEight:
 	moveobject ILEXFOREST_FARFETCHD, 15, 29
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionNine:
 	moveobject ILEXFOREST_FARFETCHD, 10, 35
 	appear ILEXFOREST_FARFETCHD
 	endcallback
-
 .PositionTen:
 	moveobject ILEXFOREST_FARFETCHD, 6, 28
 	appear ILEXFOREST_FARFETCHD
@@ -93,7 +83,6 @@ IlexForestCharcoalApprenticeScript:
 	waitbutton
 	closetext
 	end
-
 .DoneFarfetchd:
 	writetext IlexForestApprenticeAfterText
 	waitbutton
@@ -112,7 +101,6 @@ IlexForestFarfetchdScript:
 	ifequal  8, .Position8
 	ifequal  9, .Position9
 	ifequal 10, .Position10
-
 .Position1:
 	faceplayer
 	opentext
@@ -128,7 +116,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 2
 	end
-
 .Position2:
 	scall .CryAndCheckFacing
 	ifequal DOWN, .Position2_Down
@@ -138,7 +125,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 3
 	end
-
 .Position2_Down:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetchd_Pos2_Pos8
 	moveobject ILEXFOREST_FARFETCHD, 15, 29
@@ -146,7 +132,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 8
 	end
-
 .Position3:
 	scall .CryAndCheckFacing
 	ifequal LEFT, .Position3_Left
@@ -156,7 +141,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 4
 	end
-
 .Position3_Left:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetchd_Pos3_Pos2
 	moveobject ILEXFOREST_FARFETCHD, 15, 25
@@ -164,7 +148,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 2
 	end
-
 .Position4:
 	scall .CryAndCheckFacing
 	ifequal UP, .Position4_Up
@@ -174,7 +157,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 5
 	end
-
 .Position4_Up:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetchd_Pos4_Pos3
 	moveobject ILEXFOREST_FARFETCHD, 20, 24
@@ -182,7 +164,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 3
 	end
-
 .Position5:
 	scall .CryAndCheckFacing
 	ifequal UP, .Position5_Up
@@ -194,7 +175,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 6
 	end
-
 .Position5_Left:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetchd_Pos5_Pos7
 	moveobject ILEXFOREST_FARFETCHD, 22, 31
@@ -202,7 +182,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 7
 	end
-
 .Position5_Up:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos5_Pos4_Up
 	moveobject ILEXFOREST_FARFETCHD, 29, 22
@@ -210,7 +189,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 4
 	end
-
 .Position5_Right:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos5_Pos4_Right
 	moveobject ILEXFOREST_FARFETCHD, 29, 22
@@ -218,7 +196,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 4
 	end
-
 .Position6:
 	scall .CryAndCheckFacing
 	ifequal RIGHT, .Position6_Right
@@ -228,7 +205,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 7
 	end
-
 .Position6_Right:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos6_Pos5
 	moveobject ILEXFOREST_FARFETCHD, 28, 31
@@ -236,7 +212,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 5
 	end
-
 .Position7:
 	scall .CryAndCheckFacing
 	ifequal DOWN, .Position7_Down
@@ -247,7 +222,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 8
 	end
-
 .Position7_Left:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos7_Pos6
 	moveobject ILEXFOREST_FARFETCHD, 24, 35
@@ -255,7 +229,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 6
 	end
-
 .Position7_Down:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos7_Pos5
 	moveobject ILEXFOREST_FARFETCHD, 28, 31
@@ -263,7 +236,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 5
 	end
-
 .Position8:
 	scall .CryAndCheckFacing
 	ifequal UP, .Position8_Up
@@ -275,7 +247,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 9
 	end
-
 .Position8_Right:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos8_Pos7
 	moveobject ILEXFOREST_FARFETCHD, 22, 31
@@ -283,7 +254,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 7
 	end
-
 .Position8_Up:
 .Position8_Left:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos8_Pos2
@@ -292,7 +262,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 2
 	end
-
 .Position9:
 	scall .CryAndCheckFacing
 	ifequal DOWN, .Position9_Down
@@ -306,7 +275,6 @@ IlexForestFarfetchdScript:
 	setevent EVENT_CHARCOAL_KILN_BOSS
 	setevent EVENT_HERDED_FARFETCHD
 	end
-
 .Position9_Right:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos9_Pos8_Right
 	moveobject ILEXFOREST_FARFETCHD, 15, 29
@@ -314,7 +282,6 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 8
 	end
-
 .Position9_Down:
 	applymovement ILEXFOREST_FARFETCHD, MovementData_Farfetched_Pos9_Pos8_Down
 	moveobject ILEXFOREST_FARFETCHD, 15, 29
@@ -322,16 +289,16 @@ IlexForestFarfetchdScript:
 	appear ILEXFOREST_FARFETCHD
 	loadmem wFarfetchdPosition, 8
 	end
-
 .Position10:
 	faceplayer
 	opentext
 	writetext Text_Kwaaaa
 	cry FARFETCH_D
 	waitbutton
+	setval FARFETCH_D
+	special ShowPokedexEntry
 	closetext
 	end
-
 .CryAndCheckFacing:
 	faceplayer
 	opentext
@@ -361,7 +328,6 @@ IlexForestCharcoalMasterScript:
 	clearevent EVENT_CHARCOAL_KILN_APPRENTICE
 	clearevent EVENT_CHARCOAL_KILN_BOSS
 	end
-
 .AlreadyGotCut:
 	writetext Text_CharcoalMasterTalkAfter
 	waitbutton
@@ -387,7 +353,6 @@ IlexForestHeadbuttGuyScript:
 
 TrainerBugCatcherWayne:
 	trainer BUG_CATCHER, WAYNE, EVENT_BEAT_BUG_CATCHER_WAYNE, BugCatcherWayneSeenText, BugCatcherWayneBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -420,9 +385,6 @@ IlexForestHiddenSuperPotion:
 IlexForestHiddenFullHeal:
 	hiddenitem FULL_HEAL, EVENT_ILEX_FOREST_HIDDEN_FULL_HEAL
 
-IlexForestBoulder: ; unreferenced
-	jumpstd StrengthBoulderScript
-
 IlexForestSignpost:
 	jumptext IlexForestSignpostText
 
@@ -430,13 +392,11 @@ IlexForestShrineScript:
 	checkevent EVENT_FOREST_IS_RESTLESS
 	iftrue .ForestIsRestless
 	sjump .DontDoCelebiEvent
-
 .ForestIsRestless:
 	checkitem GS_BALL
 	iftrue .AskCelebiEvent
 .DontDoCelebiEvent:
 	jumptext Text_IlexForestShrine
-
 .AskCelebiEvent:
 	opentext
 	writetext Text_ShrineCelebiEvent
@@ -444,7 +404,6 @@ IlexForestShrineScript:
 	iftrue .CelebiEvent
 	closetext
 	end
-
 .CelebiEvent:
 	takeitem GS_BALL
 	clearevent EVENT_FOREST_IS_RESTLESS

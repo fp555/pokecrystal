@@ -82,6 +82,7 @@ PlateauRivalBattle2:
 	applymovement INDIGOPLATEAUPOKECENTER1F_RIVAL, PlateauRivalMovement2
 	playmusic MUSIC_RIVAL_ENCOUNTER
 	turnobject PLAYER, LEFT
+	; fallthrough
 PlateauRivalBattleCommon:
 	opentext
 	writetext PlateauRivalText1
@@ -100,7 +101,6 @@ PlateauRivalBattleCommon:
 	dontrestartmapmusic
 	reloadmapafterbattle
 	sjump PlateauRivalPostBattle
-
 .Totodile:
 	winlosstext PlateauRivalWinText, PlateauRivalLoseText
 	setlasttalked INDIGOPLATEAUPOKECENTER1F_RIVAL
@@ -109,7 +109,6 @@ PlateauRivalBattleCommon:
 	dontrestartmapmusic
 	reloadmapafterbattle
 	sjump PlateauRivalPostBattle
-
 .Chikorita:
 	winlosstext PlateauRivalWinText, PlateauRivalLoseText
 	setlasttalked INDIGOPLATEAUPOKECENTER1F_RIVAL
@@ -160,18 +159,18 @@ TeleportGuyScript:
 	waitsfx
 	warp NEW_BARK_TOWN, 13, 6
 	end
-
 .No:
 	writetext TeleportGuyNoText
 	waitbutton
 	closetext
 	end
-
 AbraScript:
 	opentext
 	writetext AbraText
 	cry ABRA
 	waitbutton
+	setval ABRA
+	special ShowPokedexEntry
 	closetext
 	end
 

@@ -28,7 +28,6 @@ FlowerShopTeacherScript:
 	setevent EVENT_FLORIA_AT_SUDOWOODO
 	clearevent EVENT_FLORIA_AT_FLOWER_SHOP
 	end
-
 .Lalala:
 	turnobject GOLDENRODFLOWERSHOP_TEACHER, LEFT
 	opentext
@@ -36,13 +35,10 @@ FlowerShopTeacherScript:
 	waitbutton
 	closetext
 	end
-
 .GotSquirtbottle:
 	jumptextfaceplayer GoldenrodFlowerShopTeacherDontDoAnythingDangerousText
-
 .NoPlainBadge:
 	jumptextfaceplayer GoldenrodFlowerShopTeacherAskWantToBorrowWaterBottleText
-
 .HaventMetFloria:
 	jumptextfaceplayer GoldenrodFlowerShopTeacherMySisterWentToSeeWigglyTreeRoute36Text
 
@@ -60,27 +56,16 @@ FlowerShopFloriaScript:
 	setevent EVENT_FLORIA_AT_FLOWER_SHOP
 	clearevent EVENT_FLORIA_AT_SUDOWOODO
 	end
-
 .GotSquirtbottle:
 	writetext GoldenrodFlowerShopFloriaYouBeatWhitneyText
 	waitbutton
 	closetext
 	end
-
 .FoughtSudowoodo:
 	writetext GoldenrodFlowerShopFloriaItReallyWasAMonText
 	waitbutton
 	closetext
 	end
-
-FlowerShopShelf1: ; unreferenced
-	jumpstd PictureBookshelfScript
-
-FlowerShopShelf2: ; unreferenced
-	jumpstd MagazineBookshelfScript
-
-FlowerShopRadio: ; unreferenced
-	jumpstd Radio2Script
 
 GoldenrodFlowerShopTeacherMySisterWentToSeeWigglyTreeRoute36Text:
 	text "Have you seen that"

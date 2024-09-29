@@ -83,9 +83,11 @@ FarmerFScript_GiveSnore:
 	verbosegiveitem TM_SNORE
 	iffalse FarmerFScript_NoRoomForSnore
 	setevent EVENT_GOT_TM13_SNORE_FROM_MOOMOO_FARM
+	; fallthrough
 FarmerFScript_GotSnore:
 	writetext FarmerFText_SnoreSpeech
 	waitbutton
+	; fallthrough
 FarmerFScript_NoRoomForSnore:
 	closetext
 	end
@@ -170,11 +172,6 @@ FarmerFText_HealedMiltank:
 
 	para "Here's somethin'"
 	line "fer your trouble."
-	done
-
-Text_ReceivedTM13: ; unreferenced
-	text "<PLAYER> received"
-	line "TM13."
 	done
 
 FarmerFText_SnoreSpeech:

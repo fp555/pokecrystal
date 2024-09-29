@@ -37,19 +37,18 @@ MahoganyTownTryARageCandyBarScript:
 
 MahoganyTownPokefanMScript:
 	faceplayer
+	; fallthrough
 RageCandyBarMerchantScript:
 	checkevent EVENT_CLEARED_ROCKET_HIDEOUT
 	iftrue .ClearedRocketHideout
 	scall .SellRageCandyBars
 	end
-
 .ClearedRocketHideout:
 	opentext
 	writetext RageCandyBarMerchantSoldOutText
 	waitbutton
 	closetext
 	end
-
 .SellRageCandyBars:
 	opentext
 	writetext RageCandyBarMerchantTryOneText
@@ -68,19 +67,16 @@ RageCandyBarMerchantScript:
 	waitbutton
 	closetext
 	end
-
 .NotEnoughMoney:
 	writetext RageCandyBarMerchantNotEnoughMoneyText
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext RageCandyBarMerchantRefusedText
 	waitbutton
 	closetext
 	end
-
 .NoRoom:
 	writetext RageCandyBarMerchantNoRoomText
 	waitbutton
@@ -96,7 +92,6 @@ MahoganyTownGrampsScript:
 	waitbutton
 	closetext
 	end
-
 .ClearedRocketHideout:
 	writetext MahoganyTownGrampsText_ClearedRocketHideout
 	waitbutton
@@ -121,10 +116,6 @@ MahoganyGymSign:
 MahoganyTownPokecenterSign:
 	jumpstd PokecenterSignScript
 
-MahoganyTownCollideDownFaceLeftMovement: ; unreferenced
-	step DOWN
-	big_step UP
-	turn_head DOWN
 MahoganyTownPlayerStepLeftMovement:
 	step LEFT
 	step_end

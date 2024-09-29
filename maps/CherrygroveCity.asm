@@ -84,14 +84,11 @@ CherrygroveCityGuideGent:
 	clearevent EVENT_GUIDE_GENT_VISIBLE_IN_CHERRYGROVE
 	waitsfx
 	end
-
 .JumpstdReceiveItem:
 	jumpstd ReceiveItemScript
 	end
-
 .mapcardname
 	db "MAP CARD@"
-
 .No:
 	writetext GuideGentNoText
 	waitbutton
@@ -100,6 +97,7 @@ CherrygroveCityGuideGent:
 
 CherrygroveRivalSceneSouth:
 	moveobject CHERRYGROVECITY_RIVAL, 39, 7
+	; fallthrough
 CherrygroveRivalSceneNorth:
 	turnobject PLAYER, RIGHT
 	showemote EMOTE_SHOCK, PLAYER, 15
@@ -126,7 +124,6 @@ CherrygroveRivalSceneNorth:
 	reloadmap
 	iftrue .AfterVictorious
 	sjump .AfterYourDefeat
-
 .Totodile:
 	winlosstext RivalCherrygroveWinText, RivalCherrygroveLossText
 	setlasttalked CHERRYGROVECITY_RIVAL
@@ -137,7 +134,6 @@ CherrygroveRivalSceneNorth:
 	reloadmap
 	iftrue .AfterVictorious
 	sjump .AfterYourDefeat
-
 .Chikorita:
 	winlosstext RivalCherrygroveWinText, RivalCherrygroveLossText
 	setlasttalked CHERRYGROVECITY_RIVAL
@@ -148,7 +144,6 @@ CherrygroveRivalSceneNorth:
 	reloadmap
 	iftrue .AfterVictorious
 	sjump .AfterYourDefeat
-
 .AfterVictorious:
 	playmusic MUSIC_RIVAL_AFTER
 	opentext
@@ -156,7 +151,6 @@ CherrygroveRivalSceneNorth:
 	waitbutton
 	closetext
 	sjump .FinishRival
-
 .AfterYourDefeat:
 	playmusic MUSIC_RIVAL_AFTER
 	opentext
@@ -183,7 +177,6 @@ CherrygroveTeacherScript:
 	waitbutton
 	closetext
 	end
-
 .HaveMapCard:
 	writetext CherrygroveTeacherText_HaveMapCard
 	waitbutton
@@ -199,7 +192,6 @@ CherrygroveYoungsterScript:
 	waitbutton
 	closetext
 	end
-
 .HavePokedex:
 	writetext CherrygroveYoungsterText_HavePokedex
 	waitbutton
@@ -315,11 +307,6 @@ CherrygroveCity_RivalWalksToYou:
 CherrygroveCity_RivalPushesYouOutOfTheWay:
 	big_step DOWN
 	turn_head UP
-	step_end
-
-CherrygroveCity_UnusedMovementData: ; unreferenced
-	step LEFT
-	turn_head DOWN
 	step_end
 
 CherrygroveCity_RivalExitsStageLeft:

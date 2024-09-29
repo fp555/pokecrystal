@@ -39,9 +39,6 @@ EcruteakPokcenter1FBillActivatesTimeCapsuleScript:
 	opentext
 	writetext EcruteakPokecenter1F_BillText1
 	promptbutton
-	sjump .PointlessJump
-
-.PointlessJump:
 	writetext EcruteakPokecenter1F_BillText2
 	waitbutton
 	closetext
@@ -62,7 +59,6 @@ EcruteakPokecenter1FPokefanMScript:
 	special CheckMobileAdapterStatusSpecial
 	iftrue .mobile
 	jumptextfaceplayer EcruteakPokecenter1FPokefanMText
-
 .mobile
 	jumptextfaceplayer EcruteakPokecenter1FPokefanMTextMobile
 

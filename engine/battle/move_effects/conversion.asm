@@ -23,6 +23,7 @@ BattleCommand_Conversion:
 	dec a
 	ld hl, Moves + MOVE_TYPE
 	call GetMoveAttr
+	and TYPE_MASK
 	ld [de], a
 	inc de
 	pop bc
@@ -53,16 +54,13 @@ BattleCommand_Conversion:
 	ld a, [de]
 	dec de
 	cp [hl]
-	jr nz, .done
+	jr nz, .loop3
 .next
 	inc hl
 	jr .loop2
-
 .fail
 	call AnimateFailedMove
 	jp PrintButItFailed
-
-.done
 .loop3
 	call BattleRandom
 	maskbits NUM_MOVES

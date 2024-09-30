@@ -1,31 +1,23 @@
 PrintMonTypes:
-; Print one or both types of [wCurSpecies]
-; on the stats screen at hl.
-
+; Print one or both types of [wCurSpecies] on the stats screen at hl.
 	push hl
 	call GetBaseData
 	pop hl
-
 	push hl
 	ld a, [wBaseType1]
 	call .Print
-
-	; Single-typed monsters really
-	; have two of the same type.
+	; Single-typed monsters really have two of the same type.
 	ld a, [wBaseType1]
 	ld b, a
 	ld a, [wBaseType2]
 	cp b
 	pop hl
 	jr z, .hide_type_2
-
 	ld bc, SCREEN_WIDTH
 	add hl, bc
-
 .Print:
 	ld b, a
 	jr PrintType
-
 .hide_type_2
 	; Erase any type name that was here before.
 	; Seems to be pointless in localized versions.
@@ -40,7 +32,6 @@ PrintMonTypes:
 
 PrintMoveType:
 ; Print the type of move b at hl.
-
 	push hl
 	ld a, b
 	dec a
@@ -51,15 +42,13 @@ PrintMoveType:
 	ld a, BANK(Moves)
 	call FarCopyBytes
 	ld a, [wStringBuffer1 + MOVE_TYPE]
+	and TYPE_MASK
 	pop hl
-
 	ld b, a
 
 PrintType:
 ; Print type b at hl.
-
 	ld a, b
-
 	push hl
 	add a
 	ld hl, TypeNames
@@ -70,12 +59,10 @@ PrintType:
 	ld e, a
 	ld d, [hl]
 	pop hl
-
 	jp PlaceString
 
 GetTypeName:
 ; Copy the name of type [wNamedObjectIndex] to wStringBuffer1.
-
 	ld a, [wNamedObjectIndex]
 	ld hl, TypeNames
 	ld e, a

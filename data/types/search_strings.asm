@@ -19,4 +19,4 @@ PokedexTypeSearchStrings:
 	db " DRAGON @"
 	db "  DARK  @"
 	db " STEEL  @"
-	assert_table_length NUM_TYPES + 1
+	assert_table_length NUM_TYPES ; ignore CURSE_TYPE, add "---" entry

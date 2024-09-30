@@ -18,4 +18,4 @@ PokedexTypeSearchConversionTable:
 	db DRAGON
 	db DARK
 	db STEEL
-	assert_table_length NUM_TYPES
+	assert_table_length NUM_TYPES - 1 ; ignore CURSE_TYPE

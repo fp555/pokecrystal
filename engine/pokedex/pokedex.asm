@@ -1713,14 +1713,12 @@ Pokedex_PrevSearchMonType:
 	ld a, [wDexArrowCursorPosIndex]
 	and a
 	jr nz, .type2
-
 	ld hl, wDexSearchMonType1
 	ld a, [hl]
 	cp 1
 	jr z, .wrap_around
 	dec [hl]
 	jr .done
-
 .type2
 	ld hl, wDexSearchMonType2
 	ld a, [hl]
@@ -1728,9 +1726,8 @@ Pokedex_PrevSearchMonType:
 	jr z, .wrap_around
 	dec [hl]
 	jr .done
-
 .wrap_around
-	ld [hl], NUM_TYPES
+	ld [hl], NUM_TYPES - 1
 
 .done
 	scf
@@ -1740,27 +1737,24 @@ Pokedex_NextSearchMonType:
 	ld a, [wDexArrowCursorPosIndex]
 	and a
 	jr nz, .type2
-
 	ld hl, wDexSearchMonType1
 	ld a, [hl]
-	cp NUM_TYPES
+	cp NUM_TYPES - 1
 	jr nc, .type1_wrap_around
 	inc [hl]
 	jr .done
 .type1_wrap_around
 	ld [hl], 1
 	jr .done
-
 .type2
 	ld hl, wDexSearchMonType2
 	ld a, [hl]
-	cp NUM_TYPES
+	cp NUM_TYPES - 1
 	jr nc, .type2_wrap_around
 	inc [hl]
 	jr .done
 .type2_wrap_around
 	ld [hl], 0
-
 .done
 	scf
 	ret

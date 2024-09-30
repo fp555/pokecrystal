@@ -36,7 +36,7 @@ jobs:
       - name: Archive map file
         uses: actions/upload-artifact@v4
         with:
-          name: pokecrystal
+          name: 'pokecrystal.map'
           path: 'pokecrystal.map'
           if-no-files-found: error
           
@@ -46,8 +46,8 @@ jobs:
       - name: Create release draft
         uses: ncipollo/release-action@v1
         with:
-            name: ${{ github.ref_name }}
-            draft: true
-            prerelease: true
-            artifacts: "pokecrystal.gbc"
-            artifactErrorsFailBuild: true
+          name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+          artifacts: "pokecrystal.gbc"
+          artifactErrorsFailBuild: true

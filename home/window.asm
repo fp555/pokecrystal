@@ -4,11 +4,9 @@ ReanchorMap::
 	push af
 	ld a, BANK(ReanchorBGMap_NoOAMUpdate) ; aka BANK(LoadFonts_NoOAMUpdate)
 	rst Bankswitch
-
 	call ReanchorBGMap_NoOAMUpdate
 	call HDMATransferTilemapAndAttrmap_Menu
 	call LoadFonts_NoOAMUpdate
-
 	pop af
 	rst Bankswitch
 	ret
@@ -18,15 +16,12 @@ CloseText::
 	push af
 	ld a, $1
 	ldh [hOAMUpdate], a
-
 	call .CloseText
-
 	pop af
 	ldh [hOAMUpdate], a
 	ld hl, wStateFlags
 	res TEXT_STATE_F, [hl]
 	ret
-
 .CloseText:
 	call ClearWindowData
 	xor a
@@ -49,14 +44,12 @@ OpenText::
 	push af
 	ld a, BANK(ReanchorBGMap_NoOAMUpdate) ; aka BANK(LoadFonts_NoOAMUpdate)
 	rst Bankswitch
-
 	call ReanchorBGMap_NoOAMUpdate ; anchor bgmap
 	call SpeechTextbox
 	call HDMATransferTilemapAndAttrmap_Menu ; transfer bgmap
 	call LoadFonts_NoOAMUpdate ; load font
 	pop af
 	rst Bankswitch
-
 	ret
 
 HDMATransferTilemapAndAttrmap_Menu::
@@ -64,9 +57,7 @@ HDMATransferTilemapAndAttrmap_Menu::
 	push af
 	ld a, $1
 	ldh [hOAMUpdate], a
-
 	farcall _HDMATransferTilemapAndAttrmap_Menu
-
 	pop af
 	ldh [hOAMUpdate], a
 	ret
@@ -80,9 +71,7 @@ SafeUpdateSprites::
 	ldh [hBGMapMode], a
 	ld a, $1
 	ldh [hOAMUpdate], a
-
 	call UpdateSprites
-
 	xor a
 	ldh [hOAMUpdate], a
 	call DelayFrame
@@ -90,8 +79,4 @@ SafeUpdateSprites::
 	ldh [hBGMapMode], a
 	pop af
 	ldh [hOAMUpdate], a
-	ret
-
-SetCarryFlag:: ; unreferenced
-	scf
 	ret

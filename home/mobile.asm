@@ -7,7 +7,6 @@ MobileAPI::
 	ld a, h
 	ld [wc987], a
 	jr nz, .okay
-
 	ld [wc982], a
 	ld a, l
 	ld [wc981], a
@@ -16,7 +15,6 @@ MobileAPI::
 	ld [hli], a
 	ld a, b
 	ld [hl], a
-
 .okay
 	ld hl, wc822
 	set 6, [hl]
@@ -25,7 +23,6 @@ MobileAPI::
 	ld a, BANK(_MobileAPI)
 	ld [wc981], a
 	rst Bankswitch
-
 	jp _MobileAPI
 
 ReturnMobileAPI::
@@ -35,12 +32,10 @@ ReturnMobileAPI::
 	ld [wc987], a
 	ld a, h
 	ld [wMobileAPIIndex], a
-
 	pop bc
 	ld a, b
 	ld [wc981], a
 	rst Bankswitch
-
 	ld hl, wc822
 	res 6, [hl]
 	ld hl, wc987
@@ -56,13 +51,11 @@ MobileReceive::
 	ld a, BANK(_MobileReceive)
 	ld [wc981], a
 	rst Bankswitch
-
 	call _MobileReceive
 	pop bc
 	ld a, b
 	ld [wc981], a
 	rst Bankswitch
-
 	ret
 
 MobileTimer::
@@ -70,72 +63,45 @@ MobileTimer::
 	push bc
 	push de
 	push hl
-
 	ldh a, [hMobile]
 	and a
 	jr z, .pop_ret
-
 	xor a
 	ldh [rTAC], a
-
-; Turn off timer interrupt
+	; Turn off timer interrupt
 	ldh a, [rIF]
 	and 1 << VBLANK | 1 << LCD_STAT | 1 << SERIAL | 1 << JOYPAD
 	ldh [rIF], a
-
 	ld a, [wc86a]
 	or a
 	jr z, .pop_ret
-
 	ld a, [wc822]
 	bit 1, a
 	jr nz, .skip_timer
-
 	ldh a, [rSC]
 	and 1 << rSC_ON
 	jr nz, .skip_timer
-
 	ldh a, [hROMBank]
 	push af
 	ld a, BANK(_Timer)
 	ld [wc981], a
 	rst Bankswitch
-
 	call _Timer
-
 	pop bc
 	ld a, b
 	ld [wc981], a
 	rst Bankswitch
-
 .skip_timer
 	ldh a, [rTMA]
 	ldh [rTIMA], a
-
 	ld a, 1 << rTAC_ON | rTAC_65536_HZ
 	ldh [rTAC], a
-
 .pop_ret
 	pop hl
 	pop de
 	pop bc
 	pop af
 	reti
-
-Function3ed7:: ; unreferenced
-	ld [$dc02], a
-	ldh a, [hROMBank]
-	push af
-	ld a, BANK(Function114243)
-	rst Bankswitch
-
-	call Function114243
-	pop bc
-	ld a, b
-	rst Bankswitch
-
-	ld a, [$dc02]
-	ret
 
 Function3eea::
 	push hl
@@ -150,31 +116,6 @@ Function3eea::
 	pop bc
 	pop hl
 	call MobileHome_PlaceBox
-	ret
-
-Function3efd:: ; unreferenced
-	push hl
-	hlcoord 0, 12
-	ld b, 4
-	ld c, 18
-	call .fill_attr
-	pop hl
-	call PrintTextboxText
-	ret
-
-.fill_attr
-	push hl
-	push bc
-	ld de, wAttrmap - wTilemap
-	add hl, de
-	inc b
-	inc b
-	inc c
-	inc c
-	call Function3f35
-	pop bc
-	pop hl
-	call TextboxBorder
 	ret
 
 Function3f20::
@@ -217,24 +158,20 @@ MobileHome_PlaceBox:
 	jr nz, .RowLoop
 	call .FillBottom
 	ret
-
 .FillTop:
 	ld a, $63
 	ld d, $62
 	ld e, $64
 	jr .FillRow
-
 .FillBottom:
 	ld a, $68
 	ld d, $67
 	ld e, $69
 	jr .FillRow
-
 .FillMiddle:
 	ld a, $7f
 	ld d, $65
 	ld e, $66
-
 .FillRow:
 	push hl
 	ld [hl], d

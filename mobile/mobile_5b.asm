@@ -1,81 +1,3 @@
-Function16c000: ; unreferenced
-	; Only for CGB
-	ldh a, [hCGB]
-	and a
-	ret z
-	; Only do this once per boot cycle
-	ldh a, [hSystemBooted]
-	and a
-	ret z
-	; Disable the joypad during mobile setup
-	ld a, [wJoypadDisable]
-	push af
-	set JOYPAD_DISABLE_SGB_TRANSFER_F, a
-	ld [wJoypadDisable], a
-	; Do stuff
-	call MobileSystemSplashScreen_InitGFX ; Load GFX
-	farcall SetRAMStateForMobile
-	farcall EnableMobile
-	call .RunJumptable
-	farcall DisableMobile
-	; Prevent this routine from running again
-	; until the next time the system is turned on
-	xor a
-	ldh [hSystemBooted], a
-	; Restore the flag state
-	pop af
-	ld [wJoypadDisable], a
-	ret
-
-.RunJumptable:
-	xor a
-	ld [wJumptableIndex], a
-	ld [wcf64], a
-	ld [wd002], a
-	ld [wd003], a
-.loop
-	call DelayFrame
-	farcall Function10635c
-	ld a, [wd002]
-	ld hl, .Jumptable
-	rst JumpTable
-	call Function16cb2e
-	call Function16cbae
-	ld a, [wd002]
-	cp $ff
-	jr nz, .loop
-	ret
-
-.Jumptable:
-	dw .init
-	dw Function16c0ba
-	dw Function16c089
-	dw Function16c09e
-	dw Function16c0a8
-	dw Function16c0dc
-	dw Function16c0ec
-	dw Function16c0ba
-	dw Function16c0ca
-	dw Function16c0dc
-	dw Function16c0ec
-	dw .quit
-
-.init
-	ld a, [wcf64]
-	and a
-	ret z
-	ld [wd002], a
-	xor a
-	ld [wd003], a
-	ret
-
-.quit
-	push af
-	ld a, $ff
-	ld [wd002], a
-	pop af
-	ret
-
 Function16c089:
 	ld a, $1
 	ld [wd1eb], a
@@ -170,7 +92,6 @@ MobileSystemSplashScreen_InitGFX:
 	ldh [hBGMapMode], a
 	call EnableLCD
 	ret
-
 .LoadPals:
 	ld de, wBGPals1
 	ld hl, MobileSplashScreenPalettes
@@ -179,7 +100,6 @@ MobileSystemSplashScreen_InitGFX:
 	call FarCopyWRAM
 	farcall ApplyPals
 	ret
-
 .LoadTilemap:
 	hlcoord 0, 0
 	ld bc, 20
@@ -190,7 +110,6 @@ MobileSystemSplashScreen_InitGFX:
 	ld bc, $0154
 	call CopyBytes
 	ret
-
 .LoadAttrmap:
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_WIDTH
@@ -201,7 +120,6 @@ MobileSystemSplashScreen_InitGFX:
 	ld bc, 17 * SCREEN_WIDTH
 	call CopyBytes
 	ret
-
 .Tiles:
 INCBIN "gfx/mobile/mobile_splash.2bpp"
 
@@ -228,7 +146,6 @@ Function16c943:
 	call ByteFill
 	pop af
 	ldh [rSVBK], a
-
 .asm_16c95e
 	ldh a, [rSVBK]
 	push af
@@ -253,12 +170,10 @@ Function16c943:
 	jr z, .asm_16c988
 	dec b
 	jr nz, .asm_16c981
-
 .asm_16c988
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cadc
-
 .asm_16c991
 	ld hl, MobileSplashScreenPalettes
 	call Function16cab6
@@ -276,12 +191,10 @@ Function16c943:
 	jr z, .asm_16c9b0
 	dec b
 	jr nz, .asm_16c9a9
-
 .asm_16c9b0
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cb08
-
 .asm_16c9b9
 	ld hl, MobileSplashScreenPalettes
 	call Function16cab6
@@ -299,12 +212,10 @@ Function16c943:
 	jr z, .asm_16c9d8
 	dec b
 	jr nz, .asm_16c9d1
-
 .asm_16c9d8
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cae8
-
 .asm_16c9e1
 	inc e
 	inc e
@@ -327,7 +238,6 @@ Function16c943:
 	ldh [rSVBK], a
 	and a
 	ret
-
 .asm_16ca09
 	pop af
 	ldh [rSVBK], a
@@ -341,7 +251,6 @@ Function16ca11:
 	and a
 	jr nz, .asm_16ca1d
 	farcall ApplyPals
-
 .asm_16ca1d
 	ldh a, [rSVBK]
 	push af
@@ -362,12 +271,10 @@ Function16ca11:
 	jr z, .asm_16ca3f
 	dec b
 	jr nz, .asm_16ca37
-
 .asm_16ca3f
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cadc
-
 .asm_16ca48
 	ld hl, wBGPals1
 	call Function16cab6
@@ -381,12 +288,10 @@ Function16ca11:
 	jr z, .asm_16ca5f
 	dec b
 	jr nz, .asm_16ca57
-
 .asm_16ca5f
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cb08
-
 .asm_16ca68
 	ld hl, wBGPals1
 	call Function16cab6
@@ -400,12 +305,10 @@ Function16ca11:
 	jr z, .asm_16ca7f
 	dec b
 	jr nz, .asm_16ca77
-
 .asm_16ca7f
 	ld hl, wBGPals1
 	call Function16cab6
 	call Function16cae8
-
 .asm_16ca88
 	inc e
 	inc e
@@ -427,7 +330,6 @@ Function16ca11:
 	ldh [rSVBK], a
 	and a
 	ret
-
 .asm_16caae
 	pop af
 	ldh [rSVBK], a
@@ -553,7 +455,6 @@ Function16cb40:
 	ld a, $a7
 	ld [wd1ef], a
 	ret
-
 .asm_16cb57
 	ld a, $a0
 	ld [wd1ef], a
@@ -630,7 +531,6 @@ Function16cbba:
 	cp $4
 	jr c, .asm_16cbcd
 	xor a
-
 .asm_16cbcd
 	ld [wd1f3], a
 	ret
@@ -685,7 +585,6 @@ Function16cc25:
 	ld de, wOBPals1 palette 1
 	call .CopyPal
 	ret
-
 .CopyPal:
 	ld bc, 1 palettes
 	ld a, $5

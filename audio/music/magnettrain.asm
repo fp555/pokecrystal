@@ -245,22 +245,6 @@ Music_MagnetTrain_Ch4:
 	drum_speed 12
 	drum_note 12, 16
 	sound_ret
-
-.sub1: ; unreferenced
-	drum_note 9, 1
-	drum_note 8, 1
-	drum_note 8, 1
-	drum_note 9, 1
-	drum_note 8, 1
-	drum_note 8, 1
-	drum_note 9, 1
-	drum_note 8, 1
-	drum_note 8, 1
-	drum_note 9, 1
-	drum_note 8, 1
-	drum_note 8, 1
-	sound_ret
-
 .sub2:
 	drum_note 9, 2
 	drum_note 8, 2

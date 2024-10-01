@@ -2,7 +2,6 @@ SimpleMultiply::
 ; Return a * c.
 	and a
 	ret z
-
 	push bc
 	ld b, a
 	xor a
@@ -29,9 +28,7 @@ Multiply::
 ; All values are big endian.
 	push hl
 	push bc
-
 	callfar _Multiply
-
 	pop bc
 	pop hl
 	ret
@@ -46,13 +43,4 @@ Divide::
 	pop bc
 	pop de
 	pop hl
-	ret
-
-SubtractAbsolute:: ; unreferenced
-; Return |a - b|, sign in carry.
-	sub b
-	ret nc
-	cpl
-	add 1
-	scf
 	ret

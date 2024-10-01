@@ -34,13 +34,10 @@ PlaceDiplomaOnScreen:
 	call SetDefaultBGPAndOBP
 	call DelayFrame
 	ret
-
 .Player:
 	db "PLAYER@"
-
 .EmptyString:
 	db "@"
-
 .Certification:
 	db   "This certifies"
 	next "that you have"
@@ -74,9 +71,10 @@ PrintDiplomaPage2:
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
 	ret
-
-.PlayTime: db "PLAY TIME@"
-.GameFreak: db "GAME FREAK@"
+.PlayTime:
+	db "PLAY TIME@"
+.GameFreak:
+	db "GAME FREAK@"
 
 DiplomaGFX:
 INCBIN "gfx/diploma/diploma.2bpp.lz"
@@ -86,6 +84,3 @@ INCBIN "gfx/diploma/page1.tilemap"
 
 DiplomaPage2Tilemap:
 INCBIN "gfx/diploma/page2.tilemap"
-
-Diploma_DummyFunction: ; unreferenced
-	ret

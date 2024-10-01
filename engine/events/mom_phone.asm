@@ -23,11 +23,9 @@ MomTriesToBuySomething::
 	farcall LoadMemScript
 	scf
 	ret
-
 .Script:
 	callasm .ASMFunction
 	farsjump Script_ReceivePhoneCall
-
 .ASMFunction:
 	call MomBuysItem_DeductFunds
 	call Mom_GetScriptPointer
@@ -70,14 +68,11 @@ CheckBalance_MomItem2:
 	ld bc, hMoneyTemp
 	farcall CompareMoney
 	jr nc, .have_enough_money
-
 .nope
 	jr .check_have_2300
-
 .have_enough_money
 	scf
 	ret
-
 .check_have_2300
 	ld hl, hMoneyTemp
 	ld [hl], HIGH(MOM_MONEY >> 8)
@@ -93,11 +88,9 @@ CheckBalance_MomItem2:
 	jr nc, .less_than
 	call .AddMoney
 	jr .loop
-
 .less_than
 	xor a
 	ret
-
 .exact
 	call .AddMoney
 	ld a, NUM_MOM_ITEMS_1
@@ -106,7 +99,6 @@ CheckBalance_MomItem2:
 	ld [wWhichMomItemSet], a
 	scf
 	ret
-
 .AddMoney:
 	ld de, wMomItemTriggerBalance
 	ld bc, hMoneyTemp
@@ -141,7 +133,6 @@ Mom_GiveItemOrDoll:
 	farcall DecorationFlagAction_c
 	scf
 	ret
-
 .not_doll
 	ld a, [hl]
 	ld [wCurItem], a
@@ -161,14 +152,12 @@ Mom_GetScriptPointer:
 	ret z
 	ld de, .DollScript
 	ret
-
 .ItemScript:
 	writetext MomHiHowAreYouText
 	writetext MomFoundAnItemText
 	writetext MomBoughtWithYourMoneyText
 	writetext MomItsInPCText
 	end
-
 .DollScript:
 	writetext MomHiHowAreYouText
 	writetext MomFoundADollText
@@ -183,16 +172,13 @@ GetItemFromMom:
 	dec a
 	ld de, MomItems_1
 	jr .GetFromList1
-
 .zero
 	ld a, [wWhichMomItem]
 	cp NUM_MOM_ITEMS_2
 	jr c, .ok
 	xor a
-
 .ok
 	ld de, MomItems_2
-
 .GetFromList1:
 	ld l, a
 	ld h, 0
@@ -228,12 +214,5 @@ MomItsInYourRoomText:
 	text_far _MomItsInYourRoomText
 	text_end
 
-
-DummyPredef3A_DummyData: ; unreferenced
-	db 0
-
 DummyPredef3A:
-	ret
-
-DummyPredef3A_DummyFunction: ; unreferenced
 	ret

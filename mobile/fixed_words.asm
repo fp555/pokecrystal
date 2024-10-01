@@ -15,7 +15,6 @@ Function11c05d:
 	call PlaceString
 	and a
 	ret
-
 .error
 	ld c, l
 	ld b, h
@@ -29,15 +28,6 @@ Function11c075:
 	pop de
 	ld bc, wcd36
 	call Function11c08f
-	ret
-
-Function11c082: ; unreferenced
-	push de
-	ld a, c
-	call Function11c254
-	pop de
-	ld bc, wcd36
-	call PrintEZChatBattleMessage
 	ret
 
 Function11c08f:
@@ -57,7 +47,6 @@ Function11c08f:
 	call Function11c05d
 	jr c, .okay
 	inc bc
-
 .okay
 	ld l, c
 	ld h, b
@@ -81,7 +70,6 @@ Function11c08f:
 	call Function11c05d
 	jr c, .okay2
 	inc bc
-
 .okay2
 	ld l, c
 	ld h, b
@@ -143,7 +131,6 @@ PrintEZChatBattleMessage:
 	cp 18
 	jr z, .skip_inc
 	inc e
-
 .skip_inc
 	; if the word fits, put it on the same line
 	cp e
@@ -158,7 +145,6 @@ PrintEZChatBattleMessage:
 	jr c, .got_line_terminator
 	; else, insert "<CONT>"
 	ld [hl], "<CONT>"
-
 .got_line_terminator
 	inc hl
 	; init the next line, holding on to the same word
@@ -166,14 +152,12 @@ PrintEZChatBattleMessage:
 	ld [wcf64], a
 	dec e
 	jr .loop2
-
 .same_line
 	; add the space, unless we're at the start of the line
 	cp 18
 	jr z, .skip_space
 	ld [hl], " "
 	inc hl
-
 .skip_space
 	; deduct the length of the word
 	sub e
@@ -187,7 +171,6 @@ PrintEZChatBattleMessage:
 	inc de
 	ld [hli], a
 	jr .place_string_loop
-
 .done
 	; next word?
 	pop af
@@ -258,7 +241,6 @@ CopyMobileEZChatToC608:
 	pop af
 	ldh [rSVBK], a
 	ret
-
 .get_name
 	ld a, e
 	ld [wNamedObjectIndex], a
@@ -287,7 +269,6 @@ Function11c1b9:
 	pop af
 	ldh [rSVBK], a
 	ret
-
 .InitKanaMode:
 	xor a
 	ld [wJumptableIndex], a
@@ -376,15 +357,12 @@ EZChat_MasterLoop:
 	farcall PlaySpriteAnimations
 	farcall HDMATransferTilemapAndAttrmap_Overworld
 	jr .loop
-
 .exit
 	farcall ClearSpriteAnims
 	call ClearSprites
 	ret
-
 .DoJumptableFunction:
 	jumptable .Jumptable, wJumptableIndex
-
 .Jumptable:
 	dw .SpawnObjects ; 00
 	dw .InitRAM ; 01
@@ -409,12 +387,10 @@ EZChat_MasterLoop:
 	dw Function11cd54 ; 14
 	dw Function11ce0b ; 15
 	dw Function11ce2b ; 16
-
 .SpawnObjects:
 	depixel 3, 1, 2, 5
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
-
 	depixel 8, 1, 2, 5
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
@@ -422,7 +398,6 @@ EZChat_MasterLoop:
 	add hl, bc
 	ld a, $1
 	ld [hl], a
-
 	depixel 9, 2, 2, 0
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
@@ -430,7 +405,6 @@ EZChat_MasterLoop:
 	add hl, bc
 	ld a, $3
 	ld [hl], a
-
 	depixel 10, 16
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
@@ -438,7 +412,6 @@ EZChat_MasterLoop:
 	add hl, bc
 	ld a, $4
 	ld [hl], a
-
 	depixel 10, 4
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
@@ -446,7 +419,6 @@ EZChat_MasterLoop:
 	add hl, bc
 	ld a, $5
 	ld [hl], a
-
 	depixel 10, 2
 	ld a, SPRITE_ANIM_OBJ_EZCHAT_CURSOR
 	call InitSpriteAnimStruct
@@ -454,12 +426,10 @@ EZChat_MasterLoop:
 	add hl, bc
 	ld a, $2
 	ld [hl], a
-
 	ld hl, wcd23
 	set 1, [hl]
 	set 2, [hl]
 	jp Function11cfb5
-
 .InitRAM:
 	ld a, $9
 	ld [wcd2d], a
@@ -585,7 +555,6 @@ Function11c3ed:
 	and $10
 	jr nz, .asm_11c498
 	ret
-
 .asm_11c41a
 	call PlayClickSFX
 .asm_11c41d
@@ -597,7 +566,6 @@ Function11c3ed:
 	ld a, $8
 	ld [wcd20], a
 	ret
-
 .asm_11c42c
 	ld a, [wcd20]
 	cp $6
@@ -641,7 +609,6 @@ Function11c3ed:
 	ld [wJumptableIndex], a
 	call PlayClickSFX
 	ret
-
 .asm_11c47c
 	ld a, [hl]
 	cp $3
@@ -687,7 +654,6 @@ Function11c4a5:
 	ld [wcd21], a
 	ld a, $6
 	ret
-
 .asm_11c4b7
 	xor a
 	ld [wcd22], a
@@ -727,43 +693,32 @@ Function11c52c:
 Function11c53d:
 	ld hl, wcd21
 	ld de, hJoypadPressed
-
 	ld a, [de]
 	and START
 	jr nz, .start
-
 	ld a, [de]
 	and SELECT
 	jr nz, .select
-
 	ld a, [de]
 	and B_BUTTON
 	jr nz, .b
-
 	ld a, [de]
 	and A_BUTTON
 	jr nz, .a
-
 	ld de, hJoyLast
-
 	ld a, [de]
 	and D_UP
 	jr nz, .up
-
 	ld a, [de]
 	and D_DOWN
 	jr nz, .down
-
 	ld a, [de]
 	and D_LEFT
 	jr nz, .left
-
 	ld a, [de]
 	and D_RIGHT
 	jr nz, .right
-
 	ret
-
 .a
 	ld a, [wcd21]
 	cp 15
@@ -773,58 +728,48 @@ Function11c53d:
 	dec a
 	jr z, .mode
 	jr .b
-
 .start
 	ld hl, wcd24
 	set 0, [hl]
 	ld a, $8
 	ld [wcd20], a
-
 .b
 	ld a, $4
 	jr .go_to_function
-
 .select
 	ld a, [wcd2b]
 	xor $1
 	ld [wcd2b], a
 	ld a, $15
 	jr .go_to_function
-
 .mode
 	ld a, $13
 	jr .go_to_function
-
 .got_category
 	ld a, $8
-
 .go_to_function
 	ld hl, wcd24
 	set 1, [hl]
 	ld [wJumptableIndex], a
 	call PlayClickSFX
 	ret
-
 .done
 	ld a, [wcd20]
 	call Function11ca6a
 	call PlayClickSFX
 	ret
-
 .up
 	ld a, [hl]
 	cp $3
 	ret c
 	sub $3
 	jr .finish_dpad
-
 .down
 	ld a, [hl]
 	cp $f
 	ret nc
 	add $3
 	jr .finish_dpad
-
 .left
 	ld a, [hl]
 	and a
@@ -841,7 +786,6 @@ Function11c53d:
 	ret z
 	dec a
 	jr .finish_dpad
-
 .right
 	ld a, [hl]
 	cp $2
@@ -857,7 +801,6 @@ Function11c53d:
 	cp $11
 	ret z
 	inc a
-
 .finish_dpad
 	ld [hl], a
 	ret
@@ -948,7 +891,6 @@ Function11c675:
 	ld a, [de]
 	and SELECT
 	jr z, .select
-
 	ld a, [wcd26]
 	and a
 	ret z
@@ -958,7 +900,6 @@ Function11c675:
 .asm_11c699
 	ld [wcd26], a
 	jr .asm_11c6c4
-
 .start
 	ld hl, wcd28
 	ld a, [wcd26]
@@ -985,7 +926,6 @@ Function11c675:
 	call Function11c7bc
 	call Function11c86e
 	ret
-
 .select
 	ld de, hJoyLast
 	ld a, [de]
@@ -1001,7 +941,6 @@ Function11c675:
 	and D_RIGHT
 	jr nz, .asm_11c755
 	ret
-
 .a
 	call Function11c8f6
 	ld a, $4
@@ -1021,7 +960,6 @@ Function11c675:
 	set 3, [hl]
 	call PlayClickSFX
 	ret
-
 .asm_11c708
 	ld a, [hl]
 	cp $3
@@ -1116,7 +1054,6 @@ Function11c770:
 .load
 	ld [wcd29], a
 	ret
-
 .cd21_is_zero
 	; compute from [wc7d2]
 	ld a, [wc7d2]
@@ -1130,7 +1067,6 @@ Function11c770:
 .no_need_to_floor
 	ld a, b
 	jr .load
-
 .cd2b_is_nonzero
 	; compute from [wc6a8 + 2 * [wcd22]]
 	ld hl, wc6a8
@@ -1174,7 +1110,6 @@ Function11c7bc:
 	cp e
 	jr nz, .asm_11c7d0
 	ret
-
 .asm_11c7e9
 	ld hl, wListPointer
 	ld a, [wcd26]
@@ -1205,12 +1140,10 @@ Function11c7bc:
 	cp e
 	jr nz, .asm_11c7f1
 	ret
-
 .asm_11c811
 	pop hl
 	pop de
 	ret
-
 .asm_11c814
 	ld hl, wc648
 	ld a, [wcd22]
@@ -1257,7 +1190,6 @@ Function11c7bc:
 	cp e
 	jr nz, .asm_11c831
 	ret
-
 .asm_11c851
 	pop hl
 	pop de
@@ -1321,7 +1253,6 @@ Function11c86e:
 	dec c
 	jr nz, .asm_11c8b1
 	ret
-
 .asm_11c8b7
 	hlcoord 17, 16
 	ld a, $7f
@@ -1333,31 +1264,6 @@ Function11c86e:
 	dec c
 	jr nz, .asm_11c8c2
 	ret
-
-BCD2String: ; unreferenced
-	inc a
-	push af
-	and $f
-	ldh [hDividend], a
-	pop af
-	and $f0
-	swap a
-	ldh [hDividend + 1], a
-	xor a
-	ldh [hDividend + 2], a
-	push hl
-	farcall Function11a80c
-	pop hl
-	ld a, [wcd63]
-	add "０"
-	ld [hli], a
-	ld a, [wcd62]
-	add "０"
-	ld [hli], a
-	ret
-
-MobileString_Page: ; unreferenced
-	db "ぺージ@"
 
 MobileString_Prev:
 	db "まえ@"
@@ -1396,7 +1302,6 @@ Function11c8f6:
 	inc hl
 	ld [hl], d
 	ret
-
 .asm_11c927
 	ld hl, wcd26
 	ld a, [wMobileCommsJumptableIndex]
@@ -1521,7 +1426,6 @@ Function11c9c3:
 	and $80
 	jr nz, .asm_11c9fc
 	ret
-
 .asm_11c9de
 	ld a, [hl]
 	and a
@@ -1536,14 +1440,12 @@ Function11c9c3:
 	ld [wJumptableIndex], a
 	call PlayClickSFX
 	ret
-
 .asm_11c9f7
 	ld a, [hl]
 	and a
 	ret z
 	dec [hl]
 	ret
-
 .asm_11c9fc
 	ld a, [hl]
 	and a
@@ -1664,7 +1566,6 @@ Function11cab3:
 	and $80
 	jr nz, .asm_11cb17
 	ret
-
 .asm_11cace
 	call PlayClickSFX
 	ld a, [hl]
@@ -1683,12 +1584,10 @@ Function11cab3:
 	ld a, $1
 	ld [wcd2a], a
 	ret
-
 .asm_11caf3
 	ld hl, wJumptableIndex
 	set 7, [hl]
 	ret
-
 .asm_11caf9
 	call PlayClickSFX
 .asm_11cafc
@@ -1702,14 +1601,12 @@ Function11cab3:
 	ld a, $1
 	ld [wcd35], a
 	ret
-
 .asm_11cb12
 	ld a, [hl]
 	and a
 	ret z
 	dec [hl]
 	ret
-
 .asm_11cb17
 	ld a, [hl]
 	and a
@@ -1757,7 +1654,6 @@ Function11cb66:
 	and $80
 	jr nz, .asm_11cbf0
 	ret
-
 .asm_11cb81
 	ld a, [hl]
 	and a
@@ -1808,7 +1704,6 @@ Function11cb66:
 	ld a, $10
 	ld [hl], a
 	ret
-
 .asm_11cbd4
 	call PlayClickSFX
 .asm_11cbd7
@@ -1820,14 +1715,12 @@ Function11cb66:
 	ld a, $4
 	ld [wJumptableIndex], a
 	ret
-
 .asm_11cbeb
 	ld a, [hl]
 	and a
 	ret z
 	dec [hl]
 	ret
-
 .asm_11cbf0
 	ld a, [hl]
 	and a
@@ -1948,7 +1841,6 @@ Function11cd54:
 	and D_DOWN
 	jr nz, .asm_11cd94
 	ret
-
 .asm_11cd6f
 	ld a, [hl]
 	ld [wcd2b], a
@@ -1958,7 +1850,6 @@ Function11cd54:
 	jr nz, .asm_11cd7d
 	ld a, $6
 	jr .asm_11cd7f
-
 .asm_11cd7d
 	ld a, $15
 .asm_11cd7f
@@ -1967,7 +1858,6 @@ Function11cd54:
 	set 5, [hl]
 	call PlayClickSFX
 	ret
-
 .asm_11cd8b
 	ld a, [hl]
 	and a
@@ -1975,7 +1865,6 @@ Function11cd54:
 	dec [hl]
 	ld de, String_11cdc7
 	jr .asm_11cd9b
-
 .asm_11cd94
 	ld a, [hl]
 	and a
@@ -2038,7 +1927,6 @@ Function11ce2b:
 	ld b, 0
 	ld hl, Unknown_11ceb9
 	add hl, bc
-
 	ld de, hJoypadPressed
 	ld a, [de]
 	and START
@@ -2052,7 +1940,6 @@ Function11ce2b:
 	ld a, [de]
 	and B_BUTTON
 	jr nz, .b
-
 	ld de, hJoyLast
 	ld a, [de]
 	and D_UP
@@ -2066,9 +1953,7 @@ Function11ce2b:
 	ld a, [de]
 	and D_RIGHT
 	jr nz, .right
-
 	ret
-
 .a
 	ld a, [wcd22]
 	cp NUM_KANA
@@ -2078,7 +1963,6 @@ Function11ce2b:
 	dec a
 	jr z, .mode
 	jr .b
-
 .start
 	ld hl, wcd24
 	set 0, [hl]
@@ -2087,18 +1971,15 @@ Function11ce2b:
 .b
 	ld a, $4
 	jr .load
-
 .select
 	ld a, [wcd2b]
 	xor $1
 	ld [wcd2b], a
 	ld a, $6
 	jr .load
-
 .place
 	ld a, $8
 	jr .load
-
 .mode
 	ld a, $13
 .load
@@ -2107,13 +1988,11 @@ Function11ce2b:
 	set 2, [hl]
 	call PlayClickSFX
 	ret
-
 .done
 	ld a, [wcd20]
 	call Function11ca6a
 	call PlayClickSFX
 	ret
-
 .left
 	inc hl
 .down
@@ -2441,7 +2320,6 @@ Function11d035:
 	dec b
 	jr nz, .loop3
 	ret
-
 .AddNMinusOneTimes:
 	ld a, [de]
 	dec a
@@ -2456,7 +2334,6 @@ AnimateEZChatCursor:
 	ld hl, SPRITEANIMSTRUCT_VAR1
 	add hl, bc
 	jumptable .Jumptable, hl
-
 .Jumptable:
 	dw .zero
 	dw .one
@@ -2469,21 +2346,18 @@ AnimateEZChatCursor:
 	dw .eight
 	dw .nine
 	dw .ten
-
 .zero
 	ld a, [wcd20]
 	sla a
 	ld hl, .Coords_Zero
 	ld e, $1
 	jr .load
-
 .one
 	ld a, [wcd21]
 	sla a
 	ld hl, .Coords_One
 	ld e, $2
 	jr .load
-
 .two
 	ld hl, .FramesetsIDs_Two
 	ld a, [wcd22]
@@ -2492,13 +2366,11 @@ AnimateEZChatCursor:
 	add hl, de
 	ld a, [hl]
 	call ReinitSpriteAnimFrame
-
 	ld a, [wcd22]
 	sla a
 	ld hl, .Coords_Two
 	ld e, $4
 	jr .load
-
 .three
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_2
 	call ReinitSpriteAnimFrame
@@ -2524,7 +2396,6 @@ AnimateEZChatCursor:
 	ld a, e
 	call .UpdateObjectFlags
 	ret
-
 .four
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_2
 	call ReinitSpriteAnimFrame
@@ -2533,7 +2404,6 @@ AnimateEZChatCursor:
 	ld hl, .Coords_Four
 	ld e, $10
 	jr .load
-
 .five
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_2
 	call ReinitSpriteAnimFrame
@@ -2542,7 +2412,6 @@ AnimateEZChatCursor:
 	ld hl, .Coords_Five
 	ld e, $20
 	jr .load
-
 .six
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_5
 	call ReinitSpriteAnimFrame
@@ -2558,19 +2427,16 @@ AnimateEZChatCursor:
 	; Y = 48
 	ld a, $30
 	ld [hl], a
-
 	ld a, $1
 	ld e, a
 	call .UpdateObjectFlags
 	ret
-
 .seven
 	ld a, [wEZChatCursorYCoord]
 	cp $4
 	jr z, .cursor0
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_3
 	jr .got_frameset
-
 .cursor0
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_1
 .got_frameset
@@ -2599,7 +2465,6 @@ AnimateEZChatCursor:
 	ld e, a
 	call .UpdateObjectFlags
 	ret
-
 .asm_11d1b1
 	; X = [wEZChatCursorXCoord] * 40 + 24
 	ld a, [wEZChatCursorXCoord]
@@ -2621,12 +2486,10 @@ AnimateEZChatCursor:
 	ld e, a
 	call .UpdateObjectFlags
 	ret
-
 .nine
 	ld d, -13 * TILE_WIDTH
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_7
 	jr .eight_nine_load
-
 .eight
 	ld d, 2 * TILE_WIDTH
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_6
@@ -2650,7 +2513,6 @@ AnimateEZChatCursor:
 	ld e, a
 	call .UpdateObjectFlags
 	ret
-
 .ten
 	ld a, SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_1
 	call ReinitSpriteAnimFrame
@@ -2658,7 +2520,6 @@ AnimateEZChatCursor:
 	ld e, a
 	call .UpdateObjectFlags
 	ret
-
 .Coords_Zero:
 	dbpixel  1,  3, 5, 2
 	dbpixel  7,  3, 5, 2
@@ -2669,7 +2530,6 @@ AnimateEZChatCursor:
 	dbpixel  1, 17, 5, 2
 	dbpixel  7, 17, 5, 2
 	dbpixel 13, 17, 5, 2
-
 .Coords_One:
 	dbpixel  1,  8, 5, 2
 	dbpixel  7,  8, 5, 2
@@ -2689,7 +2549,6 @@ AnimateEZChatCursor:
 	dbpixel  1, 18, 5, 2
 	dbpixel  7, 18, 5, 2
 	dbpixel 13, 18, 5, 2
-
 .Coords_Two:
 	dbpixel  2,  9       ; 00
 	dbpixel  3,  9       ; 01
@@ -2739,7 +2598,6 @@ AnimateEZChatCursor:
 	dbpixel  1, 18, 5, 2 ; 2d
 	dbpixel  7, 18, 5, 2 ; 2e
 	dbpixel 13, 18, 5, 2 ; 2f
-
 .Coords_Three:
 	dbpixel  2, 10
 	dbpixel  8, 10
@@ -2753,15 +2611,12 @@ AnimateEZChatCursor:
 	dbpixel  2, 16
 	dbpixel  8, 16
 	dbpixel 14, 16
-
 .Coords_Four:
 	dbpixel 16, 10
 	dbpixel 16, 12
-
 .Coords_Five:
 	dbpixel  4, 10
 	dbpixel  4, 12
-
 .FramesetsIDs_Two:
 	db SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_3 ; 00
 	db SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_3 ; 01
@@ -2811,7 +2666,6 @@ AnimateEZChatCursor:
 	db SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_1 ; 2d
 	db SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_1 ; 2e
 	db SPRITE_ANIM_FRAMESET_EZCHAT_CURSOR_1 ; 2f
-
 .UpdateObjectFlags:
 	ld hl, wcd24
 	and [hl]
@@ -2827,7 +2681,6 @@ AnimateEZChatCursor:
 	jr z, .flip_bit_0
 	dec [hl]
 	ret
-
 .flip_bit_0
 	ld a, $0
 	ld [hld], a
@@ -2842,7 +2695,6 @@ AnimateEZChatCursor:
 	xor a
 	ld [hl], a
 	ret
-
 .update_y_offset
 	ld hl, SPRITEANIMSTRUCT_YCOORD
 	add hl, bc
@@ -2957,51 +2809,45 @@ EZChat_GetSeenPokemonByKana:
 	ld a, HIGH(w5_d800)
 	ld [wcd2e], a
 	ld [hl], a
-
 	ld a, LOW(EZChat_SortedPokemon)
 	ld [wcd2f], a
 	ld a, HIGH(EZChat_SortedPokemon)
 	ld [wcd30], a
-
 	ld a, LOW(wc6a8)
 	ld [wcd31], a
 	ld a, HIGH(wc6a8)
 	ld [wcd32], a
-
 	ld a, LOW(wc64a)
 	ld [wcd33], a
 	ld a, HIGH(wc64a)
 	ld [wcd34], a
-
 	ld hl, EZChat_SortedWords
 	ld a, (EZChat_SortedWords.End - EZChat_SortedWords) / 4
-
 .MasterLoop:
 	push af
-; read row
-; offset
+	; read row
+	; offset
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
 	ld d, a
-; size
+	; size
 	ld a, [hli]
 	ld c, a
 	ld a, [hli]
 	ld b, a
-; save the pointer to the next row
+	; save the pointer to the next row
 	push hl
-; add de to w3_d000
+	; add de to w3_d000
 	ld hl, w3_d000
 	add hl, de
-; recover de from wcd2d (default: w5_d800)
+	; recover de from wcd2d (default: w5_d800)
 	ld a, [wcd2d]
 	ld e, a
 	ld a, [wcd2e]
 	ld d, a
-; save bc for later
+	; save bc for later
 	push bc
-
 .loop1
 ; copy 2*bc bytes from 3:hl to 5:de
 	ld a, $3
@@ -3013,7 +2859,6 @@ EZChat_GetSeenPokemonByKana:
 	pop af
 	ld [de], a
 	inc de
-
 	ld a, $3
 	ldh [rSVBK], a
 	ld a, [hli]
@@ -3023,42 +2868,39 @@ EZChat_GetSeenPokemonByKana:
 	pop af
 	ld [de], a
 	inc de
-
 	dec bc
 	ld a, c
 	or b
 	jr nz, .loop1
-
-; recover the pointer from wcd2f (default: EZChat_SortedPokemon)
+	; recover the pointer from wcd2f (default: EZChat_SortedPokemon)
 	ld a, [wcd2f]
 	ld l, a
 	ld a, [wcd30]
 	ld h, a
-; copy the pointer from [hl] to bc
+	; copy the pointer from [hl] to bc
 	ld a, [hli]
 	ld c, a
 	ld a, [hli]
 	ld b, a
-; store the pointer to the next pointer back in wcd2f
+	; store the pointer to the next pointer back in wcd2f
 	ld a, l
 	ld [wcd2f], a
 	ld a, h
 	ld [wcd30], a
-; push pop that pointer to hl
+	; push pop that pointer to hl
 	push bc
 	pop hl
 	ld c, $0
 .loop2
-; Have you seen this Pokemon?
+	; Have you seen this Pokemon?
 	ld a, [hl]
 	cp $ff
 	jr z, .done
 	call .CheckSeenMon
 	jr nz, .next
-; If not, skip it.
+	; If not, skip it.
 	inc hl
 	jr .loop2
-
 .next
 ; If so, append it to the list at 5:de, and increase the count.
 	ld a, [hli]
@@ -3069,61 +2911,58 @@ EZChat_GetSeenPokemonByKana:
 	inc de
 	inc c
 	jr .loop2
-
 .done
-; Remember the original value of bc from the table?
-; Well, the stack remembers it, and it's popping it to hl.
+	; Remember the original value of bc from the table?
+	; Well, the stack remembers it, and it's popping it to hl.
 	pop hl
-; Add the number of seen Pokemon from the list.
+	; Add the number of seen Pokemon from the list.
 	ld b, $0
 	add hl, bc
-; Push pop to bc.
+	; Push pop to bc.
 	push hl
 	pop bc
-; Load the pointer from [wcd31] (default: wc6a8)
+	; Load the pointer from [wcd31] (default: wc6a8)
 	ld a, [wcd31]
 	ld l, a
 	ld a, [wcd32]
 	ld h, a
-; Save the quantity from bc to [hl]
+	; Save the quantity from bc to [hl]
 	ld a, c
 	ld [hli], a
 	ld a, b
 	ld [hli], a
-; Save the new value of hl to [wcd31]
+	; Save the new value of hl to [wcd31]
 	ld a, l
 	ld [wcd31], a
 	ld a, h
 	ld [wcd32], a
-; Recover the pointer from [wcd33] (default: wc64a)
+	; Recover the pointer from [wcd33] (default: wc64a)
 	ld a, [wcd33]
 	ld l, a
 	ld a, [wcd34]
 	ld h, a
-; Save the current value of de there
+	; Save the current value of de there
 	ld a, e
 	ld [wcd2d], a
 	ld [hli], a
 	ld a, d
 	ld [wcd2e], a
-; Save the new value of hl back to [wcd33]
+	; Save the new value of hl back to [wcd33]
 	ld [hli], a
 	ld a, l
 	ld [wcd33], a
 	ld a, h
 	ld [wcd34], a
-; Next row
+	; Next row
 	pop hl
 	pop af
 	dec a
 	jr z, .ExitMasterLoop
 	jp .MasterLoop
-
 .ExitMasterLoop:
 	pop af
 	ldh [rSVBK], a
 	ret
-
 .CheckSeenMon:
 	push hl
 	push bc
@@ -3146,63 +2985,51 @@ EZChat_GetCategoryWordsByKana:
 	push af
 	ld a, $3
 	ldh [rSVBK], a
-
 	; load pointers
 	ld hl, MobileEZChatCategoryPointers
 	ld bc, MobileEZChatData_WordAndPageCounts
-
 	; init WRAM registers
 	xor a
 	ld [wcd2d], a
 	inc a
 	ld [wcd2e], a
-
 	; enter the first loop
 	ld a, 14
 .loop1
 	push af
-
 	; load the pointer to the category
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
 	ld d, a
 	push hl
-
 	; skip to the attributes
 	ld hl, NAME_LENGTH_JAPANESE - 1
 	add hl, de
-
 	; get the number of words in the category
 	ld a, [bc] ; number of entries to copy
 	inc bc
 	inc bc
 	push bc
-
 .loop2
 	push af
 	push hl
-
 	; load offset at [hl]
 	ld a, [hli]
 	ld e, a
 	ld a, [hl]
 	ld d, a
-
 	; add to w3_d000
 	ld hl, w3_d000
 	add hl, de
-
 	; copy from wcd2d and increment [wcd2d] in place
 	ld a, [wcd2d]
 	ld [hli], a
 	inc a
 	ld [wcd2d], a
-
 	; copy from wcd2e
 	ld a, [wcd2e]
 	ld [hl], a
-
 	; next entry
 	pop hl
 	ld de, 8
@@ -3210,7 +3037,6 @@ EZChat_GetCategoryWordsByKana:
 	pop af
 	dec a
 	jr nz, .loop2
-
 	; reset and go to next category
 	ld hl, wcd2d
 	xor a
@@ -3267,7 +3093,6 @@ MobileEZChatCategoryPointers:
 	dw .Time           ; 0c
 	dw .Farewells      ; 0d
 	dw .ThisAndThat    ; 0e
-
 .Types:
 	db "あく@@@", $26, $0, $0
 	db "いわ@@@", $aa, $0, $0
@@ -3287,7 +3112,6 @@ MobileEZChatCategoryPointers:
 	db "ほのお@@", $b2, $4, $0
 	db "みず@@@", $f4, $4, $0
 	db "むし@@@", $12, $5, $0
-
 .Greetings:
 	db "ありがと@", $58, $0, $0
 	db "ありがとう", $5a, $0, $0
@@ -3325,7 +3149,6 @@ MobileEZChatCategoryPointers:
 	db "ようこそ@", $64, $5, $0
 	db "よろしく@", $80, $5, $0
 	db "らっしゃい", $94, $5, $0
-
 .People:
 	db "あいて@@", $1c, $0, $0
 	db "あたし@@", $36, $0, $0
@@ -3396,7 +3219,6 @@ MobileEZChatCategoryPointers:
 	db "わたしの@", $c8, $5, $0
 	db "わたしは@", $ca, $5, $0
 	db "わたしを@", $cc, $5, $0
-
 .Battle:
 	db "あいしょう", $18, $0, $0
 	db "いけ！@@", $88, $0, $0
@@ -3467,7 +3289,6 @@ MobileEZChatCategoryPointers:
 	db "ルール@@", $a0, $5, $0
 	db "レべル@@", $a6, $5, $0
 	db "わざ@@@", $be, $5, $0
-
 .Exclamations:
 	db "！@@@@", $0, $0, $0
 	db "！！@@@", $2, $0, $0
@@ -3535,7 +3356,6 @@ MobileEZChatCategoryPointers:
 	db "ワオ@@@", $b2, $5, $0
 	db "わっ！！@", $ce, $5, $0
 	db "わははは！", $d0, $5, $0
-
 .Conversation:
 	db "あのね@@", $50, $0, $0
 	db "あんまり@", $6e, $0, $0
@@ -3603,7 +3423,6 @@ MobileEZChatCategoryPointers:
 	db "やっぱり@", $4c, $5, $0
 	db "より@@@", $7c, $5, $0
 	db "れば@@@", $a4, $5, $0
-
 .Feelings:
 	db "あいたい@", $1a, $0, $0
 	db "あそびたい", $32, $0, $0
@@ -3674,7 +3493,6 @@ MobileEZChatCategoryPointers:
 	db "わから@@", $b4, $5, $0
 	db "わかり@@", $b6, $5, $0
 	db "わくわく@", $ba, $5, $0
-
 .Conditions:
 	db "あつい@@", $38, $0, $0
 	db "あった@@", $3a, $0, $0
@@ -3742,7 +3560,6 @@ MobileEZChatCategoryPointers:
 	db "らく@@@", $8c, $5, $0
 	db "らしい@@", $90, $5, $0
 	db "わるい@@", $d4, $5, $0
-
 .Life:
 	db "アルバイト", $64, $0, $0
 	db "うち@@@", $ba, $0, $0
@@ -3783,7 +3600,6 @@ MobileEZChatCategoryPointers:
 	db "ようちえん", $66, $5, $0
 	db "ラジオ@@", $92, $5, $0
 	db "ワールド@", $ae, $5, $0
-
 .Hobbies:
 	db "アイドル@", $1e, $0, $0
 	db "アニメ@@", $4c, $0, $0
@@ -3824,7 +3640,6 @@ MobileEZChatCategoryPointers:
 	db "やくそく@", $40, $5, $0
 	db "やすみ@@", $44, $5, $0
 	db "よてい@@", $74, $5, $0
-
 .Actions:
 	db "あう@@@", $20, $0, $0
 	db "あきらめ@", $24, $0, $0
@@ -3895,7 +3710,6 @@ MobileEZChatCategoryPointers:
 	db "られる@@", $9c, $5, $0
 	db "わかる@@", $b8, $5, $0
 	db "わすれ@@", $c0, $5, $0
-
 .Time:
 	db "あき@@@", $22, $0, $0
 	db "あさ@@@", $2a, $0, $0
@@ -3936,7 +3750,6 @@ MobileEZChatCategoryPointers:
 	db "よなか@@", $76, $5, $0
 	db "よる@@@", $7e, $5, $0
 	db "らいしゅう", $88, $5, $0
-
 .Farewells:
 	db "いたします", $92, $0, $0
 	db "おります@", $32, $1, $0
@@ -4004,7 +3817,6 @@ MobileEZChatCategoryPointers:
 	db "るよ@@@", $a2, $5, $0
 	db "わけ@@@", $bc, $5, $0
 	db "わよ！@@", $d2, $5, $0
-
 .ThisAndThat:
 	db "ああ@@@", $12, $0, $0
 	db "あっち@@", $3c, $0, $0

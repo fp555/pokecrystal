@@ -23,7 +23,6 @@ DoBattleTransition:
 	push af
 	vc_hook Reduce_battle_transition_flashing
 	ld [hl], VBLANK_CUTSCENE
-
 .loop
 	ld a, [wJumptableIndex]
 	bit 7, a ; BATTLETRANSITION_END?
@@ -139,7 +138,6 @@ INCBIN "gfx/overworld/trainer_battle_pokeball_tiles.2bpp"
 
 BattleTransitionJumptable:
 	jumptable .Jumptable, wJumptableIndex
-
 .Jumptable:
 	dw StartTrainerBattle_DetermineWhichAnimation ; 00
 	; BATTLETRANSITION_CAVE
@@ -235,7 +233,7 @@ StartTrainerBattle_DetermineWhichAnimation:
 	ld [wJumptableIndex], a
 	ret
 .StartingPoints:
-; entries correspond to TRANS_* constants
+	; entries correspond to TRANS_* constants
 	db BATTLETRANSITION_CAVE
 	db BATTLETRANSITION_CAVE_STRONGER
 	db BATTLETRANSITION_NO_CAVE
@@ -345,7 +343,7 @@ StartTrainerBattle_SineWave:
 	push af
 	push de
 	ld a, e
-	call StartTrainerBattle_DrawSineWave
+	call Sine ; bank 0
 	ld [bc], a
 	inc bc
 	pop de
@@ -571,7 +569,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	inc c
 	jr .enter_loop_midway
 .pal_loop
-; set all pals to 7
+	; set all pals to 7
 	ld a, [hl]
 	or PAL_BG_TEXT
 	ld [hli], a
@@ -591,7 +589,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	ld a, [de]
 	inc de
 .col_loop
-; Loading is done bit by bit
+	; Loading is done bit by bit
 	and a
 	jr z, .done
 	sla a
@@ -673,10 +671,8 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	ret
 .pals:
 INCLUDE "gfx/overworld/trainer_battle.pal"
-
 .darkpals:
 INCLUDE "gfx/overworld/trainer_battle_dark.pal"
-
 .loadpokeballgfx:
 	ld a, [wOtherTrainerClass]
 	ld de, PokeBallTransition
@@ -724,9 +720,6 @@ WipeLYOverrides:
 	dec c
 	jr nz, .loop
 	ret
-
-StartTrainerBattle_DrawSineWave:
-	calc_sine_wave
 
 StartTrainerBattle_ZoomToBlack:
 	vc_hook Stop_reducing_battle_transition_flashing_ZoomToBlack

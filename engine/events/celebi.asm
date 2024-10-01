@@ -1,11 +1,5 @@
 DEF SPECIALCELEBIEVENT_CELEBI EQU $84
 
-UnusedForestTreeFrames: ; unreferenced
-INCBIN "gfx/tilesets/forest-tree/1.2bpp"
-INCBIN "gfx/tilesets/forest-tree/2.2bpp"
-INCBIN "gfx/tilesets/forest-tree/3.2bpp"
-INCBIN "gfx/tilesets/forest-tree/4.2bpp"
-
 CelebiShrineEvent:
 	call DelayFrame
 	ld a, [wStateFlags]
@@ -46,14 +40,12 @@ CelebiShrineEvent:
 	pop de
 	pop bc
 	jr .loop
-
 .done
 	pop af
 	ld [wStateFlags], a
 	call .RestorePlayerSprite_DespawnLeaves
 	call CelebiEvent_SetBattleType
 	ret
-
 .RestorePlayerSprite_DespawnLeaves:
 	ld hl, wShadowOAMSprite00TileID
 	xor a
@@ -93,29 +85,9 @@ CelebiEvent_CountDown:
 	jr z, .done
 	dec [hl]
 	ret
-
 .done
 	ld hl, wJumptableIndex
 	set 7, [hl]
-	ret
-
-CelebiEvent_SpawnLeaf: ; unreferenced
-	ld hl, wFrameCounter2
-	ld a, [hl]
-	inc [hl]
-	and $7
-	ret nz
-	ld a, [hl]
-	and $18
-	sla a
-	add $40
-	ld d, a
-	ld e, $0
-	ld a, SPRITE_ANIM_OBJ_FLY_LEAF ; fly land
-	call InitSpriteAnimStruct
-	ld hl, SPRITEANIMSTRUCT_TILE_ID
-	add hl, bc
-	ld [hl], $80
 	ret
 
 SpecialCelebiLeafGFX:
@@ -151,7 +123,8 @@ UpdateCelebiPosition:
 	add hl, bc
 	ld a, [hl]
 	inc [hl]
-	call CelebiEvent_Cosine
+	add %010000 ; cos(x) = sin(x + pi/2)
+	call Sine ; bank 0
 	ld hl, SPRITEANIMSTRUCT_XOFFSET
 	add hl, bc
 	ld [hl], a
@@ -174,7 +147,6 @@ UpdateCelebiPosition:
 	cp 10 * TILE_WIDTH
 	jr c, .float_up
 	jr .float_down
-
 .moving_left
 	ld hl, SPRITEANIMSTRUCT_XCOORD
 	add hl, bc
@@ -188,7 +160,6 @@ UpdateCelebiPosition:
 	sub $2
 	ld [hl], a
 	jr .ReinitSpriteAnimFrame
-
 .float_up
 	ld hl, SPRITEANIMSTRUCT_YCOORD
 	add hl, bc
@@ -209,7 +180,6 @@ UpdateCelebiPosition:
 	ld a, SPRITE_ANIM_FRAMESET_CELEBI_RIGHT
 	call ReinitSpriteAnimFrame
 	jr .done
-
 .left
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
@@ -217,7 +187,6 @@ UpdateCelebiPosition:
 	call ReinitSpriteAnimFrame
 .done
 	ret
-
 .FreezeCelebiPosition:
 	pop af
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
@@ -225,11 +194,6 @@ UpdateCelebiPosition:
 	ld a, SPRITE_ANIM_FRAMESET_CELEBI_LEFT
 	call ReinitSpriteAnimFrame
 	ret
-
-CelebiEvent_Cosine:
-; a = d * cos(a * pi/32)
-	add %010000 ; cos(x) = sin(x + pi/2)
-	calc_sine_wave
 
 GetCelebiSpriteTile:
 	push hl
@@ -252,39 +216,31 @@ GetCelebiSpriteTile:
 	cp d
 	jr c, .done
 	jr .restart
-
 .Frame1:
 	ld a, SPECIALCELEBIEVENT_CELEBI
 	jr .load_tile
-
 .Frame2:
 	ld a, SPECIALCELEBIEVENT_CELEBI + 4
 	jr .load_tile
-
 .Frame3:
 	ld a, SPECIALCELEBIEVENT_CELEBI + 8
 	jr .load_tile
-
 .Frame4:
 	ld a, SPECIALCELEBIEVENT_CELEBI + 12
-
 .load_tile
 	ld hl, SPRITEANIMSTRUCT_TILE_ID
 	add hl, bc
 	ld [hl], a
 	jr .done
-
 .restart
 	pop de
 	ld d, $ff
 	push de
-
 .done
 	pop de
 	pop bc
 	pop hl
 	ret
-
 .AddE:
 	push af
 	ld a, d
@@ -305,10 +261,8 @@ CheckCaughtCelebi:
 	ld a, TRUE
 	ld [wScriptVar], a
 	jr .done
-
 .false
 	xor a ; FALSE
 	ld [wScriptVar], a
-
 .done
 	ret

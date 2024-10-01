@@ -20,11 +20,9 @@ PlaySpriteAnimations:
 	push de
 	push bc
 	push af
-
 	ld a, LOW(wShadowOAM)
 	ld [wCurSpriteOAMAddr], a
 	call DoNextFrameForAllSprites
-
 	pop af
 	pop bc
 	pop de
@@ -34,7 +32,6 @@ PlaySpriteAnimations:
 DoNextFrameForAllSprites:
 	ld hl, wSpriteAnimationStructs
 	ld e, NUM_SPRITE_ANIM_STRUCTS
-
 .loop
 	ld a, [hl]
 	and a
@@ -48,17 +45,14 @@ DoNextFrameForAllSprites:
 	pop de
 	pop hl
 	jr c, .done
-
 .next
 	ld bc, SPRITEANIMSTRUCT_LENGTH
 	add hl, bc
 	dec e
 	jr nz, .loop
-
 	ld a, [wCurSpriteOAMAddr]
 	ld l, a
 	ld h, HIGH(wShadowOAM)
-
 .loop2 ; Clear (wShadowOAM + [wCurSpriteOAMAddr] --> wShadowOAMEnd)
 	ld a, l
 	cp LOW(wShadowOAMEnd)
@@ -66,14 +60,12 @@ DoNextFrameForAllSprites:
 	xor a
 	ld [hli], a
 	jr .loop2
-
 .done
 	ret
 
 DoNextFrameForFirst16Sprites:
 	ld hl, wSpriteAnimationStructs
 	ld e, NUM_SPRITE_ANIM_STRUCTS
-
 .loop
 	ld a, [hl]
 	and a
@@ -87,17 +79,14 @@ DoNextFrameForFirst16Sprites:
 	pop de
 	pop hl
 	jr c, .done
-
 .next
 	ld bc, SPRITEANIMSTRUCT_LENGTH
 	add hl, bc
 	dec e
 	jr nz, .loop
-
 	ld a, [wCurSpriteOAMAddr]
 	ld l, a
 	ld h, HIGH(wShadowOAMSprite16)
-
 .loop2 ; Clear (wShadowOAM + [wCurSpriteOAMAddr] --> Sprites + $40)
 	ld a, l
 	cp LOW(wShadowOAMSprite16)
@@ -105,13 +94,13 @@ DoNextFrameForFirst16Sprites:
 	xor a
 	ld [hli], a
 	jr .loop2
-
 .done
 	ret
 
 _InitSpriteAnimStruct::
 ; Initialize animation a at pixel x=e, y=d
-; Find if there's any room in the wSpriteAnimationStructs array, which is 10x16
+	; Find if there's any room in the
+	; wSpriteAnimationStructs array, which is 10x16
 	push de
 	push af
 	ld hl, wSpriteAnimationStructs
@@ -124,19 +113,17 @@ _InitSpriteAnimStruct::
 	add hl, bc
 	dec e
 	jr nz, .loop
-; We've reached the end.  There is no more room here.
-; Return carry.
+	; We've reached the end. There is no more room here.
+	; Return carry.
 	pop af
 	pop de
 	scf
 	ret
-
 .found
-; Back up the structure address to bc.
+	; Back up the structure address to bc.
 	ld c, l
 	ld b, h
-
-; Increment [wSpriteAnimCount], skipping a 0 value.
+	; Increment [wSpriteAnimCount], skipping a 0 value.
 	ld hl, wSpriteAnimCount
 	inc [hl]
 	ld a, [hl]
@@ -144,8 +131,7 @@ _InitSpriteAnimStruct::
 	jr nz, .nonzero
 	inc [hl]
 .nonzero
-
-; Get row a of SpriteAnimObjects, copy the pointer into de
+	; Get row a of SpriteAnimObjects, copy the pointer into de
 	pop af
 	ld e, a
 	ld d, 0
@@ -155,51 +141,51 @@ _InitSpriteAnimStruct::
 	add hl, de
 	ld e, l
 	ld d, h
-; Set hl to the first field (field 0) in the current structure.
+	; Set hl to the first field (field 0) in the current structure.
 	ld hl, SPRITEANIMSTRUCT_INDEX
 	add hl, bc
-; Load the index.
+	; Load the index.
 	ld a, [wSpriteAnimCount]
 	ld [hli], a ; SPRITEANIMSTRUCT_INDEX
-; Copy the table entry to the next two fields.
+	; Copy the table entry to the next two fields.
 	ld a, [de]
 	ld [hli], a ; SPRITEANIMSTRUCT_FRAMESET_ID
 	inc de
 	ld a, [de]
 	ld [hli], a ; SPRITEANIMSTRUCT_ANIM_SEQ_ID
 	inc de
-; Look up the third field in the wSpriteAnimDict mapping.
-; Take the mapped value and load it in.
+	; Look up the third field in the wSpriteAnimDict mapping.
+	; Take the mapped value and load it in.
 	ld a, [de]
 	call GetSpriteAnimVTile
 	ld [hli], a ; SPRITEANIMSTRUCT_TILE_ID
 	pop de
-; Set hl to field 4 (X coordinate).  Kinda pointless, because we're presumably already here.
+	; Set hl to field 4 (X coordinate).  Kinda pointless, because we're presumably already here.
 	ld hl, SPRITEANIMSTRUCT_XCOORD
 	add hl, bc
-; Load the original value of de into here.
+	; Load the original value of de into here.
 	ld a, e
 	ld [hli], a ; SPRITEANIMSTRUCT_XCOORD
 	ld a, d
 	ld [hli], a ; SPRITEANIMSTRUCT_YCOORD
-; load 0 into the next four fields
+	; load 0 into the next four fields
 	xor a
 	ld [hli], a ; SPRITEANIMSTRUCT_XOFFSET
 	ld [hli], a ; SPRITEANIMSTRUCT_YOFFSET
 	xor a
 	ld [hli], a ; SPRITEANIMSTRUCT_DURATION
 	ld [hli], a ; SPRITEANIMSTRUCT_DURATIONOFFSET
-; load -1 into the next field
+	; load -1 into the next field
 	dec a
 	ld [hli], a ; SPRITEANIMSTRUCT_FRAME
-; load 0 into the last five fields
+	; load 0 into the last five fields
 	xor a
 	ld [hli], a ; SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	ld [hli], a ; SPRITEANIMSTRUCT_VAR1
 	ld [hli], a ; SPRITEANIMSTRUCT_VAR2
 	ld [hli], a ; SPRITEANIMSTRUCT_VAR3
 	ld [hl], a  ; SPRITEANIMSTRUCT_VAR4
-; back up the address of the first field to wSpriteAnimAddrBackup
+	; back up the address of the first field to wSpriteAnimAddrBackup
 	ld a, c
 	ld [wSpriteAnimAddrBackup], a
 	ld a, b
@@ -301,14 +287,13 @@ UpdateAnimFrame:
 	jr nz, .loop
 	pop bc
 	jr .done
-
 .delete
-; Removes the object from the screen, as opposed to `oamend` which just stops all motion
+	; Removes the object from the screen
+	; as opposed to `oamend` which just stops all motion
 	call DeinitializeSprite
 .done
 	and a
 	ret
-
 .reached_the_end
 	pop bc
 	scf
@@ -324,7 +309,6 @@ AddOrSubtractY:
 	add 8
 	xor $ff
 	inc a
-
 .ok
 	pop hl
 	ret
@@ -339,7 +323,6 @@ AddOrSubtractX:
 	add 8
 	xor $ff
 	inc a
-
 .ok
 	pop hl
 	ret
@@ -389,10 +372,8 @@ GetSpriteAnimVTile:
 	jr nz, .loop
 	xor a
 	jr .done
-
 .ok
 	ld a, [hl]
-
 .done
 	pop bc
 	pop hl
@@ -422,7 +403,6 @@ GetSpriteAnimFrame:
 	ld a, [hli]
 	push af
 	jr .okay
-
 .next_frame
 	ld hl, SPRITEANIMSTRUCT_FRAME
 	add hl, bc
@@ -433,7 +413,6 @@ GetSpriteAnimFrame:
 	jr z, .restart
 	cp oamend_command
 	jr z, .repeat_last
-
 	push af
 	ld a, [hl]
 	push hl
@@ -452,31 +431,26 @@ GetSpriteAnimFrame:
 	ld [wCurSpriteOAMFlags], a
 	pop af
 	ret
-
 .repeat_last
 	xor a
 	ld hl, SPRITEANIMSTRUCT_DURATION
 	add hl, bc
 	ld [hl], a
-
 	ld hl, SPRITEANIMSTRUCT_FRAME
 	add hl, bc
 	dec [hl]
 	dec [hl]
 	jr .loop
-
 .restart
 	xor a
 	ld hl, SPRITEANIMSTRUCT_DURATION
 	add hl, bc
 	ld [hl], a
-
 	dec a
 	ld hl, SPRITEANIMSTRUCT_FRAME
 	add hl, bc
 	ld [hl], a
 	jr .loop
-
 .GetPointer:
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
@@ -505,27 +479,6 @@ GetFrameOAMPointer:
 	add hl, de
 	ret
 
-UnusedLoadSpriteAnimGFX: ; unreferenced
-	push hl
-	ld l, a
-	ld h, 0
-	add hl, hl
-	add hl, hl
-	ld de, UnusedSpriteAnimGFX
-	add hl, de
-	ld c, [hl]
-	inc hl
-	ld b, [hl]
-	inc hl
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	pop hl
-	push bc
-	call Request2bpp
-	pop bc
-	ret
-
 INCLUDE "data/sprite_anims/objects.asm"
 
 INCLUDE "engine/sprite_anims/functions.asm"
@@ -539,10 +492,8 @@ INCLUDE "data/sprite_anims/unused_gfx.asm"
 Sprites_Cosine:
 ; a = d * cos(a * pi/32)
 	add %010000 ; cos(x) = sin(x + pi/2)
-	; fallthrough
-Sprites_Sine:
-; a = d * sin(a * pi/32)
-	calc_sine_wave
+	call Sine
+	ret
 
 AnimateEndOfExpBar:
 	ldh a, [hSGB]
@@ -550,7 +501,6 @@ AnimateEndOfExpBar:
 	and a
 	jr z, .load
 	ld de, SGBEndOfExpBarGFX
-
 .load
 	ld hl, vTiles0 tile $00
 	lb bc, BANK(EndOfExpBarGFX), 1
@@ -568,7 +518,6 @@ AnimateEndOfExpBar:
 	jr nz, .loop
 	call ClearSprites
 	ret
-
 .AnimateFrame:
 	ld hl, wShadowOAMSprite00
 	ld c, 8 ; number of animated circles
@@ -578,20 +527,18 @@ AnimateEndOfExpBar:
 	ret z
 	dec c
 	ld a, c
-; multiply by 8
+	; multiply by 8
 	sla a
 	sla a
 	sla a
 	push af
-
 	push de
 	push hl
-	call Sprites_Sine
+	call Sine ; bank 0
 	pop hl
 	pop de
 	add 13 * TILE_WIDTH
 	ld [hli], a ; y
-
 	pop af
 	push de
 	push hl
@@ -600,7 +547,6 @@ AnimateEndOfExpBar:
 	pop de
 	add 10 * TILE_WIDTH + 4
 	ld [hli], a ; x
-
 	ld a, $0
 	ld [hli], a ; tile id
 	ld a, PAL_BATTLE_OB_BLUE
@@ -609,6 +555,7 @@ AnimateEndOfExpBar:
 
 EndOfExpBarGFX:
 INCBIN "gfx/battle/expbarend.2bpp"
+
 SGBEndOfExpBarGFX:
 INCBIN "gfx/battle/expbarend_sgb.2bpp"
 

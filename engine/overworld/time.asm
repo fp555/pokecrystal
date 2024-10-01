@@ -18,7 +18,6 @@ NextCallReceiveDelay:
 	cp 3
 	jr c, .okay
 	ld a, 3
-
 .okay
 	ld e, a
 	ld d, 0
@@ -40,7 +39,6 @@ if DEF(_DEBUG)
 	ld a, h
 endc
 	jp RestartReceiveCallDelay
-
 .ReceiveCallDelays:
 	db 20, 10, 5, 3
 
@@ -52,7 +50,6 @@ CheckReceiveCallTimer:
 	cp 3
 	jr nc, .ok
 	inc [hl]
-
 .ok
 	call NextCallReceiveDelay ; restart timer
 	scf
@@ -110,6 +107,7 @@ CheckDailyResetTimer::
 	ld [hli], a ; wDailyFlags2
 	ld [hli], a ; wSwarmFlags
 	ld [hl], a  ; wUnusedDailyFlag
+	ld [wLuckyNumberShowFlag], a
 	ld hl, wDailyRematchFlags
 rept 4
 	ld [hli], a
@@ -166,7 +164,6 @@ CheckBugContestTimer::
 	sub b
 	jr nc, .okay
 	add 60
-
 .okay
 	ld [wBugContestSecsRemaining], a
 	ld a, [wMinutesSince]
@@ -177,7 +174,6 @@ CheckBugContestTimer::
 	jr c, .timed_out
 	and a
 	ret
-
 .timed_out
 	xor a
 	ld [wBugContestMinsRemaining], a
@@ -203,15 +199,6 @@ CheckPokerusTick::
 	xor a
 	ret
 
-SetUnusedTwoDayTimer: ; unreferenced
-	ld a, 2
-	ld hl, wUnusedTwoDayTimer
-	ld [hl], a
-	call UpdateTime
-	ld hl, wUnusedTwoDayTimerStartDate
-	call CopyDayToHL
-	ret
-
 CheckUnusedTwoDayTimer:
 	ld hl, wUnusedTwoDayTimerStartDate
 	call CalcDaysSince
@@ -220,36 +207,19 @@ CheckUnusedTwoDayTimer:
 	call UpdateTimeRemaining
 	ret
 
-UnusedSetSwarmFlag: ; unreferenced
-	ld hl, wDailyFlags1
-	set DAILYFLAGS1_FISH_SWARM_F, [hl]
-	ret
-
-UnusedCheckSwarmFlag: ; unreferenced
-	and a
-	ld hl, wDailyFlags1
-	bit DAILYFLAGS1_FISH_SWARM_F, [hl]
-	ret nz
-	scf
-	ret
-
 RestartLuckyNumberCountdown:
 	call .GetDaysUntilNextFriday
 	ld hl, wLuckyNumberDayTimer
 	jp InitNDaysCountdown
-
 .GetDaysUntilNextFriday:
 	call GetWeekday
 	ld c, a
 	ld a, FRIDAY
 	sub c
 	jr z, .friday_saturday
-	jr nc, .earlier ; could have done "ret nc"
-
+	ret nc
 .friday_saturday
 	add 7
-
-.earlier
 	ret
 
 _CheckLuckyNumberShowFlag:
@@ -265,7 +235,6 @@ DoMysteryGiftIfDayHasPassed:
 	ld a, [hl]
 	ld [wTempMysteryGiftTimer + 1], a
 	call CloseSRAM
-
 	ld hl, wTempMysteryGiftTimer
 	call CheckDayDependentEventHL
 	jr nc, .not_timed_out
@@ -273,7 +242,6 @@ DoMysteryGiftIfDayHasPassed:
 	call InitOneDayCountdown
 	call CloseSRAM
 	farcall ResetDailyMysteryGiftLimitIfUnlocked
-
 .not_timed_out
 	ld a, BANK(sMysteryGiftTimer)
 	call OpenSRAM
@@ -286,8 +254,7 @@ DoMysteryGiftIfDayHasPassed:
 	ret
 
 UpdateTimeRemaining:
-; If the amount of time elapsed exceeds the capacity of its
-; unit, skip this part.
+; If the amount of time elapsed exceeds the capacity of its unit, skip this part.
 	cp -1
 	jr z, .set_carry
 	ld c, a
@@ -295,29 +262,15 @@ UpdateTimeRemaining:
 	sub c
 	jr nc, .ok
 	xor a
-
 .ok
 	ld [hl], a
 	jr z, .set_carry
 	xor a
 	ret
-
 .set_carry
 	xor a
 	ld [hl], a
 	scf
-	ret
-
-GetSecondsSinceIfLessThan60: ; unreferenced
-	ld a, [wDaysSince]
-	and a
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wHoursSince]
-	and a
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wMinutesSince]
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wSecondsSince]
 	ret
 
 GetMinutesSinceIfLessThan60:
@@ -328,13 +281,6 @@ GetMinutesSinceIfLessThan60:
 	and a
 	jr nz, GetTimeElapsed_ExceedsUnitLimit
 	ld a, [wMinutesSince]
-	ret
-
-GetHoursSinceIfLessThan24: ; unreferenced
-	ld a, [wDaysSince]
-	and a
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wHoursSince]
 	ret
 
 GetDaysSince:
@@ -348,11 +294,6 @@ GetTimeElapsed_ExceedsUnitLimit:
 CalcDaysSince:
 	xor a
 	jr _CalcDaysSince
-
-CalcHoursDaysSince: ; unreferenced
-	inc hl
-	xor a
-	jr _CalcHoursDaysSince
 
 CalcMinsHoursDaysSince:
 	inc hl
@@ -421,13 +362,6 @@ CopyDayHourMinSecToHL:
 CopyDayToHL:
 	ld a, [wCurDay]
 	ld [hl], a
-	ret
-
-CopyDayHourToHL: ; unreferenced
-	ld a, [wCurDay]
-	ld [hli], a
-	ldh a, [hHours]
-	ld [hli], a
 	ret
 
 CopyDayHourMinToHL:

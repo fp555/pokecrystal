@@ -20,7 +20,6 @@ RadioTower1FReceptionistScript:
 	waitbutton
 	closetext
 	end
-
 .Rockets:
 	writetext RadioTower1FReceptionistNoToursText
 	waitbutton
@@ -32,8 +31,7 @@ RadioTower1FLuckyNumberManScript:
 	opentext
 	writetext RadioTower1FLuckyNumberManAskToPlayText
 	promptbutton
-	special CheckLuckyNumberShowFlag
-	iffalse .skip
+	checkflag ENGINE_LUCKY_NUMBER_SHOW
 	special ResetLuckyNumberShowFlag
 .skip
 	special PrintTodaysLuckyNumber
@@ -59,13 +57,11 @@ RadioTower1FLuckyNumberManScript:
 	ifequal 2, .SecondPlace
 	ifequal 3, .ThirdPlace
 	sjump .NoPrize
-
 .GameOver:
 	writetext RadioTower1FLuckyNumberManComeAgainText
 	waitbutton
 	closetext
 	end
-
 .FirstPlace:
 	writetext RadioTower1FLuckyNumberManPerfectMatchText
 	playsound SFX_1ST_PLACE
@@ -76,7 +72,6 @@ RadioTower1FLuckyNumberManScript:
 	itemnotify
 	setflag ENGINE_LUCKY_NUMBER_SHOW
 	sjump .GameOver
-
 .SecondPlace:
 	writetext RadioTower1FLuckyNumberManOkayMatchText
 	playsound SFX_2ND_PLACE
@@ -87,7 +82,6 @@ RadioTower1FLuckyNumberManScript:
 	itemnotify
 	setflag ENGINE_LUCKY_NUMBER_SHOW
 	sjump .GameOver
-
 .ThirdPlace:
 	writetext RadioTower1FLuckyNumberManWeakMatchText
 	playsound SFX_3RD_PLACE
@@ -98,13 +92,11 @@ RadioTower1FLuckyNumberManScript:
 	itemnotify
 	setflag ENGINE_LUCKY_NUMBER_SHOW
 	sjump .GameOver
-
 .NoPrize:
 	writetext RadioTower1FLuckyNumberManNoneOfYourIDNumbersMatchText
 	waitbutton
 	closetext
 	end
-
 .BagFull:
 	writetext RadioTower1FLuckyNumberManNoRoomForYourPrizeText
 	waitbutton
@@ -156,21 +148,17 @@ RadioTower1FRadioCardWomanScript:
 	waitbutton
 	closetext
 	end
-
 .RadioCardText:
 	db "RADIO CARD@"
-
 .ReceiveItem:
 	jumpstd ReceiveItemScript
 	end
-
 .WrongAnswer:
 	playsound SFX_WRONG
 	writetext RadioTower1FRadioCardWomanWrongAnswerText
 	waitbutton
 	closetext
 	end
-
 .NoQuiz:
 	writetext RadioTower1FRadioCardWomanNotTakingQuizText
 	waitbutton
@@ -185,7 +173,6 @@ RadioTower1FYoungsterScript:
 
 TrainerGruntM3:
 	trainer GRUNTM, GRUNTM_3, EVENT_BEAT_ROCKET_GRUNTM_3, GruntM3SeenText, GruntM3BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -235,8 +222,8 @@ RadioTower1FLuckyNumberManAskToPlayText:
 	done
 
 RadioTower1FLuckyNumberManThisWeeksIdIsText:
-	text "This week's ID"
-	line "number is @"
+	text "Today's ID number"
+	line "is @"
 	text_ram wStringBuffer3
 	text "."
 	done
@@ -253,7 +240,7 @@ RadioTower1FLuckyNumberManDotDotDotText:
 
 RadioTower1FLuckyNumberManComeAgainText:
 	text "Please come back"
-	line "next week for the"
+	line "tomorrow for the"
 	cont "next LUCKY NUMBER."
 	done
 

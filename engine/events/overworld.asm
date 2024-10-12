@@ -13,7 +13,6 @@ FieldMoveJumptable:
 	jr nz, .okay
 	and a
 	ret
-
 .okay
 	and $7f
 	scf
@@ -564,6 +563,9 @@ FlyFunction:
 	callasm .ReturnFromFly
 	end
 .ReturnFromFly:
+	; reset OBJ 0 palette
+	ld e, PAL_OW_RED
+	farcall SetFirstOBJPalette
 	farcall RespawnPlayer
 	call DelayFrame
 	call UpdatePlayerSprite

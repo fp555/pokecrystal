@@ -1,5 +1,6 @@
-Icons: ; used only for BANK(Icons)
+SECTION "Mon Icons", ROMX
 
+Icons: ; used only for BANK(Icons)
 NullIcon:
 PoliwagIcon:      INCBIN "gfx/icons/poliwag.2bpp"
 JigglypuffIcon:   INCBIN "gfx/icons/jigglypuff.2bpp"

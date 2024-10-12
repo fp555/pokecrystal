@@ -5,20 +5,16 @@ wStackBottom::
 wStackTop::
 	ds 1
 
-
 SECTION "Audio RAM", WRAM0
 
 ; nonzero if playing
 wMusicPlaying:: db
 
 wAudio::
-; wChannel1 - wChannel8
-for n, 1, NUM_CHANNELS + 1
+for n, 1, NUM_CHANNELS + 1 ; wChannel1 - wChannel8
 wChannel{d:n}:: channel_struct wChannel{d:n}
 endr
-
 	ds 1
-
 wCurTrackDuty:: db
 wCurTrackVolumeEnvelope:: db
 wCurTrackFrequency:: dw
@@ -27,26 +23,26 @@ wCurNoteDuration:: db ; used in MusicE0 and LoadNote
 
 wCurMusicByte:: db
 wCurChannel:: db
-wVolume::
+
 ; corresponds to rNR50
 ; Channel control / ON-OFF / Volume (R/W)
 ;   bit 7 - Vin->SO2 ON/OFF
 ;   bit 6-4 - SO2 output level (volume) (# 0-7)
 ;   bit 3 - Vin->SO1 ON/OFF
 ;   bit 2-0 - SO1 output level (volume) (# 0-7)
-	db
-wSoundOutput::
+wVolume:: db
+
 ; corresponds to rNR51
 ; bit 4-7: ch1-4 so2 on/off
 ; bit 0-3: ch1-4 so1 on/off
-	db
-wPitchSweep::
+wSoundOutput:: db
+
 ; corresponds to rNR10
 ; bit 7:   unused
 ; bit 4-6: sweep time
 ; bit 3:   sweep direction
 ; but 0-2: sweep shift
-	db
+wPitchSweep:: db
 
 wMusicID:: dw
 wMusicBank:: db
@@ -56,83 +52,59 @@ wNoiseSampleDelay:: db
 wMusicNoiseSampleSet:: db
 wSFXNoiseSampleSet:: db
 
-wLowHealthAlarm::
 ; bit 7: on/off
 ; bit 4: pitch
 ; bit 0-3: counter
-	db
+wLowHealthAlarm:: db
 
-wMusicFade::
 ; fades volume over x frames
 ; bit 7: fade in/out
 ; bit 0-5: number of frames for each volume level
 ; $00 = none (default)
-	db
+wMusicFade:: db
+
 wMusicFadeCount:: db
 wMusicFadeID:: dw
-
 	ds 5
-
 wCryPitch:: dw
 wCryLength:: dw
-
 wLastVolume:: db
 wUnusedMusicF9Flag:: db
 
-wSFXPriority::
-; if nonzero, turn off music when playing sfx
-	db
-
+wSFXPriority:: db ; if nonzero, turn off music when playing sfx
 	ds 1
-
 wChannel1JumpCondition:: db
 wChannel2JumpCondition:: db
 wChannel3JumpCondition:: db
 wChannel4JumpCondition:: db
-
 wStereoPanningMask:: db
 
-wCryTracks::
 ; plays only in left or right track depending on what side the monster is on
 ; both tracks active outside of battle
-	db
+wCryTracks:: db
 
 wSFXDuration:: db
-wCurSFX::
-; id of sfx currently playing
-	db
-
+wCurSFX:: db ; id of sfx currently playing
 wAudioEnd::
-
 wMapMusic:: db
-
 wDontPlayMapMusicOnReload:: db
-
 
 SECTION "WRAM", WRAM0
 
 wLZAddress:: dw
 wLZBank::    db
-
 	ds 1
-
 wBoxAlignment:: db
-
 wInputType::        db
 wAutoInputAddress:: dw
 wAutoInputBank::    db
 wAutoInputLength::  db
-
 wDebugFlags:: db
 wGameLogicPaused:: db
 wSpriteUpdatesEnabled:: db
-
 wUnusedScriptByte:: db
-
 wMapTimeOfDay:: db
-
 	ds 3
-
 wPrinterConnectionOpen:: db
 wPrinterOpcode:: db
 wPrevDexEntry:: db
@@ -141,30 +113,20 @@ wPrevLandmark:: db
 wCurLandmark:: db
 wLandmarkSignTimer:: dw
 
-wLinkMode::
-; a LINK_* value for the link type
-	db
-
+wLinkMode:: db ; a LINK_* value for the link type
 wScriptVar:: db
-
 wPlayerNextMovement:: db
 wPlayerMovement:: db
-
 	ds 2
-
-wMovementObject::
-	db
+wMovementObject:: db
 wMovementDataBank:: db
 wMovementDataAddress:: dw
 wIndexedMovement2Pointer:: dw
-
 	ds 2
-
 wContinueReadingMovement:: db
 
 UNION
 wObjectPriorities:: ds NUM_OBJECT_STRUCTS
-
 NEXTU
 wMovementPointer:: dw
 	ds 3
@@ -178,44 +140,37 @@ wTempObjectCopyX:: db
 wTempObjectCopyY:: db
 wTempObjectCopyRadius:: db
 ENDU
-
 	ds 1
-
 wTileDown::  db
 wTileUp::    db
 wTileLeft::  db
 wTileRight:: db
 
-wTilePermissions::
 ; set if tile behavior prevents
 ; you from walking in that direction
 ; bit 3: down
 ; bit 2: up
 ; bit 1: left
 ; bit 0: right
-	db
-
+wTilePermissions:: db
 
 SECTION "wSpriteAnims", WRAM0
 
 UNION
 wSpriteAnimData::
 
-wSpriteAnimDict::
 ; wSpriteAnimDict pairs keys with values
 ; keys: SPRITE_ANIM_DICT_* indexes (taken from SpriteAnimObjects)
 ; values: vTiles0 offsets
-	ds NUM_SPRITEANIMDICT_ENTRIES * 2
+wSpriteAnimDict:: ds NUM_SPRITEANIMDICT_ENTRIES * 2
 
 wSpriteAnimationStructs::
-; wSpriteAnim1 - wSpriteAnim10
-for n, 1, NUM_SPRITE_ANIM_STRUCTS + 1
+for n, 1, NUM_SPRITE_ANIM_STRUCTS + 1 ; wSpriteAnim1 - wSpriteAnim10
 ; field  0:   index
 ; fields 1-3: loaded from SpriteAnimObjects
 wSpriteAnim{d:n}:: sprite_anim_struct wSpriteAnim{d:n}
 endr
 wSpriteAnimationStructsEnd::
-
 NEXTU
 ; mobile data
 wMobileWRAM::
@@ -251,16 +206,16 @@ ENDU
 
 wSpriteAnimCount:: db
 wCurSpriteOAMAddr:: db
-
 wCurIcon:: db
-
 wCurIconTile:: db
+
 UNION
 wSpriteAnimID::
 wCurSpriteOAMFlags:: db
 NEXTU
 wSpriteAnimAddrBackup:: dw
 ENDU
+
 wCurAnimVTile:: db
 wCurAnimXCoord:: db
 wCurAnimYCoord:: db
@@ -268,11 +223,8 @@ wCurAnimXOffset:: db
 wCurAnimYOffset:: db
 wGlobalAnimYOffset:: db
 wGlobalAnimXOffset:: db
-
 wSpriteAnimDataEnd::
-
 	ds 11
-
 ; mobile data
 wc3cc:: ds 1
 wEmailAddress:: ds MOBILE_EMAIL_LENGTH
@@ -297,24 +249,19 @@ wc3fc:: ds 1
 	ds 3
 wMobileWRAMEnd::
 
-
 SECTION "Sprites", WRAM0
 
 wShadowOAM::
-; wShadowOAMSprite00 - wShadowOAMSprite39
-for n, NUM_SPRITE_OAM_STRUCTS
+for n, NUM_SPRITE_OAM_STRUCTS ; wShadowOAMSprite00 - wShadowOAMSprite39
 wShadowOAMSprite{02d:n}:: sprite_oam_struct wShadowOAMSprite{02d:n}
 endr
 wShadowOAMEnd::
 
-
 SECTION "Tilemap", WRAM0
 
-wTilemap::
-; 20x18 grid of 8x8 tiles
+wTilemap:: ; 20x18 grid of 8x8 tiles
 	ds SCREEN_WIDTH * SCREEN_HEIGHT
 wTilemapEnd::
-
 
 ; This union spans 480 bytes.
 SECTION UNION "Miscellaneous", WRAM0
@@ -324,7 +271,6 @@ SECTION UNION "Miscellaneous", WRAM0
 ; it uses exactly 480 bytes.
 wSurroundingTiles:: ds SURROUNDING_WIDTH * SURROUNDING_HEIGHT
 
-
 SECTION UNION "Miscellaneous", WRAM0
 
 ; box save buffer
@@ -333,36 +279,27 @@ SECTION UNION "Miscellaneous", WRAM0
 wBoxPartialData:: ds 480
 wBoxPartialDataEnd::
 
-
 SECTION UNION "Miscellaneous", WRAM0
 
 ; battle tower temp struct
 wBT_OTTemp:: battle_tower_struct wBT_OTTemp
 
-
 SECTION UNION "Miscellaneous", WRAM0
 
-; battle data
-wBattle::
+wBattle:: ; battle data
 wEnemyMoveStruct::  move_struct wEnemyMoveStruct
 wPlayerMoveStruct:: move_struct wPlayerMoveStruct
-
 wEnemyMonNickname::  ds MON_NAME_LENGTH
 wBattleMonNickname:: ds MON_NAME_LENGTH
-
 wBattleMon:: battle_struct wBattleMon
-
 	ds 2
-
 wWildMon:: db
 	ds 1
-
 wEnemyTrainerItem1:: db
 wEnemyTrainerItem2:: db
 wEnemyTrainerBaseReward:: db
 wEnemyTrainerAIFlags:: ds 3
 wOTClassName:: ds TRAINER_CLASS_NAME_LENGTH
-
 wCurOTMon:: db
 
 wBattleParticipantsNotFainted::
@@ -2355,23 +2292,14 @@ wPokemonWithdrawDepositParameter::
 
 wItemQuantityChange:: db
 wItemQuantity:: db
-
 wTempMon:: party_struct wTempMon
-
 wSpriteFlags:: db
-
 wHandlePlayerStep:: db
-
-	ds 1
-
+wCurIconMonHasItemOrMail:: db
 wPartyMenuActionText:: db
-
 wItemAttributeValue:: db
-
 wCurPartyLevel:: db
-
 wScrollingMenuListSize:: db
-
 	ds 1
 
 ; used when following a map warp

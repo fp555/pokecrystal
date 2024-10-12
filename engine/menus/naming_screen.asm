@@ -82,6 +82,27 @@ NamingScreen:
 .Pokemon:
 	ld a, [wCurPartySpecies]
 	ld [wTempIconSpecies], a
+	; Is it a PartyMon or a BoxMon?
+	ld a, [wMonType]
+	and a
+	jr z, .party_mon
+	ld hl, sBoxMon1DVs
+	ld a, BANK(sBox)
+	call OpenSRAM
+	jr .start
+.party_mon
+	ld a, MON_DVS
+	call GetPartyParamLocation
+.start
+	ld de, wTempMonDVs
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hl]
+	ld [de], a
+	ld a, [wMonType]
+	cp BOXMON
+	call z, CloseSRAM
 	ld hl, LoadMenuMonIcon
 	ld a, BANK(LoadMenuMonIcon)
 	ld e, MONICON_NAMINGSCREEN
@@ -664,7 +685,8 @@ NamingScreen_GetTextCursorPosition:
 	ret
 
 NamingScreen_InitNameEntry:
-; load NAMINGSCREEN_UNDERLINE, (NAMINGSCREEN_MIDDLELINE * [wNamingScreenMaxNameLength]), "@" into the dw address at wNamingScreenDestinationPointer
+; load NAMINGSCREEN_UNDERLINE, (NAMINGSCREEN_MIDDLELINE * [wNamingScreenMaxNameLength]), "@"
+; into the dw address at wNamingScreenDestinationPointer
 	ld hl, wNamingScreenDestinationPointer
 	ld a, [hli]
 	ld h, [hl]
@@ -863,9 +885,7 @@ _ComposeMailMessage:
 	add hl, de
 	ld [hl], "<NEXT>"
 	ret
-.MailIcon:
-INCBIN "gfx/naming_screen/mail.2bpp"
-
+.MailIcon: INCBIN "gfx/naming_screen/mail.2bpp"
 .initwNamingScreenMaxNameLength
 	ld a, MAIL_MSG_LENGTH + 1
 	ld [wNamingScreenMaxNameLength], a

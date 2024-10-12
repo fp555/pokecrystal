@@ -438,7 +438,7 @@ CGB_ApplyPartyMenuHPPals:
 InitPartyMenuOBPals:
 	ld hl, PartyMenuOBPals
 	ld de, wOBPals1
-	ld bc, 2 palettes
+	ld bc, 8 palettes
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
 	ret
@@ -1004,6 +1004,66 @@ endr
 	ld bc, 4
 	ld a, BANK(wBGPals1)
 	call FarCopyWRAM
+	; Check if the current map is Route 34
+	ld a, [wMapGroup]
+	cp GROUP_ROUTE_34
+	ret nz
+	ld a, [wMapNumber]
+	cp MAP_ROUTE_34
+	ret nz
+	; swap PINK palette with the color of Daycare Pokémon #1
+	ld a, BANK(wBreedMon1Species)
+	ld hl, wBreedMon1Species
+	call GetFarWRAMByte
+	and a
+	jr z, .day_care_mon_2
+	ld [wCurPartySpecies], a
+	ld hl, wBreedMon1DVs
+	; is Pokémon #1 shiny?
+	ld de, GetMenuMonIconPalette
+	ld a, BANK(GetMenuMonIconPalette)
+	call FarCall_de
+	ld a, e
+	add a
+	add a
+	add a
+	ld e, a
+	ld d, 0
+	ld hl, PartyMenuOBPals
+	add hl, de
+	inc hl
+	inc hl
+	ld de, wOBPals1 palette PAL_OW_PINK + 2
+	ld bc, 1 palettes - 2
+	ld a, BANK(wOBPals1)
+	call FarCopyWRAM
+.day_care_mon_2
+	; swap ROCK palette with the color of Daycare Pokémon #2
+	ld a, BANK(wBreedMon2Species)
+	ld hl, wBreedMon2Species
+	call GetFarWRAMByte
+	and a
+	ret z
+	ld [wCurPartySpecies], a
+	ld hl, wBreedMon2DVs
+	; is Pokémon #2 shiny?
+	ld de, GetMenuMonIconPalette
+	ld a, BANK(GetMenuMonIconPalette)
+	call FarCall_de
+	ld a, e
+	add a
+	add a
+	add a
+	ld e, a
+	ld d, 0
+	ld hl, PartyMenuOBPals
+	add hl, de
+	inc hl
+	inc hl
+	ld de, wOBPals1 palette PAL_OW_ROCK + 2
+	ld bc, 1 palettes - 2
+	ld a, BANK(wOBPals1)
+	call FarCopyWRAM
 	ret
 
 INCLUDE "data/maps/environment_colors.asm"
@@ -1048,3 +1108,16 @@ INCLUDE "gfx/beta_poker/beta_poker.pal"
 
 SlotMachinePals:
 INCLUDE "gfx/slots/slots.pal"
+
+SetFirstOBJPalette::
+; Input: e must contain the offset of the selected palette from PartyMenuOBPals
+	ld hl, PartyMenuOBPals
+	ld d, 0
+	add hl, de
+ 	ld de, wOBPals1
+	ld bc, 1 palettes
+	ld a, BANK(wOBPals1)
+	call FarCopyWRAM
+	ld a, TRUE
+ 	ldh [hCGBPalUpdate], a
+ 	jp ApplyPals

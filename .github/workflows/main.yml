@@ -20,6 +20,7 @@ jobs:
       - name: Install rgbds
         working-directory: rgbds
         run: |
+          sudo apt-get install -yq libpng-dev
           sudo make install
           cd ..
           rm -rf rgbds

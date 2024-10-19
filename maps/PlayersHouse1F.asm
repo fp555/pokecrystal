@@ -29,9 +29,9 @@ MeetMomRightScript:
 	iffalse .OnRight
 	applymovement PLAYERSHOUSE1F_MOM1, MomTurnsTowardPlayerMovement
 	sjump MeetMomScript
-
 .OnRight:
 	applymovement PLAYERSHOUSE1F_MOM1, MomWalksToPlayerMovement
+	; fallthrough
 MeetMomScript:
 	opentext
 	writetext ElmsLookingForYouText
@@ -55,29 +55,14 @@ MeetMomScript:
 	yesorno
 	iffalse .SetDayOfWeek
 	sjump .DayOfWeekDone
-
 .WrongDay:
 	special InitialClearDSTFlag
 	yesorno
 	iffalse .SetDayOfWeek
 .DayOfWeekDone:
 	writetext ComeHomeForDSTText
-	yesorno
-	iffalse .ExplainPhone
-	sjump .KnowPhone
-
-.KnowPhone:
-	writetext KnowTheInstructionsText
 	promptbutton
-	sjump .FinishPhone
-
-.ExplainPhone:
-	writetext DontKnowTheInstructionsText
-	promptbutton
-	sjump .FinishPhone
-
-.FinishPhone:
-	writetext InstructionsNextText
+	writetext PhoneInstructionsText
 	waitbutton
 	closetext
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
@@ -85,15 +70,12 @@ MeetMomScript:
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	iffalse .FromLeft
 	sjump .Finish
-
 .FromRight:
 	applymovement PLAYERSHOUSE1F_MOM1, MomTurnsBackMovement
 	sjump .Finish
-
 .FromLeft:
 	applymovement PLAYERSHOUSE1F_MOM1, MomWalksBackMovement
 	sjump .Finish
-
 .Finish:
 	special RestartMapMusic
 	turnobject PLAYERSHOUSE1F_MOM1, LEFT
@@ -128,19 +110,16 @@ MomScript:
 	waitbutton
 	closetext
 	end
-
 .GotAPokemon:
 	writetext SoWhatWasProfElmsErrandText
 	waitbutton
 	closetext
 	end
-
 .FirstTimeBanking:
 	writetext ImBehindYouText
 	waitbutton
 	closetext
 	end
-
 .GaveMysteryEgg:
 	setevent EVENT_FIRST_TIME_BANKING_WITH_MOM
 .BankOfMom:
@@ -159,22 +138,18 @@ NeighborScript:
 	iftrue .DayScript
 	checktime NITE
 	iftrue .NiteScript
-
 .MornScript:
 	writetext NeighborMornIntroText
 	promptbutton
 	sjump .Main
-
 .DayScript:
 	writetext NeighborDayIntroText
 	promptbutton
 	sjump .Main
-
 .NiteScript:
 	writetext NeighborNiteIntroText
 	promptbutton
 	sjump .Main
-
 .Main:
 	writetext NeighborText
 	waitbutton
@@ -256,31 +231,17 @@ ComeHomeForDSTText:
 
 	para "for Daylight"
 	line "Saving Time."
-
-	para "By the way, do you"
-	line "know how to use"
-	cont "the PHONE?"
 	done
 
-KnowTheInstructionsText:
-	text "Don't you just"
-	line "turn the #GEAR"
-
-	para "on and select the"
-	line "PHONE icon?"
-	done
-
-DontKnowTheInstructionsText:
-	text "I'll read the"
-	line "instructions."
-
-	para "Turn the #GEAR"
+PhoneInstructionsText:
+	text "By the way, to use"
+	line "the PHONE, just"
+	
+	para "turn the #GEAR"
 	line "on and select the"
 	cont "PHONE icon."
-	done
-
-InstructionsNextText:
-	text "Phone numbers are"
+	
+	para "Phone numbers are"
 	line "stored in memory."
 
 	para "Just choose a name"

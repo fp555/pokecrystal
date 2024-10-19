@@ -8,7 +8,6 @@ MomPhoneCalleeScript:
 	checkevent EVENT_GOT_A_POKEMON_FROM_ELM
 	iftrue MomPhoneNoPokedexScript
 	sjump MomPhoneNoPokemonScript
-
 .started_quest
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_8
 	iftrue MomPhoneHangUpScript
@@ -35,17 +34,14 @@ MomPhoneInTown:
 	farwritetext MomPhoneGenericAreaText
 	promptbutton
 	sjump MomSavingMoney
-
 .newbark
 	farwritetext MomPhoneNewBarkText
 	promptbutton
 	sjump MomSavingMoney
-
 .cherrygrove
 	farwritetext MomPhoneCherrygroveText
 	promptbutton
 	sjump MomSavingMoney
-
 .violet
 	getlandmarkname STRING_BUFFER_4, LANDMARK_SPROUT_TOWER
 	sjump MomPhoneLandmark
@@ -72,31 +68,26 @@ MomSavingMoney:
 	checkmoney MOMS_MONEY, 0
 	ifequal HAVE_MORE, .SavingHasMoney
 	sjump .SavingNoMoney
-
 .NotSaving:
 	checkmoney MOMS_MONEY, 0
 	ifequal HAVE_MORE, .HasMoney
 	sjump .NoMoney
-
 .SavingHasMoney:
 	getmoney STRING_BUFFER_3, MOMS_MONEY
 	farwritetext MomCheckBalanceText
 	yesorno
 	iftrue MomPhoneSaveMoneyScript
 	sjump MomPhoneWontSaveMoneyScript
-
 .SavingNoMoney:
 	farwritetext MomImportantToSaveText
 	yesorno
 	iftrue MomPhoneSaveMoneyScript
 	sjump MomPhoneWontSaveMoneyScript
-
 .NoMoney:
 	farwritetext MomYoureNotSavingText
 	yesorno
 	iftrue MomPhoneSaveMoneyScript
 	sjump MomPhoneWontSaveMoneyScript
-
 .HasMoney:
 	getmoney STRING_BUFFER_3, MOMS_MONEY
 	farwritetext MomYouveSavedText
@@ -137,6 +128,6 @@ MomPhoneLectureScript:
 	setflag ENGINE_MOM_ACTIVE
 	specialphonecall SPECIALCALL_NONE
 	farwritetext MomPhoneLectureText
-	yesorno
-	iftrue MomPhoneSaveMoneyScript
-	sjump MomPhoneWontSaveMoneyScript
+	setflag ENGINE_MOM_SAVING_MONEY
+	promptbutton
+	sjump MomPhoneHangUpScript

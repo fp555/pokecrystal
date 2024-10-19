@@ -22,17 +22,9 @@ jobs:
         run: |
           sudo apt-get install -yq libpng-dev
           sudo make install
-          cd ..
-          rm -rf rgbds
 
-      - name: Make
-        run: |
-          make -j$(nproc)
-          if ! git diff-index --quiet HEAD --; then
-            echo 'Uncommitted changes detected:'
-            git diff-index HEAD --
-            return 1
-          fi
+      - name: Make ROM
+        run: make -j$(nproc)
 
       - name: Archive map file
         uses: actions/upload-artifact@v4
@@ -42,7 +34,9 @@ jobs:
           if-no-files-found: error
           
       - name: Check free space
-        run: tools/free_space.awk BANK=all pokecrystal.map
+        run: |
+            chmod +x tools/free_space.awk
+            tools/free_space.awk BANK=all pokecrystal.map
          
       - name: Create release draft
         uses: ncipollo/release-action@v1

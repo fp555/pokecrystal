@@ -105,8 +105,8 @@ MomYouveSavedText:
 	done
 
 MomOKIllSaveText:
-	text "OK. I'll save your"
-	line "money."
+	text "OK! I'll save your"
+	line "money!"
 	done
 
 MomPhoneWontSaveMoneyText:
@@ -159,7 +159,8 @@ MomPhoneLectureText:
 
 	para "I wish you would"
 	line "have told me…"
-
-	para "What about money?"
-	line "Should I save it?"
+	
+	para "Don't worry, I'll"
+	line "help you save"
+	cont "money, alright?"
 	done

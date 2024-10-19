@@ -11,15 +11,12 @@ BankOfMom:
 	jr nz, .done
 	call .RunJumptable
 	jr .loop
-
 .done
 	pop af
 	ldh [hInMenu], a
 	ret
-
 .RunJumptable:
 	jumptable .dw, wJumptableIndex
-
 .dw
 	dw .CheckIfBankInitialized
 	dw .InitializeBank
@@ -39,35 +36,21 @@ BankOfMom:
 	ld [wMomSavingMoney], a
 	ld a, $1
 	jr .done_0
-
 .savingmoneyalready
 	ld a, $2
-
 .done_0
 	ld [wJumptableIndex], a
 	ret
-
 .InitializeBank:
 	ld hl, MomLeavingText1
 	call PrintText
-	call YesNoBox
-	jr c, .DontSaveMoney
-	ld hl, MomLeavingText2
-	call PrintText
 	ld a, (1 << MOM_ACTIVE_F) | (1 << MOM_SAVING_SOME_MONEY_F)
-	jr .done_1
-
-.DontSaveMoney:
-	ld a, 1 << MOM_ACTIVE_F
-
-.done_1
 	ld [wMomSavingMoney], a
-	ld hl, MomLeavingText3
+	ld hl, MomLeavingText2
 	call PrintText
 	ld a, $8
 	ld [wJumptableIndex], a
 	ret
-
 .IsThisAboutYourMoney:
 	ld hl, MomIsThisAboutYourMoneyText
 	call PrintText
@@ -75,15 +58,12 @@ BankOfMom:
 	jr c, .nope
 	ld a, $3
 	jr .done_2
-
 .nope
 	call DSTChecks
 	ld a, $7
-
 .done_2
 	ld [wJumptableIndex], a
 	ret
-
 .AccessBankOfMom:
 	ld hl, MomBankWhatDoYouWantToDoText
 	call PrintText
@@ -100,26 +80,20 @@ BankOfMom:
 	jr z, .deposit
 	cp $3
 	jr z, .stopsaving
-
 .cancel
 	ld a, $7
 	jr .done_3
-
 .withdraw
 	ld a, $5
 	jr .done_3
-
 .deposit
 	ld a, $4
 	jr .done_3
-
 .stopsaving
 	ld a, $6
-
 .done_3
 	ld [wJumptableIndex], a
 	ret
-
 .StoreMoney:
 	ld hl, MomStoreMoneyText
 	call PrintText
@@ -168,24 +142,19 @@ BankOfMom:
 	call PrintText
 	ld a, $8
 	jr .done_4
-
 .InsufficientFundsInWallet:
 	ld hl, MomInsufficientFundsInWalletText
 	call PrintText
 	ret
-
 .NotEnoughRoomInBank:
 	ld hl, MomNotEnoughRoomInBankText
 	call PrintText
 	ret
-
 .CancelDeposit:
 	ld a, $7
-
 .done_4
 	ld [wJumptableIndex], a
 	ret
-
 .TakeMoney:
 	ld hl, MomTakeMoneyText
 	call PrintText
@@ -234,24 +203,19 @@ BankOfMom:
 	call PrintText
 	ld a, $8
 	jr .done_5
-
 .InsufficientFundsInBank:
 	ld hl, MomHaventSavedThatMuchText
 	call PrintText
 	ret
-
 .NotEnoughRoomInWallet:
 	ld hl, MomNotEnoughRoomInWalletText
 	call PrintText
 	ret
-
 .CancelWithdraw:
 	ld a, $7
-
 .done_5
 	ld [wJumptableIndex], a
 	ret
-
 .StopOrStartSavingMoney:
 	ld hl, MomSaveMoneyText
 	call PrintText
@@ -264,18 +228,15 @@ BankOfMom:
 	ld a, $8
 	ld [wJumptableIndex], a
 	ret
-
 .StopSavingMoney:
 	ld a, 1 << MOM_ACTIVE_F
 	ld [wMomSavingMoney], a
 	ld a, $7
 	ld [wJumptableIndex], a
 	ret
-
 .JustDoWhatYouCan:
 	ld hl, MomJustDoWhatYouCanText
 	call PrintText
-
 .AskDST:
 	ld hl, wJumptableIndex
 	set 7, [hl]
@@ -290,12 +251,9 @@ DSTChecks:
 	and a ; within one hour of 00:00?
 	jr z, .LostBooklet
 	jr .loop
-
 .NotDST:
 	cp 23 ; within one hour of 23:00?
 	jr nz, .loop
-	; fallthrough
-
 .LostBooklet:
 	call .ClearBox
 	bccoord 1, 14
@@ -308,7 +266,6 @@ DSTChecks:
 	ld hl, .MomLostGearBookletText
 	call PrintTextboxTextAt
 	ret
-
 .loop
 	call .ClearBox
 	bccoord 1, 14
@@ -328,7 +285,6 @@ DSTChecks:
 	ld hl, .TimesetNotDSTText
 	call PrintTextboxTextAt
 	ret
-
 .SetDST:
 	ld hl, .TimesetAskDSTText
 	call PrintTextboxTextAt
@@ -343,7 +299,6 @@ DSTChecks:
 	ld hl, .TimesetDSTText
 	call PrintTextboxTextAt
 	ret
-
 .SetClockForward:
 	ld a, [wStartHour]
 	add 1
@@ -357,7 +312,6 @@ DSTChecks:
 	adc 0
 	ld [wStartDay], a
 	ret
-
 .SetClockBack:
 	ld a, [wStartHour]
 	sub 1
@@ -372,33 +326,26 @@ DSTChecks:
 .DontLoopDayBack:
 	ld [wStartDay], a
 	ret
-
 .ClearBox:
 	hlcoord 1, 14
 	lb bc, 3, 18
 	call ClearBox
 	ret
-
 .TimesetAskAdjustDSTText:
 	text_far _TimesetAskAdjustDSTText
 	text_end
-
 .MomLostGearBookletText:
 	text_far _MomLostGearBookletText
 	text_end
-
 .TimesetAskDSTText:
 	text_far _TimesetAskDSTText
 	text_end
-
 .TimesetDSTText:
 	text_far _TimesetDSTText
 	text_end
-
 .TimesetAskNotDSTText:
 	text_far _TimesetAskNotDSTText
 	text_end
-
 .TimesetNotDSTText:
 	text_far _TimesetNotDSTText
 	text_end
@@ -409,6 +356,7 @@ Mom_SetUpWithdrawMenu:
 
 Mom_SetUpDepositMenu:
 	ld de, Mom_DepositString
+	; fallthrough
 Mom_ContinueMenuSetup:
 	push de
 	xor a
@@ -476,19 +424,15 @@ Mom_WithdrawDepositMenuJoypad:
 	ld b, 0
 	add hl, bc
 	ld [hl], " "
-
 .skip
 	call WaitBGMap
 	jr .loop
-
 .pressedB
 	scf
 	ret
-
 .pressedA
 	and a
 	ret
-
 .dpadaction
 	ld hl, hJoyLast
 	ld a, [hl]
@@ -505,7 +449,6 @@ Mom_WithdrawDepositMenuJoypad:
 	jr nz, .movecursorright
 	and a
 	ret
-
 .movecursorleft
 	ld hl, wMomBankDigitCursorPosition
 	ld a, [hl]
@@ -513,7 +456,6 @@ Mom_WithdrawDepositMenuJoypad:
 	ret z
 	dec [hl]
 	ret
-
 .movecursorright
 	ld hl, wMomBankDigitCursorPosition
 	ld a, [hl]
@@ -521,7 +463,6 @@ Mom_WithdrawDepositMenuJoypad:
 	ret nc
 	inc [hl]
 	ret
-
 .incrementdigit
 	ld hl, .DigitQuantities
 	call .getdigitquantity
@@ -530,7 +471,6 @@ Mom_WithdrawDepositMenuJoypad:
 	ld de, wStringBuffer2
 	farcall GiveMoney
 	ret
-
 .decrementdigit
 	ld hl, .DigitQuantities
 	call .getdigitquantity
@@ -539,7 +479,6 @@ Mom_WithdrawDepositMenuJoypad:
 	ld de, wStringBuffer2
 	farcall TakeMoney
 	ret
-
 .getdigitquantity
 	ld a, [wMomBankDigitCursorPosition]
 	push de
@@ -550,7 +489,6 @@ Mom_WithdrawDepositMenuJoypad:
 	add hl, de
 	pop de
 	ret
-
 .DigitQuantities:
 	for x, 5, -1, -1
 		bigdt 10**x
@@ -568,10 +506,6 @@ MomLeavingText1:
 
 MomLeavingText2:
 	text_far _MomLeavingText2
-	text_end
-
-MomLeavingText3:
-	text_far _MomLeavingText3
 	text_end
 
 MomIsThisAboutYourMoneyText:
@@ -643,7 +577,6 @@ BankOfMom_MenuHeader:
 	menu_coords 0, 0, 10, 10
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items

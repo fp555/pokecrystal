@@ -1362,19 +1362,9 @@ _MomLeavingText1::
 
 	para "On a long journey,"
 	line "money's important."
-
-	para "Do you want me to"
-	line "save your money?"
 	done
 
 _MomLeavingText2::
-	text "OK, I'll take care"
-	line "of your money."
-
-	para "<……><……><……>"
-	prompt
-
-_MomLeavingText3::
 	text "Be careful."
 
 	para "#MON are your"

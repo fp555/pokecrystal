@@ -253,8 +253,6 @@ MrPokemonsHouse_OakText1:
 	para "Oh! What's this?"
 	line "A rare #MON!"
 
-	para "Let's see…"
-
 	para "Hm, I see!"
 
 	para "I understand why"

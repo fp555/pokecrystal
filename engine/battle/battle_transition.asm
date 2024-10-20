@@ -141,7 +141,7 @@ BattleTransitionJumptable:
 .Jumptable:
 	dw StartTrainerBattle_DetermineWhichAnimation ; 00
 	; BATTLETRANSITION_CAVE
-	dw StartTrainerBattle_LoadPokeBallGraphics ; 01
+	dw StartTrainerBattle_LoadTransitionGraphics ; 01
 	dw StartTrainerBattle_SetUpBGMap ; 02
 	dw StartTrainerBattle_Flash ; 03
 	dw StartTrainerBattle_Flash ; 04
@@ -150,7 +150,7 @@ BattleTransitionJumptable:
 	dw StartTrainerBattle_SetUpForWavyOutro ; 07
 	dw StartTrainerBattle_SineWave ; 08
 	; BATTLETRANSITION_CAVE_STRONGER
-	dw StartTrainerBattle_LoadPokeBallGraphics ; 09
+	dw StartTrainerBattle_LoadTransitionGraphics ; 09
 	dw StartTrainerBattle_SetUpBGMap ; 0a
 	dw StartTrainerBattle_Flash ; 0b
 	dw StartTrainerBattle_Flash ; 0c
@@ -159,7 +159,7 @@ BattleTransitionJumptable:
 	; There is no setup for this one
 	dw StartTrainerBattle_ZoomToBlack ; 0f
 	; BATTLETRANSITION_NO_CAVE
-	dw StartTrainerBattle_LoadPokeBallGraphics ; 10
+	dw StartTrainerBattle_LoadTransitionGraphics ; 10
 	dw StartTrainerBattle_SetUpBGMap ; 11
 	dw StartTrainerBattle_Flash ; 12
 	dw StartTrainerBattle_Flash ; 13
@@ -168,7 +168,7 @@ BattleTransitionJumptable:
 	dw StartTrainerBattle_SetUpForSpinOutro ; 16
 	dw StartTrainerBattle_SpinToBlack ; 17
 	; BATTLETRANSITION_NO_CAVE_STRONGER
-	dw StartTrainerBattle_LoadPokeBallGraphics ; 18
+	dw StartTrainerBattle_LoadTransitionGraphics ; 18
 	dw StartTrainerBattle_SetUpBGMap ; 19
 	dw StartTrainerBattle_Flash ; 1a
 	dw StartTrainerBattle_Flash ; 1b
@@ -557,7 +557,7 @@ StartTrainerBattle_SpeckleToBlack:
 	ld [hl], BATTLETRANSITION_BLACK
 	ret
 
-StartTrainerBattle_LoadPokeBallGraphics:
+StartTrainerBattle_LoadTransitionGraphics:
 	ld a, [wOtherTrainerClass]
 	and a
 	jp z, .nextscene ; don't need to be here if wild
@@ -578,7 +578,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	jr nz, .pal_loop
 	dec b
 	jr nz, .pal_loop
-	call .loadpokeballgfx
+	call .loadtransitiongfx
 	hlcoord 2, 1
 	ld b, SCREEN_WIDTH - 4
 .tile_loop
@@ -673,13 +673,26 @@ StartTrainerBattle_LoadPokeBallGraphics:
 INCLUDE "gfx/overworld/trainer_battle.pal"
 .darkpals:
 INCLUDE "gfx/overworld/trainer_battle_dark.pal"
-.loadpokeballgfx:
+.loadtransitiongfx:
+	; use Rocket transition for specific trainer classes
+	ld de, TeamRocketTransition
 	ld a, [wOtherTrainerClass]
+	cp GRUNTM
+	ret z
+	cp GRUNTF
+	ret z
+	cp EXECUTIVEM
+	ret z
+	cp EXECUTIVEF
+	ret z
+	cp SCIENTIST
+	ret z
+	; otherwise use normal pokéball transition
 	ld de, PokeBallTransition
 	ret
 
 PokeBallTransition:
-; 16x16 overlay of a Poke Ball
+; 16x16 overlay of a Poké Ball
 pusho
 opt b.X ; . = 0, X = 1
 	bigdw %......XXXX......
@@ -698,6 +711,28 @@ opt b.X ; . = 0, X = 1
 	bigdw %..XXXX....XXXX..
 	bigdw %....XXXXXXXX....
 	bigdw %......XXXX......
+popo
+
+TeamRocketTransition:
+; 16x16 overlay of a Rocket R
+pusho
+opt b.X ; . = 0, X = 1
+	bigdw %XXXXXXXXXXXX....
+	bigdw %XXXXXXXXXXXXXX..
+	bigdw %XXXXXXXXXXXXXXX.
+	bigdw %XXXXXXXXXXXXXXX.
+	bigdw %XXXXX.....XXXXXX
+	bigdw %XXXXX......XXXXX
+	bigdw %XXXXX.....XXXXXX
+	bigdw %XXXXXXXXXXXXXXX.
+	bigdw %XXXXXXXXXXXXXXX.
+	bigdw %XXXXXXXXXXXXXX..
+	bigdw %XXXXXXXXXXXXX...
+	bigdw %XXXXX....XXXXX..
+	bigdw %XXXXX....XXXXX..
+	bigdw %XXXXX.....XXXXX.
+	bigdw %XXXXX......XXXXX
+	bigdw %XXXXX......XXXXX
 popo
 
 WipeLYOverrides:

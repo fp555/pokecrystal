@@ -7,6 +7,7 @@
 
 CherrygroveCity_MapScripts:
 	def_scene_scripts
+	scene_script CherrygroveCityNoop3Scene, SCENE_CHERRYGROVECITY_GUIDE_GENT
 	scene_script CherrygroveCityNoop1Scene, SCENE_CHERRYGROVECITY_NOOP
 	scene_script CherrygroveCityNoop2Scene, SCENE_CHERRYGROVECITY_MEET_RIVAL
 
@@ -19,6 +20,9 @@ CherrygroveCityNoop1Scene:
 CherrygroveCityNoop2Scene:
 	end
 
+CherrygroveCityNoop3Scene:
+	end
+
 CherrygroveCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_CHERRYGROVE
 	endcallback
@@ -27,11 +31,6 @@ CherrygroveCityGuideGent:
 	faceplayer
 	opentext
 	writetext GuideGentIntroText
-	yesorno
-	iffalse .No
-	sjump .Yes
-.Yes:
-	writetext GuideGentTourText1
 	waitbutton
 	closetext
 	playmusic MUSIC_SHOW_ME_AROUND
@@ -82,6 +81,7 @@ CherrygroveCityGuideGent:
 	playsound SFX_ENTER_DOOR
 	disappear CHERRYGROVECITY_GRAMPS
 	clearevent EVENT_GUIDE_GENT_VISIBLE_IN_CHERRYGROVE
+	setscene SCENE_CHERRYGROVECITY_NOOP
 	waitsfx
 	end
 .JumpstdReceiveItem:
@@ -89,11 +89,6 @@ CherrygroveCityGuideGent:
 	end
 .mapcardname
 	db "MAP CARD@"
-.No:
-	writetext GuideGentNoText
-	waitbutton
-	closetext
-	end
 
 CherrygroveRivalSceneSouth:
 	moveobject CHERRYGROVECITY_RIVAL, 39, 7
@@ -115,6 +110,7 @@ CherrygroveRivalSceneNorth:
 	iftrue .Totodile
 	checkevent EVENT_GOT_CHIKORITA_FROM_ELM
 	iftrue .Chikorita
+	; EVENT_GOT_CYNDAQUIL_FROM_ELM
 	winlosstext RivalCherrygroveWinText, RivalCherrygroveLossText
 	setlasttalked CHERRYGROVECITY_RIVAL
 	loadtrainer RIVAL1, RIVAL1_1_TOTODILE
@@ -122,8 +118,7 @@ CherrygroveRivalSceneNorth:
 	startbattle
 	dontrestartmapmusic
 	reloadmap
-	iftrue .AfterVictorious
-	sjump .AfterYourDefeat
+	sjump .AfterBattle
 .Totodile:
 	winlosstext RivalCherrygroveWinText, RivalCherrygroveLossText
 	setlasttalked CHERRYGROVECITY_RIVAL
@@ -132,8 +127,7 @@ CherrygroveRivalSceneNorth:
 	startbattle
 	dontrestartmapmusic
 	reloadmap
-	iftrue .AfterVictorious
-	sjump .AfterYourDefeat
+	sjump .AfterBattle
 .Chikorita:
 	winlosstext RivalCherrygroveWinText, RivalCherrygroveLossText
 	setlasttalked CHERRYGROVECITY_RIVAL
@@ -142,29 +136,18 @@ CherrygroveRivalSceneNorth:
 	startbattle
 	dontrestartmapmusic
 	reloadmap
-	iftrue .AfterVictorious
-	sjump .AfterYourDefeat
-.AfterVictorious:
+.AfterBattle:
 	playmusic MUSIC_RIVAL_AFTER
 	opentext
-	writetext CherrygroveRivalText_YouWon
+	writetext CherrygroveRivalText_AfterBattle
 	waitbutton
 	closetext
-	sjump .FinishRival
-.AfterYourDefeat:
-	playmusic MUSIC_RIVAL_AFTER
-	opentext
-	writetext CherrygroveRivalText_YouLost
-	waitbutton
-	closetext
-.FinishRival:
 	playsound SFX_TACKLE
 	applymovement PLAYER, CherrygroveCity_RivalPushesYouOutOfTheWay
 	turnobject PLAYER, LEFT
 	applymovement CHERRYGROVECITY_RIVAL, CherrygroveCity_RivalExitsStageLeft
 	disappear CHERRYGROVECITY_RIVAL
 	setscene SCENE_CHERRYGROVECITY_NOOP
-	special HealParty
 	playmapmusic
 	end
 
@@ -228,6 +211,8 @@ CherrygroveCityMartSign:
 	jumpstd MartSignScript
 
 GuideGentMovement1:
+	step LEFT
+	step LEFT
 	step LEFT
 	step LEFT
 	step UP
@@ -329,14 +314,9 @@ GuideGentIntroText:
 	line "one is a rookie"
 	cont "at some point!"
 
-	para "If you'd like, I"
+	para "Follow me, so I"
 	line "can teach you a"
 	cont "few things."
-	done
-
-GuideGentTourText1:
-	text "OK, then!"
-	line "Follow me!"
 	done
 
 GuideGentPokecenterText:
@@ -409,14 +389,6 @@ GuideGentPokegearText:
 	line "your journey!"
 	done
 
-GuideGentNoText:
-	text "Oh… It's something"
-	line "I enjoy doing…"
-
-	para "Fine. Come see me"
-	line "when you like."
-	done
-
 CherrygroveRivalText_Seen:
 	text "<……> <……> <……>"
 
@@ -443,31 +415,18 @@ RivalCherrygroveWinText:
 	line "happy you won?"
 	done
 
-CherrygroveRivalText_YouLost:
-	text "<……> <……> <……>"
-
-	para "My name's ???."
+CherrygroveRivalText_AfterBattle:
+	text "Remember it well!"
 
 	para "I'm going to be"
 	line "the world's great-"
 	cont "est #MON"
-	cont "trainer."
+	cont "trainer!"
 	done
 
 RivalCherrygroveLossText:
 	text "Humph. That was a"
 	line "waste of time."
-	done
-
-CherrygroveRivalText_YouWon:
-	text "<……> <……> <……>"
-
-	para "My name's ???."
-
-	para "I'm going to be"
-	line "the world's great-"
-	cont "est #MON"
-	cont "trainer."
 	done
 
 CherrygroveTeacherText_NoMapCard:
@@ -544,6 +503,7 @@ CherrygroveCity_MapEvents:
 	def_coord_events
 	coord_event 33,  6, SCENE_CHERRYGROVECITY_MEET_RIVAL, CherrygroveRivalSceneNorth
 	coord_event 33,  7, SCENE_CHERRYGROVECITY_MEET_RIVAL, CherrygroveRivalSceneSouth
+	coord_event 34,  7, SCENE_CHERRYGROVECITY_GUIDE_GENT, CherrygroveCityGuideGent
 
 	def_bg_events
 	bg_event 30,  8, BGEVENT_READ, CherrygroveCitySign
@@ -552,7 +512,7 @@ CherrygroveCity_MapEvents:
 	bg_event 30,  3, BGEVENT_READ, CherrygroveCityPokecenterSign
 
 	def_object_events
-	object_event 32,  6, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CherrygroveCityGuideGent, EVENT_GUIDE_GENT_IN_HIS_HOUSE
+	object_event 34,  6, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CherrygroveCityGuideGent, EVENT_GUIDE_GENT_IN_HIS_HOUSE
 	object_event 39,  6, SPRITE_RIVAL, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_RIVAL_CHERRYGROVE_CITY
 	object_event 27, 12, SPRITE_TEACHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CherrygroveTeacherScript, -1
 	object_event 23,  7, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CherrygroveYoungsterScript, -1

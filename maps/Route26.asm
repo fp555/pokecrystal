@@ -15,7 +15,6 @@ Route26_MapScripts:
 
 TrainerCooltrainermJake:
 	trainer COOLTRAINERM, JAKE, EVENT_BEAT_COOLTRAINERM_JAKE, CooltrainermJakeSeenText, CooltrainermJakeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -26,10 +25,8 @@ TrainerCooltrainermJake:
 
 TrainerCooltrainermGaven3:
 	trainer COOLTRAINERM, GAVEN3, EVENT_BEAT_COOLTRAINERM_GAVEN, CooltrainermGaven3SeenText, CooltrainermGaven3BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_COOLTRAINERM_GAVEN
-	endifjustbattled
 	opentext
 	checkflag ENGINE_GAVEN_READY_FOR_REMATCH
 	iftrue .WantsBattle
@@ -42,7 +39,6 @@ TrainerCooltrainermGaven3:
 	setevent EVENT_GAVEN_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall .AskNumber2
 .AskForNumber:
@@ -52,74 +48,55 @@ TrainerCooltrainermGaven3:
 	gettrainername STRING_BUFFER_3, COOLTRAINERM, GAVEN3
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .WantsBattle:
 	scall .Rematch
 	winlosstext CooltrainermGaven3BeatenText, 0
-	readmem wGavenFightCount
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight2:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
-.Fight1:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer COOLTRAINERM, GAVEN3
 	startbattle
 	reloadmapafterbattle
-	loadmem wGavenFightCount, 1
 	clearflag ENGINE_GAVEN_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer COOLTRAINERM, GAVEN1
 	startbattle
 	reloadmapafterbattle
-	loadmem wGavenFightCount, 2
 	clearflag ENGINE_GAVEN_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer COOLTRAINERM, GAVEN2
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_GAVEN_READY_FOR_REMATCH
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .Rematch:
 	jumpstd RematchMScript
 	end
 
 TrainerCooltrainerfJoyce:
 	trainer COOLTRAINERF, JOYCE, EVENT_BEAT_COOLTRAINERF_JOYCE, CooltrainerfJoyceSeenText, CooltrainerfJoyceBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -130,10 +107,8 @@ TrainerCooltrainerfJoyce:
 
 TrainerCooltrainerfBeth1:
 	trainer COOLTRAINERF, BETH1, EVENT_BEAT_COOLTRAINERF_BETH, CooltrainerfBeth1SeenText, CooltrainerfBeth1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_COOLTRAINERF_BETH
-	endifjustbattled
 	opentext
 	checkflag ENGINE_BETH_READY_FOR_REMATCH
 	iftrue .WantsBattle
@@ -146,7 +121,6 @@ TrainerCooltrainerfBeth1:
 	setevent EVENT_BETH_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall .AskNumber2
 .AskForNumber:
@@ -156,74 +130,55 @@ TrainerCooltrainerfBeth1:
 	gettrainername STRING_BUFFER_3, COOLTRAINERF, BETH1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .WantsBattle:
 	scall .Rematch
 	winlosstext CooltrainerfBeth1BeatenText, 0
-	readmem wBethFightCount
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight2:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
-.Fight1:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer COOLTRAINERF, BETH1
 	startbattle
 	reloadmapafterbattle
-	loadmem wBethFightCount, 1
 	clearflag ENGINE_BETH_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer COOLTRAINERF, BETH2
 	startbattle
 	reloadmapafterbattle
-	loadmem wBethFightCount, 2
 	clearflag ENGINE_BETH_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer COOLTRAINERF, BETH3
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_BETH_READY_FOR_REMATCH
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1FScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2FScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberFScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedFScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullFScript
 	end
-
 .Rematch:
 	jumpstd RematchFScript
 	end
 
 TrainerPsychicRichard:
 	trainer PSYCHIC_T, RICHARD, EVENT_BEAT_PSYCHIC_RICHARD, PsychicRichardSeenText, PsychicRichardBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -234,7 +189,6 @@ TrainerPsychicRichard:
 
 TrainerFisherScott:
 	trainer FISHER, SCOTT, EVENT_BEAT_FISHER_SCOTT, FisherScottSeenText, FisherScottBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext

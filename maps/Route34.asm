@@ -83,7 +83,6 @@ TrainerCamperTodd1:
 	trainer CAMPER, TODD1, EVENT_BEAT_CAMPER_TODD, CamperTodd1SeenText, CamperTodd1BeatenText, 0, .Script
 .Script:
 	loadvar VAR_CALLERID, PHONE_CAMPER_TODD
-	endifjustbattled
 	opentext
 	checkflag ENGINE_TODD_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -110,50 +109,36 @@ TrainerCamperTodd1:
 .Rematch:
 	scall .RematchStd
 	winlosstext CamperTodd1BeatenText, 0
-	readmem wToddFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_BLACKTHORN
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_CIANWOOD
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer CAMPER, TODD1
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 1
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer CAMPER, TODD2
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 2
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
 .LoadFight2:
 	loadtrainer CAMPER, TODD3
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 3
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
 .LoadFight3:
 	loadtrainer CAMPER, TODD4
 	startbattle
 	reloadmapafterbattle
-	loadmem wToddFightCount, 4
 	clearflag ENGINE_TODD_READY_FOR_REMATCH
 	end
 .LoadFight4:
@@ -193,7 +178,6 @@ TrainerPicnickerGina1:
 	trainer PICNICKER, GINA1, EVENT_BEAT_PICNICKER_GINA, PicnickerGina1SeenText, PicnickerGina1BeatenText, 0, .Script
 .Script:
 	loadvar VAR_CALLERID, PHONE_PICNICKER_GINA
-	endifjustbattled
 	opentext
 	checkflag ENGINE_GINA_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -220,50 +204,36 @@ TrainerPicnickerGina1:
 .Rematch:
 	scall .RematchStd
 	winlosstext PicnickerGina1BeatenText, 0
-	readmem wGinaFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_MAHOGANY
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer PICNICKER, GINA1
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 1
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer PICNICKER, GINA2
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 2
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
 .LoadFight2:
 	loadtrainer PICNICKER, GINA3
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 3
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
 .LoadFight3:
 	loadtrainer PICNICKER, GINA4
 	startbattle
 	reloadmapafterbattle
-	loadmem wGinaFightCount, 4
 	clearflag ENGINE_GINA_READY_FOR_REMATCH
 	end
 .LoadFight4:

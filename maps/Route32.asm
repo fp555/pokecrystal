@@ -37,13 +37,13 @@ Route32FriedaCallback:
 	ifequal FRIDAY, .FriedaAppears
 	disappear ROUTE32_FRIEDA
 	endcallback
-
 .FriedaAppears:
 	appear ROUTE32_FRIEDA
 	endcallback
 
 Route32CooltrainerMScript:
 	faceplayer
+	; fallthrough
 Route32CooltrainerMContinueScene:
 	opentext
 	checkevent EVENT_GOT_MIRACLE_SEED_IN_ROUTE_32
@@ -56,13 +56,6 @@ Route32CooltrainerMContinueScene:
 	waitbutton
 	closetext
 	end
-
-.GoToSproutTower: ; unreferenced
-	writetext Route32CooltrainerMText_UnusedSproutTower
-	waitbutton
-	closetext
-	end
-
 .GiveMiracleSeed:
 	writetext Route32CooltrainerMText_HaveThisSeed
 	promptbutton
@@ -70,13 +63,11 @@ Route32CooltrainerMContinueScene:
 	iffalse .BagFull
 	setevent EVENT_GOT_MIRACLE_SEED_IN_ROUTE_32
 	sjump .GotMiracleSeed
-
 .DontHaveZephyrBadge:
 	writetext Route32CooltrainerMText_VioletGym
 	waitbutton
 	closetext
 	end
-
 .GotMiracleSeed:
 	writetext Route32CooltrainerMText_ExperiencesShouldBeUseful
 	waitbutton
@@ -134,7 +125,6 @@ _OfferToSellSlowpokeTail:
 	waitbutton
 	closetext
 	end
-
 .refused
 	writetext Text_RefusedToBuySlowpokeTail
 	waitbutton
@@ -143,7 +133,6 @@ _OfferToSellSlowpokeTail:
 
 TrainerCamperRoland:
 	trainer CAMPER, ROLAND, EVENT_BEAT_CAMPER_ROLAND, CamperRolandSeenText, CamperRolandBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -154,7 +143,6 @@ TrainerCamperRoland:
 
 TrainerFisherJustin:
 	trainer FISHER, JUSTIN, EVENT_BEAT_FISHER_JUSTIN, FisherJustinSeenText, FisherJustinBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -165,10 +153,8 @@ TrainerFisherJustin:
 
 TrainerFisherRalph1:
 	trainer FISHER, RALPH1, EVENT_BEAT_FISHER_RALPH, FisherRalph1SeenText, FisherRalph1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_FISHER_RALPH
-	endifjustbattled
 	opentext
 	checkflag ENGINE_RALPH_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -183,7 +169,6 @@ TrainerFisherRalph1:
 	setevent EVENT_RALPH_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
-
 .AskAgain:
 	scall .AskNumber2
 .AskForNumber:
@@ -193,104 +178,76 @@ TrainerFisherRalph1:
 	gettrainername STRING_BUFFER_3, FISHER, RALPH1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext FisherRalph1BeatenText, 0
-	readmem wRalphFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_LAKE_OF_RAGE
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_ECRUTEAK
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer FISHER, RALPH1
 	startbattle
 	reloadmapafterbattle
-	loadmem wRalphFightCount, 1
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer FISHER, RALPH2
 	startbattle
 	reloadmapafterbattle
-	loadmem wRalphFightCount, 2
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer FISHER, RALPH3
 	startbattle
 	reloadmapafterbattle
-	loadmem wRalphFightCount, 3
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer FISHER, RALPH4
 	startbattle
 	reloadmapafterbattle
-	loadmem wRalphFightCount, 4
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer FISHER, RALPH5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
-
 .Swarm:
 	writetext FisherRalphSwarmText
 	waitbutton
 	closetext
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .RematchStd:
 	jumpstd RematchMScript
 	end
 
 TrainerFisherHenry:
 	trainer FISHER, HENRY, EVENT_BEAT_FISHER_HENRY, FisherHenrySeenText, FisherHenryBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -301,10 +258,8 @@ TrainerFisherHenry:
 
 TrainerPicnickerLiz1:
 	trainer PICNICKER, LIZ1, EVENT_BEAT_PICNICKER_LIZ, PicnickerLiz1SeenText, PicnickerLiz1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_PICNICKER_LIZ
-	endifjustbattled
 	opentext
 	checkflag ENGINE_LIZ_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -317,7 +272,6 @@ TrainerPicnickerLiz1:
 	setevent EVENT_LIZ_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
-
 .AskAgain:
 	scall .AskNumber2
 .AskForNumber:
@@ -327,98 +281,71 @@ TrainerPicnickerLiz1:
 	gettrainername STRING_BUFFER_3, PICNICKER, LIZ1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext PicnickerLiz1BeatenText, 0
-	readmem wLizFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight3
-.Fight2:
 	checkevent EVENT_CLEARED_ROCKET_HIDEOUT
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_ECRUTEAK
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer PICNICKER, LIZ1
 	startbattle
 	reloadmapafterbattle
-	loadmem wLizFightCount, 1
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer PICNICKER, LIZ2
 	startbattle
 	reloadmapafterbattle
-	loadmem wLizFightCount, 2
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer PICNICKER, LIZ3
 	startbattle
 	reloadmapafterbattle
-	loadmem wLizFightCount, 3
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer PICNICKER, LIZ4
 	startbattle
 	reloadmapafterbattle
-	loadmem wLizFightCount, 4
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer PICNICKER, LIZ5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
-
 .AskNumber1:
 	jumpstd AskNumber1FScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2FScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberFScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedFScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullFScript
 	end
-
 .RematchStd:
 	jumpstd RematchFScript
 	end
 
 TrainerYoungsterAlbert:
 	trainer YOUNGSTER, ALBERT, EVENT_BEAT_YOUNGSTER_ALBERT, YoungsterAlbertSeenText, YoungsterAlbertBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -429,7 +356,6 @@ TrainerYoungsterAlbert:
 
 TrainerYoungsterGordon:
 	trainer YOUNGSTER, GORDON, EVENT_BEAT_YOUNGSTER_GORDON, YoungsterGordonSeenText, YoungsterGordonBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -440,7 +366,6 @@ TrainerYoungsterGordon:
 
 TrainerBirdKeeperPeter:
 	trainer BIRD_KEEPER, PETER, EVENT_BEAT_BIRD_KEEPER_PETER, BirdKeeperPeterSeenText, BirdKeeperPeterBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -471,14 +396,12 @@ FriedaScript:
 	waitbutton
 	closetext
 	end
-
 .Friday:
 	writetext FriedaFridayText
 	waitbutton
 .Done:
 	closetext
 	end
-
 .NotFriday:
 	writetext FriedaNotFridayText
 	waitbutton
@@ -678,45 +601,6 @@ FisherRalphSwarmText:
 	line "as you can, kid!"
 	done
 
-Route32UnusedFisher1SeenText: ; unreferenced
-	text "I keep catching"
-	line "the same #MON…"
-
-	para "Maybe a battle"
-	line "will turn things"
-	cont "around for me."
-	done
-
-Route32UnusedFisher1BeatenText: ; unreferenced
-	text "Nothing ever goes"
-	line "right for me now…"
-	done
-
-Route32UnusedFisher1AfterText: ; unreferenced
-	text "How come the guy"
-	line "next to me catches"
-	cont "good #MON?"
-	done
-
-Route32UnusedFisher2SeenText: ; unreferenced
-	text "Heh, I'm on a roll"
-	line "today. How about a"
-	cont "battle, kid?"
-	done
-
-Route32UnusedFisher2BeatenText: ; unreferenced
-	text "Oof. I wasn't"
-	line "lucky that time."
-	done
-
-Route32UnusedFisher2AfterText: ; unreferenced
-	text "You have to have a"
-	line "good ROD if you"
-
-	para "want to catch good"
-	line "#MON."
-	done
-
 FisherHenrySeenText:
 	text "My #MON?"
 	line "Freshly caught!"
@@ -828,12 +712,6 @@ BirdKeeperPeterAfterText:
 	text "I should train"
 	line "again at the GYM"
 	cont "in VIOLET CITY."
-	done
-
-Route32UnusedText: ; unreferenced
-	text "The fishermen"
-	line "yelled at me for"
-	cont "bugging them…"
 	done
 
 Text_RoarIntro:

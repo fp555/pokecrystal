@@ -11,7 +11,6 @@ Route43Gate_MapScripts:
 	scene_script Route43GateNoopScene,            SCENE_ROUTE43GATE_NOOP
 
 	def_callbacks
-	callback MAPCALLBACK_NEWMAP, Route43GateCheckIfRocketsCallback
 
 Route43GateRocketShakedownScene:
 	sdefer Route43GateRocketTakeoverScript
@@ -19,15 +18,6 @@ Route43GateRocketShakedownScene:
 
 Route43GateNoopScene:
 	end
-
-Route43GateCheckIfRocketsCallback:
-	checkevent EVENT_CLEARED_ROCKET_HIDEOUT
-	iftrue .NoRockets
-	setmapscene ROUTE_43, 0 ; Route 43 does not have a scene variable
-	endcallback
-.NoRockets:
-	setmapscene ROUTE_43, 1 ; Route 43 does not have a scene variable
-	endcallback
 
 Route43GateRocketTakeoverScript:
 	playmusic MUSIC_ROCKET_ENCOUNTER

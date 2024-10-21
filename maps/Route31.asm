@@ -17,17 +17,14 @@ Route31CheckMomCallCallback:
 	checkevent EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST
 	iffalse .DoMomCall
 	endcallback
-
 .DoMomCall:
 	specialphonecall SPECIALCALL_WORRIED
 	endcallback
 
 TrainerBugCatcherWade1:
 	trainer BUG_CATCHER, WADE1, EVENT_BEAT_BUG_CATCHER_WADE, BugCatcherWade1SeenText, BugCatcherWade1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_BUG_CATCHER_WADE
-	endifjustbattled
 	opentext
 	checkflag ENGINE_WADE_READY_FOR_REMATCH
 	iftrue .WadeRematch
@@ -42,7 +39,6 @@ TrainerBugCatcherWade1:
 	setevent EVENT_WADE_ASKED_FOR_PHONE_NUMBER
 	scall .AskPhoneNumberSTD
 	sjump .Continue
-
 .AskAgain:
 	scall .AskAgainSTD
 .Continue:
@@ -52,67 +48,47 @@ TrainerBugCatcherWade1:
 	gettrainername STRING_BUFFER_3, BUG_CATCHER, WADE1
 	scall .RegisterNumberSTD
 	sjump .AcceptedNumberSTD
-
 .WadeRematch:
 	scall .RematchSTD
 	winlosstext BugCatcherWade1BeatenText, 0
-	readmem wWadeFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_MAHOGANY
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_GOLDENROD
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer BUG_CATCHER, WADE1
 	startbattle
 	reloadmapafterbattle
-	loadmem wWadeFightCount, 1
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer BUG_CATCHER, WADE2
 	startbattle
 	reloadmapafterbattle
-	loadmem wWadeFightCount, 2
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer BUG_CATCHER, WADE3
 	startbattle
 	reloadmapafterbattle
-	loadmem wWadeFightCount, 3
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer BUG_CATCHER, WADE4
 	startbattle
 	reloadmapafterbattle
-	loadmem wWadeFightCount, 4
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer BUG_CATCHER, WADE5
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
-
 .WadeItem:
 	scall .ItemSTD
 	checkevent EVENT_WADE_HAS_BERRY
@@ -143,39 +119,30 @@ TrainerBugCatcherWade1:
 	sjump .AcceptedNumberSTD
 .PackFull:
 	sjump .PackFullSTD
-
 .AskPhoneNumberSTD:
 	jumpstd AskNumber1MScript
 	end
-
 .AskAgainSTD:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisterNumberSTD:
 	jumpstd RegisteredNumberMScript
 	end
-
 .AcceptedNumberSTD:
 	jumpstd NumberAcceptedMScript
 	end
-
 .DeclinedNumberSTD:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFullSTD:
 	jumpstd PhoneFullMScript
 	end
-
 .RematchSTD:
 	jumpstd RematchMScript
 	end
-
 .ItemSTD:
 	jumpstd GiftMScript
 	end
-
 .PackFullSTD:
 	jumpstd PackFullMScript
 	end
@@ -191,7 +158,6 @@ Route31MailRecipientScript:
 	waitbutton
 	closetext
 	end
-
 .TryGiveKenya:
 	writetext Text_Route31SleepyManGotMail
 	promptbutton
@@ -215,25 +181,21 @@ Route31MailRecipientScript:
 .NoRoomForItems:
 	closetext
 	end
-
 .WrongMail:
 	writetext Text_Route31WrongMail
 	waitbutton
 	closetext
 	end
-
 .NoMail:
 	writetext Text_Route31MissingMail
 	waitbutton
 	closetext
 	end
-
 .Refused:
 	writetext Text_Route31DeclinedToHandOverMail
 	waitbutton
 	closetext
 	end
-
 .LastMon:
 	writetext Text_Route31CantTakeLastMon
 	waitbutton

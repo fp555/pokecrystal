@@ -38,10 +38,8 @@ YoungsterJoey_ImportantBattleScript:
 
 TrainerYoungsterJoey:
 	trainer YOUNGSTER, JOEY1, EVENT_BEAT_YOUNGSTER_JOEY, YoungsterJoey1SeenText, YoungsterJoey1BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_YOUNGSTER_JOEY
-	endifjustbattled
 	opentext
 	checkflag ENGINE_JOEY_READY_FOR_REMATCH
 	iftrue .Rematch
@@ -54,7 +52,6 @@ TrainerYoungsterJoey:
 	setevent EVENT_JOEY_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .RequestNumber
-
 .AskAgain:
 	scall .AskNumber2
 .RequestNumber:
@@ -64,60 +61,41 @@ TrainerYoungsterJoey:
 	gettrainername STRING_BUFFER_3, YOUNGSTER, JOEY1
 	scall .RegisteredNumber
 	sjump .NumberAccepted
-
 .Rematch:
 	scall .RematchStd
 	winlosstext YoungsterJoey1BeatenText, 0
-	readmem wJoeyFightCount
-	ifequal 4, .Fight4
-	ifequal 3, .Fight3
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight4:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight4
-.Fight3:
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .LoadFight3
-.Fight2:
 	checkflag ENGINE_FLYPOINT_OLIVINE
 	iftrue .LoadFight2
-.Fight1:
 	checkflag ENGINE_FLYPOINT_GOLDENROD
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer YOUNGSTER, JOEY1
 	startbattle
 	reloadmapafterbattle
-	loadmem wJoeyFightCount, 1
 	clearflag ENGINE_JOEY_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer YOUNGSTER, JOEY2
 	startbattle
 	reloadmapafterbattle
-	loadmem wJoeyFightCount, 2
 	clearflag ENGINE_JOEY_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer YOUNGSTER, JOEY3
 	startbattle
 	reloadmapafterbattle
-	loadmem wJoeyFightCount, 3
 	clearflag ENGINE_JOEY_READY_FOR_REMATCH
 	end
-
 .LoadFight3:
 	loadtrainer YOUNGSTER, JOEY4
 	startbattle
 	reloadmapafterbattle
-	loadmem wJoeyFightCount, 4
 	clearflag ENGINE_JOEY_READY_FOR_REMATCH
 	end
-
 .LoadFight4:
 	loadtrainer YOUNGSTER, JOEY5
 	startbattle
@@ -132,10 +110,8 @@ TrainerYoungsterJoey:
 	iffalse .PackFull
 	setevent EVENT_GOT_HP_UP_FROM_JOEY
 	sjump .NumberAccepted
-
 .done
 	end
-
 .GiveHPUp:
 	opentext
 	writetext YoungsterJoeyText_GiveHPUpAfterBattle
@@ -145,47 +121,37 @@ TrainerYoungsterJoey:
 	clearevent EVENT_JOEY_HP_UP
 	setevent EVENT_GOT_HP_UP_FROM_JOEY
 	sjump .NumberAccepted
-
 .AskNumber1:
 	jumpstd AskNumber1MScript
 	end
-
 .AskNumber2:
 	jumpstd AskNumber2MScript
 	end
-
 .RegisteredNumber:
 	jumpstd RegisteredNumberMScript
 	end
-
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
 	end
-
 .NumberDeclined:
 	jumpstd NumberDeclinedMScript
 	end
-
 .PhoneFull:
 	jumpstd PhoneFullMScript
 	end
-
 .RematchStd:
 	jumpstd RematchMScript
 	end
-
 .PackFull:
 	setevent EVENT_JOEY_HP_UP
 	jumpstd PackFullMScript
 	end
-
 .RematchGift:
 	jumpstd RematchGiftMScript
 	end
 
 TrainerYoungsterMikey:
 	trainer YOUNGSTER, MIKEY, EVENT_BEAT_YOUNGSTER_MIKEY, YoungsterMikeySeenText, YoungsterMikeyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -196,7 +162,6 @@ TrainerYoungsterMikey:
 
 TrainerBugCatcherDon:
 	trainer BUG_CATCHER, DON, EVENT_BEAT_BUG_CATCHER_DON, BugCatcherDonSeenText, BugCatcherDonBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -214,7 +179,6 @@ Route30YoungsterScript:
 	waitbutton
 	closetext
 	end
-
 .CompletedEggQuest:
 	writetext Route30YoungsterText_EveryoneIsBattling
 	waitbutton

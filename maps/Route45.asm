@@ -20,10 +20,8 @@ Route45_MapScripts:
 
 TrainerBlackbeltKenji:
 	trainer BLACKBELT_T, KENJI3, EVENT_BEAT_BLACKBELT_KENJI, BlackbeltKenji3SeenText, BlackbeltKenji3BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_BLACKBELT_KENJI
-	endifjustbattled
 	opentext
 	checkcellnum PHONE_BLACKBELT_KENJI
 	iftrue .Registered
@@ -35,7 +33,6 @@ TrainerBlackbeltKenji:
 	setevent EVENT_KENJI_ASKED_FOR_PHONE_NUMBER
 	scall Route45AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route45AskNumber2M
 .AskForNumber:
@@ -45,7 +42,6 @@ TrainerBlackbeltKenji:
 	gettrainername STRING_BUFFER_3, BLACKBELT_T, KENJI3
 	scall Route45RegisteredNumberM
 	sjump Route45NumberAcceptedM
-
 .Registered:
 	readvar VAR_KENJI_BREAK
 	ifnotequal 1, Route45NumberAcceptedM
@@ -61,19 +57,16 @@ TrainerBlackbeltKenji:
 	clearevent EVENT_KENJI_ON_BREAK
 	special SampleKenjiBreakCountdown
 	sjump Route45NumberAcceptedM
-
 .Morning:
 	writetext BlackbeltKenjiMorningText
 	waitbutton
 	closetext
 	end
-
 .Night:
 	writetext BlackbeltKenjiNightText
 	waitbutton
 	closetext
 	end
-
 .NoRoom:
 	sjump Route45PackFullM
 
@@ -124,7 +117,6 @@ Route45RematchGiftM:
 
 TrainerHikerErik:
 	trainer HIKER, ERIK, EVENT_BEAT_HIKER_ERIK, HikerErikSeenText, HikerErikBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -135,7 +127,6 @@ TrainerHikerErik:
 
 TrainerHikerMichael:
 	trainer HIKER, MICHAEL, EVENT_BEAT_HIKER_MICHAEL, HikerMichaelSeenText, HikerMichaelBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -146,10 +137,8 @@ TrainerHikerMichael:
 
 TrainerHikerParry:
 	trainer HIKER, PARRY3, EVENT_BEAT_HIKER_PARRY, HikerParry3SeenText, HikerParry3BeatenText, 0, .Script
-
 .Script:
 	loadvar VAR_CALLERID, PHONE_HIKER_PARRY
-	endifjustbattled
 	opentext
 	checkflag ENGINE_PARRY_READY_FOR_REMATCH
 	iftrue .WantsBattle
@@ -162,7 +151,6 @@ TrainerHikerParry:
 	setevent EVENT_PARRY_ASKED_FOR_PHONE_NUMBER
 	scall Route45AskNumber1M
 	sjump .AskForNumber
-
 .AskedAlready:
 	scall Route45AskNumber2M
 .AskForNumber:
@@ -172,36 +160,25 @@ TrainerHikerParry:
 	gettrainername STRING_BUFFER_3, HIKER, PARRY1
 	scall Route45RegisteredNumberM
 	sjump Route45NumberAcceptedM
-
 .WantsBattle:
 	scall Route45RematchM
 	winlosstext HikerParry3BeatenText, 0
-	readmem wParryFightCount
-	ifequal 2, .Fight2
-	ifequal 1, .Fight1
-	ifequal 0, .LoadFight0
-.Fight2:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
-.Fight1:
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight1
-.LoadFight0:
+	; initial fight
 	loadtrainer HIKER, PARRY3
 	startbattle
 	reloadmapafterbattle
-	loadmem wParryFightCount, 1
 	clearflag ENGINE_PARRY_READY_FOR_REMATCH
 	end
-
 .LoadFight1:
 	loadtrainer HIKER, PARRY1
 	startbattle
 	reloadmapafterbattle
-	loadmem wParryFightCount, 2
 	clearflag ENGINE_PARRY_READY_FOR_REMATCH
 	end
-
 .LoadFight2:
 	loadtrainer HIKER, PARRY2
 	startbattle
@@ -216,10 +193,8 @@ TrainerHikerParry:
 	iffalse HikerParryHasIron
 	setevent EVENT_GOT_IRON_FROM_PARRY
 	sjump Route45NumberAcceptedM
-
 .GotIron:
 	end
-
 .HasIron:
 	opentext
 	writetext HikerParryGivesIronText
@@ -232,7 +207,6 @@ TrainerHikerParry:
 
 TrainerHikerTimothy:
 	trainer HIKER, TIMOTHY, EVENT_BEAT_HIKER_TIMOTHY, HikerTimothySeenText, HikerTimothyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -243,7 +217,6 @@ TrainerHikerTimothy:
 
 TrainerCooltrainermRyan:
 	trainer COOLTRAINERM, RYAN, EVENT_BEAT_COOLTRAINERM_RYAN, CooltrainermRyanSeenText, CooltrainermRyanBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -254,7 +227,6 @@ TrainerCooltrainermRyan:
 
 TrainerCooltrainerfKelly:
 	trainer COOLTRAINERF, KELLY, EVENT_BEAT_COOLTRAINERF_KELLY, CooltrainerfKellySeenText, CooltrainerfKellyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -278,15 +250,8 @@ TrainerCamperQuentin:
 	setevent EVENT_BEAT_CAMPER_QUENTIN
 	closetext
 	end
-
 .Defeated:
 	writetext CamperQuentinAfterBattleText
-	waitbutton
-	closetext
-	end
-
-Route45DummyScript: ; unreferenced
-	writetext Route45DummyText
 	waitbutton
 	closetext
 	end

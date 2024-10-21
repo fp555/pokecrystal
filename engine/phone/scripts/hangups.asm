@@ -128,27 +128,6 @@ ErinWorkingHardScript:
 	promptbutton
 	sjump PhoneScript_HangUpText_Female
 
-IrwinRandomTextScript:
-	random 3
-	ifequal 0, IrwinEscapadeScript
-	ifequal 1, IrwinGoodMatchScript
-	ifequal 2, IrwinSoMuchToChatAboutScript
-
-IrwinEscapadeScript:
-	farwritetext IrwinYourEscapadesRockText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male
-
-IrwinGoodMatchScript:
-	farwritetext IrwinGoodMatchText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male
-
-IrwinSoMuchToChatAboutScript:
-	farwritetext IrwinSoMuchToChatAboutText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male
-
 KenjiAnswerPhoneScript:
 	readvar VAR_KENJI_BREAK
 	ifequal 2, .Training
@@ -156,12 +135,10 @@ KenjiAnswerPhoneScript:
 	farwritetext KenjiCallMeBackAnotherTimeText
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
-
 .Training:
 	farwritetext KenjiIllHaveTimeToChatTomorrowText
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
-
 .OnBreak:
 	checktime MORN
 	iftrue .Morning
@@ -171,12 +148,10 @@ KenjiAnswerPhoneScript:
 	farwritetext KenjiTakingABreakText
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
-
 .Morning:
 	farwritetext KenjiHangUpMorningText
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
-
 .Night:
 	farwritetext KenjiHangUpNightText
 	promptbutton

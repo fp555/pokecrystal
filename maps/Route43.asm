@@ -96,7 +96,6 @@ TrainerPokemaniacBrent:
 	loadtrainer POKEMANIAC, BRENT1
 	startbattle
 	reloadmapafterbattle
-	loadmem wBrentFightCount, 1
 	clearflag ENGINE_BRENT_READY_FOR_REMATCH
 	end
 
@@ -104,7 +103,6 @@ TrainerPokemaniacBrent:
 	loadtrainer POKEMANIAC, BRENT2
 	startbattle
 	reloadmapafterbattle
-	loadmem wBrentFightCount, 2
 	clearflag ENGINE_BRENT_READY_FOR_REMATCH
 	end
 
@@ -112,7 +110,6 @@ TrainerPokemaniacBrent:
 	loadtrainer POKEMANIAC, BRENT3
 	startbattle
 	reloadmapafterbattle
-	loadmem wBrentFightCount, 3
 	clearflag ENGINE_BRENT_READY_FOR_REMATCH
 	end
 

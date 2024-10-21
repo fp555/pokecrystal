@@ -472,7 +472,6 @@ AskNumber1MScript:
 	ifequal PHONE_FISHER_RALPH, .Ralph
 	ifequal PHONE_HIKER_ANTHONY, .Anthony
 	ifequal PHONE_CAMPER_TODD, .Todd
-	ifequal PHONE_JUGGLER_IRWIN, .Irwin
 	ifequal PHONE_BUG_CATCHER_ARNIE, .Arnie
 	ifequal PHONE_SCHOOLBOY_ALAN, .Alan
 	ifequal PHONE_SCHOOLBOY_CHAD, .Chad
@@ -483,7 +482,6 @@ AskNumber1MScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackAskNumber1Text
 	end
@@ -510,9 +508,6 @@ AskNumber1MScript:
 	end
 .Todd:
 	farwritetext ToddAskNumber1Text
-	end
-.Irwin:
-	farwritetext IrwinAskNumber1Text
 	end
 .Arnie:
 	farwritetext ArnieAskNumber1Text
@@ -557,7 +552,6 @@ AskNumber2MScript:
 	ifequal PHONE_FISHER_RALPH, .Ralph
 	ifequal PHONE_HIKER_ANTHONY, .Anthony
 	ifequal PHONE_CAMPER_TODD, .Todd
-	ifequal PHONE_JUGGLER_IRWIN, .Irwin
 	ifequal PHONE_BUG_CATCHER_ARNIE, .Arnie
 	ifequal PHONE_SCHOOLBOY_ALAN, .Alan
 	ifequal PHONE_SCHOOLBOY_CHAD, .Chad
@@ -568,7 +562,6 @@ AskNumber2MScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackAskNumber2Text
 	end
@@ -595,9 +588,6 @@ AskNumber2MScript:
 	end
 .Todd:
 	farwritetext ToddAskNumber2Text
-	end
-.Irwin:
-	farwritetext IrwinAskNumber2Text
 	end
 .Arnie:
 	farwritetext ArnieAskNumber2Text
@@ -648,7 +638,6 @@ NumberAcceptedMScript:
 	ifequal PHONE_FISHER_RALPH, .Ralph
 	ifequal PHONE_HIKER_ANTHONY, .Anthony
 	ifequal PHONE_CAMPER_TODD, .Todd
-	ifequal PHONE_JUGGLER_IRWIN, .Irwin
 	ifequal PHONE_BUG_CATCHER_ARNIE, .Arnie
 	ifequal PHONE_SCHOOLBOY_ALAN, .Alan
 	ifequal PHONE_SCHOOLBOY_CHAD, .Chad
@@ -659,7 +648,6 @@ NumberAcceptedMScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackNumberAcceptedText
 	waitbutton
@@ -702,11 +690,6 @@ NumberAcceptedMScript:
 	end
 .Todd:
 	farwritetext ToddNumberAcceptedText
-	waitbutton
-	closetext
-	end
-.Irwin:
-	farwritetext IrwinNumberAcceptedText
 	waitbutton
 	closetext
 	end
@@ -772,7 +755,6 @@ NumberDeclinedMScript:
 	ifequal PHONE_FISHER_RALPH, .Ralph
 	ifequal PHONE_HIKER_ANTHONY, .Anthony
 	ifequal PHONE_CAMPER_TODD, .Todd
-	ifequal PHONE_JUGGLER_IRWIN, .Irwin
 	ifequal PHONE_BUG_CATCHER_ARNIE, .Arnie
 	ifequal PHONE_SCHOOLBOY_ALAN, .Alan
 	ifequal PHONE_SCHOOLBOY_CHAD, .Chad
@@ -783,7 +765,6 @@ NumberDeclinedMScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackNumberDeclinedText
 	waitbutton
@@ -826,11 +807,6 @@ NumberDeclinedMScript:
 	end
 .Todd:
 	farwritetext ToddNumberDeclinedText
-	waitbutton
-	closetext
-	end
-.Irwin:
-	farwritetext IrwinNumberDeclinedText
 	waitbutton
 	closetext
 	end
@@ -896,7 +872,6 @@ PhoneFullMScript:
 	ifequal PHONE_FISHER_RALPH, .Ralph
 	ifequal PHONE_HIKER_ANTHONY, .Anthony
 	ifequal PHONE_CAMPER_TODD, .Todd
-	ifequal PHONE_JUGGLER_IRWIN, .Irwin
 	ifequal PHONE_BUG_CATCHER_ARNIE, .Arnie
 	ifequal PHONE_SCHOOLBOY_ALAN, .Alan
 	ifequal PHONE_SCHOOLBOY_CHAD, .Chad
@@ -907,7 +882,6 @@ PhoneFullMScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackPhoneFullText
 	waitbutton
@@ -950,11 +924,6 @@ PhoneFullMScript:
 	end
 .Todd:
 	farwritetext ToddPhoneFullText
-	waitbutton
-	closetext
-	end
-.Irwin:
-	farwritetext IrwinPhoneFullText
 	waitbutton
 	closetext
 	end
@@ -1028,7 +997,6 @@ RematchMScript:
 	ifequal PHONE_BIRDKEEPER_VANCE, .Vance
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Jack:
 	farwritetext JackRematchText
 	waitbutton
@@ -1124,7 +1092,6 @@ GiftMScript:
 	ifequal PHONE_FISHER_TULLY, .Tully
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
-
 .Jose:
 	farwritetext JoseGiftText
 	promptbutton
@@ -1167,7 +1134,6 @@ PackFullMScript:
 	ifequal PHONE_FISHER_WILTON, .Wilton
 	ifequal PHONE_BLACKBELT_KENJI, .Kenji
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Huey:
 	farwritetext HueyPackFullText
 	waitbutton
@@ -1231,7 +1197,6 @@ RematchGiftMScript:
 	ifequal PHONE_YOUNGSTER_JOEY, .Joey
 	ifequal PHONE_BIRDKEEPER_VANCE, .Vance
 	ifequal PHONE_HIKER_PARRY, .Parry
-
 .Huey:
 	farwritetext HueyRematchGiftText
 	promptbutton
@@ -1259,7 +1224,6 @@ AskNumber1FScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyAskNumber1Text
 	end
@@ -1295,7 +1259,6 @@ AskNumber2FScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyAskNumber2Text
 	end
@@ -1338,7 +1301,6 @@ NumberAcceptedFScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyNumberAcceptedText
 	waitbutton
@@ -1390,7 +1352,6 @@ NumberDeclinedFScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyNumberDeclinedText
 	waitbutton
@@ -1442,7 +1403,6 @@ PhoneFullFScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyPhoneFullText
 	waitbutton
@@ -1493,7 +1453,6 @@ RematchFScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beth:
 	farwritetext BethRematchText
 	waitbutton
@@ -1536,7 +1495,6 @@ GiftFScript:
 	ifequal PHONE_PICNICKER_GINA, .Gina
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
-
 .Beverly:
 	farwritetext BeverlyGiftText
 	promptbutton
@@ -1561,7 +1519,6 @@ PackFullFScript:
 	ifequal PHONE_LASS_DANA, .Dana
 	ifequal PHONE_PICNICKER_TIFFANY, .Tiffany
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Beverly:
 	farwritetext BeverlyPackFullText
 	waitbutton
@@ -1591,7 +1548,6 @@ PackFullFScript:
 RematchGiftFScript:
 	readvar VAR_CALLERID
 	ifequal PHONE_PICNICKER_ERIN, .Erin
-
 .Erin:
 	opentext
 	farwritetext ErinRematchGiftText
@@ -1644,7 +1600,6 @@ GameCornerCoinVendorScript:
 
 CoinVendor_IntroScript:
 	farwritetext CoinVendor_IntroText
-
 .loop
 	special DisplayMoneyAndCoinBalance
 	loadmenu .MenuHeader
@@ -1653,7 +1608,6 @@ CoinVendor_IntroScript:
 	ifequal 1, .Buy50
 	ifequal 2, .Buy500
 	sjump .Cancel
-
 .Buy50:
 	checkcoins MAX_COINS - 50
 	ifequal HAVE_MORE, .CoinCaseFull
@@ -1666,7 +1620,6 @@ CoinVendor_IntroScript:
 	farwritetext CoinVendor_Buy50CoinsText
 	waitbutton
 	sjump .loop
-
 .Buy500:
 	checkcoins MAX_COINS - 500
 	ifequal HAVE_MORE, .CoinCaseFull
@@ -1679,31 +1632,26 @@ CoinVendor_IntroScript:
 	farwritetext CoinVendor_Buy500CoinsText
 	waitbutton
 	sjump .loop
-
 .NotEnoughMoney:
 	farwritetext CoinVendor_NotEnoughMoneyText
 	waitbutton
 	closetext
 	end
-
 .CoinCaseFull:
 	farwritetext CoinVendor_CoinCaseFullText
 	waitbutton
 	closetext
 	end
-
 .Cancel:
 	farwritetext CoinVendor_CancelText
 	waitbutton
 	closetext
 	end
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 4, 15, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 3 ; items
@@ -1721,13 +1669,11 @@ HappinessCheckScript:
 	waitbutton
 	closetext
 	end
-
 .KindaHappy:
 	farwritetext HappinessText2
 	waitbutton
 	closetext
 	end
-
 .Unhappy:
 	farwritetext HappinessText1
 	waitbutton

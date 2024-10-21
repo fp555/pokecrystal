@@ -204,13 +204,6 @@ WillGroup:
 	db -1 ; end
 
 PKMNTrainerGroup:
-	; CAL (1)
-	db "CAL@", TRAINERTYPE_NORMAL
-	db 10, CHIKORITA
-	db 10, CYNDAQUIL
-	db 10, TOTODILE
-	db -1 ; end
-
 	; CAL (2)
 	db "CAL@", TRAINERTYPE_NORMAL
 	db 30, BAYLEEF
@@ -757,16 +750,6 @@ LassGroup:
 	db 34, GRANBULL
 	db -1 ; end
 
-	; LASS (12)
-	db "CONNIE@", TRAINERTYPE_NORMAL
-	db 21, MARILL
-	db -1 ; end
-
-	; LASS (13)
-	db "CONNIE@", TRAINERTYPE_NORMAL
-	db 21, MARILL
-	db -1 ; end
-
 	; LASS (14)
 	db "DANA@", TRAINERTYPE_MOVES
 	db 21, FLAAFFY,    TACKLE, GROWL, THUNDERSHOCK, THUNDER_WAVE
@@ -879,27 +862,6 @@ CooltrainerMGroup:
 	db 35, SANDSLASH,  SAND_ATTACK, POISON_STING, SLASH, SWIFT
 	db -1 ; end
 
-	; COOLTRAINERM (13)
-	db "ERICK@", TRAINERTYPE_NORMAL
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-	db -1 ; end
-
-	; COOLTRAINERM (14)
-	db "ANDY@", TRAINERTYPE_NORMAL
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-	db -1 ; end
-
-	; COOLTRAINERM (15)
-	db "TYLER@", TRAINERTYPE_NORMAL
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-	db -1 ; end
-
 	; COOLTRAINERM (16)
 	db "SEAN@", TRAINERTYPE_NORMAL
 	db 35, FLAREON
@@ -912,13 +874,6 @@ CooltrainerMGroup:
 	db 38, RHYHORN
 	db 35, CHARMELEON
 	db 35, WARTORTLE
-	db -1 ; end
-
-	; COOLTRAINERM (18)
-	db "STEVE@", TRAINERTYPE_NORMAL
-	db 14, BULBASAUR
-	db 14, CHARMANDER
-	db 14, SQUIRTLE
 	db -1 ; end
 
 	; COOLTRAINERM (19)
@@ -1077,82 +1032,25 @@ BeautyGroup:
 	db -1 ; end
 
 	; BEAUTY (3)
-	db "JULIE@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (4)
-	db "JACLYN@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (5)
-	db "BRENDA@", TRAINERTYPE_NORMAL
-	db 16, FURRET
-	db -1 ; end
-
-	; BEAUTY (6)
 	db "CASSIE@", TRAINERTYPE_NORMAL
 	db 28, VILEPLUME
 	db 34, BUTTERFREE
 	db -1 ; end
 
-	; BEAUTY (7)
-	db "CAROLINE@", TRAINERTYPE_NORMAL
-	db 30, MARILL
-	db 32, SEEL
-	db 30, MARILL
-	db -1 ; end
-
-	; BEAUTY (8)
-	db "CARLENE@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (9)
-	db "JESSICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (10)
-	db "RACHAEL@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (11)
-	db "ANGELICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (12)
-	db "KENDRA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (13)
-	db "VERONICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (14)
+	; BEAUTY (4)
 	db "JULIA@", TRAINERTYPE_NORMAL
 	db 32, PARAS
 	db 32, EXEGGCUTE
 	db 35, PARASECT
 	db -1 ; end
 
-	; BEAUTY (15)
-	db "THERESA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
-	db -1 ; end
-
-	; BEAUTY (16)
+	; BEAUTY (5)
 	db "VALERIE@", TRAINERTYPE_MOVES
 	db 17, HOPPIP,     SYNTHESIS, TAIL_WHIP, TACKLE, POISONPOWDER
 	db 17, SKIPLOOM,   SYNTHESIS, TAIL_WHIP, TACKLE, STUN_SPORE
 	db -1 ; end
 
-	; BEAUTY (17)
+	; BEAUTY (6)
 	db "OLIVIA@", TRAINERTYPE_NORMAL
 	db 19, CORSOLA
 	db -1 ; end
@@ -1312,11 +1210,6 @@ GruntMGroup:
 	db 25, RATTATA
 	db -1 ; end
 
-	; GRUNTM (12)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 33, HOUNDOUR
-	db -1 ; end
-
 	; GRUNTM (13)
 	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 27, RATTATA
@@ -1373,16 +1266,6 @@ GruntMGroup:
 	db 18, RATTATA
 	db -1 ; end
 
-	; GRUNTM (22)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 36, GOLBAT
-	db -1 ; end
-
-	; GRUNTM (23)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 30, KOFFING
-	db -1 ; end
-
 	; GRUNTM (24)
 	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 25, KOFFING
@@ -1395,26 +1278,9 @@ GruntMGroup:
 	db 24, MUK
 	db -1 ; end
 
-	; GRUNTM (26)
-	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 15, RATTATA
-	db 15, RATTATA
-	db -1 ; end
-
-	; GRUNTM (27)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 22, ZUBAT
-	db -1 ; end
-
 	; GRUNTM (28)
 	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 19, RATICATE
-	db -1 ; end
-
-	; GRUNTM (29)
-	db "GRUNT@", TRAINERTYPE_NORMAL
-	db  9, RATTATA
-	db  9, RATTATA
 	db -1 ; end
 
 	; GRUNTM (30)
@@ -1448,11 +1314,6 @@ GentlemanGroup:
 	db -1 ; end
 
 	; GENTLEMAN (4)
-	db "VIRGIL@", TRAINERTYPE_NORMAL
-	db 20, PONYTA
-	db -1 ; end
-
-	; GENTLEMAN (5)
 	db "ALFRED@", TRAINERTYPE_NORMAL
 	db 20, NOCTOWL
 	db -1 ; end
@@ -1827,19 +1688,6 @@ SwimmerMGroup:
 	; SWIMMERM (8)
 	db "MATHEW@", TRAINERTYPE_NORMAL
 	db 23, KRABBY
-	db -1 ; end
-
-	; SWIMMERM (9)
-	db "HAL@", TRAINERTYPE_NORMAL
-	db 24, SEEL
-	db 25, DEWGONG
-	db 24, SEEL
-	db -1 ; end
-
-	; SWIMMERM (10)
-	db "PATON@", TRAINERTYPE_NORMAL
-	db 26, PILOSWINE
-	db 26, PILOSWINE
 	db -1 ; end
 
 	; SWIMMERM (11)
@@ -2554,9 +2402,9 @@ FirebreatherGroup:
 JugglerGroup:
 	; JUGGLER (1)
 	db "IRWIN@", TRAINERTYPE_NORMAL
-	db  2, VOLTORB
-	db  6, VOLTORB
+	db  8, VOLTORB
 	db 10, VOLTORB
+	db 12, VOLTORB
 	db 14, VOLTORB
 	db -1 ; end
 
@@ -2573,30 +2421,6 @@ JugglerGroup:
 	db 33, ELECTRODE
 	db 33, ELECTRODE
 	db 33, ELECTRODE
-	db -1 ; end
-
-	; JUGGLER (4)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db  6, VOLTORB
-	db 10, VOLTORB
-	db 14, VOLTORB
-	db 18, VOLTORB
-	db -1 ; end
-
-	; JUGGLER (5)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
-	db -1 ; end
-
-	; JUGGLER (6)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
 	db -1 ; end
 
 BlackbeltGroup:

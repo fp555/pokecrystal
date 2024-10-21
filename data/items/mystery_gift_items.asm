@@ -1,9 +1,9 @@
 MysteryGiftItems:
-	db BERRY
+	db BURNT_BERRY
 	db PRZCUREBERRY
 	db MINT_BERRY
 	db ICE_BERRY
-	db BURNT_BERRY
+	db X_SP_DEF
 	db PSNCUREBERRY
 	db GUARD_SPEC
 	db X_DEFEND

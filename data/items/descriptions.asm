@@ -50,7 +50,7 @@ ItemDescriptions:
 	dw SodaPopDesc
 	dw LemonadeDesc
 	dw XAttackDesc
-	dw TeruSamaDesc
+	dw XSpDefDesc
 	dw XDefendDesc
 	dw XSpeedDesc
 	dw XSpecialDesc
@@ -440,6 +440,10 @@ LemonadeDesc:
 	next "HP by 80.@"
 
 XAttackDesc:
+	db   "Raises SPECIAL."
+	next "DEFENSE (1 BTL)@"
+
+XSpDefDesc:
 	db   "Raises ATTACK."
 	next "(1 BTL)@"
 

@@ -114,8 +114,9 @@ MartGoldenrod2F2:
 	db -1 ; end
 
 MartGoldenrod3F:
-	db 7 ; # items
+	db 8 ; # items
 	db X_SPEED
+	db X_SP_DEF
 	db X_SPECIAL
 	db X_DEFEND
 	db X_ATTACK
@@ -125,12 +126,13 @@ MartGoldenrod3F:
 	db -1 ; end
 
 MartGoldenrod4F:
-	db 5 ; # items
+	db 6 ; # items
 	db PROTEIN
 	db IRON
 	db CARBOS
 	db CALCIUM
 	db HP_UP
+	db PP_UP
 	db -1 ; end
 
 MartGoldenrod5F1:
@@ -257,8 +259,8 @@ MartCerulean:
 	db SUPER_POTION
 	db SUPER_REPEL
 	db FULL_HEAL
-	db X_DEFEND
-	db X_ATTACK
+	db X_SP_DEF
+	db X_SPECIAL
 	db DIRE_HIT
 	db SURF_MAIL
 	db -1 ; end
@@ -329,16 +331,17 @@ MartCeladon4F:
 	db -1 ; end
 
 MartCeladon5F1:
-	db 5 ; # items
+	db 6 ; # items
 	db HP_UP
 	db PROTEIN
 	db IRON
 	db CARBOS
 	db CALCIUM
+	db PP_UP
 	db -1 ; end
 
 MartCeladon5F2:
-	db 7 ; # items
+	db 8 ; # items
 	db X_ACCURACY
 	db GUARD_SPEC
 	db DIRE_HIT
@@ -346,6 +349,7 @@ MartCeladon5F2:
 	db X_DEFEND
 	db X_SPEED
 	db X_SPECIAL
+	db X_SP_DEF
 	db -1 ; end
 
 MartFuchsia:

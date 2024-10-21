@@ -237,6 +237,7 @@ AI_Items:
 	dbw X_DEFEND,     .XDefend
 	dbw X_SPEED,      .XSpeed
 	dbw X_SPECIAL,    .XSpecial
+	dbw X_SP_DEF,     .XSpDef
 	db -1 ; end
 .FullHeal:
 	call .Status
@@ -373,6 +374,11 @@ AI_Items:
 	jp c, .DontUse
 	call EnemyUsedXSpecial
 	jp .Use
+.XSpDef:
+	call .XItem
+	jp c, .DontUse
+	call EnemyUsedXSpDef
+	jp .Use
 .XItem:
 	ld a, [wEnemyTurnsTaken]
 	and a
@@ -438,7 +444,6 @@ EnemyUsedFullRestore:
 	ld a, FULL_RESTORE
 	ld [wCurEnemyItem], a
 	; fallthrough
-
 FullRestoreContinue:
 	ld de, wCurHPAnimOldHP
 	ld hl, wEnemyMonHP + 1
@@ -473,7 +478,7 @@ EnemyUsedSuperPotion:
 EnemyUsedHyperPotion:
 	ld a, HYPER_POTION
 	ld b, 200
-
+	; fallthrough
 EnemyPotionContinue:
 	ld [wCurEnemyItem], a
 	ld hl, wEnemyMonHP + 1
@@ -649,6 +654,10 @@ EnemyUsedXSpeed:
 EnemyUsedXSpecial:
 	ld b, SP_ATTACK
 	ld a, X_SPECIAL
+	
+EnemyUsedXSpDef:
+	ld b, SP_DEFENSE
+	ld a, X_SP_DEF
 
 EnemyUsedXItem:
 ; a = ITEM_CONSTANT

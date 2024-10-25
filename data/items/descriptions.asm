@@ -440,8 +440,8 @@ LemonadeDesc:
 	next "HP by 80.@"
 
 XAttackDesc:
-	db   "Raises SPECIAL."
-	next "DEFENSE (1 BTL)@"
+	db   "Raises SPECIAL"
+	next "DEFENSE. (1 BTL)@"
 
 XSpDefDesc:
 	db   "Raises ATTACK."

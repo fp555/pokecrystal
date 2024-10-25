@@ -6,6 +6,7 @@ EvolvePokemon:
 	ld c, a
 	ld b, SET_FLAG
 	call EvoFlagAction
+	; fallthrough
 EvolveAfterBattle:
 	xor a
 	ld [wMonTriedToEvolve], a
@@ -15,22 +16,17 @@ EvolveAfterBattle:
 	push bc
 	push de
 	ld hl, wPartyCount
-
 	push hl
-
+	; fallthrough
 EvolveAfterBattle_MasterLoop:
 	ld hl, wCurPartyMon
 	inc [hl]
-
 	pop hl
-
 	inc hl
 	ld a, [hl]
 	cp $ff
 	jp z, .ReturnToMap
-
 	ld [wEvolutionOldSpecies], a
-
 	push hl
 	ld a, [wCurPartyMon]
 	ld c, a
@@ -40,7 +36,6 @@ EvolveAfterBattle_MasterLoop:
 	ld a, c
 	and a
 	jp z, EvolveAfterBattle_MasterLoop
-
 	ld a, [wEvolutionOldSpecies]
 	dec a
 	ld b, 0
@@ -51,50 +46,40 @@ EvolveAfterBattle_MasterLoop:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	push hl
 	xor a
 	ld [wMonType], a
 	predef CopyMonToTempMon
 	pop hl
-
 .loop
 	ld a, [hli]
 	and a
 	jr z, EvolveAfterBattle_MasterLoop
-
 	ld b, a
-
 	cp EVOLVE_TRADE
 	jr z, .trade
-
 	ld a, [wLinkMode]
 	and a
 	jp nz, .dont_evolve_2
-
 	ld a, b
 	cp EVOLVE_ITEM
 	jp z, .item
-
 	ld a, [wForceEvolution]
 	and a
 	jp nz, .dont_evolve_2
-
 	ld a, b
 	cp EVOLVE_LEVEL
 	jp z, .level
-
 	cp EVOLVE_HAPPINESS
 	jr z, .happiness
-
-; EVOLVE_STAT
+	cp EVOLVE_HELD
+	jp z, .held
+	; EVOLVE_STAT
 	ld a, [wTempMonLevel]
 	cp [hl]
 	jp c, .dont_evolve_1
-
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_1
-
 	push hl
 	ld de, wTempMonAttack
 	ld hl, wTempMonDefense
@@ -107,72 +92,57 @@ EvolveAfterBattle_MasterLoop:
 	ld a, ATK_GT_DEF
 .got_tyrogue_evo
 	pop hl
-
 	inc hl
 	cp [hl]
 	jp nz, .dont_evolve_2
-
 	inc hl
-	jr .proceed
-
+	jp .proceed
 .happiness
 	ld a, [wTempMonHappiness]
 	cp HAPPINESS_TO_EVOLVE
 	jp c, .dont_evolve_2
-
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_2
-
 	ld a, [hli]
 	cp TR_ANYTIME
 	jr z, .proceed
 	cp TR_MORNDAY
 	jr z, .happiness_daylight
-
-; TR_NITE
+	; TR_NITE
 	ld a, [wTimeOfDay]
 	cp NITE_F
 	jp nz, .dont_evolve_3
 	jr .proceed
-
 .happiness_daylight
 	ld a, [wTimeOfDay]
 	cp NITE_F
 	jp z, .dont_evolve_3
 	jr .proceed
-
 .trade
 	ld a, [wLinkMode]
 	and a
 	jp z, .dont_evolve_2
-
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_2
-
 	ld a, [hli]
 	ld b, a
 	inc a
 	jr z, .proceed
-
 	ld a, [wLinkMode]
 	cp LINK_TIMECAPSULE
 	jp z, .dont_evolve_3
-
 	ld a, [wTempMonItem]
 	cp b
 	jp nz, .dont_evolve_3
-
 	xor a
 	ld [wTempMonItem], a
 	jr .proceed
-
 .item
 	ld a, [hli]
 	ld b, a
 	ld a, [wCurItem]
 	cp b
 	jp nz, .dont_evolve_3
-
 	ld a, [wForceEvolution]
 	and a
 	jp z, .dont_evolve_3
@@ -180,7 +150,18 @@ EvolveAfterBattle_MasterLoop:
 	and a
 	jp nz, .dont_evolve_3
 	jr .proceed
-
+.held
+	push hl
+	ld a, [wCurPartyMon]
+	ld hl, wPartyMon1Item
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call AddNTimes
+	ld a, [hl]
+	ld b, a
+	pop hl
+	ld a, [hli]
+	cp b
+	jp nz, .dont_evolve_2
 .level
 	ld a, [hli]
 	ld b, a
@@ -189,15 +170,12 @@ EvolveAfterBattle_MasterLoop:
 	jp c, .dont_evolve_3
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_3
-
 .proceed
 	ld a, [wTempMonLevel]
 	ld [wCurPartyLevel], a
 	ld a, $1
 	ld [wMonTriedToEvolve], a
-
 	push hl
-
 	ld a, [hl]
 	ld [wEvolutionNewSpecies], a
 	ld a, [wCurPartyMon]
@@ -206,62 +184,48 @@ EvolveAfterBattle_MasterLoop:
 	call CopyName1
 	ld hl, EvolvingText
 	call PrintText
-
 	ld c, 50
 	call DelayFrames
-
 	xor a
 	ldh [hBGMapMode], a
 	hlcoord 0, 0
 	lb bc, 12, 20
 	call ClearBox
-
 	ld a, $1
 	ldh [hBGMapMode], a
 	call ClearSprites
-
 	farcall EvolutionAnimation
-
 	push af
 	call ClearSprites
 	pop af
 	jp c, CancelEvolution
-
 	ld hl, CongratulationsYourPokemonText
 	call PrintText
-
 	pop hl
-
 	ld a, [hl]
 	ld [wCurSpecies], a
 	ld [wTempMonSpecies], a
 	ld [wEvolutionNewSpecies], a
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
-
 	push hl
 	ld hl, EvolvedIntoText
 	call PrintTextboxText
 	farcall StubbedTrainerRankings_MonsEvolved
-
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ld de, SFX_CAUGHT_MON
 	call PlaySFX
 	call WaitSFX
-
 	ld c, 40
 	call DelayFrames
-
 	call ClearTilemap
 	call UpdateSpeciesNameIfNotNicknamed
 	call GetBaseData
-
 	ld hl, wTempMonExp + 2
 	ld de, wTempMonMaxHP
 	ld b, TRUE
 	predef CalcMonStats
-
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMons
 	ld bc, PARTYMON_STRUCT_LENGTH
@@ -287,11 +251,9 @@ EvolveAfterBattle_MasterLoop:
 	ld a, [hl]
 	adc b
 	ld [hl], a
-
 	ld hl, wTempMonSpecies
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call CopyBytes
-
 	ld a, [wCurSpecies]
 	ld [wTempSpecies], a
 	xor a
@@ -300,15 +262,12 @@ EvolveAfterBattle_MasterLoop:
 	ld a, [wTempSpecies]
 	dec a
 	call SetSeenAndCaughtMon
-
 	ld a, [wTempSpecies]
 	cp UNOWN
 	jr nz, .skip_unown
-
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	callfar UpdateUnownDex
-
 .skip_unown
 	pop de
 	pop hl
@@ -318,7 +277,6 @@ EvolveAfterBattle_MasterLoop:
 	ld l, e
 	ld h, d
 	jp EvolveAfterBattle_MasterLoop
-
 .dont_evolve_1
 	inc hl
 .dont_evolve_2
@@ -326,9 +284,6 @@ EvolveAfterBattle_MasterLoop:
 .dont_evolve_3
 	inc hl
 	jp .loop
-
-.UnusedReturnToMap: ; unreferenced
-	pop hl
 .ReturnToMap:
 	pop de
 	pop bc
@@ -362,7 +317,6 @@ UpdateSpeciesNameIfNotNicknamed:
 	ret nz
 	cp "@"
 	jr nz, .loop
-
 	ld a, [wCurPartyMon]
 	ld bc, MON_NAME_LENGTH
 	ld hl, wPartyMonNicknames
@@ -422,30 +376,25 @@ LearnLevelMoves:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 .skip_evos
 	ld a, [hli]
 	and a
 	jr nz, .skip_evos
-
 .find_move
 	ld a, [hli]
 	and a
 	jr z, .done
-
 	ld b, a
 	ld a, [wCurPartyLevel]
 	cp b
 	ld a, [hli]
 	jr nz, .find_move
-
 	push hl
 	ld d, a
 	ld hl, wPartyMon1Moves
 	ld a, [wCurPartyMon]
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call AddNTimes
-
 	ld b, NUM_MOVES
 .check_move
 	ld a, [hli]
@@ -455,10 +404,8 @@ LearnLevelMoves:
 	jr nz, .check_move
 	jr .learn
 .has_move
-
 	pop hl
 	jr .find_move
-
 .learn
 	ld a, d
 	ld [wPutativeTMHMMove], a
@@ -468,7 +415,6 @@ LearnLevelMoves:
 	predef LearnMove
 	pop hl
 	jr .find_move
-
 .done
 	ld a, [wCurPartySpecies]
 	ld [wTempSpecies], a
@@ -476,7 +422,6 @@ LearnLevelMoves:
 
 FillMoves:
 ; Fill in moves at de for wCurPartySpecies at wCurPartyLevel
-
 	push hl
 	push de
 	push bc
@@ -496,7 +441,6 @@ FillMoves:
 	and a
 	jr nz, .GoToAttacks
 	jr .GetLevel
-
 .NextMove:
 	pop de
 .GetMove:
@@ -515,7 +459,6 @@ FillMoves:
 	ld a, [wPrevPartyLevel]
 	cp b
 	jr nc, .GetMove
-
 .CheckMove:
 	push de
 	ld c, NUM_MOVES
@@ -552,10 +495,8 @@ FillMoves:
 	ld e, l
 	call ShiftMoves
 	pop de
-
 .ShiftedMove:
 	pop hl
-
 .LearnMove:
 	ld a, [hl]
 	ld [de], a
@@ -577,7 +518,6 @@ FillMoves:
 	ld [hl], a
 	pop hl
 	jr .NextMove
-
 .done
 	pop bc
 	pop de
@@ -603,10 +543,7 @@ EvoFlagAction:
 
 GetPreEvolution:
 ; Find the first mon to evolve into wCurPartySpecies.
-
-; Return carry and the new species in wCurPartySpecies
-; if a pre-evolution is found.
-
+; Return carry and the new species in wCurPartySpecies if a pre-evolution is found.
 	ld c, 0
 .loop ; For each Pokemon...
 	ld hl, EvosAttacksPointers
@@ -619,11 +556,14 @@ GetPreEvolution:
 .loop2 ; For each evolution...
 	ld a, [hli]
 	and a
-	jr z, .no_evolve ; If we jump, this Pokemon does not evolve into wCurPartySpecies.
-	cp EVOLVE_STAT ; This evolution type has the extra parameter of stat comparison.
+	jr z, .no_evolve ; If we jump, this Pokemon does not evolve into wCurPartySpecies
+	cp EVOLVE_HELD
+	jr z, .held_param
+	cp EVOLVE_STAT ; This evolution type has the extra parameter of stat comparison
 	jr nz, .not_tyrogue
 	inc hl
-
+.held_param
+	inc hl
 .not_tyrogue
 	inc hl
 	ld a, [wCurPartySpecies]
@@ -633,7 +573,6 @@ GetPreEvolution:
 	ld a, [hl]
 	and a
 	jr nz, .loop2
-
 .no_evolve
 	inc c
 	ld a, c
@@ -641,7 +580,6 @@ GetPreEvolution:
 	jr c, .loop
 	and a
 	ret
-
 .found_preevo
 	inc c
 	ld a, c

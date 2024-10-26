@@ -9,16 +9,13 @@ ArniePhoneCalleeScript:
 	ifnotequal TUESDAY, .NotTuesday
 	checktime MORN
 	iftrue ArnieTuesdayMorning
-
 .NotTuesday:
-	checkflag ENGINE_YANMA_SWARM
+	checkflag ENGINE_SWARM
 	iftrue .AlreadySwarming
 	farsjump ArnieHangUpScript
-
 .WantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_35
 	farsjump ArnieReminderScript
-
 .AlreadySwarming:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_35
 	farsjump ArnieHurryScript
@@ -32,7 +29,6 @@ ArniePhoneCallerScript:
 	iftrue .Swarm
 	farscall PhoneScript_Random2
 	ifequal 0, ArnieWantsBattle
-
 .Swarm:
 	farscall PhoneScript_Random5
 	ifequal 0, ArnieYanmaSwarm
@@ -49,11 +45,11 @@ ArnieWantsBattle:
 	farsjump PhoneScript_WantsToBattle_Male
 
 ArnieYanmaSwarm: ; start swarm
-	checkflag ENGINE_YANMA_SWARM
+	checkflag ENGINE_SWARM
 	iftrue ArnieYanmaAlreadySwarming
-	setflag ENGINE_YANMA_SWARM
+	setflag ENGINE_SWARM
 	getmonname STRING_BUFFER_4, YANMA
-	swarm SWARM_YANMA, ROUTE_35
+	swarm ROUTE_35
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_35
 	farsjump ArnieSwarmScript
 

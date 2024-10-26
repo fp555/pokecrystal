@@ -9,16 +9,13 @@ AnthonyPhoneCalleeScript:
 	ifnotequal FRIDAY, .NotFriday
 	checktime NITE
 	iftrue AnthonyFridayNight
-
 .NotFriday:
-	checkflag ENGINE_DUNSPARCE_SWARM
+	checkflag ENGINE_SWARM
 	iftrue .AlreadySwarming
 	farsjump AnthonyHangUpScript
-
 .WantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_33
 	farsjump AnthonyReminderScript
-
 .AlreadySwarming:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_33
 	farsjump AnthonyHurryScript
@@ -34,7 +31,6 @@ AnthonyPhoneCallerScript:
 	iftrue .TriesSwarm
 	farscall PhoneScript_Random2
 	ifequal 0, AnthonyWantsBattle
-
 .TriesSwarm:
 	farscall PhoneScript_Random5
 	ifequal 0, AnthonyTriesDunsparceSwarm
@@ -49,13 +45,12 @@ AnthonyWantsBattle:
 	farsjump PhoneScript_WantsToBattle_Male
 
 AnthonyTriesDunsparceSwarm:
-	checkflag ENGINE_DUNSPARCE_SWARM
+	checkflag ENGINE_SWARM
 	iftrue .Generic
-	setflag ENGINE_DUNSPARCE_SWARM
+	setflag ENGINE_SWARM
 	getmonname STRING_BUFFER_4, DUNSPARCE
-	swarm SWARM_DUNSPARCE, DARK_CAVE_VIOLET_ENTRANCE
+	swarm DARK_CAVE_VIOLET_ENTRANCE
 	getlandmarkname STRING_BUFFER_5, LANDMARK_DARK_CAVE
 	farsjump AnthonySwarmScript
-
 .Generic:
 	farsjump Phone_GenericCall_Male

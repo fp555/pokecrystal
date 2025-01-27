@@ -17,11 +17,11 @@ jobs:
           ref: v0.9.0
           repository: gbdev/rgbds
 
-      - name: Install rgbds
+      - name: Install rgbds & deps
         working-directory: rgbds
         run: |
-          sudo apt-get install -yq libpng-dev
-          sudo make install
+            sudo apt-get install -yq libpng-dev
+            sudo make install
 
       - name: Make ROM
         run: make -j$(nproc)

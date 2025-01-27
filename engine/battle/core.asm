@@ -2294,7 +2294,7 @@ WinTrainerBattle:
 	and a
 	ret nz
 	ld a, [wInBattleTowerBattle]
-	bit 0, a
+	bit IN_BATTLE_TOWER_BATTLE_F, a
 	jr nz, .battle_tower
 	call BattleWinSlideInEnemyTrainerFrontpic
 	ld c, 40
@@ -2811,7 +2811,7 @@ LostBattle:
 	ld a, 1
 	ld [wBattleEnded], a
 	ld a, [wInBattleTowerBattle]
-	bit 0, a
+	bit IN_BATTLE_TOWER_BATTLE_F, a
 	jr nz, .battle_tower
 	ld a, [wBattleMode]
 	dec a ; wild?
@@ -5675,9 +5675,9 @@ LoadEnemyMon:
 	ld a, [wLinkMode]
 	and a
 	jp nz, InitEnemyMon
-	; and also not in a BattleTower-Battle
+	; and also not in a Battle Tower battle
 	ld a, [wInBattleTowerBattle]
-	bit 0, a
+	bit IN_BATTLE_TOWER_BATTLE_F, a
 	jp nz, InitEnemyMon
 	; Make sure everything knows what species we're working with
 	ld a, [wTempEnemyMonSpecies]
@@ -6378,7 +6378,7 @@ _BattleRandom::
 	inc a
 	ld [wLinkBattleRNCount], a
 	; If we haven't hit the end yet, we're good
-	cp 10 - 1 ; Exclude last value. See the closing comment
+	cp SERIAL_RNS_LENGTH - 1 ; Exclude last value. See the closing comment
 	ld a, [hl]
 	pop bc
 	pop hl
@@ -6392,10 +6392,10 @@ _BattleRandom::
 	xor a
 	ld [wLinkBattleRNCount], a
 	ld hl, wLinkBattleRNs
-	ld b, 10 ; number of seeds
-	; Generate next number in the sequence for each seed
-	; a[n+1] = (a[n] * 5 + 1) % 256
+	ld b, SERIAL_RNS_LENGTH ; number of seeds
 .loop
+; Generate next number in the sequence for each seed
+; a[n+1] = (a[n] * 5 + 1) % 256
 	; get last #
 	ld a, [hl]
 	; a * 5 + 1
@@ -6451,7 +6451,7 @@ GiveExperiencePoints:
 	and a
 	ret nz
 	ld a, [wInBattleTowerBattle]
-	bit 0, a
+	bit IN_BATTLE_TOWER_BATTLE_F, a
 	ret nz
 	call .EvenlyDivideExpAmongParticipants
 	xor a
@@ -7764,7 +7764,7 @@ CheckPayDay:
 	ld hl, BattleText_PlayerPickedUpPayDayMoney
 	call StdBattleTextbox
 	ld a, [wInBattleTowerBattle]
-	bit 0, a
+	bit IN_BATTLE_TOWER_BATTLE_F, a
 	ret z
 	call ClearTilemap
 	call ClearBGPalettes

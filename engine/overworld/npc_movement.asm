@@ -260,7 +260,7 @@ IsNPCAtCoord:
 	jr z, .next
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
-	bit 7, [hl]
+	bit EMOTE_OBJECT_F, [hl]
 	jr nz, .next
 	ld hl, OBJECT_PALETTE
 	add hl, bc

@@ -1690,7 +1690,7 @@ Slots_GetPayout:
 	ld d, a
 	ret
 .PayoutTable:
-	table_width 2, Slots_GetPayout.PayoutTable
+	table_width 2
 	dw 300 ; SLOTS_SEVEN
 	dw  50 ; SLOTS_POKEBALL
 	dw   6 ; SLOTS_CHERRY
@@ -1734,7 +1734,7 @@ Slots_PayoutText:
 	call PrintText
 	ret
 .PayoutStrings:
-	table_width 6, Slots_PayoutText.PayoutStrings
+	table_width 6
 	dbw "300@", .LinedUpSevens      ; SLOTS_SEVEN
 	dbw "50@@", .LinedUpPokeballs   ; SLOTS_POKEBALL
 	dbw "6@@@", .LinedUpMonOrCherry ; SLOTS_CHERRY

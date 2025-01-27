@@ -19,9 +19,9 @@ InitMapNameSign::
 	ld a, -1
 	ld [wCurLandmark], a
 .not_gate
-	ld hl, wEnteredMapFromContinue
-	bit 1, [hl]
-	res 1, [hl]
+	ld hl, wMapNameSignFlags
+	bit SHOWN_MAP_NAME_SIGN, [hl]
+	res SHOWN_MAP_NAME_SIGN, [hl]
 	jr nz, .dont_do_map_sign
 	call .CheckMovingWithinLandmark
 	jr z, .dont_do_map_sign

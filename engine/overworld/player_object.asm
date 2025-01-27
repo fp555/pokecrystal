@@ -154,7 +154,7 @@ CopyObjectStruct::
 	ret z
 	ld hl, OBJECT_FLAGS2
 	add hl, de
-	set 5, [hl]
+	set FROZEN_F, [hl]
 	ret
 
 CopyMapObjectToObjectStruct:

@@ -91,11 +91,6 @@ CeladonCityPoliwrathText:
 	done
 
 CeladonCityTeacher1Text:
-if DEF(_CRYSTAL_AU)
-	text "I lost at the"
-	line "machines."
-	done
-else
 	text "I lost at the slot"
 	line "machines again…"
 
@@ -105,7 +100,6 @@ else
 	para "You should check"
 	line "them out too."
 	done
-endc
 
 CeladonCityGramps1Text:
 	text "GRIMER have been"

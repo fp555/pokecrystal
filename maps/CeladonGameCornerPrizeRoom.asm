@@ -37,7 +37,6 @@ CeladonPrizeRoom_tmcounterloop:
 	ifequal 2, .Psychic
 	ifequal 3, .HyperBeam
 	sjump CeladonPrizeRoom_CancelPurchaseScript
-
 .DoubleTeam:
 	checkcoins CELADONGAMECORNERPRIZEROOM_TM32_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -48,7 +47,6 @@ CeladonPrizeRoom_tmcounterloop:
 	iffalse CeladonPrizeRoom_notenoughroom
 	takecoins CELADONGAMECORNERPRIZEROOM_TM32_COINS
 	sjump CeladonPrizeRoom_purchased
-
 .Psychic:
 	checkcoins CELADONGAMECORNERPRIZEROOM_TM29_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -59,7 +57,6 @@ CeladonPrizeRoom_tmcounterloop:
 	iffalse CeladonPrizeRoom_notenoughroom
 	takecoins CELADONGAMECORNERPRIZEROOM_TM29_COINS
 	sjump CeladonPrizeRoom_purchased
-
 .HyperBeam:
 	checkcoins CELADONGAMECORNERPRIZEROOM_TM15_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -112,7 +109,6 @@ CeladonPrizeRoom_TMMenuHeader:
 	menu_coords 0, 2, 15, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -138,7 +134,6 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	ifequal 2, .Porygon
 	ifequal 3, .Larvitar
 	sjump CeladonPrizeRoom_CancelPurchaseScript
-
 .Pikachu:
 	checkcoins CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -156,7 +151,6 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	givepoke PIKACHU, 25
 	takecoins CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS
 	sjump .loop
-
 .Porygon:
 	checkcoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -174,7 +168,6 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	givepoke PORYGON, 15
 	takecoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
 	sjump .loop
-
 .Larvitar:
 	checkcoins CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -192,13 +185,11 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	givepoke LARVITAR, 40
 	takecoins CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS
 	sjump .loop
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 2, 17, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -214,11 +205,6 @@ CeladonGameCornerPrizeRoomGentlemanText:
 	done
 
 CeladonGameCornerPrizeRoomPharmacistText:
-if DEF(_CRYSTAL_AU)
-	text "I don't want to"
-	line "lose my coins."
-	done
-else
 	text "Whew…"
 
 	para "I've got to stay"
@@ -228,7 +214,6 @@ else
 	line "cool, or I'll lose"
 	cont "all my money…"
 	done
-endc
 
 CeladonPrizeRoom_PrizeVendorIntroText:
 	text "Welcome!"

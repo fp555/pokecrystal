@@ -20,41 +20,33 @@ ReadMapSetupScript:
 	ld a, [hli]
 	cp -1 ; end?
 	ret z
-
 	push hl
-
 	ld c, a
 	ld b, 0
 	ld hl, MapSetupCommands
 	add hl, bc
 	add hl, bc
 	add hl, bc
-
 	; bank
 	ld b, [hl]
 	inc hl
-
 	; address
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	; Bit 7 of the bank indicates a parameter.
 	; This is left unused.
 	bit MAPSETUPSCRIPT_HAS_PARAM_F, b
 	jr z, .go
-
 	pop de
 	ld a, [de]
 	ld c, a
 	inc de
 	push de
-
 .go
 	ld a, b
 	and $7f
 	rst FarCall
-
 	pop hl
 	jr .loop
 
@@ -82,9 +74,6 @@ LoadMapObjects:
 	farcall InitializeVisibleSprites
 	ret
 
-MapSetup_DummyFunction: ; unreferenced
-	ret
-
 ResetPlayerObjectAction:
 	ld hl, wPlayerSpriteSetupFlags
 	set PLAYERSPRITESETUP_RESET_ACTION_F, [hl]
@@ -104,11 +93,9 @@ CheckUpdatePlayerSprite:
 	call .ResetSurfingOrBikingState
 	jr c, .ok
 	ret
-
 .ok
 	call UpdatePlayerSprite
 	ret
-
 .CheckForcedBiking:
 	and a
 	ld hl, wBikeFlags
@@ -118,7 +105,6 @@ CheckUpdatePlayerSprite:
 	ld [wPlayerState], a
 	scf
 	ret
-
 .ResetSurfingOrBikingState:
 	ld a, [wPlayerState]
 	cp PLAYER_NORMAL
@@ -146,11 +132,9 @@ CheckUpdatePlayerSprite:
 	ld [wPlayerState], a
 	scf
 	ret
-
 .nope
 	and a
 	ret
-
 .CheckSurfing:
 	call CheckOnWater
 	jr nz, .nope2
@@ -164,7 +148,6 @@ CheckUpdatePlayerSprite:
 .is_surfing
 	scf
 	ret
-
 .nope2
 	and a
 	ret

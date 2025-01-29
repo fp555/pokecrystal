@@ -2,7 +2,6 @@ ClearBox::
 ; Fill a c*b box at hl with blank tiles.
 	ld a, " "
 	; fallthrough
-
 FillBoxWithByte::
 .row
 	push bc
@@ -81,7 +80,6 @@ TextboxBorder::
 	call .PlaceChars
 	ld [hl], "┘"
 	ret
-
 .PlaceChars:
 ; Place char a c times.
 	ld d, c
@@ -131,7 +129,6 @@ RadioTerminator::
 PrintText::
 	call SetUpTextbox
 	; fallthrough
-
 BuenaPrintText::
 	push hl
 	hlcoord TEXTBOX_INNERX, TEXTBOX_INNERY
@@ -139,7 +136,6 @@ BuenaPrintText::
 	call ClearBox
 	pop hl
 	; fallthrough
-
 PrintTextboxText::
 	bccoord TEXTBOX_INNERX, TEXTBOX_INNERY
 	call PrintTextboxTextAt
@@ -156,7 +152,6 @@ SetUpTextbox::
 PlaceString::
 	push hl
 	; fallthrough
-
 PlaceNextChar::
 	ld a, [de]
 	cp "@"
@@ -249,7 +244,6 @@ PrintPlayerName: print_name wPlayerName
 PrintRivalName:  print_name wRivalName
 PrintRedsName:   print_name wRedsName
 PrintGreensName: print_name wGreensName
-
 TrainerChar:  print_name TrainerCharText
 TMChar:       print_name TMCharText
 PCChar:       print_name PCCharText
@@ -271,7 +265,6 @@ PlaceMoveTargetsName::
 PlaceMoveUsersName::
 	ldh a, [hBattleTurn]
 	; fallthrough
-
 PlaceBattlersName:
 	push de
 	and a
@@ -471,7 +464,6 @@ ContText::
 	ld l, c
 	pop de
 	jp NextChar
-
 .cont: db "<_CONT>@"
 
 PlaceDexEnd::
@@ -566,11 +558,9 @@ PlaceFarString::
 	ld b, a
 	ldh a, [hROMBank]
 	push af
-
 	ld a, b
 	rst Bankswitch
 	call PlaceString
-
 	pop af
 	rst Bankswitch
 	ret
@@ -578,7 +568,6 @@ PlaceFarString::
 PokeFluteTerminator::
 	ld hl, .stop
 	ret
-
 .stop:
 	text_end
 
@@ -587,9 +576,7 @@ PrintTextboxTextAt::
 	push af
 	set TEXT_DELAY_F, a
 	ld [wTextboxFlags], a
-
 	call DoTextUntilTerminator
-
 	pop af
 	ld [wTextboxFlags], a
 	ret
@@ -600,7 +587,6 @@ DoTextUntilTerminator::
 	ret z
 	call .TextCommand
 	jr DoTextUntilTerminator
-
 .TextCommand:
 	push hl
 	push bc
@@ -614,7 +600,6 @@ DoTextUntilTerminator::
 	ld d, [hl]
 	pop bc
 	pop hl
-
 	; jp de
 	push de
 	ret
@@ -676,22 +661,18 @@ TextCommand_FAR::
 ; write text from a different bank (little endian)
 	ldh a, [hROMBank]
 	push af
-
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
 	ld d, a
 	ld a, [hli]
-
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
-
 	push hl
 	ld h, d
 	ld l, e
 	call DoTextUntilTerminator
 	pop hl
-
 	pop af
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
@@ -753,7 +734,6 @@ TextCommand_PROMPT_BUTTON::
 	jp z, TextCommand_WAIT_BUTTON
 	cp LINK_MOBILE
 	jp z, TextCommand_WAIT_BUTTON
-
 	push hl
 	call LoadBlinkingCursor
 	push bc
@@ -779,7 +759,6 @@ TextCommand_START_ASM::
 	bit 7, h
 	jr nz, .not_rom
 	jp hl
-
 .not_rom
 	ld a, TX_END
 	ld [hl], a
@@ -841,7 +820,6 @@ TextCommand_SOUND::
 	inc hl
 	inc hl
 	jr .loop
-
 .play
 	push de
 	ld e, [hl]
@@ -850,20 +828,7 @@ TextCommand_SOUND::
 	call PlaySFX
 	call WaitSFX
 	pop de
-
 .done
-	pop hl
-	pop bc
-	ret
-
-TextCommand_CRY:: ; unreferenced
-; play a pokemon cry
-	push de
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	call PlayMonCry
-	pop de
 	pop hl
 	pop bc
 	ret
@@ -885,7 +850,6 @@ TextCommand_DOTS::
 	push hl
 	ld h, b
 	ld l, c
-
 .loop
 	push de
 	ld a, "…"
@@ -964,7 +928,6 @@ TextCommand_DAY::
 	call PlaceString
 	pop hl
 	ret
-
 .Days:
 	dw .Sun
 	dw .Mon
@@ -973,7 +936,6 @@ TextCommand_DAY::
 	dw .Thurs
 	dw .Fri
 	dw .Satur
-
 .Sun:    db "SUN@"
 .Mon:    db "MON@"
 .Tues:   db "TUES@"

@@ -30,7 +30,6 @@ LavRadioTower1FGentlemanScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext LavRadioTower1FGentlemanText_ReturnedMachinePart
 	promptbutton
@@ -42,11 +41,9 @@ LavRadioTower1FGentlemanScript:
 	waitbutton
 	closetext
 	end
-
 .receiveitem:
 	jumpstd ReceiveItemScript
 	end
-
 .expncardname
 	db "EXPN CARD@"
 
@@ -59,7 +56,6 @@ LavRadioTower1FSuperNerd2Script:
 	waitbutton
 	closetext
 	end
-
 .GotExpnCard:
 	writetext LavRadioTower1FSuperNerd2Text_GotExpnCard
 	waitbutton
@@ -71,9 +67,6 @@ LavRadioTower1FDirectory:
 
 LavRadioTower1FPokeFluteSign:
 	jumptext LavRadioTower1FPokeFluteSignText
-
-LavRadioTower1FReferenceLibrary: ; unreferenced
-	jumptext LavRadioTower1FReferenceLibraryText
 
 LavRadioTower1FReceptionistText:
 	text "Welcome!"
@@ -208,15 +201,6 @@ LavRadioTower1FPokeFluteSignText:
 
 	para "of the # FLUTE"
 	line "on CHANNEL 20"
-	done
-
-LavRadioTower1FReferenceLibraryText:
-	text "Wow! A full rack"
-	line "of #MON CDs and"
-	cont "videos."
-
-	para "This must be the"
-	line "reference library."
 	done
 
 LavRadioTower1F_MapEvents:

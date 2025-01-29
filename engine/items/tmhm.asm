@@ -19,7 +19,6 @@ TMHMPocket:
 	call .ConvertItemToTMHMNumber
 	scf
 	ret
-
 .ConvertItemToTMHMNumber:
 	ld a, [wCurItem]
 	ld c, a
@@ -101,7 +100,6 @@ ChooseMonToLearnTMHM_NoRefresh:
 	call CopyBytes
 	pop af ; now contains the original contents of af
 	ret
-
 .egg
 	push hl
 	push de
@@ -118,13 +116,11 @@ ChooseMonToLearnTMHM_NoRefresh:
 
 TeachTMHM:
 	predef CanLearnTMHMMove
-
 	push bc
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMonNicknames
 	call GetNickname
 	pop bc
-
 	ld a, c
 	and a
 	jr nz, .compatible
@@ -135,33 +131,24 @@ TeachTMHM:
 	ld hl, TMHMNotCompatibleText
 	call PrintText
 	jr .nope
-
 .compatible
 	callfar KnowsMove
 	jr c, .nope
-
 	predef LearnMove
 	ld a, b
 	and a
 	jr z, .nope
-
 	farcall StubbedTrainerRankings_TMsHMsTaught
 	ld a, [wCurItem]
 	call IsHM
 	ret c
-
 	ld c, HAPPINESS_LEARNMOVE
 	callfar ChangeHappiness
 	call ConsumeTM
 	jr .learned_move
-
 .nope
 	and a
 	ret
-
-.didnt_use ; unreferenced
-	ld a, 2
-	ld [wItemEffectSucceeded], a
 .learned_move
 	scf
 	ret
@@ -237,6 +224,7 @@ TMHM_JoypadLoop:
 	jp nz, TMHM_ExitPocket
 	bit D_LEFT_F, a
 	jp nz, TMHM_ExitPocket
+	; fallthrough
 TMHM_ShowTMMoveDescription:
 	call TMHM_CheckHoveringOverCancel
 	jp nc, TMHM_ExitPocket
@@ -267,6 +255,7 @@ TMHM_ChooseTMorHM:
 	ld a, [wTempTMHM]
 	cp b
 	jr z, _TMHM_ExitPack ; our cursor was hovering over CANCEL
+	; fallthrough
 TMHM_CheckHoveringOverCancel:
 	call TMHM_GetCurrentPocketPosition
 	ld a, [wMenuCursorY]
@@ -289,6 +278,7 @@ TMHM_CheckHoveringOverCancel:
 
 TMHM_ExitPack:
 	call TMHM_PlaySFX_ReadText2
+	; fallthrough
 _TMHM_ExitPack:
 	ld a, B_BUTTON
 	ld [wMenuJoypad], a
@@ -310,7 +300,6 @@ TMHM_ScrollPocket:
 	dec [hl]
 	call TMHM_DisplayPocketItems
 	jp TMHM_ShowTMMoveDescription
-
 .down
 	call TMHM_GetCurrentPocketPosition
 	ld b, 5
@@ -333,7 +322,6 @@ TMHM_DisplayPocketItems:
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jp z, Tutorial_TMHMPocket
-
 	hlcoord 5, 2
 	lb bc, 10, 15
 	ld a, " "
@@ -363,7 +351,6 @@ TMHM_DisplayPocketItems:
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
 	jr .okay
-
 .HM:
 	push af
 	sub NUM_TMS
@@ -410,7 +397,6 @@ TMHM_DisplayPocketItems:
 	dec d
 	jr nz, .loop2
 	jr .done
-
 .NotTMHM:
 	call TMHMPocket_GetCurrentLineCoord
 	inc hl
@@ -434,20 +420,6 @@ TMHMPocket_GetCurrentLineCoord:
 	add hl, bc
 	dec e
 	jr nz, .loop
-	ret
-
-PlaceMoveNameAfterTMHMName: ; unreferenced
-; Similar to a part of TMHM_DisplayPocketItems.
-	pop hl
-	ld bc, 3
-	add hl, bc
-	predef GetTMHMMove
-	ld a, [wTempTMHM]
-	ld [wPutativeTMHMMove], a
-	call GetMoveName
-	push hl
-	call PlaceString
-	pop hl
 	ret
 
 TMHM_CancelString:
@@ -483,37 +455,6 @@ TMHM_PlaySFX_ReadText2:
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
 	pop de
-	ret
-
-VerboseReceiveTMHM: ; unreferenced
-	call ConvertCurItemIntoCurTMHM
-	call .CheckHaveRoomForTMHM
-	ld hl, .NoRoomTMHMText
-	jr nc, .print
-	ld hl, .ReceivedTMHMText
-.print
-	jp PrintText
-
-.NoRoomTMHMText:
-	text_far _NoRoomTMHMText
-	text_end
-
-.ReceivedTMHMText:
-	text_far _ReceivedTMHMText
-	text_end
-
-.CheckHaveRoomForTMHM:
-	ld a, [wTempTMHM]
-	dec a
-	ld hl, wTMsHMs
-	ld b, 0
-	ld c, a
-	add hl, bc
-	ld a, [hl]
-	inc a
-	cp MAX_ITEM_STACK + 1
-	ret nc
-	ld [hl], a
 	ret
 
 ConsumeTM:

@@ -15,24 +15,6 @@ LoadMobileTradeBorderTilemap:
 	call CopyBytes
 	ret
 
-TestMobileTradeBorderTilemap: ; unreferenced
-; Loads the mobile trade border graphics and tilemap,
-; with a placeholder SCGB_DIPLOMA layout, and exits
-; after pressing A or B. Possibly used for testing.
-	call LoadStandardMenuHeader
-	call ClearBGPalettes
-	call ClearTilemap
-	call ClearSprites
-	farcall __LoadTradeScreenBorderGFX ; useless to farcall
-	farcall LoadMobileTradeBorderTilemap ; useless to farcall
-	ld b, SCGB_DIPLOMA
-	call GetSGBLayout
-	call SetDefaultBGPAndOBP
-	call WaitBGMap
-	call JoyWaitAorB
-	call Call_ExitMenu
-	ret
-
 MobileTradeBorderTilemap:
 INCBIN "gfx/trade/border_mobile.tilemap"
 
@@ -50,7 +32,6 @@ _LinkTextbox:
 	call .PlaceBorder
 	pop hl
 	pop bc
-
 	ld de, wAttrmap - wTilemap
 	add hl, de
 	inc b
@@ -72,7 +53,6 @@ _LinkTextbox:
 	dec b
 	jr nz, .row
 	ret
-
 .PlaceBorder
 	push hl
 	ld a, $30
@@ -96,14 +76,12 @@ _LinkTextbox:
 	add hl, de
 	dec b
 	jr nz, .loop
-
 	ld a, $35
 	ld [hli], a
 	ld a, $36
 	call .PlaceRow
 	ld [hl], $37
 	ret
-
 .PlaceRow
 	ld d, c
 .row_loop
@@ -121,7 +99,6 @@ InitTradeSpeciesList:
 	ld de, .CancelString
 	call PlaceString
 	ret
-
 .CancelString:
 	db "CANCEL@"
 
@@ -163,7 +140,6 @@ PlaceWaitingTextAndSyncAndExchangeNybble:
 	call Call_ExitMenu
 	call WaitBGMap2
 	ret
-
 .PlaceWaitingText:
 	hlcoord 4, 10
 	ld b, 1
@@ -176,7 +152,6 @@ PlaceWaitingTextAndSyncAndExchangeNybble:
 	call WaitBGMap2
 	ld c, 50
 	jp DelayFrames
-
 .Waiting:
 	db "WAITING..!@"
 
@@ -184,7 +159,6 @@ LinkTradeMenu:
 	call .MenuAction
 	call .GetJoypad
 	ret
-
 .GetJoypad:
 	push bc
 	push af
@@ -200,7 +174,6 @@ LinkTradeMenu:
 	pop bc
 	ld d, a
 	ret
-
 .MenuAction:
 	ld hl, w2DMenuFlags2
 	res _2DMENU_EXITING_F, [hl]
@@ -210,7 +183,6 @@ LinkTradeMenu:
 	pop af
 	ldh [hBGMapMode], a
 	ret
-
 .loop
 	call .UpdateCursor
 	call .UpdateBGMapAndOAM
@@ -226,10 +198,8 @@ LinkTradeMenu:
 	ld a, [wMenuJoypadFilter]
 	and b
 	jr z, .loop
-
 .done
 	ret
-
 .UpdateBGMapAndOAM:
 	ldh a, [hOAMUpdate]
 	push af
@@ -241,7 +211,6 @@ LinkTradeMenu:
 	xor a
 	ldh [hBGMapMode], a
 	ret
-
 .loop2
 	call UpdateTimeAndPals
 	call .TryAnims
@@ -251,7 +220,6 @@ LinkTradeMenu:
 	jr z, .loop2
 	and a
 	ret
-
 .UpdateCursor:
 	ld hl, wCursorCurrentTile
 	ld a, [hli]
@@ -269,7 +237,6 @@ LinkTradeMenu:
 	ld [hl], a
 	pop bc
 	pop hl
-
 .not_currently_selected
 	ld a, [w2DMenuCursorInitY]
 	ld b, a
@@ -289,7 +256,6 @@ LinkTradeMenu:
 	add c
 	dec b
 	jr nz, .loop3
-
 .skip
 	ld c, SCREEN_WIDTH
 	call AddNTimes
@@ -305,7 +271,6 @@ LinkTradeMenu:
 	add c
 	dec b
 	jr nz, .loop4
-
 .skip2
 	ld c, a
 	add hl, bc
@@ -327,7 +292,6 @@ LinkTradeMenu:
 	ld a, h
 	ld [wCursorCurrentTile + 1], a
 	ret
-
 .TryAnims:
 	ld a, [w2DMenuFlags1]
 	bit _2DMENU_ENABLE_SPRITE_ANIMS_F, a

@@ -19,8 +19,9 @@ BattleTowerBattleRoomNoopScene:
 
 Script_BattleRoom:
 	applymovement PLAYER, MovementData_BattleTowerBattleRoomPlayerWalksIn
-; beat all 7 opponents in a row
+	; fallthrough
 Script_BattleRoomLoop:
+; beat all 7 opponents in a row
 	setval BATTLETOWERBATTLEROOM_YOUNGSTER
 	special LoadOpponentTrainerAndPokemonWithOTSprite
 	appear BATTLETOWERBATTLEROOM_YOUNGSTER
@@ -56,6 +57,7 @@ Script_BattleRoomLoop:
 	writetext Text_NextUpOpponentNo
 	yesorno
 	iffalse Script_DontBattleNextOpponent
+	; fallthrough
 Script_ContinueAndBattleNextOpponent:
 	closetext
 	applymovement PLAYER, MovementData_BattleTowerBattleRoomPlayerTurnsToFaceNextOpponent
@@ -76,6 +78,7 @@ Script_DontBattleNextOpponent:
 	waitsfx
 	special FadeOutToWhite
 	special Reset
+
 Script_DontSaveAndEndTheSession:
 	writetext Text_CancelYourBattleRoomChallenge
 	yesorno
@@ -106,36 +109,11 @@ Script_BeatenAllTrainers:
 	pause 60
 	special BattleTowerFade
 	warpfacing UP, BATTLE_TOWER_1F, 7, 7
+	; fallthrough
 Script_BeatenAllTrainers2:
 	opentext
 	writetext Text_CongratulationsYouveBeatenAllTheTrainers
 	sjump Script_GivePlayerHisPrize
-
-Script_TooMuchTimeElapsedNoRegister: ; unreferenced
-	setval BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	opentext
-	writetext Text_TooMuchTimeElapsedNoRegister
-	waitbutton
-	closetext
-	end
-
-Script_ChallengeCanceled: ; unreferenced
-	setval BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	setval BATTLETOWERACTION_06
-	special BattleTowerAction
-	opentext
-	writetext Text_ThanksForVisiting
-	writetext Text_WeHopeToServeYouAgain
-	waitbutton
-	closetext
-	end
-
-Text_ReturnedAfterSave_Mobile: ; unreferenced
-	text "You'll be returned"
-	line "after you SAVE."
-	done
 
 BattleTowerBattleRoom_MapEvents:
 	db 0, 0 ; filler

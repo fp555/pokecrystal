@@ -331,43 +331,6 @@ Function118284:
 	call BattleTowerRoomMenu_Cleanup
 	ret
 
-Function1182d5: ; unreferenced
-	call BattleTowerRoomMenu_InitRAM
-	ld a, $18
-	ld [wcd33], a
-	ld a, $19
-	ld [wcd34], a
-	ld a, $4
-	ld [wc3f0], a
-	ldh a, [rSVBK]
-	push af
-	ld a, $3
-	ldh [rSVBK], a
-.asm_1182ee
-	call JoyTextDelay
-	call Function118473
-	ld a, [wBattleTowerRoomMenuJumptableIndex]
-	cp $1b
-	jr c, .asm_118301
-	ld a, [wcd34]
-	ld [wBattleTowerRoomMenuJumptableIndex], a
-
-.asm_118301
-	call Function118746
-	call BattleTowerRoomMenu_WriteMessage
-	farcall Function115dd3
-	farcall Function11619d
-	call DelayFrame
-	ld a, [wBattleTowerRoomMenuJumptableIndex]
-	ld hl, wcd33
-	cp [hl]
-	jr nz, .asm_1182ee
-	pop af
-	ldh [rSVBK], a
-	call BattleTowerRoomMenu_Cleanup
-	call ReturnToMapFromSubmenu
-	ret
-
 Function118329:
 	call BattleTowerRoomMenu_InitRAM
 	ld a, $15
@@ -857,39 +820,6 @@ Function1186f5:
 	dw BattleTowerRoomMenu_CallRoomMenu2
 	dw Function118e76
 
-Function118746:
-	jumptable .Jumptable, wBattleTowerRoomMenuJumptableIndex
-
-.Jumptable:
-	dw Function11886e
-	dw Function118880
-	dw Function11878d
-	dw Function1188b0
-	dw Function11878d
-	dw Function1188b8
-	dw Function11878d
-	dw Function1188c0
-	dw Function11878d
-	dw Function1188c8
-	dw Function11878d
-	dw Function118903
-	dw SetOddEggDownloadURL
-	dw Function11878d
-	dw Function1196f2
-	dw Function1197c9
-	dw Function1197dc
-	dw Function11878d
-	dw Function118e6d
-	dw Function11878d
-	dw Function119800
-	dw Function118e76
-	dw Function118e7e
-	dw Function11878d
-	dw BattleTowerRoomMenu_DoNothing
-	dw Function118e76
-	dw BattleTowerRoomMenu_CallRoomMenu2
-	dw Function118e76
-
 Function11878d:
 	ld a, [wc821]
 	bit 1, a
@@ -1038,23 +968,6 @@ Function118880:
 	ld hl, $46
 	ld a, MOBILEAPI_01
 	jp Function119e2b
-
-Function118896: ; unreferenced
-	ld a, [wc821]
-	bit 1, a
-	jr nz, .asm_1188a5
-	bit 2, a
-	jr nz, .asm_1188a5
-	bit 0, a
-	jr z, .asm_1188aa
-
-.asm_1188a5
-	ld a, MOBILEAPI_1A
-	jp Function119e2b
-
-.asm_1188aa
-	call BattleTowerRoomMenu_IncrementJumptable
-	jp BattleTowerRoomMenu_IncrementJumptable
 
 Function1188b0:
 	ld de, wc346
@@ -1302,24 +1215,6 @@ BattleTowerRoomMenu_UpdatePickLevelMenu:
 	ld [wMobileInactivityTimerFrames], a
 	ret
 
-Function118a54: ; unreferenced
-	ld a, [wcd55]
-	ld l, a
-	ld a, [wcd56]
-	ld h, a
-	ld de, wc3ec
-	ld bc, $0004
-	jp Function118ae4
-
-Function118a65: ; unreferenced
-	ld hl, BattleDownloadURL
-	ld de, wcc60
-	ld bc, $80
-	call CopyBytes
-	ld de, w3_d000
-	ld bc, $1000
-	jp Function118b10
-
 SetBattleDownloadURL:
 	ld hl, BattleDownloadURL
 	ld de, wcc60
@@ -1358,7 +1253,7 @@ SetStadiumDownloadURL:
 	ld bc, $1000
 	jr Function118b10
 
-SetOddEggDownloadURL:
+SetOddEggDownloadURL: ; unreferenced
 	ld hl, OddEggDownloadURL
 	ld de, wcc60
 	ld bc, $80
@@ -1367,7 +1262,7 @@ SetOddEggDownloadURL:
 	ld bc, $1000
 	jr Function118b10
 
-Function118ae4:
+Function118ae4: ; unreferenced
 	push bc
 	push de
 	push hl
@@ -2959,7 +2854,7 @@ Function1196de:
 	add c
 	ret
 
-Function1196f2:
+Function1196f2: ; unreferenced
 	ld hl, wd002
 .asm_1196f5
 	call Function118b9a
@@ -3122,7 +3017,7 @@ Function1197bf:
 	add $57
 	ret
 
-Function1197c9:
+Function1197c9: ; unreferenced
 	ld hl, wd002
 	call Function118e39
 	ld a, $9
@@ -3131,7 +3026,7 @@ Function1197c9:
 	ld [wMobileInactivityTimerSeconds], a
 	call BattleTowerRoomMenu_IncrementJumptable
 
-Function1197dc:
+Function1197dc: ; unreferenced
 	call BattleTowerRoomMenu2
 	ret c
 	call DelayFrame
@@ -3148,7 +3043,7 @@ Function1197dc:
 	ld a, MOBILEAPI_15
 	jp Function119e2b
 
-Function119800:
+Function119800:; unreferenced
 	ld a, $fd
 	ld [wc6d0], a
 	ld [wOTTrademonSpecies], a

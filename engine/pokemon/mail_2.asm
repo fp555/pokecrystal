@@ -20,6 +20,7 @@ ReadPartyMonMail:
 	call AddNTimes
 	ld d, h
 	ld e, l
+	; fallthrough
 ReadAnyMail:
 	push de
 	call ClearBGPalettes
@@ -41,7 +42,6 @@ ReadAnyMail:
 	sub MAIL_LANG_ITALIAN
 	jr c, .got_font
 	ld de, SpanishItalianFont
-
 .got_font
 	ld hl, vTiles1
 	lb bc, BANK(StandardEnglishFont), $80
@@ -61,7 +61,6 @@ ReadAnyMail:
 	call DisableLCD
 	call LoadStandardFont
 	jp EnableLCD
-
 .loop
 	call GetJoypad
 	ldh a, [hJoyPressed]
@@ -76,7 +75,6 @@ endc
 	vc_patch_end
 	jr nz, .pressed_start
 	ret
-
 .pressed_start
 	ld a, [wJumptableIndex]
 	push af
@@ -84,7 +82,6 @@ endc
 	pop af
 	ld [wJumptableIndex], a
 	jr .loop
-
 .LoadGFX:
 	ld h, d
 	ld l, e
@@ -113,11 +110,9 @@ endc
 	inc hl
 	inc hl
 	jr .loop2
-
 .invalid
 	ld hl, MailGFXPointers
 	inc hl
-
 .got_pointer
 	ld a, c
 	ld [wCurMailIndex], a
@@ -185,7 +180,6 @@ FinishLoadingSurfLiteBlueMailGFX:
 	call LoadMailGFX_Color1
 	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-
 	call DrawMailBorder
 	hlcoord 2, 15
 	ld a, $3f
@@ -259,7 +253,6 @@ LoadEonMailGFX:
 	ld de, EonMailBorder2GFX
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-
 	ld a, $31
 	hlcoord 0, 0
 	call Mail_Place18TileAlternatingRow
@@ -298,7 +291,6 @@ LoadLovelyMailGFX:
 	ld de, LovelyMailSmallHeartGFX
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-
 	call DrawMailBorder2
 	hlcoord 2, 15
 	ld a, $3c
@@ -446,7 +438,6 @@ LoadBlueSkyMailGFX:
 	ld de, MailCloudGFX + 5 * LEN_1BPP_TILE
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-
 	ld a, $31
 	hlcoord 0, 0
 	call Mail_DrawFullWidthBorder
@@ -519,7 +510,6 @@ LoadFlowerMailGFX:
 	call LoadMailGFX_Color1
 	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-
 	call DrawMailBorder
 	hlcoord 2, 15
 	ld a, $3d ; underline
@@ -572,7 +562,6 @@ LoadPortraitMailGFX:
 	ld de, PortraitMailSmallPokeballGFX
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-
 	call DrawMailBorder2
 	hlcoord 8, 15
 	ld a, $36
@@ -607,7 +596,6 @@ LoadMusicMailGFX:
 	ld de, MusicMailSmallNoteGFX
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-
 	ld a, $31
 	hlcoord 0, 0
 	call Mail_Place18TileAlternatingRow
@@ -645,7 +633,6 @@ LoadMirageMailGFX:
 	ld de, LiteBlueMailBorderGFX + 6 * LEN_1BPP_TILE
 	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-
 	call DrawMailBorder2
 	ld a, $36
 	hlcoord 1, 16
@@ -729,21 +716,8 @@ MailGFX_PlaceMessage:
 	cp MORPH_MAIL_INDEX
 	jr z, .place_author
 	hlcoord 5, 14
-
 .place_author
 	jp PlaceString
-
-InvertBytes: ; unreferenced
-; invert bc bytes starting at hl
-.loop
-	ld a, [hl]
-	xor $ff
-	ld [hli], a
-	dec bc
-	ld a, b
-	or c
-	jr nz, .loop
-	ret
 
 DrawMailBorder:
 	hlcoord 0, 0
@@ -791,16 +765,10 @@ Mail_Place14TileAlternatingRow:
 	ld b, 14 / 2
 	jr Mail_PlaceAlternatingRow
 
-Mail_Place16TileAlternatingRow: ; unreferenced
-	push af
-	ld b, 16 / 2
-	jr Mail_PlaceAlternatingRow
-
 Mail_Place18TileAlternatingRow:
 	push af
 	ld b, 18 / 2
 	; fallthrough
-
 Mail_PlaceAlternatingRow:
 .loop
 	ld [hli], a
@@ -837,10 +805,6 @@ Mail_PlaceAlternatingColumn:
 	pop af
 	ret
 
-Mail_Draw7TileRow: ; unreferenced
-	ld b, 7
-	jr Mail_DrawRowLoop
-
 Mail_Draw13TileRow:
 	ld b, 13
 	jr Mail_DrawRowLoop
@@ -856,7 +820,6 @@ Mail_DrawTopBottomBorder:
 Mail_DrawFullWidthBorder:
 	ld b, SCREEN_WIDTH
 	; fallthrough
-
 Mail_DrawRowLoop:
 .loop
 	ld [hli], a

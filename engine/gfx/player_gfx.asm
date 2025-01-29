@@ -1,14 +1,3 @@
-BetaLoadPlayerTrainerClass: ; unreferenced
-	ld c, CAL
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
-	jr z, .got_class
-	ld c, KAREN ; not KRIS?
-.got_class
-	ld a, c
-	ld [wTrainerClass], a
-	ret
-
 MovePlayerPicRight:
 	hlcoord 6, 4
 	ld de, 1
@@ -18,7 +7,6 @@ MovePlayerPicLeft:
 	hlcoord 13, 4
 	ld de, -1
 	; fallthrough
-
 MovePlayerPic:
 ; Move player pic at hl by de * 7 tiles.
 	ld c, $8
@@ -70,17 +58,6 @@ ShowPlayerNamingChoices:
 	ret
 
 INCLUDE "data/player_names.asm"
-
-GetPlayerNameArray: ; unreferenced
-	ld hl, wPlayerName
-	ld de, MalePlayerNameArray
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
-	jr z, .got_array
-	ld de, FemalePlayerNameArray
-.got_array
-	call InitName
-	ret
 
 GetPlayerIcon:
 	ld de, ChrisSpriteGFX
@@ -139,8 +116,7 @@ HOF_LoadTrainerFrontpic:
 	call WaitBGMap
 	xor a
 	ldh [hBGMapMode], a
-
-; Get class
+	; Get class
 	ld e, CHRIS
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
@@ -149,8 +125,7 @@ HOF_LoadTrainerFrontpic:
 .got_class
 	ld a, e
 	ld [wTrainerClass], a
-
-; Load pic
+	; Load pic
 	ld de, ChrisPic
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
@@ -161,7 +136,6 @@ HOF_LoadTrainerFrontpic:
 	ld b, BANK(ChrisPic) ; aka BANK(KrisPic)
 	ld c, 7 * 7
 	call Get2bpp
-
 	call WaitBGMap
 	ld a, $1
 	ldh [hBGMapMode], a
@@ -169,8 +143,7 @@ HOF_LoadTrainerFrontpic:
 
 DrawIntroPlayerPic:
 ; Draw the player pic at (6,4).
-
-; Get class
+	; Get class
 	ld e, CHRIS
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
@@ -179,8 +152,7 @@ DrawIntroPlayerPic:
 .got_class
 	ld a, e
 	ld [wTrainerClass], a
-
-; Load pic
+	; Load pic
 	ld de, ChrisPic
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
@@ -191,8 +163,7 @@ DrawIntroPlayerPic:
 	ld b, BANK(ChrisPic) ; aka BANK(KrisPic)
 	ld c, 7 * 7 ; dimensions
 	call Get2bpp
-
-; Draw
+	; Draw
 	xor a
 	ldh [hGraphicStartTile], a
 	hlcoord 6, 4

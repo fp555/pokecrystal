@@ -7,7 +7,6 @@ InitClock:
 	push af
 	ld a, $1
 	ldh [hInMenu], a
-
 	ld a, FALSE
 	ld [wSpriteUpdatesEnabled], a
 	ld a, $10
@@ -49,7 +48,6 @@ InitClock:
 	call ByteFill
 	ld a, 10 ; default hour = 10 AM
 	ld [wInitHourBuffer], a
-
 .loop
 	ld hl, OakTimeWhatTimeIsItText
 	call PrintText
@@ -65,12 +63,10 @@ InitClock:
 	call DisplayHourOClock
 	ld c, 10
 	call DelayFrames
-
 .SetHourLoop:
 	call JoyTextDelay
 	call SetHour
 	jr nc, .SetHourLoop
-
 	ld a, [wInitHourBuffer]
 	ld [wStringBuffer2 + 1], a
 	call .ClearScreen
@@ -80,7 +76,6 @@ InitClock:
 	jr nc, .HourIsSet
 	call .ClearScreen
 	jr .loop
-
 .HourIsSet:
 	ld hl, OakTimeHowManyMinutesText
 	call PrintText
@@ -95,12 +90,10 @@ InitClock:
 	call DisplayMinutesWithMinString
 	ld c, 10
 	call DelayFrames
-
 .SetMinutesLoop:
 	call JoyTextDelay
 	call SetMinutes
 	jr nc, .SetMinutesLoop
-
 	ld a, [wInitMinuteBuffer]
 	ld [wStringBuffer2 + 2], a
 	call .ClearScreen
@@ -110,7 +103,6 @@ InitClock:
 	jr nc, .MinutesAreSet
 	call .ClearScreen
 	jr .HourIsSet
-
 .MinutesAreSet:
 	call InitTimeOfDay
 	ld hl, OakText_ResponseToSetTime
@@ -119,7 +111,6 @@ InitClock:
 	pop af
 	ldh [hInMenu], a
 	ret
-
 .ClearScreen:
 	xor a
 	ldh [hBGMapMode], a
@@ -135,7 +126,6 @@ SetHour:
 	ldh a, [hJoyPressed]
 	and A_BUTTON
 	jr nz, .Confirm
-
 	ld hl, hJoyLast
 	ld a, [hl]
 	and D_UP
@@ -146,7 +136,6 @@ SetHour:
 	call DelayFrame
 	and a
 	ret
-
 .down
 	ld hl, wInitHourBuffer
 	ld a, [hl]
@@ -157,7 +146,6 @@ SetHour:
 	dec a
 	ld [hl], a
 	jr .okay
-
 .up
 	ld hl, wInitHourBuffer
 	ld a, [hl]
@@ -167,7 +155,6 @@ SetHour:
 .AdvanceThroughMidnight:
 	inc a
 	ld [hl], a
-
 .okay
 	hlcoord 4, 9
 	ld a, " "
@@ -178,7 +165,6 @@ SetHour:
 	call WaitBGMap
 	and a
 	ret
-
 .Confirm:
 	scf
 	ret
@@ -196,32 +182,6 @@ DisplayHourOClock:
 	pop hl
 	ret
 
-DisplayHoursMinutesWithMinString: ; unreferenced
-	ld h, d
-	ld l, e
-	push hl
-	call DisplayHourOClock
-	pop de
-	inc de
-	inc de
-	ld a, ":"
-	ld [de], a
-	inc de
-	push de
-	ld hl, 3
-	add hl, de
-	ld a, [de]
-	inc de
-	ld [hli], a
-	ld a, [de]
-	ld [hl], a
-	pop hl
-	call DisplayMinutesWithMinString
-	inc hl
-	inc hl
-	inc hl
-	ret
-
 SetMinutes:
 	ldh a, [hJoyPressed]
 	and A_BUTTON
@@ -236,7 +196,6 @@ SetMinutes:
 	call DelayFrame
 	and a
 	ret
-
 .d_down
 	ld hl, wInitMinuteBuffer
 	ld a, [hl]
@@ -247,7 +206,6 @@ SetMinutes:
 	dec a
 	ld [hl], a
 	jr .finish_dpad
-
 .d_up
 	ld hl, wInitMinuteBuffer
 	ld a, [hl]
@@ -308,7 +266,6 @@ OakTimeWhatHoursText:
 	call DisplayHourOClock
 	ld hl, .OakTimeHoursQuestionMarkText
 	ret
-
 .OakTimeHoursQuestionMarkText:
 	text_far _OakTimeHoursQuestionMarkText
 	text_end
@@ -328,7 +285,6 @@ OakTimeWhoaMinutesText:
 	call DisplayMinutesWithMinString
 	ld hl, .OakTimeMinutesQuestionMarkText
 	ret
-
 .OakTimeMinutesQuestionMarkText:
 	text_far _OakTimeMinutesQuestionMarkText
 	text_end
@@ -362,15 +318,12 @@ OakText_ResponseToSetTime:
 .day
 	ld hl, .OakTimeYikesText
 	ret
-
 .OakTimeOversleptText:
 	text_far _OakTimeOversleptText
 	text_end
-
 .OakTimeYikesText:
 	text_far _OakTimeYikesText
 	text_end
-
 .OakTimeSoDarkText:
 	text_far _OakTimeSoDarkText
 	text_end
@@ -434,14 +387,12 @@ SetDayOfWeek:
 	pop af
 	ldh [hInMenu], a
 	ret
-
 .GetJoypadAction:
 	ldh a, [hJoyPressed]
 	and A_BUTTON
 	jr z, .not_A
 	scf
 	ret
-
 .not_A
 	ld hl, hJoyLast
 	ld a, [hl]
@@ -453,30 +404,25 @@ SetDayOfWeek:
 	call DelayFrame
 	and a
 	ret
-
 .d_down
 	ld hl, wTempDayOfWeek
 	ld a, [hl]
 	and a
 	jr nz, .decrease
 	ld a, SATURDAY + 1
-
 .decrease
 	dec a
 	ld [hl], a
 	jr .finish_dpad
-
 .d_up
 	ld hl, wTempDayOfWeek
 	ld a, [hl]
 	cp 6
 	jr c, .increase
 	ld a, SUNDAY - 1
-
 .increase
 	inc a
 	ld [hl], a
-
 .finish_dpad
 	xor a
 	ldh [hBGMapMode], a
@@ -489,7 +435,6 @@ SetDayOfWeek:
 	call WaitBGMap
 	and a
 	ret
-
 .PlaceWeekdayString:
 	push hl
 	ld a, [wTempDayOfWeek]
@@ -504,7 +449,6 @@ SetDayOfWeek:
 	pop hl
 	call PlaceString
 	ret
-
 .WeekdayStrings:
 ; entries correspond to wCurDay constants (see constants/ram_constants.asm)
 	dw .Sunday
@@ -515,7 +459,6 @@ SetDayOfWeek:
 	dw .Friday
 	dw .Saturday
 	dw .Sunday
-
 .Sunday:    db " SUNDAY@"
 .Monday:    db " MONDAY@"
 .Tuesday:   db " TUESDAY@"
@@ -523,18 +466,15 @@ SetDayOfWeek:
 .Thursday:  db "THURSDAY@"
 .Friday:    db " FRIDAY@"
 .Saturday:  db "SATURDAY@"
-
 .OakTimeWhatDayIsItText:
 	text_far _OakTimeWhatDayIsItText
 	text_end
-
 .ConfirmWeekdayText:
 	text_asm
 	hlcoord 1, 14
 	call .PlaceWeekdayString
 	ld hl, .OakTimeIsItText
 	ret
-
 .OakTimeIsItText:
 	text_far _OakTimeIsItText
 	text_end
@@ -549,7 +489,6 @@ InitialSetDSTFlag:
 	ld hl, .Text
 	call PrintTextboxTextAt
 	ret
-
 .Text:
 	text_asm
 	call UpdateTime
@@ -561,7 +500,6 @@ InitialSetDSTFlag:
 	farcall PrintHoursMins
 	ld hl, .DSTIsThatOKText
 	ret
-
 .DSTIsThatOKText:
 	text_far _DSTIsThatOKText
 	text_end
@@ -576,7 +514,6 @@ InitialClearDSTFlag:
 	ld hl, .Text
 	call PrintTextboxTextAt
 	ret
-
 .Text:
 	text_asm
 	call UpdateTime
@@ -588,89 +525,9 @@ InitialClearDSTFlag:
 	farcall PrintHoursMins
 	ld hl, .TimeAskOkayText
 	ret
-
 .TimeAskOkayText:
 	text_far _TimeAskOkayText
 	text_end
-
-MrChrono: ; unreferenced
-	hlcoord 1, 14
-	lb bc, 3, SCREEN_WIDTH - 2
-	call ClearBox
-	ld hl, .Text
-	call PrintTextboxTextAt
-	ret
-
-.Text:
-	text_asm
-	call UpdateTime
-
-	hlcoord 1, 14
-	ld [hl], "R"
-	inc hl
-	ld [hl], "T"
-	inc hl
-	ld [hl], " "
-	inc hl
-
-	ld de, hRTCDayLo
-	call .PrintTime
-
-	hlcoord 1, 16
-	ld [hl], "D"
-	inc hl
-	ld [hl], "F"
-	inc hl
-	ld [hl], " "
-	inc hl
-
-	ld de, wStartDay
-	call .PrintTime
-
-	ld [hl], " "
-	inc hl
-
-	ld a, [wDST]
-	bit DST_F, a
-	jr z, .off
-
-	ld [hl], "O"
-	inc hl
-	ld [hl], "N"
-	inc hl
-	jr .done
-
-.off
-	ld [hl], "O"
-	inc hl
-	ld [hl], "F"
-	inc hl
-	ld [hl], "F"
-	inc hl
-
-.done
-	ld hl, .NowOnDebug
-	ret
-
-.NowOnDebug:
-	text_start
-	para "Now on DEBUG…"
-	prompt
-
-.PrintTime:
-	lb bc, 1, 3
-	call PrintNum
-	ld [hl], "."
-	inc hl
-	inc de
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
-	call PrintNum
-	ld [hl], ":"
-	inc hl
-	inc de
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
-	call PrintNum
-	ret
 
 PrintHour:
 	ld l, e
@@ -705,7 +562,6 @@ GetTimeOfDayString:
 .day
 	ld de, .day_string
 	ret
-
 .nite_string: db "NITE@"
 .morn_string: db "MORN@"
 .day_string:  db "DAY@"
@@ -720,7 +576,6 @@ AdjustHourForAMorPM:
 	ret z
 	sub NOON_HOUR
 	ret
-
 .midnight
 	ld a, NOON_HOUR
 	ret

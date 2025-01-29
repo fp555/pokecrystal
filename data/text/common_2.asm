@@ -196,21 +196,6 @@ _TMHMNotCompatibleText::
 	text "."
 	prompt
 
-_NoRoomTMHMText::
-	text "You have no room"
-	line "for any more"
-	cont "@"
-	text_ram wStringBuffer1
-	text "S."
-	prompt
-
-_ReceivedTMHMText::
-	text "You received"
-	line "@"
-	text_ram wStringBuffer1
-	text "!"
-	prompt
-
 _MysteryGiftCanceledText::
 	text "The link has been"
 	line "cancelled."
@@ -578,10 +563,6 @@ _AnEggCantHoldAnItemText::
 	line "an item."
 	prompt
 
-_PackNoItemText::
-	text "No items."
-	done
-
 _AskThrowAwayText::
 	text "Throw away how"
 	line "many?"
@@ -634,11 +615,6 @@ _AskItemMoveText::
 _PackEmptyText::
 	text_start
 	done
-
-_YouCantUseItInABattleText::
-	text "You can't use it"
-	line "in a battle."
-	prompt
 
 _AreYouABoyOrAreYouAGirlText::
 	text "Are you a boy?"
@@ -857,21 +833,6 @@ _PCMonHoldingMailText::
 
 	para "Please remove the"
 	line "MAIL."
-	prompt
-
-_PCNoSingleMonText::
-	text "You don't have a"
-	line "single #MON!"
-	prompt
-
-_PCCantDepositLastMonText::
-	text "You can't deposit"
-	line "your last #MON!"
-	prompt
-
-_PCCantTakeText::
-	text "You can't take any"
-	line "more #MON."
 	prompt
 
 _ContestCaughtMonText::

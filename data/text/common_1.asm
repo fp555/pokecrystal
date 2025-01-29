@@ -403,14 +403,6 @@ _MobileForPartnersMonText::
 	text "."
 	done
 
-_MobilePlayersMonTradeText::
-	text_ram wPlayerTrademonSenderName
-	text "'s"
-	line "@"
-	text_ram wPlayerTrademonSpeciesName
-	text " trade…"
-	done
-
 _MobileTakeGoodCareOfMonText::
 	text "Take good care of"
 	line "@"
@@ -1073,10 +1065,6 @@ _CardWasListedText::
 	text_decimal wStringBuffer1, 1, 2
 	text "."
 	prompt
-
-_StartingLinkText::
-	text "Starting link."
-	done
 
 _LinkTerminatedText::
 	text "Link terminated."

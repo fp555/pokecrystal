@@ -9,7 +9,6 @@ Load2DMenuData::
 	ld [hli], a
 	dec b
 	jr nz, .loop
-
 	; Reset menu state
 	ld a, $1
 	ld [hli], a ; wMenuCursorY
@@ -91,30 +90,25 @@ RestoreTileBackup::
 	call MenuBoxCoord2Attr
 	call .copy
 	ret
-
 .copy
 	call GetMenuBoxDims
 	inc b
 	inc c
-
 .row
 	push bc
 	push hl
-
 .col
 	ld a, [de]
 	ld [hli], a
 	dec de
 	dec c
 	jr nz, .col
-
 	pop hl
 	ld bc, SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	dec b
 	jr nz, .row
-
 	ret
 
 PopWindow::
@@ -191,11 +185,9 @@ PlaceVerticalMenuItems::
 	pop bc
 	dec b
 	jr nz, .loop
-
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_PLACE_TITLE_F, a
 	ret z
-
 	call MenuBoxCoord2Tile
 	ld a, [de]
 	ld c, a
@@ -218,19 +210,17 @@ GetMenuTextStartCoord::
 	ld a, [wMenuBorderLeftCoord]
 	ld c, a
 	inc c
-; if not set, leave extra room on top
+	; if not set, leave extra room on top
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_NO_TOP_SPACING_F, a
 	jr nz, .no_top_spacing
 	inc b
-
 .no_top_spacing
-; if set, leave extra room on the left
+	; if set, leave extra room on the left
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_CURSOR_F, a
 	jr z, .no_cursor
 	inc c
-
 .no_cursor
 	ret
 
@@ -258,7 +248,6 @@ MenuBoxCoord2Tile::
 	ld a, [wMenuBorderTopCoord]
 	ld b, a
 	; fallthrough
-
 Coord2Tile::
 ; Return the address of wTilemap(c, b) in hl.
 	xor a
@@ -285,10 +274,7 @@ MenuBoxCoord2Attr::
 	ld c, a
 	ld a, [wMenuBorderTopCoord]
 	ld b, a
-	; fallthrough
-
-Coord2Attr:: ; unreferenced
-; Return the address of wAttrmap(c, b) in hl.
+	; Return the address of wAttrmap(c, b) in hl.
 	xor a
 	ld h, a
 	ld l, b
@@ -331,14 +317,10 @@ MenuTextbox::
 	pop hl
 	jp PrintText
 
-Menu_DummyFunction:: ; unreferenced
-	ret
-
 LoadMenuTextbox::
 	ld hl, .MenuHeader
 	call LoadMenuHeader
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 12, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -354,7 +336,6 @@ LoadStandardMenuHeader::
 	ld hl, .MenuHeader
 	call LoadMenuHeader
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -384,7 +365,6 @@ VerticalMenu::
 .cancel
 	scf
 	ret
-
 .okay
 	and a
 	ret
@@ -421,24 +401,17 @@ YesNoBox::
 PlaceYesNoBox::
 	jr _YesNoBox
 
-PlaceGenericTwoOptionBox:: ; unreferenced
-	call LoadMenuHeader
-	jr InterpretTwoOptionMenu
-
 _YesNoBox::
 ; Return nc (yes) or c (no).
 	push bc
 	ld hl, YesNoMenuHeader
 	call CopyMenuHeader
 	pop bc
-; This seems to be an overflow prevention,
-; but it was coded wrong.
 	ld a, b
 	cp SCREEN_WIDTH - 1 - 5
-	jr nz, .okay ; should this be "jr nc"?
+	jr nc, .okay
 	ld a, SCREEN_WIDTH - 1 - 5
 	ld b, a
-
 .okay
 	ld a, b
 	ld [wMenuBorderLeftCoord], a
@@ -463,7 +436,6 @@ InterpretTwoOptionMenu::
 	jr z, .no
 	and a
 	ret
-
 .no
 	ld a, 2
 	ld [wMenuCursorY], a
@@ -475,7 +447,6 @@ YesNoMenuHeader::
 	menu_coords 10, 5, 15, 9
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING ; flags
 	db 2
@@ -610,7 +581,6 @@ RunMenuItemPrintingFunction::
 	add hl, de
 	pop de
 	jr .loop
-
 ._hl_
 	ld a, [hli]
 	ld h, [hl]
@@ -624,14 +594,12 @@ InitMenuCursorAndButtonPermissions::
 	bit STATICMENU_ENABLE_START_F, a
 	jr z, .disallow_start
 	set START_F, [hl]
-
 .disallow_start
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_ENABLE_LEFT_RIGHT_F, a
 	jr z, .disallow_left_right
 	set D_LEFT_F, [hl]
 	set D_RIGHT_F, [hl]
-
 .disallow_left_right
 	ret
 
@@ -660,21 +628,17 @@ ContinueGettingMenuJoypad:
 	xor a
 	ld [wMenuJoypad], a
 	jr .done
-
 .d_right
 	ld a, D_RIGHT
 	ld [wMenuJoypad], a
 	jr .done
-
 .d_left
 	ld a, D_LEFT
 	ld [wMenuJoypad], a
 	jr .done
-
 .a_button
 	ld a, A_BUTTON
 	ld [wMenuJoypad], a
-
 .done
 	call GetMenuIndexSet
 	ld a, [wMenuCursorY]
@@ -687,7 +651,6 @@ ContinueGettingMenuJoypad:
 	ld [wMenuCursorPosition], a
 	and a
 	ret
-
 .b_start
 	ld a, B_BUTTON
 	ld [wMenuJoypad], a
@@ -723,15 +686,6 @@ PlaceNthMenuStrings::
 	call PlaceString
 	ret
 
-GetNthMenuStrings:: ; unreferenced
-	call GetMenuDataPointerTableEntry
-	inc hl
-	inc hl
-	ld a, [hli]
-	ld d, [hl]
-	ld e, a
-	ret
-
 MenuJumptable::
 	ld a, [wMenuSelection]
 	call GetMenuDataPointerTableEntry
@@ -762,12 +716,10 @@ ClearWindowData::
 	call .ClearMenuData
 	ld hl, wMoreMenuData
 	call .ClearMenuData
-
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wWindowStack)
 	ldh [rSVBK], a
-
 	xor a
 	ld hl, wWindowStackBottom
 	ld [hld], a
@@ -776,11 +728,9 @@ ClearWindowData::
 	ld [wWindowStackPointer], a
 	ld a, h
 	ld [wWindowStackPointer + 1], a
-
 	pop af
 	ldh [rSVBK], a
 	ret
-
 .ClearMenuData:
 	ld bc, wMenuMetadataEnd - wMenuMetadata
 	assert wMenuMetadataEnd - wMenuMetadata == wMenuHeaderEnd - wMenuHeader
@@ -821,11 +771,9 @@ Place2DMenuItemName::
 	push af
 	ldh a, [hTempBank]
 	rst Bankswitch
-
 	call PlaceString
 	pop af
 	rst Bankswitch
-
 	ret
 
 _2DMenu::
@@ -839,12 +787,5 @@ InterpretBattleMenu::
 	ldh a, [hROMBank]
 	ld [wMenuData_2DMenuItemStringsBank], a
 	farcall _InterpretBattleMenu
-	ld a, [wMenuCursorPosition]
-	ret
-
-InterpretMobileMenu:: ; unreferenced
-	ldh a, [hROMBank]
-	ld [wMenuData_2DMenuItemStringsBank], a
-	farcall _InterpretMobileMenu
 	ld a, [wMenuCursorPosition]
 	ret

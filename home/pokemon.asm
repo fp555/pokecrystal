@@ -6,30 +6,24 @@ IsAPokemon::
 	jr z, .Pokemon
 	cp NUM_POKEMON + 1
 	jr c, .Pokemon
-
 .NotAPokemon:
 	scf
 	ret
-
 .Pokemon:
 	and a
 	ret
 
 DrawBattleHPBar::
-; Draw an HP bar d tiles long at hl
-; Fill it up to e pixels
-
+; Draw an HP bar d tiles long at hl and fill it up to e pixels
 	push hl
 	push de
 	push bc
-
-; Place 'HP:'
+	; Place 'HP:'
 	ld a, $60
 	ld [hli], a
 	ld a, $61
 	ld [hli], a
-
-; Draw a template
+	; Draw a template
 	push hl
 	ld a, $62 ; empty bar
 .template
@@ -40,8 +34,7 @@ DrawBattleHPBar::
 	add b
 	ld [hl], a
 	pop hl
-
-; Safety check # pixels
+	; Safety check # pixels
 	ld a, e
 	and a
 	jr nz, .fill
@@ -49,13 +42,11 @@ DrawBattleHPBar::
 	and a
 	jr z, .done
 	ld e, 1
-
 .fill
 ; Keep drawing tiles until pixel length is reached
 	ld a, e
 	sub TILE_WIDTH
 	jr c, .lastbar
-
 	ld e, a
 	ld a, $6a ; full bar
 	ld [hli], a
@@ -63,12 +54,10 @@ DrawBattleHPBar::
 	and a
 	jr z, .done
 	jr .fill
-
 .lastbar
 	ld a, $62  ; empty bar
 	add e      ; + e
 	ld [hl], a
-
 .done
 	pop bc
 	pop de
@@ -78,12 +67,11 @@ DrawBattleHPBar::
 PrepMonFrontpic::
 	ld a, $1
 	ld [wBoxAlignment], a
-
+	; fallthrough
 _PrepMonFrontpic::
 	ld a, [wCurPartySpecies]
 	call IsAPokemon
 	jr c, .not_pokemon
-
 	push hl
 	ld de, vTiles2
 	predef GetMonFrontpic
@@ -95,7 +83,6 @@ _PrepMonFrontpic::
 	xor a
 	ld [wBoxAlignment], a
 	ret
-
 .not_pokemon
 	xor a
 	ld [wBoxAlignment], a
@@ -140,14 +127,11 @@ _PlayMonCry::
 	push hl
 	push de
 	push bc
-
 	call GetCryIndex
 	jr c, .done
-
 	ld e, c
 	ld d, b
 	call PlayCry
-
 .done
 	pop bc
 	pop de
@@ -156,25 +140,20 @@ _PlayMonCry::
 
 LoadCry::
 ; Load cry bc.
-
 	call GetCryIndex
 	ret c
-
 	ldh a, [hROMBank]
 	push af
 	ld a, BANK(PokemonCries)
 	rst Bankswitch
-
 	ld hl, PokemonCries
 rept MON_CRY_LENGTH
 	add hl, bc
 endr
-
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
 	inc hl
-
 	ld a, [hli]
 	ld [wCryPitch], a
 	ld a, [hli]
@@ -183,7 +162,6 @@ endr
 	ld [wCryLength], a
 	ld a, [hl]
 	ld [wCryLength + 1], a
-
 	pop af
 	rst Bankswitch
 	and a
@@ -194,30 +172,25 @@ GetCryIndex::
 	jr z, .no
 	cp NUM_POKEMON + 1
 	jr nc, .no
-
 	dec a
 	ld c, a
 	ld b, 0
 	and a
 	ret
-
 .no
 	scf
 	ret
 
 PrintLevel::
 ; Print wTempMonLevel at hl
-
 	ld a, [wTempMonLevel]
 	ld [hl], "<LV>"
 	inc hl
-
-; How many digits?
+	; How many digits?
 	ld c, 2
 	cp 100 ; This is distinct from MAX_LEVEL.
 	jr c, Print8BitNumLeftAlign
-
-; 3-digit numbers overwrite the :L.
+	; 3-digit numbers overwrite the :L.
 	dec hl
 	inc c
 	jr Print8BitNumLeftAlign
@@ -234,14 +207,6 @@ Print8BitNumLeftAlign::
 	ld b, PRINTNUM_LEFTALIGN | 1
 	jp PrintNum
 
-GetNthMove:: ; unreferenced
-	ld hl, wListMoves_MoveIndicesBuffer
-	ld c, a
-	ld b, 0
-	add hl, bc
-	ld a, [hl]
-	ret
-
 GetBaseData::
 	push bc
 	push de
@@ -250,13 +215,11 @@ GetBaseData::
 	push af
 	ld a, BANK(BaseData)
 	rst Bankswitch
-
-; Egg doesn't have BaseData
+	; Egg doesn't have BaseData
 	ld a, [wCurSpecies]
 	cp EGG
 	jr z, .egg
-
-; Get BaseData
+	; Get BaseData
 	dec a
 	ld bc, BASE_DATA_SIZE
 	ld hl, BaseData
@@ -265,17 +228,14 @@ GetBaseData::
 	ld bc, BASE_DATA_SIZE
 	call CopyBytes
 	jr .end
-
 .egg
 	ld de, UnusedEggPic
-
-; Sprite dimensions
+	; Sprite dimensions
 	ld b, $55 ; 5x5
 	ld hl, wBasePicSize
 	ld [hl], b
-
-; Beta front and back sprites
-; (see pokegold-spaceworld's data/pokemon/base_stats/*)
+	; Beta front and back sprites
+	; (see pokegold-spaceworld's data/pokemon/base_stats/*)
 	ld hl, wBaseUnusedFrontpic
 	ld [hl], e
 	inc hl
@@ -284,13 +244,10 @@ GetBaseData::
 	ld [hl], e
 	inc hl
 	ld [hl], d
-	jr .end ; useless
-
 .end
-; Replace Pokedex # with species
+	; Replace Pokedex # with species
 	ld a, [wCurSpecies]
 	ld [wBaseDexNo], a
-
 	pop af
 	rst Bankswitch
 	pop hl
@@ -304,20 +261,15 @@ GetCurNickname::
 
 GetNickname::
 ; Get nickname a from list hl.
-
 	push hl
 	push bc
-
 	call SkipNames
 	ld de, wStringBuffer1
-
 	push de
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 	pop de
-
 	callfar CorrectNickErrors
-
 	pop bc
 	pop hl
 	ret

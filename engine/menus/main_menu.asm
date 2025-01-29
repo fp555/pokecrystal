@@ -46,23 +46,19 @@ MainMenu:
 	ld hl, .Jumptable
 	rst JumpTable
 	jr .loop
-
 .quit
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 16, 7
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 0 ; items
 	dw MainMenuItems
 	dw PlaceMenuStrings
 	dw .Strings
-
 .Strings:
 ; entries correspond to MAINMENUITEM_* constants
 	db "CONTINUE@"
@@ -74,7 +70,6 @@ MainMenu:
 if DEF(_DEBUG)
 	db "DEBUG ROOM@"
 endc
-
 .Jumptable:
 ; entries correspond to MAINMENUITEM_* constants
 	dw MainMenu_Continue
@@ -89,13 +84,11 @@ endc
 
 MainMenuItems:
 ; entries correspond to MAINMENU_* constants
-
 	; MAINMENU_NEW_GAME
 	db 2
 	db MAINMENUITEM_NEW_GAME
 	db MAINMENUITEM_OPTION
 	db -1
-
 	; MAINMENU_CONTINUE
 	db 3 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -105,7 +98,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MOBILE_MYSTERY
 	db 5 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -117,7 +109,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MOBILE
 	db 4 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -128,7 +119,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MOBILE_STUDIUM
 	db 5 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -140,7 +130,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MYSTERY_MOBILE_STUDIUM
 	db 6 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -153,7 +142,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MYSTERY
 	db 4 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -164,7 +152,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_MYSTERY_STUDIUM
 	db 5 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -176,7 +163,6 @@ if DEF(_DEBUG)
 	db MAINMENUITEM_DEBUG_ROOM
 endc
 	db -1
-
 	; MAINMENU_STUDIUM
 	db 4 + DEF(_DEBUG)
 	db MAINMENUITEM_CONTINUE
@@ -197,7 +183,6 @@ MainMenu_GetWhichMenu:
 	jr nz, .next
 	ld a, MAINMENU_NEW_GAME
 	ret
-
 .next
 	ldh a, [hCGB]
 	cp TRUE
@@ -209,31 +194,9 @@ MainMenu_GetWhichMenu:
 	cp -1 ; locked?
 	call CloseSRAM
 	jr nz, .mystery_gift
-	; This check makes no difference.
-	ld a, [wStatusFlags]
-	bit STATUSFLAGS_MAIN_MENU_MOBILE_CHOICES_F, a
-	ld a, MAINMENU_CONTINUE
-	jr z, .ok
-	jr .ok
-
-.ok
-	jr .ok2
-
-.ok2
 	ld a, MAINMENU_CONTINUE
 	ret
-
 .mystery_gift
-	; This check makes no difference.
-	ld a, [wStatusFlags]
-	bit STATUSFLAGS_MAIN_MENU_MOBILE_CHOICES_F, a
-	jr z, .ok3
-	jr .ok3
-
-.ok3
-	jr .ok4
-
-.ok4
 	ld a, MAINMENU_MYSTERY
 	ret
 
@@ -251,12 +214,10 @@ MainMenuJoypadLoop:
 	cp A_BUTTON
 	jr z, .a_button
 	jr .loop
-
 .a_button
 	call PlayClickSFX
 	and a
 	ret
-
 .b_button
 	scf
 	ret
@@ -278,7 +239,6 @@ MainMenu_PrintCurrentTimeAndDay:
 	ld a, $1
 	ldh [hBGMapMode], a
 	ret
-
 .PlaceBox:
 	call CheckRTCStatus
 	and RTC_RESET
@@ -288,11 +248,9 @@ MainMenu_PrintCurrentTimeAndDay:
 	ld c, 18
 	call Textbox
 	ret
-
 .TimeFail:
 	call SpeechTextbox
 	ret
-
 .PlaceTime:
 	ld a, [wSaveFileExists]
 	and a
@@ -315,23 +273,13 @@ MainMenu_PrintCurrentTimeAndDay:
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
 	ret
-
-.minString: ; unreferenced
-	db "min.@"
-
 .PrintTimeNotSet:
 	hlcoord 1, 14
 	ld de, .TimeNotSetString
 	call PlaceString
 	ret
-
 .TimeNotSetString:
 	db "TIME NOT SET@"
-
-.MainMenuTimeUnknownText: ; unreferenced
-	text_far _MainMenuTimeUnknownText
-	text_end
-
 .PrintDayOfWeek:
 	push de
 	ld hl, .Days
@@ -346,7 +294,6 @@ MainMenu_PrintCurrentTimeAndDay:
 	ld de, .Day
 	call PlaceString
 	ret
-
 .Days:
 	db "SUN@"
 	db "MON@"

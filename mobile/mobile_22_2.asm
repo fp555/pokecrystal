@@ -1,49 +1,8 @@
 Function8b342::
-; Loads the map data pointer, then runs through a
-; dw with three dummy functions. Spends a lot of energy
-; doing pretty much nothing.
+; this does pretty much nothing.
 	call GetMapAttributesPointer
 	ld d, h
 	ld e, l
-
-; Everything between here and "ret" is useless.
-	xor a
-.loop
-	push af
-	ld hl, .dw
-	rst JumpTable
-	pop af
-	inc a
-	cp 3
-	jr nz, .loop
-	ret
-
-.dw
-	dw .zero
-	dw .one
-	dw .two
-
-.zero
-	ret
-
-.one
-	ret
-
-.two
-	ret
-
-Function8b35d: ; unreferenced
-	ld a, h
-	cp d
-	ret nz
-	ld a, l
-	cp e
-	ret
-
-Function8b363: ; unreferenced
-	push bc
-	farcall CheckMobileAdapterStatus
-	pop bc
 	ret
 
 Function8b36c:
@@ -166,7 +125,6 @@ Function8b3dd:
 	jr nz, .d_down
 	and a
 	ret
-
 .a_button
 	ld a, e
 	cp $3
@@ -177,13 +135,11 @@ Function8b3dd:
 	xor a
 	ld [wd010], a
 	ret
-
 .e_is_zero
 	call PlayClickSFX
 	ld d, $0
 	scf
 	ret
-
 .b_button
 	ld a, e
 	and a
@@ -194,7 +150,6 @@ Function8b3dd:
 	ld d, 1
 	scf
 	ret
-
 .e_is_not_zero
 	ld d, -1
 	call Function8b385
@@ -202,7 +157,6 @@ Function8b3dd:
 	xor a
 	ld [wd010], a
 	ret
-
 .d_up
 	call Function8b379
 	ld a, d
@@ -220,7 +174,6 @@ Function8b3dd:
 	xor a
 	ld [wd010], a
 	ret
-
 .d_down
 	call Function8b379
 	ld a, d
@@ -420,7 +373,6 @@ Function8b555:
 	ld hl, FourZerosInvalidText
 	call PrintText
 	jr .loop
-
 .asm_8b57c
 	ld hl, ConfirmPasscodeText
 	call PrintText
@@ -437,7 +389,6 @@ Function8b555:
 	ld hl, PasscodesNotSameText
 	call PrintText
 	jr .asm_8b57c
-
 .strings_equal
 	call OpenSRAMBank4
 	ld hl, wd013
@@ -536,7 +487,6 @@ UnknownText_0x8b64c:
 	call DelayFrames
 	ld hl, .string_8b663
 	ret
-
 .string_8b663
 	text_end
 
@@ -719,9 +669,6 @@ Function8b75d:
 	jr nz, .asm_8b780
 	jr Function8b79e
 
-Function8b787: ; unreferenced
-	ret
-
 Function8b788:
 .asm_8b788
 	ld a, $2
@@ -781,14 +728,12 @@ Function8b7bd:
 	ld a, [wMenuFlags]
 	set 3, a
 	ld [wMenuFlags], a
-
 .asm_8b7e0
 	ld a, [wd0e3]
 	and a
 	jr z, .asm_8b7ea
 	dec a
 	ld [wScrollingMenuCursorPosition], a
-
 .asm_8b7ea
 	hlcoord 0, 2
 	ld b, $b
@@ -806,21 +751,17 @@ Function8b7bd:
 	jr nz, .asm_8b813
 	call Function8b832
 	jr .asm_8b7ea
-
 .asm_8b813
 	cp D_RIGHT
 	jr nz, .asm_8b81c
 	call Function8b83e
 	jr .asm_8b7ea
-
 .asm_8b81c
 	ld a, [wMenuSelection]
 	cp $ff
 	jr nz, .asm_8b824
-
 .asm_8b823
 	xor a
-
 .asm_8b824
 	ld c, a
 	ld a, [wMenuCursorY]
@@ -871,7 +812,6 @@ MenuHeader_0x8b867:
 	menu_coords 1, 3, 18, 13
 	dw MenuData_0x8b870
 	db 1 ; default option
-
 	db 0
 
 MenuData_0x8b870:
@@ -904,7 +844,6 @@ Function8b88c:
 	add hl, bc
 	ld d, h
 	ld e, l
-
 .asm_8b8a3
 	pop hl
 	push hl
@@ -922,7 +861,6 @@ Function8b88c:
 	add hl, bc
 	ld d, h
 	ld e, l
-
 .asm_8b8c0
 	pop hl
 	call PlaceString

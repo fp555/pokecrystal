@@ -4,7 +4,6 @@ _BillsPC:
 	call .LogIn
 	call .UseBillsPC
 	jp .LogOut
-
 .CheckCanUsePC:
 	ld a, [wPartyCount]
 	and a
@@ -13,11 +12,9 @@ _BillsPC:
 	call MenuTextboxBackup
 	scf
 	ret
-
 .PCGottaHavePokemonText:
 	text_far _PCGottaHavePokemonText
 	text_end
-
 .LogIn:
 	xor a
 	ldh [hBGMapMode], a
@@ -33,15 +30,12 @@ _BillsPC:
 	ld [wOptions], a
 	call LoadFontsBattleExtra
 	ret
-
 .PCWhatText:
 	text_far _PCWhatText
 	text_end
-
 .LogOut:
 	call CloseSubmenu
 	ret
-
 .UseBillsPC:
 	ld hl, .MenuHeader
 	call LoadMenuHeader
@@ -65,34 +59,29 @@ _BillsPC:
 .cancel
 	call CloseWindow
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 0 ; items
 	dw .items
 	dw PlaceMenuStrings
 	dw .strings
-
 .strings
 	db "WITHDRAW <PK><MN>@"
 	db "DEPOSIT <PK><MN>@"
 	db "CHANGE BOX@"
 	db "MOVE <PK><MN> W/O MAIL@"
 	db "SEE YA!@"
-
 .Jumptable:
 	dw BillsPC_WithdrawMenu
 	dw BillsPC_DepositMenu
 	dw BillsPC_ChangeBoxMenu
 	dw BillsPC_MovePKMNMenu
 	dw BillsPC_SeeYa
-
 .items
 	db 5 ; # items
 	db 0 ; WITHDRAW
@@ -113,19 +102,16 @@ BillsPC_MovePKMNMenu:
 	ld hl, .PCMonHoldingMailText
 	call PrintText
 	jr .quit
-
 .no_mail
 	farcall StartMoveMonWOMail_SaveGame
 	jr c, .quit
 	farcall _MovePKMNWithoutMail
 	call ReturnToMapFromSubmenu
 	call ClearPCItemScreen
-
 .quit
 	call CloseWindow
 	and a
 	ret
-
 .PCMonHoldingMailText:
 	text_far _PCMonHoldingMailText
 	text_end
@@ -139,35 +125,6 @@ BillsPC_DepositMenu:
 	and a
 	ret
 
-BillsPC_Deposit_CheckPartySize: ; unreferenced
-	ld a, [wPartyCount]
-	and a
-	jr z, .no_mon
-	cp 2
-	jr c, .only_one_mon
-	and a
-	ret
-
-.no_mon
-	ld hl, .PCNoSingleMonText
-	call MenuTextboxBackup
-	scf
-	ret
-
-.only_one_mon
-	ld hl, .PCCantDepositLastMonText
-	call MenuTextboxBackup
-	scf
-	ret
-
-.PCNoSingleMonText:
-	text_far _PCNoSingleMonText
-	text_end
-
-.PCCantDepositLastMonText:
-	text_far _PCCantDepositLastMonText
-	text_end
-
 CheckCurPartyMonFainted:
 	ld hl, wPartyMon1HP
 	ld de, PARTYMON_STRUCT_LENGTH
@@ -180,7 +137,6 @@ CheckCurPartyMonFainted:
 	or [hl]
 	jr nz, .notfainted
 	dec hl
-
 .skip
 	inc b
 	ld a, [wPartyCount]
@@ -188,11 +144,9 @@ CheckCurPartyMonFainted:
 	jr z, .done
 	add hl, de
 	jr .loop
-
 .done
 	scf
 	ret
-
 .notfainted
 	and a
 	ret
@@ -205,23 +159,6 @@ BillsPC_WithdrawMenu:
 	call CloseWindow
 	and a
 	ret
-
-BillsPC_Withdraw_CheckPartySize: ; unreferenced
-	ld a, [wPartyCount]
-	cp PARTY_LENGTH
-	jr nc, .party_full
-	and a
-	ret
-
-.party_full
-	ld hl, PCCantTakeText
-	call MenuTextboxBackup
-	scf
-	ret
-
-PCCantTakeText:
-	text_far _PCCantTakeText
-	text_end
 
 BillsPC_ChangeBoxMenu:
 	farcall _ChangeBox
@@ -260,113 +197,3 @@ CopyBoxmonToTempMon:
 	call CopyBytes
 	call CloseSRAM
 	ret
-
-LoadBoxMonListing: ; unreferenced
-	ld a, [wCurBox]
-	cp b
-	jr z, .same_box
-	ld a, b
-	ld hl, .BoxAddresses
-	ld bc, 3
-	call AddNTimes
-	ld a, [hli]
-	push af
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	pop af
-	jr .okay
-
-.same_box
-	ld a, BANK(sBoxCount)
-	ld hl, sBoxCount
-
-.okay
-	call OpenSRAM
-	ld a, [hl]
-	ld bc, sBoxMons - sBox
-	add hl, bc
-	ld b, a
-	ld c, $0
-	ld de, wBoxPartialData
-	ld a, b
-	and a
-	jr z, .empty_box
-.loop
-	push hl
-	push bc
-	ld a, c
-	ld bc, sBoxMon1Species - sBoxMons
-	add hl, bc
-	ld bc, BOXMON_STRUCT_LENGTH
-	call AddNTimes
-	ld a, [hl]
-	ld [de], a
-	inc de
-	ld [wCurSpecies], a
-	call GetBaseData
-	pop bc
-	pop hl
-
-	push hl
-	push bc
-	ld a, c
-	ld bc, sBoxMonNicknames - sBoxMons
-	add hl, bc
-	call SkipNames
-	call CopyBytes
-	pop bc
-	pop hl
-
-	push hl
-	push bc
-	ld a, c
-	ld bc, MON_LEVEL
-	add hl, bc
-	ld bc, BOXMON_STRUCT_LENGTH
-	call AddNTimes
-	ld a, [hl]
-	ld [de], a
-	inc de
-	pop bc
-	pop hl
-
-	push hl
-	push bc
-	ld a, c
-	ld bc, MON_DVS
-	add hl, bc
-	ld bc, BOXMON_STRUCT_LENGTH
-	call AddNTimes
-	ld a, [hli]
-	and $f0
-	ld b, a
-	ld a, [hl]
-	and $f0
-	swap a
-	or b
-	ld b, a
-	ld a, [wBaseGender]
-	cp b
-	ld a, $1
-	jr c, .okay2
-	xor a
-.okay2
-	ld [de], a
-	inc de
-	pop bc
-	pop hl
-
-	inc c
-	dec b
-	jr nz, .loop
-.empty_box
-	call CloseSRAM
-	ret
-
-.BoxAddresses:
-	table_width 3
-for n, 1, NUM_BOXES + 1
-	dba sBox{d:n}
-endr
-	assert_table_length NUM_BOXES

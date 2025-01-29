@@ -5,9 +5,7 @@ GetSpritePalette::
 	push de
 	push bc
 	ld c, a
-
 	farcall _GetSpritePalette
-
 	ld a, c
 	pop bc
 	pop de
@@ -34,16 +32,13 @@ GetSpriteVTile::
 	ld a, [wUsedSprites + 1]
 	scf
 	jr .done
-
 .nope
 	ld a, [wUsedSprites + 1]
 	jr .done
-
 .found
 	inc hl
 	xor a
 	ld a, [hl]
-
 .done
 	pop bc
 	pop hl
@@ -52,21 +47,17 @@ GetSpriteVTile::
 DoesSpriteHaveFacings::
 	push de
 	push hl
-
 	ld b, a
 	ldh a, [hROMBank]
 	push af
 	ld a, BANK(_DoesSpriteHaveFacings)
 	rst Bankswitch
-
 	ld a, b
 	call _DoesSpriteHaveFacings
 	ld c, a
-
 	pop de
 	ld a, d
 	rst Bankswitch
-
 	pop hl
 	pop de
 	ret
@@ -87,15 +78,12 @@ CheckOnWater::
 
 GetTilePermission::
 ; Get the permission of tile collision a.
-
 	push de
 	push hl
-
 	ld hl, CollisionPermissionTable
 	ld e, a
 	ld d, 0
 	add hl, de
-
 	ldh a, [hROMBank]
 	push af
 	ld a, BANK(CollisionPermissionTable)
@@ -103,10 +91,8 @@ GetTilePermission::
 	ld e, [hl]
 	pop af
 	rst Bankswitch
-
 	ld a, e
 	and $f ; lo nybble only
-
 	pop hl
 	pop de
 	ret
@@ -115,23 +101,15 @@ CheckGrassTile::
 	ld d, a
 	and $f0
 	cp HI_NYBBLE_TALL_GRASS
-	jr z, .grass
+	jr z, .grasswater
 	cp HI_NYBBLE_WATER
-	jr z, .water
-	scf
-	ret
-
-.grass
+	jr z, .grasswater
+	jr .done
+.grasswater
 	ld a, d
 	and LO_NYBBLE_GRASS
 	ret z
-	scf
-	ret
-; For some reason, the above code is duplicated down here.
-.water
-	ld a, d
-	and LO_NYBBLE_GRASS
-	ret z
+.done
 	scf
 	ret
 
@@ -221,7 +199,6 @@ CheckObjectVisibility::
 	call GetObjectStruct
 	and a
 	ret
-
 .not_visible
 	scf
 	ret
@@ -243,7 +220,6 @@ CheckObjectTime::
 	ld l, a
 	jr nc, .ok
 	inc h
-
 .ok
 	ld a, [hl]
 	ld hl, MAPOBJECT_TIMEOFDAY
@@ -252,17 +228,14 @@ CheckObjectTime::
 	jr nz, .timeofday_always
 	scf
 	ret
-
 .timeofday_always
 	and a
 	ret
-
 .TimesOfDay:
 ; entries correspond to TimeOfDay values
 	db MORN
 	db DAY
 	db NITE
-
 .check_hour
 	ld hl, MAPOBJECT_HOUR_1
 	add hl, bc
@@ -282,7 +255,6 @@ CheckObjectTime::
 	jr c, .yes
 	jr z, .yes
 	jr .no
-
 .check_timeofday
 	ld a, e
 	cp [hl]
@@ -291,19 +263,11 @@ CheckObjectTime::
 	cp d
 	jr nc, .yes
 	jr .no
-
 .yes
 	and a
 	ret
-
 .no
 	scf
-	ret
-
-CopyMapObjectStruct:: ; unreferenced
-	ldh [hMapObjectIndex], a
-	call GetMapObject
-	call CopyObjectStruct
 	ret
 
 UnmaskCopyMapObjectStruct::
@@ -329,7 +293,6 @@ ApplyDeletionToMapObject::
 	call GetObjectStruct
 	farcall DeleteMapObject
 	ret
-
 .CheckStopFollow:
 	ld hl, wObjectFollow_Leader
 	cp [hl]
@@ -362,35 +325,6 @@ CopyPlayerObjectTemplate::
 	call CopyBytes
 	ret
 
-DeleteFollowerMapObject: ; unreferenced
-	call GetMapObject
-	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
-	add hl, bc
-	ld a, [hl]
-	push af
-	ld [hl], -1
-	inc hl
-	ld bc, MAPOBJECT_LENGTH - 1
-	xor a
-	call ByteFill
-	pop af
-	cp -1
-	ret z
-	cp NUM_OBJECT_STRUCTS
-	ret nc
-	ld b, a
-	ld a, [wObjectFollow_Leader]
-	cp b
-	jr nz, .ok
-	ld a, -1
-	ld [wObjectFollow_Leader], a
-
-.ok
-	ld a, b
-	call GetObjectStruct
-	farcall DeleteMapObject
-	ret
-
 LoadMovementDataPointer::
 ; Load the movement data pointer for object a.
 	ld [wMovementObject], a
@@ -403,15 +337,12 @@ LoadMovementDataPointer::
 	ld a, [wMovementObject]
 	call CheckObjectVisibility
 	ret c
-
 	ld hl, OBJECT_MOVEMENT_TYPE
 	add hl, bc
 	ld [hl], SPRITEMOVEDATA_SCRIPTED
-
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
 	ld [hl], STEP_TYPE_RESET
-
 	ld hl, wStateFlags
 	set SCRIPTED_MOVEMENT_STATE_F, [hl]
 	and a
@@ -435,12 +366,10 @@ FindFirstEmptyObjectStruct::
 	jr nz, .loop
 	xor a
 	jr .done
-
 .break
 	ld a, NUM_OBJECT_STRUCTS
 	sub c
 	scf
-
 .done
 	pop de
 	pop bc
@@ -453,7 +382,6 @@ GetSpriteMovementFunction::
 	cp NUM_SPRITEMOVEDATA
 	jr c, .ok
 	xor a
-
 .ok
 	ld hl, SpriteMovementData + SPRITEMOVEATTR_MOVEMENT
 	ld e, a
@@ -490,20 +418,15 @@ CopySpriteMovementData::
 	rst Bankswitch
 	ld a, l
 	push bc
-
 	call .CopyData
-
 	pop bc
 	pop af
 	rst Bankswitch
-
 	ret
-
 .CopyData:
 	ld hl, OBJECT_MOVEMENT_TYPE
 	add hl, de
 	ld [hl], a
-
 	push de
 	ld e, a
 	ld d, 0
@@ -514,7 +437,6 @@ endr
 	ld b, h
 	ld c, l
 	pop de
-
 	ld a, [bc]
 	inc bc
 	rlca
@@ -523,25 +445,21 @@ endr
 	ld hl, OBJECT_DIRECTION
 	add hl, de
 	ld [hl], a
-
 	ld a, [bc]
 	inc bc
 	ld hl, OBJECT_ACTION
 	add hl, de
 	ld [hl], a
-
 	ld a, [bc]
 	inc bc
 	ld hl, OBJECT_FLAGS1
 	add hl, de
 	ld [hl], a
-
 	ld a, [bc]
 	inc bc
 	ld hl, OBJECT_FLAGS2
 	add hl, de
 	ld [hl], a
-
 	ld a, [bc]
 	inc bc
 	ld hl, OBJECT_PALETTE
@@ -555,7 +473,8 @@ _GetMovementIndex::
 	push af
 	ld a, [hli]
 	rst Bankswitch
-; Load the current script byte as given by OBJECT_MOVEMENT_INDEX, and increment OBJECT_MOVEMENT_INDEX
+	; Load the current script byte as given by OBJECT_MOVEMENT_INDEX,
+	; and increment OBJECT_MOVEMENT_INDEX
 	ld a, [hli]
 	ld d, [hl]
 	ld hl, OBJECT_MOVEMENT_INDEX
@@ -570,25 +489,13 @@ _GetMovementIndex::
 	ld h, a
 	pop af
 	rst Bankswitch
-
 	ld a, h
-	ret
-
-SetVramState_SpriteUpdatesDisabled:: ; unreferenced
-	ld hl, wStateFlags
-	set SPRITE_UPDATES_DISABLED_F, [hl]
-	ret
-
-ResetVramState_SpriteUpdatesDisabled:: ; unreferenced
-	ld hl, wStateFlags
-	res SPRITE_UPDATES_DISABLED_F, [hl]
 	ret
 
 UpdateSprites::
 	ld a, [wStateFlags]
 	bit SPRITE_UPDATES_DISABLED_F, a
 	ret z
-
 	farcall UpdateAllObjectsFrozen
 	farcall _UpdateSprites
 	ret

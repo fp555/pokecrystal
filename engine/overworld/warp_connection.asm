@@ -221,7 +221,7 @@ LoadMapTimeOfDay:
 	ld [wSpriteUpdatesEnabled], a
 	farcall ReplaceTimeOfDayPals
 	farcall UpdateTimeOfDayPal
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call .ClearBGMap
 	call .PushAttrmap
 	ret

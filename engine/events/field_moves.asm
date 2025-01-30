@@ -57,9 +57,8 @@ ShakeHeadbuttTree:
 	farcall DoNextFrameForAllSprites
 	call DelayFrame
 	jr .loop
-
 .done
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call WaitBGMap
 	xor a
 	ldh [hBGMapMode], a
@@ -93,7 +92,6 @@ HideHeadbuttTree:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	ld a, $05 ; grass tile
 	ld [hli], a
 	ld [hld], a
@@ -113,9 +111,8 @@ TreeRelativeLocationTable:
 	dwcoord 8 + 2, 8     ; UP
 
 OWCutAnimation:
-	; Animation index in e
-	; 0: Split tree in half
-	; 1: Mow the lawn
+; Animation index in e
+; 0: Split tree in half, 1: Mow the lawn
 	ld a, e
 	and 1
 	ld [wJumptableIndex], a
@@ -133,10 +130,8 @@ OWCutAnimation:
 	call OWCutJumptable
 	call DelayFrame
 	jr .loop
-
 .finish
 	ret
-
 .LoadCutGFX:
 	callfar ClearSpriteAnims ; pointless to farcall
 	ld de, CutGrassGFX
@@ -157,7 +152,6 @@ INCBIN "gfx/overworld/cut_grass.2bpp"
 
 OWCutJumptable:
 	jumptable .dw, wJumptableIndex
-
 .dw
 	dw Cut_SpawnAnimateTree
 	dw Cut_SpawnAnimateLeaves
@@ -173,7 +167,7 @@ Cut_SpawnAnimateTree:
 	ld [hl], FIELDMOVE_TREE
 	ld a, 32
 	ld [wFrameCounter], a
-; Cut_StartWaiting
+	; Cut_StartWaiting
 	ld hl, wJumptableIndex
 	inc [hl]
 	inc [hl]
@@ -191,7 +185,7 @@ Cut_SpawnAnimateLeaves:
 	call Cut_SpawnLeaf
 	ld a, 32 ; frames
 	ld [wFrameCounter], a
-; Cut_StartWaiting
+	; Cut_StartWaiting
 	ld hl, wJumptableIndex
 	inc [hl]
 	ret
@@ -199,7 +193,7 @@ Cut_SpawnAnimateLeaves:
 Cut_StartWaiting:
 	ld a, 1
 	ldh [hBGMapMode], a
-; Cut_WaitAnimSFX
+	; Cut_WaitAnimSFX
 	ld hl, wJumptableIndex
 	inc [hl]
 
@@ -210,7 +204,6 @@ Cut_WaitAnimSFX:
 	jr z, .finished
 	dec [hl]
 	ret
-
 .finished
 	ld hl, wJumptableIndex
 	set JUMPTABLE_EXIT_F, [hl]
@@ -261,23 +254,19 @@ Cut_GetLeafSpawnCoords:
 	inc hl
 	ld d, [hl]
 	ret
-
 .Coords:
 	dbpixel 11, 12 ; facing down,  top left
 	dbpixel  9, 12 ; facing down,  top right
 	dbpixel 11, 14 ; facing down,  bottom left
 	dbpixel  9, 14 ; facing down,  bottom right
-
 	dbpixel 11,  8 ; facing up,    top left
 	dbpixel  9,  8 ; facing up,    top right
 	dbpixel 11, 10 ; facing up,    bottom left
 	dbpixel  9, 10 ; facing up,    bottom right
-
 	dbpixel  7, 12 ; facing left,  top left
 	dbpixel  9, 12 ; facing left,  top right
 	dbpixel  7, 10 ; facing left,  bottom left
 	dbpixel  9, 10 ; facing left,  bottom right
-
 	dbpixel 11, 12 ; facing right, top left
 	dbpixel 13, 12 ; facing right, top right
 	dbpixel 11, 10 ; facing right, bottom left
@@ -295,7 +284,6 @@ Cut_Headbutt_GetPixelFacing:
 	inc hl
 	ld d, [hl]
 	ret
-
 .Coords:
 	dbpixel 10, 13
 	dbpixel 10,  9
@@ -330,7 +318,6 @@ FlyFromAnim:
 	call FlyFunction_FrameTimer
 	call DelayFrame
 	jr .loop
-
 .exit
 	pop af
 	ld [wStateFlags], a
@@ -367,13 +354,11 @@ FlyToAnim:
 	call FlyFunction_FrameTimer
 	call DelayFrame
 	jr .loop
-
 .exit
 	pop af
 	ld [wStateFlags], a
 	call .RestorePlayerSprite_DespawnLeaves
 	ret
-
 .RestorePlayerSprite_DespawnLeaves:
 	ld hl, wShadowOAMSprite00TileID
 	xor a
@@ -425,12 +410,10 @@ FlyFunction_FrameTimer:
 	ld de, SFX_FLY
 	call PlaySFX
 	ret
-
 .exit
 	ld hl, wJumptableIndex
 	set JUMPTABLE_EXIT_F, [hl]
 	ret
-
 .SpawnLeaf:
 	ld hl, wFrameCounter2
 	ld a, [hl]

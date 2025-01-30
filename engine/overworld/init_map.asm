@@ -2,32 +2,27 @@ ReanchorBGMap_NoOAMUpdate::
 	call DelayFrame
 	ldh a, [hOAMUpdate]
 	push af
-
 	ld a, $1
 	ldh [hOAMUpdate], a
 	ldh a, [hBGMapMode]
 	push af
 	xor a
 	ldh [hBGMapMode], a
-
 	call .ReanchorBGMap
-
 	pop af
 	ldh [hBGMapMode], a
 	pop af
 	ldh [hOAMUpdate], a
-
 	ld hl, wStateFlags
 	set TEXT_STATE_F, [hl]
 	ret
-
 .ReanchorBGMap:
 	xor a
 	ldh [hLCDCPointer], a
 	ldh [hBGMapMode], a
 	ld a, $90
 	ldh [hWY], a
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	ld a, HIGH(vBGMap1)
 	call .LoadBGMapAddrIntoHRAM
 	call HDMATransferTilemapAndAttrmap_Menu
@@ -38,7 +33,7 @@ ReanchorBGMap_NoOAMUpdate::
 	xor a
 	ldh [hBGMapMode], a
 	ldh [hWY], a
-	farcall HDMATransfer_FillBGMap0WithBlack ; no need to farcall
+	call HDMATransfer_FillBGMap0WithBlack
 	ld a, HIGH(vBGMap0)
 	call .LoadBGMapAddrIntoHRAM
 	xor a ; LOW(vBGMap0)
@@ -50,7 +45,6 @@ ReanchorBGMap_NoOAMUpdate::
 	ldh [hSCY], a
 	call ApplyBGMapAnchorToObjects
 	ret
-
 .LoadBGMapAddrIntoHRAM:
 	ldh [hBGMapAddress + 1], a
 	xor a
@@ -62,13 +56,10 @@ LoadFonts_NoOAMUpdate::
 	push af
 	ld a, $1
 	ldh [hOAMUpdate], a
-
 	call .LoadGFX
-
 	pop af
 	ldh [hOAMUpdate], a
 	ret
-
 .LoadGFX:
 	call LoadFontsExtra
 	ld a, $90
@@ -82,7 +73,6 @@ HDMATransfer_FillBGMap0WithBlack:
 	push af
 	ld a, BANK(wDecompressScratch)
 	ldh [rSVBK], a
-
 	ld a, "■"
 	ld hl, wDecompressScratch
 	ld bc, wScratchAttrmap - wDecompressScratch
@@ -98,7 +88,6 @@ HDMATransfer_FillBGMap0WithBlack:
 	ld a, $3f
 	ldh [hDMATransfer], a
 	call DelayFrame
-
 	pop af
 	ldh [rSVBK], a
 	ret

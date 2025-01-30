@@ -85,11 +85,6 @@ GetMapSceneID::
 	pop bc
 	ret
 
-LoadOverworldTilemapAndAttrmapPals::
-	call LoadOverworldTilemap
-	call LoadOverworldAttrmapPals
-	ret
-
 LoadOverworldTilemap::
 	ldh a, [hROMBank]
 	push af
@@ -100,6 +95,9 @@ LoadOverworldTilemap::
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	call ByteFill
+	ld a, [wTilesetAttributesBank]
+	rst Bankswitch
+	call LoadMetatileAttributes
 	ld a, BANK(_LoadOverworldTilemap)
 	rst Bankswitch
 	call _LoadOverworldTilemap
@@ -108,12 +106,25 @@ LoadOverworldTilemap::
 	ret
 
 LoadMetatiles::
+	ld hl, wSurroundingTiles
+	ld de, wTilesetBlocksAddress
+	jr _LoadMetatilesOrAttributes
+
+LoadMetatileAttributes::
+	ld hl, wSurroundingAttributes
+	ld de, wTilesetAttributesAddress
+	; fallthrough
+_LoadMetatilesOrAttributes:
+	ld a, [de]
+	ld [wTilesetDataAddress], a
+	inc de
+	ld a, [de]
+	ld [wTilesetDataAddress + 1], a
 	; de <- wOverworldMapAnchor
 	ld a, [wOverworldMapAnchor]
 	ld e, a
 	ld a, [wOverworldMapAnchor + 1]
 	ld d, a
-	ld hl, wSurroundingTiles
 	ld b, SCREEN_META_HEIGHT
 .row
 	push de
@@ -139,12 +150,16 @@ LoadMetatiles::
 	add hl, hl
 	add hl, hl
 	add hl, hl
-	ld a, [wTilesetBlocksAddress]
+	ld a, [wTilesetDataAddress]
 	add l
 	ld l, a
-	ld a, [wTilesetBlocksAddress + 1]
+	ld a, [wTilesetDataAddress + 1]
 	adc h
 	ld h, a
+	ldh a, [rSVBK]
+	push af
+	ld a, BANK("Surrounding Data")
+	ldh [rSVBK], a
 	; copy the 4x4 metatile
 rept METATILE_WIDTH - 1
 rept METATILE_WIDTH
@@ -164,6 +179,8 @@ rept METATILE_WIDTH
 	ld [de], a
 	inc de
 endr
+	pop af
+	ldh [rSVBK], a
 	; Next metatile
 	pop hl
 	ld de, METATILE_WIDTH
@@ -1052,8 +1069,9 @@ ScrollMapUp::
 	hlcoord 0, 0
 	ld de, wBGMapBuffer
 	call BackupBGMapRow
-	ld c, 2 * SCREEN_WIDTH
-	call ScrollBGMapPalettes
+	hlcoord 0, 0, wAttrmap
+	ld de, wBGMapPalBuffer
+	call BackupBGMapRow
 	ld a, [wBGMapAnchor]
 	ld e, a
 	ld a, [wBGMapAnchor + 1]
@@ -1067,8 +1085,9 @@ ScrollMapDown::
 	hlcoord 0, SCREEN_HEIGHT - 2
 	ld de, wBGMapBuffer
 	call BackupBGMapRow
-	ld c, 2 * SCREEN_WIDTH
-	call ScrollBGMapPalettes
+	hlcoord 0, SCREEN_HEIGHT - 2, wAttrmap
+	ld de, wBGMapPalBuffer
+	call BackupBGMapRow
 	ld a, [wBGMapAnchor]
 	ld l, a
 	ld a, [wBGMapAnchor + 1]
@@ -1090,8 +1109,9 @@ ScrollMapLeft::
 	hlcoord 0, 0
 	ld de, wBGMapBuffer
 	call BackupBGMapColumn
-	ld c, 2 * SCREEN_HEIGHT
-	call ScrollBGMapPalettes
+	hlcoord 0, 0, wAttrmap
+	ld de, wBGMapPalBuffer
+	call BackupBGMapColumn
 	ld a, [wBGMapAnchor]
 	ld e, a
 	ld a, [wBGMapAnchor + 1]
@@ -1105,8 +1125,9 @@ ScrollMapRight::
 	hlcoord SCREEN_WIDTH - 2, 0
 	ld de, wBGMapBuffer
 	call BackupBGMapColumn
-	ld c, 2 * SCREEN_HEIGHT
-	call ScrollBGMapPalettes
+	hlcoord SCREEN_WIDTH - 2, 0, wAttrmap
+	ld de, wBGMapPalBuffer
+	call BackupBGMapColumn
 	ld a, [wBGMapAnchor]
 	ld e, a
 	and %11100000
@@ -1743,7 +1764,6 @@ CloseSubmenu::
 	call ReloadTilesetAndPalettes
 	call UpdateSprites
 	call Call_ExitMenu
-	call GSReloadPalettes
 	jr FinishExitMenu
 
 ExitAllMenus::
@@ -1751,7 +1771,6 @@ ExitAllMenus::
 	call Call_ExitMenu
 	call ReloadTilesetAndPalettes
 	call UpdateSprites
-	call GSReloadPalettes
 FinishExitMenu::
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
@@ -1799,7 +1818,7 @@ ReloadTilesetAndPalettes::
 	ld c, a
 	call SwitchToAnyMapAttributesBank
 	farcall UpdateTimeOfDayPal
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call LoadTilesetGFX
 	ld a, 9
 	call SkipMusic
@@ -1876,7 +1895,6 @@ SwitchToMapAttributesBank::
 	ld a, [wMapNumber]
 	ld c, a
 	; fallthrough
-
 SwitchToAnyMapAttributesBank::
 	call GetAnyMapAttributesBank
 	rst Bankswitch

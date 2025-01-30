@@ -33,26 +33,22 @@ PokemonCenterPC:
 	ld hl, .Jumptable
 	call MenuJumptable
 	jr nc, .loop
-
 .shutdown
 	call PC_PlayShutdownSound
 	call ExitMenu
 	call CloseWindow
 	ret
-
 .TopMenu:
 	db MENU_BACKUP_TILES | MENU_NO_CLICK_SFX ; flags
 	menu_coords 0, 0, 15, 12
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR | STATICMENU_WRAP ; flags
 	db 0 ; items
 	dw .WhichPC
 	dw PlaceNthMenuStrings
 	dw .Jumptable
-
 .Jumptable:
 ; entries correspond to PCPCITEM_* constants
 	dw PlayersPC,    .String_PlayersPC
@@ -60,23 +56,19 @@ PokemonCenterPC:
 	dw OaksPC,       .String_OaksPC
 	dw HallOfFamePC, .String_HallOfFame
 	dw TurnOffPC,    .String_TurnOff
-
 .String_PlayersPC:  db "<PLAYER>'s PC@"
 .String_BillsPC:    db "BILL's PC@"
 .String_OaksPC:     db "PROF.OAK's PC@"
 .String_HallOfFame: db "HALL OF FAME@"
 .String_TurnOff:    db "TURN OFF@"
-
 .WhichPC:
 ; entries correspond to PCPC_* constants
-
 	; PCPC_BEFORE_POKEDEX
 	db 3
 	db PCPCITEM_BILLS_PC
 	db PCPCITEM_PLAYERS_PC
 	db PCPCITEM_TURN_OFF
 	db -1 ; end
-
 	; PCPC_BEFORE_HOF
 	db 4
 	db PCPCITEM_BILLS_PC
@@ -84,7 +76,6 @@ PokemonCenterPC:
 	db PCPCITEM_OAKS_PC
 	db PCPCITEM_TURN_OFF
 	db -1 ; end
-
 	; PCPC_POSTGAME
 	db 5
 	db PCPCITEM_BILLS_PC
@@ -93,13 +84,11 @@ PokemonCenterPC:
 	db PCPCITEM_HALL_OF_FAME
 	db PCPCITEM_TURN_OFF
 	db -1 ; end
-
 .ChooseWhichPCListToUse:
 	call CheckReceivedDex
 	jr nz, .got_dex
 	ld a, PCPC_BEFORE_POKEDEX
 	ret
-
 .got_dex
 	ld a, [wHallOfFameCount]
 	and a
@@ -118,11 +107,9 @@ PC_CheckPartyForPokemon:
 	call PC_DisplayText
 	scf
 	ret
-
 .PokecenterPCCantUseText:
 	text_far _PokecenterPCCantUseText
 	text_end
-
 
 	; PlayersPCMenuData.WhichPC indexes
 	const_def
@@ -212,13 +199,12 @@ _PlayersHousePC:
 	call _PlayersPC
 	and a
 	jr nz, .changed_deco_tiles
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call ApplyTilemap
 	call UpdateSprites
 	call PC_PlayShutdownSound
 	ld c, FALSE
 	ret
-
 .changed_deco_tiles
 	call ClearBGPalettes
 	ld c, TRUE
@@ -236,7 +222,6 @@ _PlayersPC:
 	call .PlayersPC
 	call ExitMenu
 	ret
-
 .PlayersPC:
 	xor a
 	ld [wPCItemsCursor], a
@@ -250,10 +235,8 @@ _PlayersPC:
 	call MenuJumptable
 	jr nc, .loop
 	jr .done
-
 .turn_off
 	xor a
-
 .done
 	call ExitMenu
 	ret
@@ -263,14 +246,12 @@ PlayersPCMenuData:
 	menu_coords 0, 0, 15, 12
 	dw .PlayersPCMenuData
 	db 1 ; default selected option
-
 .PlayersPCMenuData:
 	db STATICMENU_CURSOR | STATICMENU_WRAP ; flags
 	db 0 ; # items?
 	dw .WhichPC
 	dw PlaceNthMenuStrings
 	dw .PlayersPCMenuPointers
-
 .PlayersPCMenuPointers:
 ; entries correspond to PLAYERSPCITEM_* constants
 	dw PlayerWithdrawItemMenu, .WithdrawItem
@@ -280,7 +261,6 @@ PlayersPCMenuData:
 	dw PlayerDecorationMenu,   .Decoration
 	dw PlayerLogOffMenu,       .LogOff
 	dw PlayerLogOffMenu,       .TurnOff
-
 .WithdrawItem: db "WITHDRAW ITEM@"
 .DepositItem:  db "DEPOSIT ITEM@"
 .TossItem:     db "TOSS ITEM@"
@@ -288,10 +268,8 @@ PlayersPCMenuData:
 .Decoration:   db "DECORATION@"
 .TurnOff:      db "TURN OFF@"
 .LogOff:       db "LOG OFF@"
-
 .WhichPC:
 ; entries correspond to PLAYERSPC_* constants
-
 	; PLAYERSPC_NORMAL
 	db 5
 	db PLAYERSPCITEM_WITHDRAW_ITEM
@@ -300,7 +278,6 @@ PlayersPCMenuData:
 	db PLAYERSPCITEM_MAIL_BOX
 	db PLAYERSPCITEM_LOG_OFF
 	db -1 ; end
-
 	; PLAYERSPC_HOUSE
 	db 6
 	db PLAYERSPCITEM_WITHDRAW_ITEM
@@ -333,24 +310,20 @@ PlayerWithdrawItemMenu:
 	jr c, .quit
 	call .Submenu
 	jr .loop
-
 .quit
 	call CloseSubmenu
 	xor a
 	ret
-
 .Submenu:
 	; check if the item has a quantity
 	farcall _CheckTossableItem
 	ld a, [wItemAttributeValue]
 	and a
 	jr z, .askquantity
-
 	; items without quantity are always ×1
 	ld a, 1
 	ld [wItemQuantityChange], a
 	jr .withdraw
-
 .askquantity
 	ld hl, .PlayersPCHowManyWithdrawText
 	call MenuTextbox
@@ -358,7 +331,6 @@ PlayerWithdrawItemMenu:
 	call ExitMenu
 	call ExitMenu
 	jr c, .done
-
 .withdraw
 	ld a, [wItemQuantityChange]
 	ld [wPCItemQuantityChange], a
@@ -380,23 +352,18 @@ PlayerWithdrawItemMenu:
 	ldh [hBGMapMode], a
 	call ExitMenu
 	ret
-
 .PackFull:
 	ld hl, .PlayersPCNoRoomWithdrawText
 	call MenuTextboxBackup
 	ret
-
 .done
 	ret
-
 .PlayersPCHowManyWithdrawText:
 	text_far _PlayersPCHowManyWithdrawText
 	text_end
-
 .PlayersPCWithdrewItemsText:
 	text_far _PlayersPCWithdrewItemsText
 	text_end
-
 .PlayersPCNoRoomWithdrawText:
 	text_far _PlayersPCNoRoomWithdrawText
 	text_end
@@ -410,7 +377,6 @@ PlayerTossItemMenu:
 	ld de, wNumPCItems
 	farcall TossItemFromPC
 	jr .loop
-
 .quit
 	call CloseSubmenu
 	xor a
@@ -443,14 +409,11 @@ PlayerDepositItemMenu:
 	call .TryDepositItem
 	farcall CheckRegisteredItem
 	jr .loop
-
 .close
 	call CloseSubmenu
-
 .nope
 	xor a
 	ret
-
 .CheckItemsInBag:
 	farcall HasNoItems
 	ret nc
@@ -458,11 +421,9 @@ PlayerDepositItemMenu:
 	call MenuTextboxBackup
 	scf
 	ret
-
 .PlayersPCNoItemsText:
 	text_far _PlayersPCNoItemsText
 	text_end
-
 .TryDepositItem:
 	ld a, [wSpriteUpdatesEnabled]
 	push af
@@ -475,7 +436,6 @@ PlayerDepositItemMenu:
 	pop af
 	ld [wSpriteUpdatesEnabled], a
 	ret
-
 .dw
 ; entries correspond to ITEMMENU_* constants
 	dw .tossable ; ITEMMENU_NOUSE
@@ -485,10 +445,8 @@ PlayerDepositItemMenu:
 	dw .tossable ; ITEMMENU_CURRENT
 	dw .tossable ; ITEMMENU_PARTY
 	dw .tossable ; ITEMMENU_CLOSE
-
 .no_toss
 	ret
-
 .tossable
 	ld a, [wPCItemQuantityChange]
 	push af
@@ -500,7 +458,6 @@ PlayerDepositItemMenu:
 	pop af
 	ld [wPCItemQuantityChange], a
 	ret
-
 .DepositItem:
 	farcall _CheckTossableItem
 	ld a, [wItemAttributeValue]
@@ -509,7 +466,6 @@ PlayerDepositItemMenu:
 	ld a, 1
 	ld [wItemQuantityChange], a
 	jr .ContinueDeposit
-
 .AskQuantity:
 	ld hl, .PlayersPCHowManyDepositText
 	call MenuTextbox
@@ -519,7 +475,6 @@ PlayerDepositItemMenu:
 	call ExitMenu
 	pop af
 	jr c, .DeclinedToDeposit
-
 .ContinueDeposit:
 	ld a, [wItemQuantityChange]
 	ld [wPCItemQuantityChange], a
@@ -538,24 +493,19 @@ PlayerDepositItemMenu:
 	ld hl, .PlayersPCDepositItemsText
 	call PrintText
 	ret
-
 .NoRoomInPC:
 	ld hl, .PlayersPCNoRoomDepositText
 	call PrintText
 	ret
-
 .DeclinedToDeposit:
 	and a
 	ret
-
 .PlayersPCHowManyDepositText:
 	text_far _PlayersPCHowManyDepositText
 	text_end
-
 .PlayersPCDepositItemsText:
 	text_far _PlayersPCDepositItemsText
 	text_end
-
 .PlayersPCNoRoomDepositText:
 	text_far _PlayersPCNoRoomDepositText
 	text_end
@@ -601,7 +551,6 @@ PCItemsJoypad:
 	cp SELECT
 	jr z, .select_1
 	jr .next
-
 .moving_stuff_around
 	ld a, [wMenuJoypad]
 	cp B_BUTTON
@@ -611,35 +560,29 @@ PCItemsJoypad:
 	cp SELECT
 	jr z, .a_select_2
 	jr .next
-
 .b_2
 	xor a
 	ld [wSwitchItem], a
 	jr .next
-
 .a_select_2
 	call PC_PlaySwapItemsSound
 .select_1
 	farcall SwitchItemsInBag
 .next
 	jp .loop
-
 .a_1
 	farcall ScrollingMenu_ClearLeftColumn
 	call PlaceHollowCursor
 	and a
 	ret
-
 .b_1
 	scf
 	ret
-
 .PCItemsMenuData:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 4, 1, 18, 10
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db SCROLLINGMENU_ENABLE_SELECT | SCROLLINGMENU_ENABLE_FUNCTION3 | SCROLLINGMENU_DISPLAY_ARROWS ; flags
 	db 4, 8 ; rows, columns

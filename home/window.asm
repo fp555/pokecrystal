@@ -26,7 +26,7 @@ CloseText::
 	call ClearWindowData
 	xor a
 	ldh [hBGMapMode], a
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call HDMATransferTilemapAndAttrmap_Menu
 	xor a
 	ldh [hBGMapMode], a

@@ -2123,7 +2123,7 @@ Script_changeblock:
 Script_refreshmap::
 	xor a
 	ldh [hBGMapMode], a
-	call LoadOverworldTilemapAndAttrmapPals
+	call LoadOverworldTilemap
 	call GetMovementPermissions
 	farcall HDMATransferTilemapAndAttrmap_Overworld
 	call UpdateSprites

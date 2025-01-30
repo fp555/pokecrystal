@@ -5280,32 +5280,12 @@ Function11a9ce:
 	call Call_ExitMenu
 	farcall Stubbed_Function106462
 	farcall Function106464
-	call GSReloadPalettes
 	farcall FinishExitMenu
 	call UpdateSprites
 	ret
 
 Function11a9f0:
 	ld a, $1
-	and a
-	ret
-
-Function11a9f4: ; unreferenced
-	ld a, [wcd8a]
-	ld l, a
-	ld a, [wcd8b]
-	ld h, a
-	inc hl
-	ld a, l
-	ld [wcd8a], a
-	ld a, h
-	ld [wcd8b], a
-	ld de, $d5d0
-	add hl, de
-	bit 7, h
-	ret nz
-	ld a, $d6
-	call SetMobileErrorCode
 	and a
 	ret
 
@@ -5331,24 +5311,9 @@ Text_QuitReadingNews:
 	text "Quit reading NEWS?"
 	done
 
-Text_CanceledSendingSaveFile: ; unreferenced
-	text "Canceled sending"
-	line "SAVE FILE."
-	done
-
-Text_ReceivedOddEgg: ; unreferenced
-	text "ODD EGG"
-	line "was received!"
-	done
-
 Text_RegisteringRecord:
 	text "Registering your"
 	line "record…"
-	done
-
-Text_BattleRoomVisitLimit: ; unreferenced
-	text "One visit per day"
-	line "per BATTLE ROOM!"
 	done
 
 Text_PartyMonTopsThisLevel:
@@ -5375,11 +5340,6 @@ Text_ExitGymLeaderHonorRoll:
 	line "HONOR ROLL?"
 	done
 
-Text_LinkingWithCenter: ; unreferenced
-	text "Linking with the"
-	line "CENTER…"
-	done
-
 Text_WhatLevelDoYouWantToChallenge:
 	text "What level do you"
 	line "want to challenge?"
@@ -5388,24 +5348,6 @@ Text_WhatLevelDoYouWantToChallenge:
 Text_CheckBattleRoomListByMaxLevel:
 	text "Check BATTLE ROOM"
 	line "list by max level?"
-	done
-
-Text_EnterWhichBattleRoom: ; unreferenced
-	text "Enter which"
-	line "BATTLE ROOM?"
-	done
-
-Text_WhichBattleRoom: ; unreferenced
-	text "Which BATTLE ROOM?"
-	done
-
-Text_ThisBattleRoomPleaseWait: ; unreferenced
-	text_ram wStringBuffer3
-	text "'s ROOM"
-	line "@"
-	text_ram wStringBuffer4
-	text "?"
-	cont "Please wait…"
 	done
 
 Function11ac3e:

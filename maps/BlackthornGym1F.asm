@@ -54,36 +54,27 @@ BlackthornGymClairScript:
 	setevent EVENT_BLACKTHORN_CITY_GRAMPS_BLOCKS_DRAGONS_DEN
 	clearevent EVENT_BLACKTHORN_CITY_GRAMPS_NOT_BLOCKING_DRAGONS_DEN
 	end
-
 .FightDone:
 	writetext ClairText_TooMuchToExpect
 	waitbutton
 	closetext
 	end
-
 .AlreadyGotBadge:
 	checkevent EVENT_GOT_TM24_DRAGONBREATH
 	iftrue .GotTM24
 	writetext BlackthornGymClairText_YouKeptMeWaiting
 	promptbutton
-	giveitem TM_DRAGONBREATH
+	verbosegiveitem TM_DRAGONBREATH
 	iffalse .BagFull
-	getitemname STRING_BUFFER_3, TM_DRAGONBREATH
-	writetext BlackthornGymText_ReceivedTM24
-	playsound SFX_ITEM
-	waitsfx
-	itemnotify
 	setevent EVENT_GOT_TM24_DRAGONBREATH
 	writetext BlackthornGymClairText_DescribeTM24
 	promptbutton
 	sjump .GotTM24
-
 .BagFull:
 	writetext BlackthornGymClairText_BagFull
 	waitbutton
 	closetext
 	end
-
 .GotTM24:
 	writetext BlackthornGymClairText_League
 	waitbutton
@@ -92,7 +83,6 @@ BlackthornGymClairScript:
 
 TrainerCooltrainermPaul:
 	trainer COOLTRAINERM, PAUL, EVENT_BEAT_COOLTRAINERM_PAUL, CooltrainermPaulSeenText, CooltrainermPaulBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -103,7 +93,6 @@ TrainerCooltrainermPaul:
 
 TrainerCooltrainermMike:
 	trainer COOLTRAINERM, MIKE, EVENT_BEAT_COOLTRAINERM_MIKE, CooltrainermMikeSeenText, CooltrainermMikeBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -114,7 +103,6 @@ TrainerCooltrainermMike:
 
 TrainerCooltrainerfLola:
 	trainer COOLTRAINERF, LOLA, EVENT_BEAT_COOLTRAINERF_LOLA, CooltrainerfLolaSeenText, CooltrainerfLolaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -132,7 +120,6 @@ BlackthornGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .BlackthornGymGuideWinScript:
 	writetext BlackthornGymGuideWinText
 	waitbutton
@@ -227,11 +214,6 @@ BlackthornGymClairText_YouKeptMeWaiting:
 	line "waiting!"
 
 	para "Here! Take this!"
-	done
-
-BlackthornGymText_ReceivedTM24:
-	text "<PLAYER> received"
-	line "TM24."
 	done
 
 BlackthornGymClairText_DescribeTM24:

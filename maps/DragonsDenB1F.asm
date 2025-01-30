@@ -51,13 +51,8 @@ DragonsDenB1F_ClairScene:
 	opentext
 	writetext ClairText_GiveDragonbreathDragonDen
 	promptbutton
-	giveitem TM_DRAGONBREATH
+	verbosegiveitem TM_DRAGONBREATH
 	iffalse .BagFull
-	getitemname STRING_BUFFER_3, TM_DRAGONBREATH
-	writetext Text_ReceivedTM24
-	playsound SFX_ITEM
-	waitsfx
-	itemnotify
 	setevent EVENT_GOT_TM24_DRAGONBREATH
 	writetext ClairText_DescribeDragonbreathDragonDen
 	promptbutton
@@ -203,11 +198,6 @@ ClairText_GiveDragonbreathDragonDen:
 
 	para "Here, take this as"
 	line "my apology."
-	done
-
-Text_ReceivedTM24:
-	text "<PLAYER> received"
-	line "TM24."
 	done
 
 ClairText_DescribeDragonbreathDragonDen:

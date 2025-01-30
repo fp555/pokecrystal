@@ -450,15 +450,13 @@ Script_verbosegiveitem:
 	ld de, wStringBuffer1
 	ld a, STRING_BUFFER_4
 	call CopyConvertedText
+	ld de, wStringBuffer4 + STRLEN("TM##")
+	farcall AppendTMHMMoveName
 	ld b, BANK(GiveItemScript)
 	ld de, GiveItemScript
 	jp ScriptCall
 
-GiveItemScript_DummyFunction:
-	ret
-
 GiveItemScript:
-	callasm GiveItemScript_DummyFunction
 	writetext .ReceivedItemText
 	iffalse .Full
 	waitsfx
@@ -496,6 +494,8 @@ Script_verbosegiveitemvar:
 	ld de, wStringBuffer1
 	ld a, STRING_BUFFER_4
 	call CopyConvertedText
+	ld de, wStringBuffer4 + STRLEN("TM##")
+	farcall AppendTMHMMoveName
 	ld b, BANK(GiveItemScript)
 	ld de, GiveItemScript
 	jp ScriptCall
@@ -806,11 +806,9 @@ ApplyMovement:
 	ld a, c
 	farcall FreezeAllOtherObjects
 	pop bc
-
 	push bc
 	call UnfreezeFollowerObject
 	pop bc
-
 	call GetScriptByte
 	ld l, a
 	call GetScriptByte
@@ -819,7 +817,6 @@ ApplyMovement:
 	ld b, a
 	call GetMovementData
 	ret c
-
 	ld a, SCRIPT_WAIT_MOVEMENT
 	ld [wScriptMode], a
 	call StopScript
@@ -831,7 +828,6 @@ UnfreezeFollowerObject:
 
 Script_applymovementlasttalked:
 ; apply movement to last talked
-
 	ldh a, [hLastTalked]
 	ld c, a
 	jp ApplyMovement
@@ -921,7 +917,6 @@ ApplyObjectFacing:
 .text_state
 	call UpdateSprites
 	ret
-
 .not_visible
 	pop de
 	scf
@@ -1222,7 +1217,6 @@ Script_memcall:
 	inc hl
 	ld d, [hl]
 	; fallthrough
-
 ScriptCall:
 	ld hl, wScriptStackSize
 	ld a, [hl]
@@ -1558,10 +1552,9 @@ Script_getmonname:
 GetStringBuffer:
 	call GetScriptByte
 	cp NUM_STRING_BUFFERS
-	jr c, .ok
+	jr c, CopyConvertedText
 	xor a
-.ok
-
+	; fallthrough
 CopyConvertedText:
 	ld hl, wStringBuffer3
 	ld bc, STRING_BUFFER_LENGTH
@@ -2028,7 +2021,6 @@ Script_warpfacing:
 	or c
 	ld [wPlayerSpriteSetupFlags], a
 	; fallthrough
-
 Script_warp:
 ; This seems to be some sort of error handling case.
 	call GetScriptByte
@@ -2278,7 +2270,6 @@ Script_halloffame:
 Script_credits:
 	farcall RedCredits
 	; fallthrough
-
 ReturnFromCredits:
 	call Script_endall
 	ld a, MAPSTATUS_DONE

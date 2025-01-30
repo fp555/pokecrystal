@@ -15,7 +15,6 @@ OpenMartDialog::
 	ld hl, .dialogs
 	rst JumpTable
 	ret
-
 .dialogs
 	dw MartDialog
 	dw HerbShop
@@ -56,7 +55,6 @@ BargainShop:
 	jr z, .skip_set
 	ld hl, wDailyFlags1
 	set DAILYFLAGS1_GOLDENROD_UNDERGROUND_BARGAIN_F, [hl]
-
 .skip_set
 	ld hl, BargainShopComeAgainText
 	call MartTextbox
@@ -80,7 +78,6 @@ RooftopSale:
 	jr z, .ok
 	ld b, BANK(RooftopSaleMart2)
 	ld de, RooftopSaleMart2
-
 .ok
 	call LoadMartPointer
 	call ReadMart
@@ -119,7 +116,6 @@ GetMart:
 	ld b, BANK(DefaultMart)
 	ld de, DefaultMart
 	ret
-
 .IsAMart:
 	ld hl, Marts
 	add hl, de
@@ -130,7 +126,7 @@ GetMart:
 	ld b, BANK(Marts)
 	ret
 
-; StandardMart.MartFunctions indexes
+	; StandardMart.MartFunctions indexes
 	const_def
 	const STANDARDMART_HOWMAYIHELPYOU ; 0
 	const STANDARDMART_TOPMENU        ; 1
@@ -150,7 +146,6 @@ StandardMart:
 	cp STANDARDMART_EXIT
 	jr nz, .loop
 	ret
-
 .MartFunctions:
 ; entries correspond to STANDARDMART_* constants
 	dw .HowMayIHelpYou
@@ -159,14 +154,12 @@ StandardMart:
 	dw .Sell
 	dw .Quit
 	dw .AnythingElse
-
 .HowMayIHelpYou:
 	call LoadStandardMenuHeader
 	ld hl, MartWelcomeText
 	call PrintText
 	ld a, STANDARDMART_TOPMENU
 	ret
-
 .TopMenu:
 	ld hl, MenuHeader_BuySell
 	call CopyMenuHeader
@@ -186,7 +179,6 @@ StandardMart:
 .sell
 	ld a, STANDARDMART_SELL
 	ret
-
 .Buy:
 	call ExitMenu
 	call FarReadMart
@@ -194,20 +186,17 @@ StandardMart:
 	and a
 	ld a, STANDARDMART_ANYTHINGELSE
 	ret
-
 .Sell:
 	call ExitMenu
 	call SellMenu
 	ld a, STANDARDMART_ANYTHINGELSE
 	ret
-
 .Quit:
 	call ExitMenu
 	ld hl, MartComeAgainText
 	call MartTextbox
 	ld a, STANDARDMART_EXIT
 	ret
-
 .AnythingElse:
 	call LoadStandardMenuHeader
 	ld hl, MartAskMoreText
@@ -240,7 +229,6 @@ FarReadMart:
 	call GetMartItemPrice
 	pop de
 	jr .ReadMartItem
-
 .done
 	ret
 
@@ -263,7 +251,6 @@ GetMartPrice:
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 6 ; 6 digits
 	call PrintNum
 	pop hl
-
 	ld de, wStringBuffer1
 	ld c, 6 / 2 ; 6 digits
 .loop
@@ -276,26 +263,24 @@ GetMartPrice:
 	dec c
 	jr nz, .loop
 	ret
-
 .CharToNybble:
 	ld a, [de]
 	inc de
 	cp " "
 	jr nz, .not_space
 	ld a, "0"
-
 .not_space
 	sub "0"
 	ret
 
 ReadMart:
-; Load the mart pointer.  Mart data is local (no need for bank).
+	; Load the mart pointer.  Mart data is local (no need for bank).
 	ld hl, wMartPointer
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	push hl
-; set hl to the first item
+	; set hl to the first item
 	inc hl
 	ld bc, wMartItem1BCD
 	ld de, wCurMartItems
@@ -304,17 +289,16 @@ ReadMart:
 	ld a, [hli]
 	ld [de], a
 	inc de
-; -1 is the terminator
+	; -1 is the terminator
 	cp -1
 	jr z, .done
-
 	push de
-; copy the price to de
+	; copy the price to de
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
 	ld d, a
-; convert the price to 3-byte BCD at [bc]
+	; convert the price to 3-byte BCD at [bc]
 	push hl
 	ld h, b
 	ld l, c
@@ -322,10 +306,8 @@ ReadMart:
 	ld b, h
 	ld c, l
 	pop hl
-
 	pop de
 	jr .loop
-
 .done
 	pop hl
 	ld a, [hl]
@@ -352,7 +334,8 @@ LoadBuyMenuText:
 ; which table is in wMartType
 ; which entry is in register a
 	push af
-	call GetMartDialogGroup ; gets a pointer from GetMartDialogGroup.MartTextFunctionPointers
+	; gets a pointer from GetMartDialogGroup.MartTextFunctionPointers
+	call GetMartDialogGroup 
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -368,7 +351,8 @@ LoadBuyMenuText:
 	ret
 
 MartAskPurchaseQuantity:
-	call GetMartDialogGroup ; gets a pointer from GetMartDialogGroup.MartTextFunctionPointers
+	; gets a pointer from GetMartDialogGroup.MartTextFunctionPointers
+	call GetMartDialogGroup
 	inc hl
 	inc hl
 	ld a, [hl]
@@ -387,14 +371,12 @@ GetMartDialogGroup:
 	add hl, de
 	add hl, de
 	ret
-
 .MartTextFunctionPointers:
 	dwb .StandardMartPointers, 0
 	dwb .HerbShopPointers, 0
 	dwb .BargainShopPointers, 1
 	dwb .PharmacyPointers, 0
 	dwb .StandardMartPointers, 2
-
 .StandardMartPointers:
 	dw MartHowManyText
 	dw MartFinalPriceText
@@ -402,7 +384,6 @@ GetMartDialogGroup:
 	dw MartPackFullText
 	dw MartThanksText
 	dw BuyMenuLoop
-
 .HerbShopPointers:
 	dw HerbalLadyHowManyText
 	dw HerbalLadyFinalPriceText
@@ -410,7 +391,6 @@ GetMartDialogGroup:
 	dw HerbalLadyPackFullText
 	dw HerbalLadyThanksText
 	dw BuyMenuLoop
-
 .BargainShopPointers:
 	dw BuyMenuLoop
 	dw BargainShopFinalPriceText
@@ -418,7 +398,6 @@ GetMartDialogGroup:
 	dw BargainShopPackFullText
 	dw BargainShopThanksText
 	dw BargainShopSoldOutText
-
 .PharmacyPointers:
 	dw PharmacyHowManyText
 	dw PharmacyFinalPriceText
@@ -445,17 +424,13 @@ BuyMenuLoop:
 	ld a, [wMenuJoypad]
 	cp B_BUTTON
 	jr z, .set_carry
-	cp A_BUTTON
-	jr z, .useless_pointer
-
-.useless_pointer
+	; A_BUTTON
 	call MartAskPurchaseQuantity
 	jr c, .cancel
 	call MartConfirmPurchase
 	jr c, .cancel
 	ld de, wMoney
 	ld bc, hMoneyTemp
-	ld a, 3 ; useless load
 	call CompareMoney
 	jr c, .insufficient_funds
 	ld hl, wNumItems
@@ -474,23 +449,19 @@ BuyMenuLoop:
 	ld a, MARTTEXT_HERE_YOU_GO
 	call LoadBuyMenuText
 	call JoyWaitAorB
-
 .cancel
 	call SpeechTextbox
 	and a
 	ret
-
 .set_carry
 	scf
 	ret
-
 .insufficient_bag_space
 	ld a, MARTTEXT_BAG_FULL
 	call LoadBuyMenuText
 	call JoyWaitAorB
 	and a
 	ret
-
 .insufficient_funds
 	ld a, MARTTEXT_NOT_ENOUGH_MONEY
 	call LoadBuyMenuText
@@ -546,7 +517,6 @@ BargainShopAskPurchaseQuantity:
 	ldh [hMoneyTemp], a
 	and a
 	ret
-
 .SoldOut:
 	ld a, MARTTEXT_SOLD_OUT
 	call LoadBuyMenuText
@@ -563,7 +533,6 @@ RooftopSaleAskPurchaseQuantity:
 	farcall RooftopSale_SelectQuantityToBuy
 	call ExitMenu
 	ret
-
 .GetSalePrice:
 	ld a, [wMartItemID]
 	ld e, a
@@ -595,16 +564,14 @@ MenuHeader_Buy:
 	menu_coords 1, 3, SCREEN_WIDTH - 1, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData
 	db SCROLLINGMENU_DISPLAY_ARROWS | SCROLLINGMENU_ENABLE_FUNCTION3 ; flags
 	db 4, 8 ; rows, columns
 	db SCROLLINGMENU_ITEMS_NORMAL ; item format
 	dbw 0, wCurMartCount
-	dba PlaceMenuItemName
+	dba PlaceMartMenuItemName
 	dba .PrintBCDPrices
 	dba UpdateItemDescription
-
 .PrintBCDPrices:
 	ld a, [wScrollingMenuCursorPosition]
 	ld c, a
@@ -717,29 +684,16 @@ SellMenu:
 	jp z, .quit
 	call .TryToSellItem
 	jr .loop
-
 .quit
 	call ReturnToMapWithSpeechTextbox
 	and a
 	ret
-
-.NothingToSell: ; unreferenced
-	ld hl, .NothingToSellText
-	call MenuTextboxBackup
-	and a
-	ret
-
-.NothingToSellText:
-	text_far _NothingToSellText
-	text_end
-
 .TryToSellItem:
 	farcall CheckItemMenu
 	ld a, [wItemAttributeValue]
 	ld hl, .dw
 	rst JumpTable
 	ret
-
 .dw
 	dw .try_sell
 	dw .cant_buy
@@ -748,10 +702,8 @@ SellMenu:
 	dw .try_sell
 	dw .try_sell
 	dw .try_sell
-
 .cant_buy
 	ret
-
 .try_sell
 	farcall _CheckTossableItem
 	ld a, [wItemAttributeValue]
@@ -761,7 +713,6 @@ SellMenu:
 	call PrintText
 	and a
 	ret
-
 .okay_to_sell
 	ld hl, MartSellHowManyText
 	call PrintText
@@ -791,7 +742,6 @@ SellMenu:
 	call PlayTransactionSound
 	farcall PlaceMoneyBottomLeft
 	call JoyWaitAorB
-
 .declined
 	call ExitMenu
 	and a
@@ -805,9 +755,6 @@ MartSellPriceText:
 	text_far _MartSellPriceText
 	text_end
 
-UnusedDummyString: ; unreferenced
-	db "！ダミー！@" ; "!Dummy!"
-
 MartWelcomeText:
 	text_far _MartWelcomeText
 	text_end
@@ -817,7 +764,6 @@ MenuHeader_BuySell:
 	menu_coords 0, 0, 7, 8
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData
 	db STATICMENU_CURSOR ; strings
 	db 3 ; items

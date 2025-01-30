@@ -4,7 +4,6 @@ CanLearnTMHMMove:
 	call GetBaseData
 	ld hl, wBaseTMHM
 	push hl
-
 	ld a, [wPutativeTMHMMove]
 	ld b, a
 	ld c, 0
@@ -17,7 +16,6 @@ CanLearnTMHMMove:
 	jr z, .found
 	inc c
 	jr .loop
-
 .found
 	pop hl
 	ld b, CHECK_FLAG
@@ -26,7 +24,6 @@ CanLearnTMHMMove:
 	predef SmallFarFlagAction
 	pop de
 	ret
-
 .end
 	pop hl
 	ld c, 0

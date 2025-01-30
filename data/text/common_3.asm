@@ -590,11 +590,6 @@ _PharmacyComeAgainText::
 	line "See you around."
 	done
 
-_NothingToSellText::
-	text "You don't have"
-	line "anything to sell."
-	prompt
-
 _MartSellHowManyText::
 	text "How many?"
 	done

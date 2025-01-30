@@ -17,7 +17,6 @@ FindItemInBallScript::
 	itemnotify
 	closetext
 	end
-
 .no_room
 	opentext
 	writetext .FoundItemText
@@ -26,15 +25,12 @@ FindItemInBallScript::
 	waitbutton
 	closetext
 	end
-
 .FoundItemText:
 	text_far _FoundItemText
 	text_end
-
 .CantCarryItemText:
 	text_far _CantCarryItemText
 	text_end
-
 .TryReceiveItem:
 	xor a
 	ld [wScriptVar], a
@@ -43,6 +39,8 @@ FindItemInBallScript::
 	call GetItemName
 	ld hl, wStringBuffer3
 	call CopyName2
+	ld de, wStringBuffer3 + STRLEN("TM##")
+	farcall AppendTMHMMoveName
 	ld a, [wItemBallItemID]
 	ld [wCurItem], a
 	ld a, [wItemBallQuantity]

@@ -1,6 +1,7 @@
 LoadOverworldMonIcon:
 	ld a, e
 	call ReadMonMenuIcon
+	ld [wCurIcon], a
 	ld l, a
 	ld h, 0
 	add hl, hl
@@ -9,9 +10,7 @@ LoadOverworldMonIcon:
 	ld a, [hli]
 	ld e, a
 	ld d, [hl]
-	ld b, BANK(Icons)
-	ld c, 8
-	ret
+	jp GetIconBank
 
 SetMenuMonIconColor:
 	push hl
@@ -388,7 +387,7 @@ GetIcon_a:
 ; Load icon graphics into VRAM starting from tile a.
 	ld l, a
 	ld h, 0
-
+	; fallthrough
 GetIcon:
 ; Load icon graphics into VRAM starting from tile hl.
 	; One tile is 16 bytes long.
@@ -411,9 +410,17 @@ endr
 	ld e, a
 	ld d, [hl]
 	pop hl
-	lb bc, BANK(Icons), 8
+	call GetIconBank
 	call GetGFXUnlessMobile
 	pop hl
+	ret
+
+GetIconBank:
+	ld a, [wCurIcon]
+	cp BANK2_ICONS ; first icon in second bank
+	lb bc, BANK("Mon Icons 1"), 8
+	ret c
+	ld b, BANK("Mon Icons 2")
 	ret
 
 GetGFXUnlessMobile:

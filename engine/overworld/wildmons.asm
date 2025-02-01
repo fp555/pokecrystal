@@ -819,7 +819,7 @@ RandomPhoneMon:
 	call GetFarWord
 .skip_trainer
 	dec e
-	jr z, .skipped
+	jr z, .skip_name
 .skip
 	ld a, BANK(Trainers)
 	call GetFarByte
@@ -827,7 +827,6 @@ RandomPhoneMon:
 	cp -1
 	jr nz, .skip
 	jr .skip_trainer
-.skipped
 .skip_name
 	ld a, BANK(Trainers)
 	call GetFarByte
@@ -837,18 +836,26 @@ RandomPhoneMon:
 	ld a, BANK(Trainers)
 	call GetFarByte
 	inc hl
-	ld bc, 2 ; level, species
-	cp TRAINERTYPE_NORMAL
-	jr z, .got_mon_length
-	ld bc, 2 + NUM_MOVES ; level, species, moves
-	cp TRAINERTYPE_MOVES
-	jr z, .got_mon_length
-	ld bc, 2 + 1 ; level, species, item
-	cp TRAINERTYPE_ITEM
-	jr z, .got_mon_length
-	; TRAINERTYPE_ITEM_MOVES
-	ld bc, 2 + 1 + NUM_MOVES ; level, species, item, moves
-.got_mon_length
+	; b = trainer type
+	ld b, a
+	; c = mon length
+	ld c, 2
+	; All trainers use 2 bytes for level and species
+	; TRAINERTYPE_ITEM uses 1 more byte
+	bit TRAINERTYPE_ITEM_F, b
+	jr z, .no_item
+	inc c
+.no_item
+	; TRAINERTYPE_MOVES uses NUM_MOVES (4) more bytes
+	bit TRAINERTYPE_MOVES_F, b
+	jr z, .no_moves
+	ld a, NUM_MOVES
+	add c
+	ld c, a
+.no_moves
+	; bc = mon length
+	xor a
+	ld b, a
 	ld e, 0
 	push hl
 .count_mon

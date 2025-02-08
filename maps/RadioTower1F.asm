@@ -322,8 +322,8 @@ RadioTower1FRadioCardWomanQuestion2Text:
 	para "Is this statement"
 	line "correct?"
 
-	para "You can't buy a"
-	line "BERRY at a MART."
+	para "You can't buy"
+	line "berries at a MART."
 	done
 
 RadioTower1FRadioCardWomanQuestion3Text:

@@ -29,6 +29,7 @@ CherrygroveCityFlypointCallback:
 
 CherrygroveCityGuideGent:
 	faceplayer
+	showemote EMOTE_SHOCK, CHERRYGROVECITY_GRAMPS, 15
 	opentext
 	writetext GuideGentIntroText
 	waitbutton

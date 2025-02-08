@@ -3445,7 +3445,7 @@ BattleCommand_BurnTarget:
 	call GetOpponentItem
 	ld a, b
 	cp HELD_PREVENT_BURN
-	ret z
+	jr z, .fail
 	ld a, [wEffectFailed]
 	and a
 	ret nz
@@ -3464,6 +3464,13 @@ BattleCommand_BurnTarget:
 	call StdBattleTextbox
 	farcall UseHeldStatusHealingItem
 	ret
+.fail
+	ld a, [hl]
+	ld [wNamedObjectIndex], a
+	call GetItemName
+	call AnimateFailedMove
+	ld hl, ProtectedByText
+	jp StdBattleTextbox
 
 Defrost:
 	ld a, [hl]
@@ -3507,7 +3514,7 @@ BattleCommand_FreezeTarget:
 	call GetOpponentItem
 	ld a, b
 	cp HELD_PREVENT_FREEZE
-	ret z
+	jr z, .fail
 	ld a, [wEffectFailed]
 	and a
 	ret nz
@@ -3534,6 +3541,13 @@ BattleCommand_FreezeTarget:
 .finish
 	ld [hl], $1
 	ret
+.fail
+	ld a, [hl]
+	ld [wNamedObjectIndex], a
+	call GetItemName
+	call AnimateFailedMove
+	ld hl, ProtectedByText
+	jp StdBattleTextbox
 
 BattleCommand_ParalyzeTarget:
 	xor a

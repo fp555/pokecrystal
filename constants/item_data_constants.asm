@@ -70,15 +70,9 @@ DEF MAIL_STRUCT_LENGTH_JP EQU $2a ; mailmsg_jp struct
 	const_def
 	const HELD_NONE
 	const HELD_BERRY
-	const HELD_2
 	const HELD_LEFTOVERS
-	const_skip
-	const HELD_5
 	const HELD_RESTORE_PP
-	const_skip
 	const HELD_CLEANSE_TAG
-
-	const_next 10
 	const HELD_HEAL_POISON
 	const HELD_HEAL_FREEZE
 	const HELD_HEAL_BURN
@@ -86,32 +80,20 @@ DEF MAIL_STRUCT_LENGTH_JP EQU $2a ; mailmsg_jp struct
 	const HELD_HEAL_PARALYZE
 	const HELD_HEAL_STATUS
 	const HELD_HEAL_CONFUSION
-
-	const_next 20
-	const HELD_PREVENT_POISON
-	const HELD_PREVENT_BURN
-	const HELD_PREVENT_FREEZE
-	const HELD_PREVENT_SLEEP
-	const HELD_PREVENT_PARALYZE
-	const HELD_PREVENT_CONFUSE
-
-	const_next 30
-	const HELD_30
-	const HELD_ATTACK_UP
-	const HELD_DEFENSE_UP
-	const HELD_SPEED_UP
-	const HELD_SP_ATTACK_UP
-	const HELD_SP_DEFENSE_UP
-	const HELD_ACCURACY_UP
-	const HELD_EVASION_UP
-	const HELD_38
-
-	const_next 40
-	const_skip
-	const_skip
+	const HELD_PREVENT_POISON ; unused
+	const HELD_PREVENT_BURN ; unused
+	const HELD_PREVENT_FREEZE ; unused
+	const HELD_PREVENT_SLEEP ; unused
+	const HELD_PREVENT_PARALYZE ; unused
+	const HELD_PREVENT_CONFUSE ; unused
+	const HELD_ATTACK_UP ; unused
+	const HELD_DEFENSE_UP ; unused
+	const HELD_SPEED_UP ; unused
+	const HELD_SP_ATTACK_UP ; unused
+	const HELD_SP_DEFENSE_UP ; unused
+	const HELD_ACCURACY_UP ; unused
+	const HELD_EVASION_UP ; unused
 	const HELD_METAL_POWDER
-
-	const_next 50
 	const HELD_NORMAL_BOOST
 	const HELD_FIGHTING_BOOST
 	const HELD_FLYING_BOOST
@@ -129,15 +111,11 @@ DEF MAIL_STRUCT_LENGTH_JP EQU $2a ; mailmsg_jp struct
 	const HELD_DRAGON_BOOST
 	const HELD_DARK_BOOST
 	const HELD_STEEL_BOOST
-
-	const_next 70
-	const HELD_CATCH_CHANCE
-	const HELD_71
+	const HELD_CATCH_CHANCE ; unused
 	const HELD_ESCAPE
 	const HELD_CRITICAL_UP
 	const HELD_QUICK_CLAW
 	const HELD_FLINCH
 	const HELD_AMULET_COIN
 	const HELD_BRIGHTPOWDER
-	const_skip
 	const HELD_FOCUS_BAND

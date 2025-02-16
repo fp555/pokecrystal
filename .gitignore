@@ -25,7 +25,7 @@ gfx/pokemon/*/frames.asm
 
 # tool binaries
 *.exe
-tools/sameboy_winsdl_v0.16.3/*
+tools/bgbw64
 
 # precompiled python
 *.pyc

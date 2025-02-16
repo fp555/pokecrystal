@@ -5,169 +5,133 @@ KantoGrassWildMons:
 	def_grass_wildmons DIGLETTS_CAVE
 	db 4 percent, 2 percent, 8 percent ; encounter rates: morn/day/nite
 	; morn
-	db 3, DIGLETT
-	db 6, DIGLETT
-	db 12, DIGLETT
-	db 24, DIGLETT
-	db 24, DUGTRIO
-	db 24, DUGTRIO
-	db 24, DUGTRIO
-	; day
-	db 2, DIGLETT
 	db 4, DIGLETT
-	db 8, DIGLETT
-	db 16, DIGLETT
-	db 16, DUGTRIO
-	db 16, DUGTRIO
-	db 16, DUGTRIO
+	db 10, DIGLETT
+	db 17, DIGLETT
+	db 26, DUGTRIO
+	db 23, DIGLETT
+	; day
+	db 4, DIGLETT
+	db 10, DIGLETT
+	db 17, DIGLETT
+	db 26, DUGTRIO
+	db 23, DIGLETT
 	; nite
 	db 4, DIGLETT
-	db 8, DIGLETT
-	db 16, DIGLETT
-	db 32, DIGLETT
-	db 32, DUGTRIO
-	db 32, DUGTRIO
-	db 32, DUGTRIO
+	db 10, DIGLETT
+	db 17, DIGLETT
+	db 26, DUGTRIO
+	db 23, DIGLETT
 	end_grass_wildmons
 
 	def_grass_wildmons MOUNT_MOON
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 6, ZUBAT
 	db 8, GEODUDE
+	db 8, ZUBAT
 	db 8, SANDSHREW
-	db 12, PARAS
-	db 10, GEODUDE
-	db 8, CLEFAIRY
+	db 8, PARAS
 	db 8, CLEFAIRY
 	; day
-	db 6, ZUBAT
 	db 8, GEODUDE
+	db 8, ZUBAT
 	db 8, SANDSHREW
-	db 12, PARAS
-	db 10, GEODUDE
-	db 8, CLEFAIRY
+	db 8, PARAS
 	db 8, CLEFAIRY
 	; nite
-	db 6, ZUBAT
 	db 8, GEODUDE
+	db 8, ZUBAT
+	db 8, SANDSHREW
+	db 8, PARAS
 	db 8, CLEFAIRY
-	db 12, PARAS
-	db 10, GEODUDE
-	db 12, CLEFAIRY
-	db 12, CLEFAIRY
 	end_grass_wildmons
 
 	def_grass_wildmons ROCK_TUNNEL_1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 10, CUBONE
-	db 11, GEODUDE
-	db 12, MACHOP
-	db 12, ZUBAT
-	db 15, MACHOKE
-	db 12, MAROWAK
-	db 12, MAROWAK
+	db 16, CUBONE
+	db 16, GEODUDE
+	db 16, MACHOP
+	db 16, ZUBAT
+	db 16, ONIX
 	; day
-	db 10, CUBONE
-	db 11, GEODUDE
-	db 12, MACHOP
-	db 12, ZUBAT
-	db 15, MACHOKE
-	db 12, MAROWAK
-	db 12, MAROWAK
+	db 16, CUBONE
+	db 16, GEODUDE
+	db 16, MACHOP
+	db 16, ZUBAT
+	db 16, ONIX
 	; nite
-	db 12, ZUBAT
-	db 11, GEODUDE
-	db 12, GEODUDE
-	db 17, HAUNTER
-	db 15, ZUBAT
-	db 15, ZUBAT
-	db 15, ZUBAT
+	db 16, GEODUDE
+	db 16, ZUBAT
+	db 16, GASTLY
+	db 16, CUBONE
+	db 16, ONIX
 	end_grass_wildmons
 
 	def_grass_wildmons ROCK_TUNNEL_B1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 12, CUBONE
-	db 14, GEODUDE
-	db 16, ONIX
-	db 12, ZUBAT
-	db 15, MAROWAK
-	db 15, KANGASKHAN
-	db 15, KANGASKHAN
+	db 17, CUBONE
+	db 17, GEODUDE
+	db 17, ONIX
+	db 17, ZUBAT
+	db 17, KANGASKHAN
 	; day
-	db 12, CUBONE
-	db 14, GEODUDE
-	db 16, ONIX
-	db 12, ZUBAT
-	db 15, MAROWAK
-	db 15, KANGASKHAN
-	db 15, KANGASKHAN
+	db 17, CUBONE
+	db 17, GEODUDE
+	db 17, ONIX
+	db 17, ZUBAT
+	db 17, KANGASKHAN
 	; nite
-	db 12, ZUBAT
-	db 14, GEODUDE
-	db 16, ONIX
-	db 15, ZUBAT
-	db 15, HAUNTER
-	db 15, GOLBAT
-	db 15, GOLBAT
+	db 17, ZUBAT
+	db 17, GEODUDE
+	db 17, ONIX
+	db 17, GASTLY
+	db 17, CUBONE
 	end_grass_wildmons
 
 	def_grass_wildmons VICTORY_ROAD
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 34, GRAVELER
-	db 32, RHYHORN
+	db 33, GRAVELER
+	db 33, RHYHORN
 	db 33, ONIX
-	db 34, GOLBAT
-	db 35, SANDSLASH
-	db 35, RHYDON
-	db 35, RHYDON
+	db 33, GOLBAT
+	db 33, SANDSLASH
 	; day
-	db 34, GRAVELER
-	db 32, RHYHORN
+	db 33, GRAVELER
+	db 33, RHYHORN
 	db 33, ONIX
-	db 34, GOLBAT
-	db 35, SANDSLASH
-	db 35, RHYDON
-	db 35, RHYDON
+	db 33, GOLBAT
+	db 33, SANDSLASH
 	; nite
-	db 34, GOLBAT
-	db 34, GRAVELER
-	db 32, ONIX
-	db 36, GRAVELER
-	db 38, GRAVELER
-	db 40, GRAVELER
-	db 40, GRAVELER
+	db 33, GRAVELER
+	db 33, GOLBAT
+	db 33, ONIX
+	db 33, GOLBAT
+	db 33, GRAVELER
 	end_grass_wildmons
 
 	def_grass_wildmons TOHJO_FALLS
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 30, GOLBAT
+	db 30, RATICATE
+	db 30, QUAGSIRE
+	db 30, SLOWPOKE
+	db 30, WOBBUFFET
 	; day
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 30, GOLBAT
+	db 30, RATICATE
+	db 30, QUAGSIRE
+	db 30, SLOWPOKE
+	db 30, WOBBUFFET
 	; nite
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 30, GOLBAT
+	db 30, RATICATE
+	db 30, QUAGSIRE
+	db 30, SLOWPOKE
+	db 30, WOBBUFFET
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_1
@@ -175,27 +139,21 @@ KantoGrassWildMons:
 	; morn
 	db 2, PIDGEY
 	db 2, RATTATA
-	db 3, SENTRET
-	db 3, PIDGEY
-	db 6, FURRET
-	db 4, PIDGEY
-	db 4, PIDGEY
+	db 2, SENTRET
+	db 2, PIDGEY
+	db 2, HOPPIP
 	; day
 	db 2, PIDGEY
 	db 2, RATTATA
-	db 3, SENTRET
-	db 3, PIDGEY
-	db 6, FURRET
-	db 4, PIDGEY
-	db 4, PIDGEY
+	db 2, SENTRET
+	db 2, PIDGEY
+	db 2, HOPPIP
 	; nite
 	db 2, HOOTHOOT
 	db 2, RATTATA
-	db 3, RATTATA
-	db 3, HOOTHOOT
-	db 6, RATICATE
-	db 4, HOOTHOOT
-	db 4, HOOTHOOT
+	db 2, RATTATA
+	db 2, HOOTHOOT
+	db 2, SENTRET
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_2
@@ -203,27 +161,21 @@ KantoGrassWildMons:
 	; morn
 	db 3, CATERPIE
 	db 3, LEDYBA
-	db 5, PIDGEY
-	db 7, BUTTERFREE
-	db 7, LEDIAN
-	db 4, PIKACHU
-	db 4, PIKACHU
+	db 3, PIDGEY
+	db 3, WEEDLE
+	db 3, PIKACHU
 	; day
 	db 3, CATERPIE
+	db 3, HOPPIP
 	db 3, PIDGEY
-	db 5, PIDGEY
-	db 7, BUTTERFREE
-	db 7, PIDGEOTTO
-	db 4, PIKACHU
-	db 4, PIKACHU
+	db 3, WEEDLE
+	db 3, PIKACHU
 	; nite
 	db 3, HOOTHOOT
 	db 3, SPINARAK
-	db 5, HOOTHOOT
-	db 7, NOCTOWL
-	db 7, ARIADOS
-	db 4, NOCTOWL
-	db 4, NOCTOWL
+	db 3, CATERPIE
+	db 3, WEEDLE
+	db 3, VENONAT
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_3
@@ -231,55 +183,43 @@ KantoGrassWildMons:
 	; morn
 	db 5, SPEAROW
 	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
+	db 5, EKANS
+	db 5, SANDSHREW
+	db 5, PIDGEY
 	; day
 	db 5, SPEAROW
 	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
+	db 5, EKANS
+	db 5, SANDSHREW
+	db 5, PIDGEY
 	; nite
 	db 5, RATTATA
-	db 10, RATTATA
-	db 10, RATICATE
-	db 6, ZUBAT
 	db 5, RATTATA
-	db 6, CLEFAIRY
-	db 6, CLEFAIRY
+	db 5, EKANS
+	db 5, ZUBAT
+	db 5, CLEFAIRY
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_4
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 5, SPEAROW
-	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
-	; day
-	db 5, SPEAROW
-	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
-	; nite
-	db 5, RATTATA
+	db 10, SPEAROW
 	db 10, RATTATA
-	db 10, RATICATE
-	db 6, ZUBAT
-	db 5, RATTATA
-	db 6, CLEFAIRY
-	db 6, CLEFAIRY
+	db 10, EKANS
+	db 10, SANDSHREW
+	db 10, PIDGEY
+	; day
+	db 10, SPEAROW
+	db 10, RATTATA
+	db 10, EKANS
+	db 10, SANDSHREW
+	db 10, PIDGEY
+	; nite
+	db 10, RATTATA
+	db 10, RATTATA
+	db 10, EKANS
+	db 10, ZUBAT
+	db 10, CLEFAIRY
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_5
@@ -287,27 +227,21 @@ KantoGrassWildMons:
 	; morn
 	db 13, PIDGEY
 	db 13, SNUBBULL
-	db 15, PIDGEOTTO
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 13, SPEAROW
+	db 13, ABRA
+	db 13, JIGGLYPUFF
 	; day
 	db 13, PIDGEY
 	db 13, SNUBBULL
-	db 15, PIDGEOTTO
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 13, SPEAROW
+	db 13, ABRA
+	db 13, JIGGLYPUFF
 	; nite
 	db 13, HOOTHOOT
 	db 13, MEOWTH
-	db 15, NOCTOWL
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 13, ODDISH
+	db 13, ABRA
+	db 13, JIGGLYPUFF
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_6
@@ -315,82 +249,64 @@ KantoGrassWildMons:
 	; morn
 	db 13, RATTATA
 	db 13, SNUBBULL
-	db 14, MAGNEMITE
-	db 15, RATICATE
-	db 12, JIGGLYPUFF
-	db 15, GRANBULL
-	db 15, GRANBULL
+	db 13, MAGNEMITE
+	db 13, PSYDUCK
+	db 13, JIGGLYPUFF
 	; day
 	db 13, RATTATA
 	db 13, SNUBBULL
-	db 14, MAGNEMITE
-	db 15, RATICATE
-	db 12, JIGGLYPUFF
-	db 15, GRANBULL
-	db 15, GRANBULL
+	db 13, MAGNEMITE
+	db 13, PSYDUCK
+	db 13, JIGGLYPUFF
 	; nite
-	db 13, MEOWTH
 	db 13, DROWZEE
-	db 14, MAGNEMITE
-	db 15, PSYDUCK
-	db 12, JIGGLYPUFF
-	db 15, RATICATE
-	db 15, RATICATE
+	db 13, MEOWTH
+	db 13, MAGNEMITE
+	db 13, PSYDUCK
+	db 13, JIGGLYPUFF
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_7
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 17, RATTATA
-	db 17, SPEAROW
-	db 18, SNUBBULL
-	db 18, RATICATE
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 16, RATTATA
+	db 16, SPEAROW
+	db 16, SNUBBULL
+	db 16, KADABRA
+	db 16, JIGGLYPUFF
 	; day
-	db 17, RATTATA
-	db 17, SPEAROW
-	db 18, SNUBBULL
-	db 18, RATICATE
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 16, RATTATA
+	db 16, SPEAROW
+	db 16, SNUBBULL
+	db 16, KADABRA
+	db 16, JIGGLYPUFF
 	; nite
-	db 17, MEOWTH
-	db 17, MURKROW
-	db 18, HOUNDOUR
-	db 18, PERSIAN
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 16, MEOWTH
+	db 16, MURKROW
+	db 16, HOUNDOUR
+	db 16, RATTATA
+	db 16, JIGGLYPUFF
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_8
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 17, SNUBBULL
-	db 19, PIDGEOTTO
-	db 16, ABRA
-	db 17, GROWLITHE
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
+	db 18, SNUBBULL
+	db 20, PIDGEOTTO
+	db 18, GROWLITHE
+	db 18, JIGGLYPUFF
 	db 18, KADABRA
 	; day
-	db 17, SNUBBULL
-	db 19, PIDGEOTTO
-	db 16, ABRA
-	db 17, GROWLITHE
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
+	db 18, SNUBBULL
+	db 20, PIDGEOTTO
+	db 18, GROWLITHE
+	db 18, JIGGLYPUFF
 	db 18, KADABRA
 	; nite
-	db 17, MEOWTH
+	db 18, MEOWTH
 	db 20, NOCTOWL
-	db 16, ABRA
-	db 17, HAUNTER
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
+	db 18, GASTLY
+	db 18, JIGGLYPUFF
 	db 18, KADABRA
 	end_grass_wildmons
 
@@ -399,54 +315,42 @@ KantoGrassWildMons:
 	; morn
 	db 15, RATTATA
 	db 15, SPEAROW
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, FEAROW
-	db 18, MAROWAK
-	db 18, MAROWAK
+	db 15, WOOPER
+	db 15, VOLTORB
+	db 15, CUBONE
 	; day
 	db 15, RATTATA
 	db 15, SPEAROW
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, FEAROW
-	db 18, MAROWAK
-	db 18, MAROWAK
+	db 15, WOOPER
+	db 15, VOLTORB
+	db 15, CUBONE
 	; nite
 	db 15, RATTATA
 	db 15, VENONAT
-	db 15, RATICATE
-	db 15, VENOMOTH
-	db 15, ZUBAT
-	db 18, RATICATE
-	db 18, RATICATE
+	db 15, WOOPER
+	db 15, VOLTORB
+	db 15, CUBONE
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_10_NORTH
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 15, SPEAROW
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, MAROWAK
-	db 16, ELECTABUZZ
+	db 16, SPEAROW
+	db 16, VOLTORB
+	db 16, RATTATA
+	db 16, MAGNEMITE
 	db 16, ELECTABUZZ
 	; day
-	db 15, SPEAROW
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, MAROWAK
-	db 18, ELECTABUZZ
-	db 18, ELECTABUZZ
-	; nite
-	db 15, VENONAT
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, VENOMOTH
-	db 15, ZUBAT
+	db 16, SPEAROW
+	db 16, VOLTORB
+	db 16, RATTATA
+	db 16, MAGNEMITE
 	db 16, ELECTABUZZ
+	; nite
+	db 16, VENONAT
+	db 16, VOLTORB
+	db 16, RATTATA
+	db 16, MAGNEMITE
 	db 16, ELECTABUZZ
 	end_grass_wildmons
 
@@ -454,392 +358,308 @@ KantoGrassWildMons:
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
 	db 14, HOPPIP
-	db 13, RATICATE
-	db 15, MAGNEMITE
-	db 16, PIDGEOTTO
-	db 16, RATTATA
-	db 16, HOPPIP
-	db 16, HOPPIP
+	db 14, RATTATA
+	db 14, MAGNEMITE
+	db 14, PIDGEY
+	db 14, DROWZEE
 	; day
 	db 14, HOPPIP
-	db 13, RATICATE
-	db 15, MAGNEMITE
-	db 16, PIDGEOTTO
-	db 16, RATTATA
-	db 16, HOPPIP
-	db 16, HOPPIP
-	; nite
+	db 14, RATTATA
+	db 14, MAGNEMITE
+	db 14, PIDGEY
 	db 14, DROWZEE
-	db 13, MEOWTH
-	db 15, MAGNEMITE
-	db 16, NOCTOWL
-	db 16, RATICATE
-	db 16, HYPNO
-	db 16, HYPNO
+	; nite
+	db 14, MEOWTH
+	db 14, DROWZEE
+	db 14, MAGNEMITE
+	db 14, HOOTHOOT
+	db 14, RATTATA
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_13
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 18, NIDORINO
+	db 18, NIDORINA
+	db 18, PIDGEOTTO
+	db 18, SKIPLOOM
+	db 18, CHANSEY
 	; day
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 18, NIDORINO
+	db 18, NIDORINA
+	db 18, PIDGEOTTO
+	db 20, FEAROW
+	db 18, CHANSEY
 	; nite
-	db 23, VENONAT
-	db 23, QUAGSIRE
-	db 25, NOCTOWL
-	db 25, VENOMOTH
-	db 25, QUAGSIRE
-	db 25, QUAGSIRE
-	db 25, CHANSEY
+	db 20, QUAGSIRE
+	db 18, VENONAT
+	db 20, NOCTOWL
+	db 21, GLOOM
+	db 18, CHANSEY
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_14
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 26, NIDORINO
-	db 26, NIDORINA
-	db 28, PIDGEOTTO
-	db 28, HOPPIP
-	db 30, SKIPLOOM
-	db 30, SKIPLOOM
-	db 28, CHANSEY
+	db 19, NIDORINO
+	db 19, NIDORINA
+	db 19, PIDGEOTTO
+	db 19, SKIPLOOM
+	db 19, CHANSEY
 	; day
-	db 26, NIDORINO
-	db 26, NIDORINA
-	db 28, PIDGEOTTO
-	db 28, HOPPIP
-	db 30, SKIPLOOM
-	db 30, SKIPLOOM
-	db 28, CHANSEY
+	db 19, NIDORINO
+	db 19, NIDORINA
+	db 19, PIDGEOTTO
+	db 20, FEAROW
+	db 19, CHANSEY
 	; nite
-	db 26, VENONAT
-	db 26, QUAGSIRE
-	db 28, NOCTOWL
-	db 28, VENOMOTH
-	db 28, QUAGSIRE
-	db 28, QUAGSIRE
-	db 28, CHANSEY
+	db 20, QUAGSIRE
+	db 19, VENONAT
+	db 20, NOCTOWL
+	db 21, GLOOM
+	db 19, CHANSEY
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_15
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 20, NIDORINO
+	db 20, NIDORINA
+	db 20, PIDGEOTTO
+	db 20, FEAROW
+	db 20, SKIPLOOM
 	; day
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 20, NIDORINO
+	db 20, NIDORINA
+	db 20, PIDGEOTTO
+	db 20, FEAROW
+	db 20, SKIPLOOM
 	; nite
-	db 23, VENONAT
-	db 23, QUAGSIRE
-	db 25, NOCTOWL
-	db 25, VENOMOTH
-	db 25, QUAGSIRE
-	db 25, QUAGSIRE
-	db 25, CHANSEY
+	db 20, QUAGSIRE
+	db 20, VENONAT
+	db 20, NOCTOWL
+	db 21, GLOOM
+	db 20, MURKROW
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_16
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, FEAROW
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; day
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, SLUGMA
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; nite
-	db 26, GRIMER
-	db 27, GRIMER
-	db 28, GRIMER
-	db 29, MURKROW
-	db 29, MURKROW
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, HOUNDOUR
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_17
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 30, FEAROW
-	db 29, GRIMER
-	db 31, GRIMER
-	db 32, FEAROW
-	db 33, GRIMER
-	db 33, MUK
-	db 33, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; day
-	db 30, FEAROW
-	db 29, SLUGMA
-	db 29, GRIMER
-	db 32, FEAROW
-	db 32, SLUGMA
-	db 33, MUK
-	db 33, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; nite
-	db 30, GRIMER
-	db 29, GRIMER
-	db 31, GRIMER
-	db 32, GRIMER
-	db 33, GRIMER
-	db 33, MUK
-	db 33, MUK
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, HOUNDOUR
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_18
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, FEAROW
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; day
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, SLUGMA
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, GRIMER
+	db 20, FEAROW
+	db 20, SLUGMA
 	; nite
-	db 26, GRIMER
-	db 27, GRIMER
-	db 28, GRIMER
-	db 29, GRIMER
-	db 29, GRIMER
-	db 30, MUK
-	db 30, MUK
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, GRIMER
+	db 20, MURKROW
+	db 20, HOUNDOUR
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_21
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 30, MR__MIME
-	db 28, MR__MIME
-	db 28, MR__MIME
+	db 25, RATICATE
+	db 25, TANGELA
+	db 25, TANGELA
+	db 25, MR__MIME
+	db 25, RATICATE
 	; day
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 28, MR__MIME
-	db 30, MR__MIME
-	db 30, MR__MIME
+	db 25, RATICATE
+	db 25, TANGELA
+	db 25, TANGELA
+	db 25, MR__MIME
+	db 25, RATICATE
 	; nite
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 30, TANGELA
-	db 28, TANGELA
-	db 28, TANGELA
+	db 25, RATICATE
+	db 25, TANGELA
+	db 25, TANGELA
+	db 25, SLOWPOKE
+	db 25, RATICATE
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_22
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 3, RATTATA
-	db 3, SPEAROW
-	db 5, SPEAROW
+	db 4, NIDORAN_F
+	db 4, NIDORAN_M
+	db 4, SPEAROW
 	db 4, DODUO
-	db 6, PONYTA
-	db 7, FEAROW
-	db 7, FEAROW
+	db 4, PONYTA
 	; day
-	db 3, RATTATA
-	db 3, SPEAROW
-	db 5, SPEAROW
+	db 4, NIDORAN_M
+	db 4, NIDORAN_F
+	db 4, SPEAROW
 	db 4, DODUO
-	db 6, PONYTA
-	db 7, FEAROW
-	db 7, FEAROW
+	db 4, PONYTA
 	; nite
-	db 3, RATTATA
-	db 3, POLIWAG
-	db 5, RATTATA
 	db 4, POLIWAG
-	db 6, RATTATA
-	db 7, RATTATA
-	db 7, RATTATA
+	db 4, RATTATA
+	db 4, RATTATA
+	db 4, NIDORAN_M
+	db 4, NIDORAN_F
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_24
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 8, CATERPIE
-	db 10, CATERPIE
-	db 12, METAPOD
 	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
+	db 12, BUTTERFREE
+	db 12, BEEDRILL
+	db 12, BELLSPROUT
+	db 12, LEDYBA
 	; day
-	db 8, CATERPIE
+	db 12, ABRA
+	db 12, BUTTERFREE
+	db 12, BEEDRILL
+	db 12, BELLSPROUT
 	db 12, SUNKERN
-	db 10, CATERPIE
-	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
 	; nite
-	db 10, VENONAT
-	db 10, ODDISH
-	db 12, ODDISH
 	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, GLOOM
-	db 14, GLOOM
+	db 12, ODDISH
+	db 12, VENONAT
+	db 12, BELLSPROUT
+	db 12, SPINARAK
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_25
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 10, CATERPIE
-	db 10, PIDGEY
-	db 12, PIDGEOTTO
-	db 12, METAPOD
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
+	db 12, PIDGEY
+	db 12, BUTTERFREE
+	db 12, BEEDRILL
+	db 12, BELLSPROUT
+	db 12, LEDYBA
 	; day
-	db 10, CATERPIE
-	db 10, PIDGEY
-	db 12, PIDGEOTTO
-	db 12, METAPOD
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
+	db 12, PIDGEY
+	db 12, BUTTERFREE
+	db 12, BEEDRILL
+	db 12, BELLSPROUT
+	db 12, SUNKERN
 	; nite
-	db 10, ODDISH
-	db 10, HOOTHOOT
-	db 10, VENONAT
-	db 12, NOCTOWL
-	db 10, BELLSPROUT
-	db 14, NOCTOWL
-	db 14, NOCTOWL
+	db 12, HOOTHOOT
+	db 12, ODDISH
+	db 12, VENONAT
+	db 12, BELLSPROUT
+	db 12, SPINARAK
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_26
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
 	db 28, DODUO
-	db 28, SANDSLASH
-	db 32, PONYTA
-	db 30, RATICATE
-	db 30, DODUO
-	db 30, ARBOK
-	db 30, ARBOK
+	db 31, SANDSLASH
+	db 31, PONYTA
+	db 31, RATICATE
+	db 31, ARBOK
 	; day
 	db 28, DODUO
-	db 28, SANDSLASH
-	db 32, PONYTA
-	db 30, RATICATE
-	db 30, DODUO
-	db 30, ARBOK
-	db 30, ARBOK
+	db 31, SANDSLASH
+	db 31, PONYTA
+	db 31, RATICATE
+	db 31, ARBOK
 	; nite
-	db 28, NOCTOWL
-	db 28, RATICATE
-	db 32, NOCTOWL
-	db 30, RATICATE
-	db 30, QUAGSIRE
-	db 30, QUAGSIRE
-	db 30, QUAGSIRE
+	db 31, NOCTOWL
+	db 31, QUAGSIRE
+	db 31, RATICATE
+	db 31, ARBOK
+	db 31, GLOOM
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_27
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
 	db 28, DODUO
-	db 28, ARBOK
+	db 30, ARBOK
 	db 30, RATICATE
-	db 30, DODUO
-	db 32, PONYTA
-	db 30, DODRIO
-	db 30, DODRIO
+	db 30, PONYTA
+	db 31, DODRIO
 	; day
 	db 28, DODUO
-	db 28, ARBOK
+	db 30, ARBOK
 	db 30, RATICATE
-	db 30, DODUO
-	db 32, PONYTA
-	db 30, DODRIO
-	db 30, DODRIO
+	db 30, PONYTA
+	db 31, DODRIO
 	; nite
-	db 28, QUAGSIRE
-	db 28, NOCTOWL
-	db 30, RATICATE
+	db 30, NOCTOWL
 	db 30, QUAGSIRE
-	db 32, NOCTOWL
-	db 32, NOCTOWL
-	db 32, NOCTOWL
+	db 30, RATICATE
+	db 30, ARBOK
+	db 30, GLOOM
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_28
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 39, TANGELA
-	db 40, PONYTA
+	db 40, TANGELA
+	db 37, PONYTA
+	db 40, ARBOK
 	db 40, RAPIDASH
-	db 42, ARBOK
-	db 41, DODUO
-	db 43, DODRIO
-	db 43, DODRIO
+	db 40, DODRIO
 	; day
-	db 39, TANGELA
-	db 40, PONYTA
+	db 40, TANGELA
+	db 37, PONYTA
+	db 40, ARBOK
 	db 40, RAPIDASH
-	db 42, ARBOK
-	db 41, DODUO
-	db 43, DODRIO
-	db 43, DODRIO
+	db 40, DODRIO
 	; nite
-	db 39, TANGELA
 	db 40, POLIWHIRL
+	db 40, TANGELA
 	db 40, GOLBAT
-	db 40, POLIWHIRL
-	db 42, GOLBAT
-	db 42, GOLBAT
-	db 42, GOLBAT
+	db 40, HOUNDOOM
+	db 40, SKARMORY
 	end_grass_wildmons
 
 	db -1 ; end

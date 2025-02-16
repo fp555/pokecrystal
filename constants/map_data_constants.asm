@@ -24,7 +24,7 @@ DEF MAP_LENGTH EQU _RS
 	const ROUTE
 	const INDOOR
 	const CAVE
-	const ENVIRONMENT_5
+	const ENVIRONMENT_5 ; unused
 	const GATE
 	const DUNGEON
 DEF NUM_ENVIRONMENTS EQU const_value - 1
@@ -68,7 +68,7 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	const_def
 	const SPAWN_HOME
 	const SPAWN_DEBUG
-; kanto
+	; kanto
 	const SPAWN_PALLET
 	const SPAWN_VIRIDIAN
 	const SPAWN_PEWTER
@@ -81,7 +81,7 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	const SPAWN_FUCHSIA
 	const SPAWN_CINNABAR
 	const SPAWN_INDIGO
-; johto
+	; johto
 	const SPAWN_NEW_BARK
 	const SPAWN_CHERRYGROVE
 	const SPAWN_VIOLET

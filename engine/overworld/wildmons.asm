@@ -249,7 +249,7 @@ ChooseWildEncounter:
 	call AddNTimes
 	ld de, GrassMonProbTable
 .watermon
-; hl contains the pointer to the wild mon data, let's save that to the stack
+	; hl contains the pointer to the wild mon data
 	push hl
 .randomloop
 	call Random
@@ -273,26 +273,21 @@ ChooseWildEncounter:
 	add hl, bc ; this selects our mon
 	ld a, [hli]
 	ld b, a
-	; If the Pokemon is encountered by surfing
+	; If this is a normal wild battle
 	; we need to give the levels some variety.
-	call CheckOnWater
+	ld a, [wBattleType]
+	cp BATTLETYPE_NORMAL
 	jr nz, .ok
 	; Check if we buff the wild mon, and by how much.
 	call Random
-	cp 35 percent
+	cp 60 percent ; level +0: 60% chance
 	jr c, .ok
 	inc b
-	cp 65 percent
+	cp 90 percent ; level +1: 30% chance
 	jr c, .ok
-	inc b
-	cp 85 percent
-	jr c, .ok
-	inc b
-	cp 95 percent
-	jr c, .ok
-	inc b
-	; Store the level
+	inc b ; level +2: 10% chance
 .ok
+	; Store the level
 	ld a, b
 	ld [wCurPartyLevel], a
 	ld b, [hl]
@@ -687,7 +682,6 @@ _BackUpMapIndices:
 INCLUDE "data/wild/roammon_maps.asm"
 
 ValidateTempWildMonSpecies:
-; Due to a development oversight, this function is called with the wild Pokemon's level, not its species, in a.
 	and a
 	jr z, .nowildmon ; = 0
 	cp NUM_POKEMON + 1 ; 252

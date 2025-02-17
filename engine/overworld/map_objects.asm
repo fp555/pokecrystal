@@ -397,19 +397,6 @@ UpdatePlayerStep:
 	set PLAYERSTEP_CONTINUE_F, [hl]
 	ret
 
-GetMapObjectField: ; unreferenced
-	push bc
-	ld e, a
-	ld d, 0
-	ld hl, OBJECT_MAP_OBJECT_INDEX
-	add hl, bc
-	ld a, [hl]
-	call GetMapObject
-	add hl, de
-	ld a, [hl]
-	pop bc
-	ret
-
 RestoreDefaultMovement:
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, bc
@@ -423,15 +410,8 @@ RestoreDefaultMovement:
 	ld a, [hl]
 	pop bc
 	ret
-
 .ok
 	ld a, SPRITEMOVEDATA_STANDING_DOWN
-	ret
-
-ObjectMovement_ZeroAnonJumptableIndex: ; unreferenced
-	ld hl, OBJECT_MOVEMENT_INDEX
-	add hl, bc
-	ld [hl], 0
 	ret
 
 ObjectMovement_IncAnonJumptableIndex:
@@ -472,18 +452,6 @@ ObjectStep_AnonJumptable:
 	ld a, [hl]
 	pop hl
 	rst JumpTable
-	ret
-
-ObjectStep_GetAnonJumptableIndex: ; unreferenced
-	ld hl, OBJECT_STEP_INDEX
-	add hl, bc
-	ld a, [hl]
-	ret
-
-ObjectStep_SetAnonJumptableIndex: ; unreferenced
-	ld hl, OBJECT_STEP_INDEX
-	add hl, bc
-	ld [hl], a
 	ret
 
 StepFunction_Reset:
@@ -2571,7 +2539,7 @@ ResetFollower:
 	cp -1
 	ret z
 	call GetObjectStruct
-	farcall ResetObject ; no need to farcall
+	call ResetObject
 	ld a, -1
 	ld [wObjectFollow_Follower], a
 	ret
@@ -2586,15 +2554,6 @@ FreezeAllOtherObjects::
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	res FROZEN_F, [hl]
-	xor a
-	ret
-
-FreezeObject: ; unreferenced
-	call CheckObjectVisibility
-	ret c
-	ld hl, OBJECT_FLAGS2
-	add hl, bc
-	set FROZEN_F, [hl]
 	xor a
 	ret
 
@@ -2663,14 +2622,6 @@ UnfreezeAllObjects::
 	pop bc
 	ret
 
-UnfreezeObject: ; unreferenced
-	call CheckObjectVisibility
-	ret c
-	ld hl, OBJECT_FLAGS2
-	add hl, bc
-	res FROZEN_F, [hl]
-	ret
-
 ResetObject:
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, bc
@@ -2690,7 +2641,6 @@ ResetObject:
 	add hl, bc
 	ld [hl], STEP_TYPE_RESET
 	ret
-
 .set_standing:
 	call GetSpriteDirection
 	rrca
@@ -2707,7 +2657,6 @@ ResetObject:
 	add hl, bc
 	ld [hl], STEP_TYPE_RESET
 	ret
-
 .standing_movefns:
 	db SPRITEMOVEDATA_STANDING_DOWN
 	db SPRITEMOVEDATA_STANDING_UP
@@ -2729,7 +2678,6 @@ _UpdateSprites::
 	pop af
 	ldh [hOAMUpdate], a
 	ret
-
 .fill
 	ld a, [wStateFlags]
 	bit LAST_12_SPRITE_OAM_STRUCTS_RESERVED_F, a
@@ -2805,7 +2753,6 @@ InitSprites:
 	ld c, PRIORITY_LOW
 	call .InitSpritesByPriority
 	ret
-
 .DeterminePriorities:
 	xor a
 	ld hl, wObjectPriorities
@@ -2823,7 +2770,7 @@ InitSprites:
 	ld a, [hl]
 	cp STANDING
 	jr z, .skip
-; Define the sprite priority.
+	; Define the sprite priority.
 	ld e, PRIORITY_LOW
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
@@ -2834,7 +2781,6 @@ InitSprites:
 	jr z, .add
 	ld e, PRIORITY_HIGH
 	jr .add
-
 .skip
 	ld hl, OBJECT_LENGTH
 	add hl, bc
@@ -2842,7 +2788,6 @@ InitSprites:
 	ld c, l
 	pop hl
 	jr .next
-
 .add
 	ld hl, OBJECT_LENGTH
 	add hl, bc
@@ -2858,7 +2803,6 @@ InitSprites:
 	cp NUM_OBJECT_STRUCTS
 	jr nz, .loop
 	ret
-
 .InitSpritesByPriority:
 	ld hl, wObjectPriorities
 .next_sprite
@@ -2877,7 +2821,6 @@ InitSprites:
 	pop hl
 	pop bc
 	jr .next_sprite
-
 .InitSprite:
 	ld hl, OBJECT_SPRITE_TILE
 	add hl, bc
@@ -2999,11 +2942,9 @@ InitSprites:
 .done
 	xor a
 	ret
-
 .full
 	scf
 	ret
-
 .GetObjectStructPointer:
 	ld c, a
 	ld b, 0
@@ -3014,7 +2955,6 @@ InitSprites:
 	inc hl
 	ld b, [hl]
 	ret
-
 .Addresses:
 	dw wPlayerStruct
 	dw wObject1Struct

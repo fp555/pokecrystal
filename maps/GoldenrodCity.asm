@@ -70,34 +70,29 @@ MoveTutorScript:
 	ifequal MOVETUTOR_THUNDERBOLT, .Thunderbolt
 	ifequal MOVETUTOR_ICE_BEAM, .IceBeam
 	sjump .Incompatible
-
 .Flamethrower:
 	setval MOVETUTOR_FLAMETHROWER
 	writetext GoldenrodCityMoveTutorMoveText
 	special MoveTutor
 	ifequal FALSE, .TeachMove
 	sjump .Incompatible
-
 .Thunderbolt:
 	setval MOVETUTOR_THUNDERBOLT
 	writetext GoldenrodCityMoveTutorMoveText
 	special MoveTutor
 	ifequal FALSE, .TeachMove
 	sjump .Incompatible
-
 .IceBeam:
 	setval MOVETUTOR_ICE_BEAM
 	writetext GoldenrodCityMoveTutorMoveText
 	special MoveTutor
 	ifequal FALSE, .TeachMove
 	sjump .Incompatible
-
 .MoveMenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 2, 15, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
@@ -105,19 +100,16 @@ MoveTutorScript:
 	db "THUNDERBOLT@"
 	db "ICE BEAM@"
 	db "CANCEL@"
-
 .Refused:
 	writetext GoldenrodCityMoveTutorAwwButTheyreAmazingText
 	waitbutton
 	closetext
 	end
-
 .Refused2:
 	writetext GoldenrodCityMoveTutorHmTooBadText
 	waitbutton
 	closetext
 	end
-
 .TeachMove:
 	writetext GoldenrodCityMoveTutorIfYouUnderstandYouveMadeItText
 	promptbutton
@@ -132,7 +124,6 @@ MoveTutorScript:
 	ifequal LEFT, .WalkAroundPlayer
 	applymovement GOLDENRODCITY_MOVETUTOR, GoldenrodCityMoveTutorEnterGameCornerMovement
 	sjump .GoInside
-
 .WalkAroundPlayer:
 	applymovement GOLDENRODCITY_MOVETUTOR, GoldenrodCityMoveTutorWalkAroundPlayerThenEnterGameCornerMovement
 .GoInside:
@@ -142,13 +133,11 @@ MoveTutorScript:
 	setflag ENGINE_DAILY_MOVE_TUTOR
 	waitsfx
 	end
-
 .Incompatible:
 	writetext GoldenrodCityMoveTutorBButText
 	waitbutton
 	closetext
 	end
-
 .NotEnoughMoney:
 	writetext GoldenrodCityMoveTutorYouDontHaveEnoughCoinsText
 	waitbutton
@@ -170,7 +159,6 @@ GoldenrodCityCooltrainerF1Script:
 	waitbutton
 	closetext
 	end
-
 .ClearedRadioTower:
 	writetext GoldenrodCityCooltrainerF1Text_ClearedRadioTower
 	waitbutton
@@ -186,7 +174,6 @@ GoldenrodCityCooltrainerF2Script:
 	waitbutton
 	closetext
 	end
-
 .GotRadioCard:
 	writetext GoldenrodCityCooltrainerF2Text_GotRadioCard
 	waitbutton
@@ -474,11 +461,6 @@ GoldenrodCityUndergroundSignNorthText:
 GoldenrodCityUndergroundSignSouthText:
 	text "UNDERGROUND"
 	line "ENTRANCE"
-	done
-
-GoldenrodCityPokeComCenterSignText: ; unreferenced
-	text "For Mobile Tips!"
-	line "#COM CENTER"
 	done
 
 GoldenrodCityFlowerShopSignText:

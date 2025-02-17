@@ -37,7 +37,6 @@ DayCareMan:
 	call DayCare_DepositPokemonText
 	call DayCare_InitBreeding
 	ret
-
 .AskWithdrawMon:
 	farcall GetBreedMon1LevelGrowth
 	ld hl, wBreedMon1Nickname
@@ -50,10 +49,8 @@ DayCareMan:
 	res DAYCAREMAN_HAS_MON_F, [hl]
 	res DAYCAREMAN_MONS_COMPATIBLE_F, [hl]
 	jr .cancel
-
 .print_text
 	call PrintDayCareText
-
 .cancel
 	ld a, DAYCARETEXT_COME_AGAIN
 	call PrintDayCareText
@@ -75,7 +72,6 @@ DayCareLady:
 	call DayCare_DepositPokemonText
 	call DayCare_InitBreeding
 	ret
-
 .AskWithdrawMon:
 	farcall GetBreedMon2LevelGrowth
 	ld hl, wBreedMon2Nickname
@@ -89,10 +85,8 @@ DayCareLady:
 	ld hl, wDayCareMan
 	res DAYCAREMAN_MONS_COMPATIBLE_F, [hl]
 	jr .cancel
-
 .print_text
 	call PrintDayCareText
-
 .cancel
 	ld a, DAYCARETEXT_COME_AGAIN
 	call PrintDayCareText
@@ -140,35 +134,26 @@ DayCareAskDepositPokemon:
 	call GetNickname
 	and a
 	ret
-
 .Declined:
 	ld a, DAYCARETEXT_OH_FINE
 	scf
 	ret
-
 .Egg:
 	ld a, DAYCARETEXT_CANT_BREED_EGG
 	scf
 	ret
-
 .OnlyOneMon:
 	ld a, DAYCARETEXT_LAST_MON
 	scf
 	ret
-
 .OutOfUsableMons:
 	ld a, DAYCARETEXT_LAST_ALIVE_MON
 	scf
 	ret
-
 .HoldingMail:
 	ld a, DAYCARETEXT_REMOVE_MAIL
 	scf
 	ret
-
-.DaycareDummyText: ; unreferenced
-	text_far _DaycareDummyText
-	text_end
 
 DayCare_DepositPokemonText:
 	ld a, DAYCARETEXT_DEPOSIT
@@ -188,7 +173,6 @@ DayCare_AskWithdrawBreedMon:
 	call YesNoBox
 	jr c, .refused
 	jr .check_money
-
 .grew_at_least_one_level
 	ld a, DAYCARETEXT_GENIUSES
 	call PrintDayCareText
@@ -198,7 +182,6 @@ DayCare_AskWithdrawBreedMon:
 	call PrintDayCareText
 	call YesNoBox
 	jr c, .refused
-
 .check_money
 	ld de, wMoney
 	ld bc, wStringBuffer2 + 2
@@ -209,17 +192,14 @@ DayCare_AskWithdrawBreedMon:
 	jr nc, .party_full
 	and a
 	ret
-
 .refused
 	ld a, DAYCARETEXT_OH_FINE
 	scf
 	ret
-
 .not_enough_money
 	ld a, DAYCARETEXT_NOT_ENOUGH_MONEY
 	scf
 	ret
-
 .party_full
 	ld a, DAYCARETEXT_PARTY_FULL
 	scf
@@ -270,7 +250,6 @@ PrintDayCareText:
 	ld l, a
 	call PrintText
 	ret
-
 .TextTable:
 ; entries correspond to DAYCARETEXT_* constants
 	dw .DayCareManIntroText ; 00
@@ -293,83 +272,63 @@ PrintDayCareText:
 	dw .NotEnoughMoneyText ; 11
 	dw .OhFineThenText ; 12
 	dw .ComeAgainText ; 13
-
 .DayCareManIntroText:
 	text_far _DayCareManIntroText
 	text_end
-
 .DayCareManIntroEggText:
 	text_far _DayCareManIntroEggText
 	text_end
-
 .DayCareLadyIntroText:
 	text_far _DayCareLadyIntroText
 	text_end
-
 .DayCareLadyIntroEggText:
 	text_far _DayCareLadyIntroEggText
 	text_end
-
 .WhatShouldIRaiseText:
 	text_far _WhatShouldIRaiseText
 	text_end
-
 .OnlyOneMonText:
 	text_far _OnlyOneMonText
 	text_end
-
 .CantAcceptEggText:
 	text_far _CantAcceptEggText
 	text_end
-
 .RemoveMailText:
 	text_far _RemoveMailText
 	text_end
-
 .LastHealthyMonText:
 	text_far _LastHealthyMonText
 	text_end
-
 .IllRaiseYourMonText:
 	text_far _IllRaiseYourMonText
 	text_end
-
 .ComeBackLaterText:
 	text_far _ComeBackLaterText
 	text_end
-
 .AreWeGeniusesText:
 	text_far _AreWeGeniusesText
 	text_end
-
 .YourMonHasGrownText:
 	text_far _YourMonHasGrownText
 	text_end
-
 .PerfectHeresYourMonText:
 	text_far _PerfectHeresYourMonText
 	text_end
-
 .GotBackMonText:
 	text_far _GotBackMonText
 	text_end
-
 .BackAlreadyText:
 	text_far _BackAlreadyText
 	text_end
-
 .HaveNoRoomText:
 	text_far _HaveNoRoomText
 	text_end
-
 .NotEnoughMoneyText:
 	text_far _NotEnoughMoneyText
 	text_end
-
 .OhFineThenText:
 	text_far _OhFineThenText
 	text_end
-
 .ComeAgainText:
 	text_far _ComeAgainText
 	text_end
@@ -381,11 +340,9 @@ DayCareManOutside:
 	ld hl, .NotYetText
 	call PrintText
 	ret
-
 .NotYetText:
 	text_far _NotYetText
 	text_end
-
 .AskGiveEgg:
 	ld hl, .FoundAnEggText
 	call PrintText
@@ -406,39 +363,31 @@ DayCareManOutside:
 	call DelayFrames
 	ld hl, .TakeGoodCareOfEggText
 	jr .Load0
-
 .Declined:
 	ld hl, .IllKeepItThanksText
-
 .Load0:
 	call PrintText
 	xor a ; FALSE
 	ld [wScriptVar], a
 	ret
-
 .PartyFull:
 	ld hl, .NoRoomForEggText
 	call PrintText
 	ld a, TRUE
 	ld [wScriptVar], a
 	ret
-
 .FoundAnEggText:
 	text_far _FoundAnEggText
 	text_end
-
 .ReceivedEggText:
 	text_far _ReceivedEggText
 	text_end
-
 .TakeGoodCareOfEggText:
 	text_far _TakeGoodCareOfEggText
 	text_end
-
 .IllKeepItThanksText:
 	text_far _IllKeepItThanksText
 	text_end
-
 .NoRoomForEggText:
 	text_far _NoRoomForEggText
 	text_end
@@ -452,7 +401,6 @@ DayCare_GiveEgg:
 	jr nc, .PartyFull
 	inc a
 	ld [hl], a
-
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -463,26 +411,22 @@ DayCare_GiveEgg:
 	ld [wCurPartySpecies], a
 	ld a, -1
 	ld [hl], a
-
 	ld hl, wPartyMonNicknames
 	ld bc, MON_NAME_LENGTH
 	call DayCare_GetCurrentPartyMember
 	ld hl, wEggMonNickname
 	call CopyBytes
-
 	ld hl, wPartyMonOTs
 	ld bc, NAME_LENGTH
 	call DayCare_GetCurrentPartyMember
 	ld hl, wEggMonOT
 	call CopyBytes
-
 	ld hl, wPartyMon1
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call DayCare_GetCurrentPartyMember
 	ld hl, wEggMon
 	ld bc, BOXMON_STRUCT_LENGTH
 	call CopyBytes
-
 	call GetBaseData
 	ld a, [wPartyCount]
 	dec a
@@ -510,7 +454,6 @@ DayCare_GiveEgg:
 	ld [hl], a
 	and a
 	ret
-
 .PartyFull:
 	scf
 	ret
@@ -543,9 +486,6 @@ DayCare_InitBreeding:
 	cp 150
 	jr c, .loop
 	ld [wStepsToEgg], a
-	jp .UselessJump
-
-.UselessJump:
 	xor a
 	ld hl, wEggMon
 	ld bc, BOXMON_STRUCT_LENGTH
@@ -576,22 +516,19 @@ DayCare_InitBreeding:
 	ld a, $0
 	jr z, .LoadWhichBreedmonIsTheMother
 	inc a
-
 .LoadWhichBreedmonIsTheMother:
 	ld [wBreedMotherOrNonDitto], a
 	and a
 	ld a, [wBreedMon1Species]
 	jr z, .GotMother
 	ld a, [wBreedMon2Species]
-
 .GotMother:
 	ld [wCurPartySpecies], a
 	callfar GetPreEvolution
 	callfar GetPreEvolution
 	ld a, EGG_LEVEL
 	ld [wCurPartyLevel], a
-
-; Nidoran♀ can give birth to either gender of Nidoran
+	; Nidoran♀ can give birth to either gender of Nidoran
 	ld a, [wCurPartySpecies]
 	cp NIDORAN_F
 	jr nz, .GotEggSpecies
@@ -604,7 +541,6 @@ DayCare_InitBreeding:
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
 	ld [wEggMonSpecies], a
-
 	call GetBaseData
 	ld hl, wEggMonNickname
 	ld de, .String_EGG
@@ -672,14 +608,12 @@ DayCare_InitBreeding:
 	ld d, b
 	ld e, c
 	jr .GotDVs
-
 .ParentCheck2:
 	ld a, [wBreedMotherOrNonDitto]
 	and a
 	jr nz, .GotDVs
 	ld d, b
 	ld e, c
-
 .GotDVs:
 	ld a, [de]
 	inc de
@@ -696,7 +630,6 @@ DayCare_InitBreeding:
 	and $f8
 	add b
 	ld [hl], a
-
 .SkipDVs:
 	ld hl, wStringBuffer1
 	ld de, wMonOrItemNameBuffer
@@ -719,6 +652,5 @@ DayCare_InitBreeding:
 	ld a, [wCurPartyLevel]
 	ld [wEggMonLevel], a
 	ret
-
 .String_EGG:
 	db "EGG@"

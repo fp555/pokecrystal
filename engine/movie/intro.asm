@@ -957,7 +957,6 @@ IntroScene20:
 	inc a
 	ldh [hSCY], a
 	ret
-
 .AppearUnown:
 	sub $18
 	ld c, a
@@ -972,17 +971,6 @@ IntroScene20:
 	xor a
 	call Intro_Scene20_AppearUnown
 	ret
-
-.AppearUnownPal2: ; unreferenced
-	ld a, c
-	and $1c
-	srl a
-	srl a
-	ld [wIntroSceneTimer], a
-	ld a, 1
-	call Intro_Scene20_AppearUnown
-	ret
-
 .finished:
 	call NextIntroScene
 	ret

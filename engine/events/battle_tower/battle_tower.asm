@@ -10,7 +10,7 @@ Function1700ba:
 	farcall Function11811a
 	ret
 
-Function1700c4:
+Function1700c4: ; unreferenced
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(w3_d202TrainerData) ; aka BANK(w3_dffc) and BANK(w3_d202Name)

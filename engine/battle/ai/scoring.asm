@@ -1543,41 +1543,6 @@ endr
 	ret
 
 AI_Smart_Curse:
-	ld a, [wEnemyMonType1]
-	cp GHOST
-	jr z, .ghost_curse
-	ld a, [wEnemyMonType2]
-	cp GHOST
-	jr z, .ghost_curse
-	call AICheckEnemyHalfHP
-	jr nc, .discourage
-	ld a, [wEnemyAtkLevel]
-	cp BASE_STAT_LEVEL + 4
-	jr nc, .discourage
-	cp BASE_STAT_LEVEL + 2
-	ret nc
-	ld a, [wBattleMonType1]
-	cp GHOST
-	jr z, .greatly_discourage
-	cp SPECIAL
-	ret nc
-	ld a, [wBattleMonType2]
-	cp SPECIAL
-	ret nc
-	call AI_80_20
-	ret c
-	dec [hl]
-	dec [hl]
-	ret
-.highly_discourage
-	inc [hl]
-	inc [hl]
-.greatly_discourage
-	inc [hl]
-.discourage
-	inc [hl]
-	ret
-.ghost_curse
 	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_CURSE, a
 	jp nz, AIDiscourageMove
@@ -1610,6 +1575,13 @@ AI_Smart_Curse:
 	ret c
 	dec [hl]
 	dec [hl]
+	ret
+.highly_discourage
+	inc [hl]
+	inc [hl]
+.greatly_discourage
+	inc [hl]
+	inc [hl]
 	ret
 
 AI_Smart_Protect:

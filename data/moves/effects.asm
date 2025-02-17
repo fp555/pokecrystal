@@ -2067,3 +2067,10 @@ DefenseCurl:
 	statupmessage
 	statupfailtext
 	endmove
+
+BulkUp:
+	checkobedience
+	usedmovetext
+	doturn
+	bulkup
+	endmove

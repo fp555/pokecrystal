@@ -21,4 +21,5 @@ UsefulMoves:
 	db SYNTHESIS
 	db MOONLIGHT
 	db EXTREMESPEED
+	db BULK_UP
 	db -1 ; end

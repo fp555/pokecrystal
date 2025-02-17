@@ -9,7 +9,7 @@ CeladonMansionRoofHouse_MapScripts:
 CeladonMansionRoofHousePharmacistScript:
 	faceplayer
 	opentext
-	checkevent EVENT_GOT_TM03_CURSE
+	checkevent EVENT_GOT_TM03_BULK_UP
 	iftrue .GotCurse
 	writetext CeladonMansionRoofHousePharmacistIntroText
 	promptbutton
@@ -19,15 +19,14 @@ CeladonMansionRoofHousePharmacistScript:
 	waitbutton
 	closetext
 	end
-
 .Night:
 	writetext CeladonMansionRoofHousePharmacistStoryText
 	promptbutton
-	verbosegiveitem TM_CURSE
+	verbosegiveitem TM_BULK_UP
 	iffalse .NoRoom
-	setevent EVENT_GOT_TM03_CURSE
+	setevent EVENT_GOT_TM03_BULK_UP
 .GotCurse:
-	writetext CeladonMansionRoofHousePharmacistCurseText
+	writetext CeladonMansionRoofHousePharmacistAfterText
 	waitbutton
 .NoRoom:
 	closetext
@@ -90,28 +89,23 @@ CeladonMansionRoofHousePharmacistStoryText:
 
 	para "…"
 
-	para "SHRIEEEEK!"
+	para "AAAAAAAAH!"
 
 	para "The boy had been"
 	line "riding uphill on"
 	cont "CYCLING ROAD!"
 
 	para "…"
-	line "Ba-dum ba-dum!"
+	line "Hahahaha!"
 
 	para "For listening so"
 	line "patiently, you may"
-	cont "take this--TM03!"
+	cont "take this!"
 	done
 
-CeladonMansionRoofHousePharmacistCurseText:
-	text "TM03 is CURSE."
-
-	para "It's a terrifying"
-	line "move that slowly"
-
-	para "whittles down the"
-	line "victim's HP."
+CeladonMansionRoofHousePharmacistAfterText:
+	text "So, did you like"
+	line "my scary story?"
 	done
 
 CeladonMansionRoofHouse_MapEvents:

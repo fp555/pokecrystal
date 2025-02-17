@@ -14,7 +14,7 @@
 	const BUG
 	const GHOST
 	const STEEL
-	const CURSE_TYPE
+	const NO_TYPE
 	const FIRE
 	const WATER
 	const GRASS

@@ -33,5 +33,5 @@ StallMoves:
 	db SHARPEN
 	db CONVERSION
 	db SUBSTITUTE
-	db FLAME_WHEEL
+	db BULK_UP
 	db -1 ; end

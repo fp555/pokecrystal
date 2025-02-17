@@ -221,7 +221,7 @@ ENDM
 DEF TM01 EQU const_value
 	add_tm DYNAMICPUNCH ; c1
 	add_tm HEADBUTT     ; c2
-	add_tm CURSE        ; c3
+	add_tm BULK_UP      ; c3
 	add_tm ROLLOUT      ; c4
 	add_tm ROAR         ; c5
 	add_tm TOXIC        ; c6

@@ -3726,7 +3726,6 @@ RaiseStat:
 .stats_already_max
 	pop hl
 	dec [hl]
-	; fallthrough
 .cant_raise_stat
 	ld a, $2
 	ld [wFailedMessage], a
@@ -4829,22 +4828,18 @@ BattleCommand_Charge:
 	call GetBattleVar
 	and SLP_MASK
 	jr z, .awake
-
 	call BattleCommand_MoveDelay
 	call BattleCommand_RaiseSub
 	call PrintButItFailed
 	jp EndMoveEffect
-
 .awake
 	ld a, BATTLE_VARS_SUBSTATUS3
 	call GetBattleVarAddr
 	set SUBSTATUS_CHARGED, [hl]
-
 	ld hl, IgnoredOrders2Text
 	ld a, [wAlreadyDisobeyed]
 	and a
 	call nz, StdBattleTextbox
-
 	call BattleCommand_LowerSub
 	xor a
 	ld [wNumHits], a
@@ -4859,7 +4854,6 @@ BattleCommand_Charge:
 	jr z, .flying
 	call BattleCommand_RaiseSub
 	jr .not_flying
-
 .flying
 	call DisappearUser
 .not_flying
@@ -4874,10 +4868,8 @@ BattleCommand_Charge:
 	jr nz, .dont_set_digging
 	set SUBSTATUS_UNDERGROUND, [hl]
 	jr .dont_set_digging
-
 .set_flying
 	set SUBSTATUS_FLYING, [hl]
-
 .dont_set_digging
 	call CheckUserIsCharging
 	jr nz, .mimic
@@ -4887,20 +4879,16 @@ BattleCommand_Charge:
 	ld a, BATTLE_VARS_LAST_MOVE
 	call GetBattleVarAddr
 	ld [hl], b
-
 .mimic
 	call ResetDamage
-
 	ld hl, .UsedText
 	call BattleTextbox
-
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
 	cp EFFECT_SKULL_BASH
 	ld b, endturn_command
 	jp z, SkipToBattleCommand
 	jp EndMoveEffect
-
 .UsedText:
 	text_far Text_BattleUser ; "<USER>"
 	text_asm
@@ -4908,57 +4896,54 @@ BattleCommand_Charge:
 	call GetBattleVar
 	cp RAZOR_WIND
 	ld hl, .BattleMadeWhirlwindText
-	jr z, .done
-
+	ret z
 	cp SOLARBEAM
 	ld hl, .BattleTookSunlightText
-	jr z, .done
-
+	ret z
 	cp SKULL_BASH
 	ld hl, .BattleLoweredHeadText
-	jr z, .done
-
+	ret z
 	cp SKY_ATTACK
 	ld hl, .BattleGlowingText
-	jr z, .done
-
+	ret z
 	cp FLY
 	ld hl, .BattleFlewText
-	jr z, .done
-
+	ret z
 	cp DIG
 	ld hl, .BattleDugText
-
-.done
 	ret
-
 .BattleMadeWhirlwindText:
 	text_far _BattleMadeWhirlwindText
 	text_end
-
 .BattleTookSunlightText:
 	text_far _BattleTookSunlightText
 	text_end
-
 .BattleLoweredHeadText:
 	text_far _BattleLoweredHeadText
 	text_end
-
 .BattleGlowingText:
 	text_far _BattleGlowingText
 	text_end
-
 .BattleFlewText:
 	text_far _BattleFlewText
 	text_end
-
 .BattleDugText:
 	text_far _BattleDugText
 	text_end
 
-BattleCommand_Unused3C:
-; effect0x3c
-	ret
+BattleCommand_BulkUp:
+	; Attack
+	call ResetMiss
+	call BattleCommand_AttackUp
+	call BattleCommand_StatUpMessage
+	; Defense
+	call ResetMiss
+	call BattleCommand_DefenseUp
+	call BattleCommand_StatUpMessage
+	; Speed
+	call ResetMiss
+	call BattleCommand_SpeedDown
+	jp BattleCommand_StatDownMessage
 
 BattleCommand_TrapTarget:
 	ld a, [wAttackMissed]
@@ -4971,7 +4956,6 @@ BattleCommand_TrapTarget:
 	jr z, .got_trap
 	ld hl, wPlayerWrapCount
 	ld de, wPlayerTrappingMove
-
 .got_trap
 	ld a, [hl]
 	and a
@@ -4992,7 +4976,6 @@ BattleCommand_TrapTarget:
 	ld [de], a
 	ld b, a
 	ld hl, .Traps
-
 .find_trap_text
 	ld a, [hli]
 	cp b
@@ -5000,13 +4983,11 @@ BattleCommand_TrapTarget:
 	inc hl
 	inc hl
 	jr .find_trap_text
-
 .found_trap_text
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	jp StdBattleTextbox
-
 .Traps:
 	dbw BIND,      UsedBindText      ; 'used BIND on'
 	dbw WRAP,      WrappedByText     ; 'was WRAPPED by'
@@ -5028,7 +5009,7 @@ BattleCommand_Recoil:
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
 	ld d, a
-; get 1/4 damage or 1 HP, whichever is higher
+	; get 1/4 damage or 1 HP, whichever is higher
 	ld a, [wCurDamage]
 	ld b, a
 	ld a, [wCurDamage + 1]

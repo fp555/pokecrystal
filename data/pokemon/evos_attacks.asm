@@ -824,6 +824,7 @@ PoliwrathEvosAttacks:
 	db 1, DOUBLESLAP
 	db 1, SUBMISSION
 	db 35, SUBMISSION
+	db 43, BULK_UP
 	db 51, MIND_READER
 	db 0 ; no more level-up moves
 
@@ -873,8 +874,9 @@ MachopEvosAttacks:
 	db 25, FORESIGHT
 	db 31, VITAL_THROW
 	db 37, CROSS_CHOP
-	db 43, SCARY_FACE
+	db 43, BULK_UP
 	db 49, SUBMISSION
+	db 55, SCARY_FACE
 	db 0 ; no more level-up moves
 
 MachokeEvosAttacks:
@@ -889,8 +891,9 @@ MachokeEvosAttacks:
 	db 25, FORESIGHT
 	db 34, VITAL_THROW
 	db 43, CROSS_CHOP
-	db 52, SCARY_FACE
-	db 61, SUBMISSION
+	db 52, BULK_UP
+	db 56, SUBMISSION
+	db 60, SCARY_FACE
 	db 0 ; no more level-up moves
 
 MachampEvosAttacks:
@@ -904,8 +907,9 @@ MachampEvosAttacks:
 	db 25, FORESIGHT
 	db 34, VITAL_THROW
 	db 43, CROSS_CHOP
-	db 52, SCARY_FACE
-	db 61, SUBMISSION
+	db 52, BULK_UP
+	db 56, SUBMISSION
+	db 60, SCARY_FACE
 	db 0 ; no more level-up moves
 
 BellsproutEvosAttacks:
@@ -1058,7 +1062,7 @@ SlowpokeEvosAttacks:
 	db EVOLVE_HELD, KINGS_ROCK, 40, SLOWKING
 	db EVOLVE_LEVEL, 37, SLOWBRO
 	db 0 ; no more evolutions
-	db 1, CURSE
+	db 1, BULK_UP
 	db 1, TACKLE
 	db 6, GROWL
 	db 15, WATER_GUN
@@ -1071,7 +1075,7 @@ SlowpokeEvosAttacks:
 
 SlowbroEvosAttacks:
 	db 0 ; no more evolutions
-	db 1, CURSE
+	db 1, BULK_UP
 	db 1, TACKLE
 	db 1, GROWL
 	db 1, WATER_GUN
@@ -2673,14 +2677,15 @@ MurkrowEvosAttacks:
 	db 1, PECK
 	db 11, PURSUIT
 	db 16, HAZE
-	db 26, NIGHT_SHADE
+	db 21, NIGHT_SHADE
+	db 26, CURSE
 	db 31, FAINT_ATTACK
 	db 41, MEAN_LOOK
 	db 0 ; no more level-up moves
 
 SlowkingEvosAttacks:
 	db 0 ; no more evolutions
-	db 1, CURSE
+	db 1, BULK_UP
 	db 1, TACKLE
 	db 6, GROWL
 	db 15, WATER_GUN

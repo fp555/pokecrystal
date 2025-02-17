@@ -19,7 +19,7 @@ BattleCommand_Conversion2:
 	and TYPE_MASK
 	ld d, a
 	pop hl
-	cp CURSE_TYPE
+	cp NO_TYPE
 	jr z, .failed
 	call AnimateCurrentMove
 	call BattleCommand_SwitchTurn

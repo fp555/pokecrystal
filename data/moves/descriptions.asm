@@ -252,8 +252,8 @@ MoveDescriptions::
 	dw RockSmashDescription
 	dw WhirlpoolDescription
 	dw BeatUpDescription
+	dw BulkUpDescription
 	assert_table_length NUM_ATTACKS
-	dw MoveFCDescription
 	dw MoveFDDescription
 	dw MoveFEDescription
 	dw MoveFFDescription
@@ -960,8 +960,8 @@ SnoreDescription:
 	next "only while asleep.@"
 
 CurseDescription:
-	db   "Works differently"
-	next "for ghost-types.@"
+	db   "Reduces own HP to"
+	next "curse the foe.@"
 
 FlailDescription:
 	db   "Stronger if the"
@@ -1270,3 +1270,7 @@ WhirlpoolDescription:
 BeatUpDescription:
 	db   "Party #MON join"
 	next "in the attack.@"
+
+BulkUpDescription:
+	db   "Raises ATK and DEF"
+	next "but lowers SPEED.@"

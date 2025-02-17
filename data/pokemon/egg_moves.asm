@@ -611,6 +611,7 @@ MurkrowEggMoves:
 
 MisdreavusEggMoves:
 	db SCREECH
+	db CURSE
 	db DESTINY_BOND
 	db -1 ; end
 

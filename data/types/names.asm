@@ -10,7 +10,7 @@ TypeNames:
 	dw Bug
 	dw Ghost
 	dw Steel
-	dw CurseType
+	dw NoType
 	dw Fire
 	dw Water
 	dw Grass
@@ -25,7 +25,7 @@ Normal:    db "NORMAL@"
 Fighting:  db "FIGHTING@"
 Flying:    db "FLYING@"
 Poison:    db "POISON@"
-CurseType: db "???@"
+NoType:    db "???@"
 Fire:      db "FIRE@"
 Water:     db "WATER@"
 Grass:     db "GRASS@"

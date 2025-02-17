@@ -17,4 +17,5 @@ ResidualMoves:
 	db SPIKES
 	db MEAN_LOOK
 	db ATTRACT
+	db CURSE
 	db -1 ; end

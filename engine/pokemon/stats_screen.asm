@@ -14,7 +14,6 @@ BattleStatsScreenInit:
 	ld a, [wLinkMode]
 	cp LINK_MOBILE
 	jr nz, StatsScreenInit
-
 	ld a, [wBattleMode]
 	and a
 	jr z, StatsScreenInit
@@ -26,8 +25,7 @@ StatsScreenInit:
 
 _MobileStatsScreenInit:
 	ld hl, StatsScreenMobile
-	jr StatsScreenInit_gotaddress
-
+	; fallthrough
 StatsScreenInit_gotaddress:
 	ldh a, [hMapAnims]
 	push af
@@ -39,7 +37,6 @@ StatsScreenInit_gotaddress:
 	ld b, a
 	ld a, [wStatsScreenFlags]
 	ld c, a
-
 	push bc
 	push hl
 	call ClearBGPalettes
@@ -51,7 +48,6 @@ StatsScreenInit_gotaddress:
 	call ClearBGPalettes
 	call ClearTilemap
 	pop bc
-
 	; restore old values
 	ld a, b
 	ld [wJumptableIndex], a
@@ -67,12 +63,10 @@ StatsScreenMain:
 	xor a
 	ld [wJumptableIndex], a
 	ld [wStatsScreenFlags], a
-
 	ld a, [wStatsScreenFlags]
 	and ~STAT_PAGE_MASK
 	or PINK_PAGE ; first_page
 	ld [wStatsScreenFlags], a
-
 .loop
 	ld a, [wJumptableIndex]
 	and ~(1 << 7)
@@ -88,12 +82,10 @@ StatsScreenMobile:
 	xor a
 	ld [wJumptableIndex], a
 	ld [wStatsScreenFlags], a
-
 	ld a, [wStatsScreenFlags]
 	and ~STAT_PAGE_MASK
 	or PINK_PAGE ; first_page
 	ld [wStatsScreenFlags], a
-
 .loop
 	farcall Mobile_SetOverworldDelay
 	ld a, [wJumptableIndex]
@@ -102,12 +94,10 @@ StatsScreenMobile:
 	rst JumpTable
 	call StatsScreen_WaitAnim
 	farcall MobileComms_CheckInactivityTimer
-	jr c, .exit
+	ret c
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr z, .loop
-
-.exit
 	ret
 
 StatsScreenPointerTable:
@@ -128,7 +118,6 @@ StatsScreen_WaitAnim:
 	jr nz, .finish
 	call DelayFrame
 	ret
-
 .try_anim
 	farcall SetUpPokeAnim
 	jr nc, .finish
@@ -168,7 +157,6 @@ MonStatsInit:
 	ld h, 4
 	call StatsScreen_SetJumptableIndex
 	ret
-
 .egg
 	ld h, 1
 	call StatsScreen_SetJumptableIndex
@@ -187,54 +175,15 @@ EggStatsJoypad:
 	ld h, 0
 	call StatsScreen_SetJumptableIndex
 	ret
-
 .check
 	bit A_BUTTON_F, a
 	jr nz, .quit
-if DEF(_DEBUG)
-	cp START
-	jr z, .hatch
-endc
 	and D_DOWN | D_UP | A_BUTTON | B_BUTTON
 	jp StatsScreen_JoypadAction
-
 .quit
 	ld h, 7
 	call StatsScreen_SetJumptableIndex
 	ret
-
-if DEF(_DEBUG)
-.hatch
-	ld a, [wMonType]
-	or a
-	jr nz, .skip
-	push bc
-	push de
-	push hl
-	ld a, [wCurPartyMon]
-	ld bc, PARTYMON_STRUCT_LENGTH
-	ld hl, wPartyMon1Happiness
-	call AddNTimes
-	ld [hl], 1
-	ld a, 1
-	ld [wTempMonHappiness], a
-	ld a, 127
-	ld [wStepCount], a
-	ld de, .HatchSoonString
-	hlcoord 8, 17
-	call PlaceString
-	ld hl, wStatsScreenFlags
-	set STATS_SCREEN_ANIMATE_MON, [hl]
-	pop hl
-	pop de
-	pop bc
-.skip
-	xor a
-	jp StatsScreen_JoypadAction
-
-.HatchSoonString:
-	db "▶HATCH SOON!@"
-endc
 
 StatsScreen_LoadPage:
 	call StatsScreen_LoadGFX
@@ -251,7 +200,6 @@ MonStatsJoypad:
 	ld h, 0
 	call StatsScreen_SetJumptableIndex
 	ret
-
 .next
 	and D_DOWN | D_UP | D_LEFT | D_RIGHT | A_BUTTON | B_BUTTON
 	jp StatsScreen_JoypadAction
@@ -276,7 +224,6 @@ StatsScreen_CopyToTempMon:
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call CopyBytes
 	jr .done
-
 .not_tempmon
 	farcall CopyMonToTempMon
 	ld a, [wCurPartySpecies]
@@ -307,13 +254,11 @@ StatsScreen_GetJoypad:
 	jr nz, .set_carry
 	ld a, [wMenuJoypad]
 	jr .clear_carry
-
 .not_tempmon
 	ldh a, [hJoyPressed]
 .clear_carry
 	and a
 	ret
-
 .set_carry
 	scf
 	ret
@@ -336,12 +281,11 @@ StatsScreen_JoypadAction:
 	jr nz, .d_up
 	bit D_DOWN_F, a
 	jr nz, .d_down
-	jr .done
-
+	ret
 .d_down
 	ld a, [wMonType]
 	cp BOXMON
-	jr nc, .done
+	ret nc
 	and a
 	ld a, [wPartyCount]
 	jr z, .next_mon
@@ -351,7 +295,7 @@ StatsScreen_JoypadAction:
 	ld a, [wCurPartyMon]
 	inc a
 	cp b
-	jr z, .done
+	ret z
 	ld [wCurPartyMon], a
 	ld b, a
 	ld a, [wMonType]
@@ -361,11 +305,10 @@ StatsScreen_JoypadAction:
 	inc a
 	ld [wPartyMenuCursor], a
 	jr .load_mon
-
 .d_up
 	ld a, [wCurPartyMon]
 	and a
-	jr z, .done
+	ret z
 	dec a
 	ld [wCurPartyMon], a
 	ld b, a
@@ -376,7 +319,6 @@ StatsScreen_JoypadAction:
 	inc a
 	ld [wPartyMenuCursor], a
 	jr .load_mon
-
 .a_button
 	ld a, c
 	cp BLUE_PAGE ; last page
@@ -388,16 +330,10 @@ StatsScreen_JoypadAction:
 	jr nc, .set_page
 	ld c, PINK_PAGE ; first page
 	jr .set_page
-
 .d_left
 	dec c
 	jr nz, .set_page
 	ld c, BLUE_PAGE ; last page
-	jr .set_page
-
-.done
-	ret
-
 .set_page
 	ld a, [wStatsScreenFlags]
 	and ~STAT_PAGE_MASK
@@ -406,12 +342,10 @@ StatsScreen_JoypadAction:
 	ld h, 4
 	call StatsScreen_SetJumptableIndex
 	ret
-
 .load_mon
 	ld h, 0
 	call StatsScreen_SetJumptableIndex
 	ret
-
 .b_button
 	ld h, 7
 	call StatsScreen_SetJumptableIndex
@@ -453,7 +387,6 @@ StatsScreen_InitUpperHalf:
 	call StatsScreen_PlacePageSwitchArrows
 	call StatsScreen_PlaceShinyIcon
 	ret
-
 .PlaceHPBar:
 	ld hl, wTempMonHP
 	ld a, [hli]
@@ -470,7 +403,6 @@ StatsScreen_InitUpperHalf:
 	call GetSGBLayout
 	call DelayFrame
 	ret
-
 .PlaceGenderChar:
 	push hl
 	farcall GetGender
@@ -482,25 +414,11 @@ StatsScreen_InitUpperHalf:
 .got_gender
 	ld [hl], a
 	ret
-
 .NicknamePointers:
 	dw wPartyMonNicknames
 	dw wOTPartyMonNicknames
 	dw sBoxMonNicknames
 	dw wBufferMonNickname
-
-StatsScreen_PlaceVerticalDivider: ; unreferenced
-; The Japanese stats screen has a vertical divider.
-	hlcoord 7, 0
-	ld bc, SCREEN_WIDTH
-	ld d, SCREEN_HEIGHT
-.loop
-	ld a, $31 ; vertical divider
-	ld [hl], a
-	add hl, bc
-	dec d
-	jr nz, .loop
-	ret
 
 StatsScreen_PlaceHorizontalDivider:
 	hlcoord 0, 7
@@ -541,11 +459,9 @@ StatsScreen_LoadGFX:
 	jr nz, .place_frontpic
 	call SetDefaultBGPAndOBP
 	ret
-
 .place_frontpic
 	call StatsScreen_PlaceFrontpic
 	ret
-
 .ClearBox:
 	ld a, [wStatsScreenFlags]
 	maskbits NUM_STAT_PAGES
@@ -555,7 +471,6 @@ StatsScreen_LoadGFX:
 	lb bc, 10, 20
 	call ClearBox
 	ret
-
 .LoadPals:
 	ld a, [wStatsScreenFlags]
 	maskbits NUM_STAT_PAGES
@@ -565,7 +480,6 @@ StatsScreen_LoadGFX:
 	ld hl, wStatsScreenFlags
 	set STATS_SCREEN_ANIMATE_MON, [hl]
 	ret
-
 .PageTilemap:
 	ld a, [wStatsScreenFlags]
 	maskbits NUM_STAT_PAGES
@@ -573,7 +487,6 @@ StatsScreen_LoadGFX:
 	ld hl, .Jumptable
 	rst JumpTable
 	ret
-
 .Jumptable:
 ; entries correspond to *_PAGE constants
 	table_width 2
@@ -631,47 +544,69 @@ LoadPinkPage:
 	add hl, de
 	dec b
 	jr nz, .vertical_divider
+	; place XP
 	ld de, .ExpPointStr
 	hlcoord 10, 9
 	call PlaceString
-	hlcoord 17, 14
-	call .PrintNextLevel
-	hlcoord 13, 10
-	lb bc, 3, 7
+	hlcoord 13, 9
+	lb bc, 3, 7 ; 3 bytes value, 7 digits max
 	ld de, wTempMonExp
 	call PrintNum
+	; place Next XP
+	ld de, .NextStr
+	hlcoord 10, 10
+	call PlaceString
 	call .CalcExpToNextLevel
-	hlcoord 13, 13
-	lb bc, 3, 7
+	hlcoord 15, 10
+	lb bc, 3, 5 ; 3 bytes value, 5 digits max
 	ld de, wExpToNextLevel
 	call PrintNum
-	ld de, .LevelUpStr
-	hlcoord 10, 12
-	call PlaceString
-	ld de, .ToStr
-	hlcoord 14, 14
-	call PlaceString
-	hlcoord 11, 16
+	; place XP bar
+	hlcoord 11, 12
 	ld a, [wTempMonLevel]
 	ld b, a
 	ld de, wTempMonExp + 2
 	predef FillInExpBar
-	hlcoord 10, 16
+	hlcoord 10, 12
 	ld [hl], $40 ; left exp bar end cap
-	hlcoord 19, 16
+	hlcoord 19, 12
 	ld [hl], $41 ; right exp bar end cap
+	; place OT
+	ld de, OTString
+	hlcoord 10, 14
+	call PlaceString
+	ld hl, .OTNamePointers
+	call GetNicknamePointer
+	call CopyNickname
+	farcall CorrectNickErrors
+	hlcoord 12, 15
+	call PlaceString
+	ld a, [wTempMonCaughtGender]
+	and a
+	ret z
+	cp $7f
+	ret z
+	and CAUGHT_GENDER_MASK
+	ld a, "♂"
+	jr z, .got_gender
+	ld a, "♀"
+.got_gender
+	hlcoord 19, 15
+	ld [hl], a
+	; place ID
+	ld de, IDNoString
+	hlcoord 10, 16
+	call PlaceString
+	hlcoord 14, 16
+	lb bc, PRINTNUM_LEADINGZEROS | 2, 5 ; 2 bytes value, 5 digits max
+	ld de, wTempMonID
+	call PrintNum
 	ret
-.PrintNextLevel:
-	ld a, [wTempMonLevel]
-	push af
-	cp MAX_LEVEL
-	jr z, .AtMaxLevel
-	inc a
-	ld [wTempMonLevel], a
-.AtMaxLevel:
-	call PrintLevel
-	pop af
-	ld [wTempMonLevel], a
+.OTNamePointers:
+	dw wPartyMonOTs
+	dw wOTPartyMonOTs
+	dw sBoxMonOTs
+	dw wBufferMonOT
 	ret
 .CalcExpToNextLevel:
 	ld a, [wTempMonLevel]
@@ -702,16 +637,14 @@ LoadPinkPage:
 	ld [hl], a
 	ret
 .Status_Type:
-	db   "STATUS/"
-	next "TYPE/@"
+	db   "Status/"
+	next "Type/@"
 .OK_str:
 	db "OK @"
 .ExpPointStr:
-	db "EXP POINTS@"
-.LevelUpStr:
-	db "LEVEL UP@"
-.ToStr:
-	db "TO@"
+	db "XP@"
+.NextStr:
+	db "Next@"
 .PkrsStr:
 	db "#RUS@"
 
@@ -747,69 +680,100 @@ LoadGreenPage:
 	call GetItemName
 	ret
 .Item:
-	db "ITEM@"
+	db "Item@"
 .ThreeDashes:
 	db "---@"
 .Move:
-	db "MOVE@"
+	db "Moves@"
 
 LoadBluePage:
-	call .PlaceOTInfo
-	hlcoord 10, 8
+	ld de, .NatureString
+	hlcoord 0, 8
+	call PlaceString
+	ld de, .ThreeDashes ; dummy
+	hlcoord 8, 8
+	call PlaceString
+	ld de, .MaxHPStatName
+	hlcoord 0, 11
+	call PlaceString
+	ld de, .AttackStatName
+	hlcoord 0, 12
+	call PlaceString
+	ld de, .DefenseStatName
+	hlcoord 0, 13
+	call PlaceString
+	ld de, .SpeedStatName
+	hlcoord 0, 14
+	call PlaceString
+	ld de, .SpAtkStatName
+	hlcoord 0, 15
+	call PlaceString
+	ld de, .SpDefStatName
+	hlcoord 0, 16
+	call PlaceString
+	hlcoord 13, 10
 	ld de, SCREEN_WIDTH
-	ld b, 10
+	ld b, 8
 	ld a, $31 ; vertical divider
 .vertical_divider
 	ld [hl], a
 	add hl, de
 	dec b
 	jr nz, .vertical_divider
-	hlcoord 11, 8
-	ld bc, 6
-	predef PrintTempMonStats
-	ret
-.PlaceOTInfo:
-	ld de, IDNoString
-	hlcoord 0, 9
+	ld de, .SExpString
+	hlcoord 15, 10
 	call PlaceString
-	ld de, OTString
-	hlcoord 0, 12
-	call PlaceString
-	hlcoord 2, 10
-	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
-	ld de, wTempMonID
+	; place stats values
+	hlcoord 9, 11
+	lb bc, 2, 3 ; 2 bytes value, max 3 digits
+	ld de, wTempMonMaxHP
+	; the 6 stats we want are contiguous in memory
+	ld a, 6
+	call .print_stat_loop_a
+	; place stat exp values
+	hlcoord 15, 11
+	lb bc, 2, 5 ; 2 bytes value, max 5 digits
+	ld de, wTempMonExp + 3 ; wTempMonHPExp
+	; the 6 stats we want are contiguous in memory
+	ld a, 5
+	call .print_stat_loop_a
+	; There is no stat exp. for Special Defense
+	; so we use the Special exp. again
+	jp PrintNum
+.print_stat_loop_a
+	push af
+	push de
+	push hl
 	call PrintNum
-	ld hl, .OTNamePointers
-	call GetNicknamePointer
-	call CopyNickname
-	farcall CorrectNickErrors
-	hlcoord 2, 13
-	call PlaceString
-	ld a, [wTempMonCaughtGender]
-	and a
-	jr z, .done
-	cp $7f
-	jr z, .done
-	and CAUGHT_GENDER_MASK
-	ld a, "♂"
-	jr z, .got_gender
-	ld a, "♀"
-.got_gender
-	hlcoord 9, 13
-	ld [hl], a
-.done
-	ret
-.OTNamePointers:
-	dw wPartyMonOTs
-	dw wOTPartyMonOTs
-	dw sBoxMonOTs
-	dw wBufferMonOT
-
-IDNoString:
-	db "<ID>№.@"
-
-OTString:
-	db "OT/@"
+	pop hl
+	ld de, SCREEN_WIDTH
+	add hl, de ; next line
+	pop de
+	pop af
+	dec a
+	ret z
+	; advance to next 2 bytes
+	inc de
+	inc de
+	jr .print_stat_loop_a
+.NatureString:
+	db "Nature@"
+.ThreeDashes:
+	db "---@"
+.SExpString:
+	db "S.EXP@"
+.MaxHPStatName:
+	db "MAX.HP@"
+.AttackStatName:
+	db "ATTACK@"
+.DefenseStatName:
+	db "DEFENSE@"
+.SpeedStatName:
+	db "SPEED@"
+.SpAtkStatName:
+	db "SPCL.ATK@"
+.SpDefStatName:
+	db "SPCL.DEF@"
 
 StatsScreen_PlaceFrontpic:
 	ld hl, wTempMonDVs
@@ -963,7 +927,7 @@ EggStatsScreen:
 	ld b, SCGB_STATS_SCREEN_HP_PALS
 	call GetSGBLayout
 	call StatsScreen_PlaceHorizontalDivider
-	ld de, EggString
+	ld de, .EggString
 	hlcoord 8, 1
 	call PlaceString
 	ld de, IDNoString
@@ -972,34 +936,23 @@ EggStatsScreen:
 	ld de, OTString
 	hlcoord 8, 5
 	call PlaceString
-	ld de, FiveQMarkString
+	ld de, .FiveQMarkString
 	hlcoord 11, 3
 	call PlaceString
-	ld de, FiveQMarkString
+	ld de, .FiveQMarkString
 	hlcoord 11, 5
 	call PlaceString
-if DEF(_DEBUG)
-	ld de, .PushStartString
-	hlcoord 8, 17
-	call PlaceString
-	jr .placed_push_start
-
-.PushStartString:
-	db "▶PUSH START.@"
-
-.placed_push_start
-endc
 	ld a, [wTempMonHappiness] ; egg status
-	ld de, EggSoonString
+	ld de, .EggSoonString
 	cp $6
 	jr c, .picked
-	ld de, EggCloseString
+	ld de, .EggCloseString
 	cp $b
 	jr c, .picked
-	ld de, EggMoreTimeString
+	ld de, .EggMoreTimeString
 	cp $29
 	jr c, .picked
-	ld de, EggALotMoreTimeString
+	ld de, .EggALotMoreTimeString
 .picked
 	hlcoord 1, 9
 	call PlaceString
@@ -1011,40 +964,39 @@ endc
 	call PrepMonFrontpic
 	farcall HDMATransferTilemapToWRAMBank3
 	call StatsScreen_AnimateEgg
-
 	ld a, [wTempMonHappiness]
 	cp 6
 	ret nc
 	ld de, SFX_2_BOOPS
 	call PlaySFX
 	ret
-
-EggString:
+.EggString:
 	db "EGG@"
-
-FiveQMarkString:
+.FiveQMarkString:
 	db "?????@"
-
-EggSoonString:
+.EggSoonString:
 	db   "It's making sounds"
 	next "inside. It's going"
 	next "to hatch soon!@"
-
-EggCloseString:
+.EggCloseString:
 	db   "It moves around"
 	next "inside sometimes."
 	next "It must be close"
 	next "to hatching.@"
-
-EggMoreTimeString:
+.EggMoreTimeString:
 	db   "Wonder what's"
 	next "inside? It needs"
 	next "more time, though.@"
-
-EggALotMoreTimeString:
+.EggALotMoreTimeString:
 	db   "This EGG needs a"
 	next "lot more time to"
 	next "hatch.@"
+
+IDNoString:
+	db "<ID>№.@"
+
+OTString:
+	db "OT/@"
 
 StatsScreen_AnimateEgg:
 	call StatsScreen_GetAnimationParam
@@ -1057,7 +1009,6 @@ StatsScreen_AnimateEgg:
 	cp 11
 	jr c, .animate
 	ret
-
 .animate
 	push de
 	ld a, $1
@@ -1108,8 +1059,6 @@ StatsScreen_LoadPageIndicators:
 CopyNickname:
 	ld de, wStringBuffer1
 	ld bc, MON_NAME_LENGTH
-	jr .okay ; utterly pointless
-.okay
 	ld a, [wMonType]
 	cp BOXMON
 	jr nz, .partymon
@@ -1120,7 +1069,6 @@ CopyNickname:
 	pop de
 	call CloseSRAM
 	ret
-
 .partymon
 	push de
 	call CopyBytes
@@ -1155,7 +1103,6 @@ CheckFaintedFrzSlp:
 	jr nz, .fainted_frz_slp
 	and a
 	ret
-
 .fainted_frz_slp
 	scf
 	ret

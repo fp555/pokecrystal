@@ -1,7 +1,3 @@
-DummyPredef35:
-DummyPredef36:
-	ret
-
 UpdateTimeOfDayPal::
 	call UpdateTime
 	ld a, [wTimeOfDay]
@@ -12,44 +8,34 @@ UpdateTimeOfDayPal::
 
 _TimeOfDayPals::
 ; return carry if pals are changed
-
-; forced pals?
+	; forced pals?
 	ld hl, wTimeOfDayPalFlags
 	bit FORCED_PALSET_F, [hl]
 	jr nz, .dontchange
-
-; do we need to bother updating?
+	; do we need to bother updating?
 	ld a, [wTimeOfDay]
 	ld hl, wCurTimeOfDay
 	cp [hl]
 	jr z, .dontchange
-
-; if so, the time of day has changed
+	; if so, the time of day has changed
 	ld a, [wTimeOfDay]
 	ld [wCurTimeOfDay], a
-
-; get palette id
+	; get palette id
 	call GetTimePalette
-
-; same palette as before?
+	; same palette as before?
 	ld hl, wTimeOfDayPal
 	cp [hl]
 	jr z, .dontchange
-
-; update palette id
+	; update palette id
 	ld [wTimeOfDayPal], a
-
-; save bg palette 7
+	; save bg palette 7
 	ld hl, wBGPals1 palette PAL_BG_TEXT
-
-; save wram bank
+	; save wram bank
 	ldh a, [rSVBK]
 	ld b, a
-
 	ld a, BANK(wBGPals1)
 	ldh [rSVBK], a
-
-; push palette
+	; push palette
 	ld c, NUM_PAL_COLORS
 .push
 	ld d, [hl]
@@ -59,26 +45,20 @@ _TimeOfDayPals::
 	push de
 	dec c
 	jr nz, .push
-
-; restore wram bank
+	; restore wram bank
 	ld a, b
 	ldh [rSVBK], a
-
-; update sgb pals
+	; update sgb pals
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
-
-; restore bg palette 7
+	; restore bg palette 7
 	ld hl, wOBPals1 - 1 ; last byte in wBGPals1
-
-; save wram bank
+	; save wram bank
 	ldh a, [rSVBK]
 	ld d, a
-
 	ld a, BANK(wOBPals1)
 	ldh [rSVBK], a
-
-; pop palette
+	; pop palette
 	ld e, NUM_PAL_COLORS
 .pop
 	pop bc
@@ -88,21 +68,17 @@ _TimeOfDayPals::
 	dec hl
 	dec e
 	jr nz, .pop
-
-; restore wram bank
+	; restore wram bank
 	ld a, d
 	ldh [rSVBK], a
-
-; update palettes
+	; update palettes
 	call _UpdateTimePals
 	call DelayFrame
-
-; successful change
+	; successful change
 	scf
 	ret
-
 .dontchange
-; no change occurred
+	; no change occurred
 	and a
 	ret
 
@@ -158,12 +134,12 @@ FadeOutToBlack:
 	ret
 
 FillWhiteBGColor:
-; Copy white palette of wBGPals1 Pal0 into white palette of wBGPals1 Pal1-Pal6
+; Copy white palette of wBGPals1 Pal0
+; into white palette of wBGPals1 Pal1-Pal6
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wBGPals1)
 	ldh [rSVBK], a
-
 	ld hl, wBGPals1
 	ld a, [hli]
 	ld e, a
@@ -181,7 +157,6 @@ rept 3 colors
 endr
 	dec c
 	jr nz, .loop
-
 	pop af
 	ldh [rSVBK], a
 	ret
@@ -200,7 +175,6 @@ ReplaceTimeOfDayPals:
 	ld a, [hl]
 	ld [wTimeOfDayPalset], a
 	ret
-
 .NeedsFlash:
 	ld a, [wStatusFlags]
 	bit STATUSFLAGS_FLASH_F, a
@@ -208,12 +182,10 @@ ReplaceTimeOfDayPals:
 	ld a, DARKNESS_PALSET
 	ld [wTimeOfDayPalset], a
 	ret
-
 .UsedFlash:
 	ld a, (NITE_F << 6) | (NITE_F << 4) | (NITE_F << 2) | NITE_F
 	ld [wTimeOfDayPalset], a
 	ret
-
 .BrightnessLevels:
 ; actual palettes used when time is
 ; DARKNESS_F, NITE_F, DAY_F, MORN_F
@@ -228,31 +200,26 @@ ReplaceTimeOfDayPals:
 
 GetTimePalette:
 	jumptable .TimePalettes, wTimeOfDay
-
 .TimePalettes:
 	dw .MorningPalette  ; MORN_F
 	dw .DayPalette      ; DAY_F
 	dw .NitePalette     ; NITE_F
 	dw .DarknessPalette ; DARKNESS_F
-
 .MorningPalette:
 	ld a, [wTimeOfDayPalset]
 	and %00000011
 	ret
-
 .DayPalette:
 	ld a, [wTimeOfDayPalset]
 	and %00001100
 	srl a
 	srl a
 	ret
-
 .NitePalette:
 	ld a, [wTimeOfDayPalset]
 	and %00110000
 	swap a
 	ret
-
 .DarknessPalette:
 	ld a, [wTimeOfDayPalset]
 	and %11000000
@@ -299,18 +266,15 @@ ConvertTimePalsDecHL:
 	ret
 
 GetTimePalFade:
-; check cgb
+	; check cgb
 	ldh a, [hCGB]
 	and a
 	jr nz, .cgb
-
-; else: dmg
-
-; index
+	; else: dmg
+	; index
 	ld a, [wTimeOfDayPal]
 	and %11
-
-; get fade table
+	; get fade table
 	push bc
 	ld c, a
 	ld b, 0
@@ -321,24 +285,20 @@ GetTimePalFade:
 	ld h, [hl]
 	ld l, a
 	pop bc
-
-; get place in fade table
+	; get place in fade table
 	ld b, 0
 	add hl, bc
 	ret
-
 .cgb
 	ld hl, .cgbfade
 	ld b, 0
 	add hl, bc
 	ret
-
 .dmgfades
 	dw .morn
 	dw .day
 	dw .nite
 	dw .darkness
-
 .morn
 	dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 	dc 3,3,3,2, 3,3,3,2, 3,3,3,2
@@ -347,7 +307,6 @@ GetTimePalFade:
 	dc 2,1,0,0, 2,0,0,0, 2,0,0,0
 	dc 1,0,0,0, 1,0,0,0, 1,0,0,0
 	dc 0,0,0,0, 0,0,0,0, 0,0,0,0
-
 .day
 	dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 	dc 3,3,3,2, 3,3,3,2, 3,3,3,2
@@ -356,7 +315,6 @@ GetTimePalFade:
 	dc 2,1,0,0, 2,0,0,0, 2,0,0,0
 	dc 1,0,0,0, 1,0,0,0, 1,0,0,0
 	dc 0,0,0,0, 0,0,0,0, 0,0,0,0
-
 .nite
 	dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 	dc 3,3,3,2, 3,3,3,2, 3,3,3,2
@@ -365,7 +323,6 @@ GetTimePalFade:
 	dc 2,1,0,0, 2,0,0,0, 2,0,0,0
 	dc 1,0,0,0, 1,0,0,0, 1,0,0,0
 	dc 0,0,0,0, 0,0,0,0, 0,0,0,0
-
 .darkness
 	dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 	dc 3,3,3,2, 3,3,3,2, 3,3,3,3
@@ -374,7 +331,6 @@ GetTimePalFade:
 	dc 3,3,3,1, 2,0,0,0, 3,3,3,3
 	dc 0,0,0,0, 1,0,0,0, 0,0,0,0
 	dc 0,0,0,0, 0,0,0,0, 0,0,0,0
-
 .cgbfade
 	dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 	dc 3,3,3,2, 3,3,3,2, 3,3,3,2

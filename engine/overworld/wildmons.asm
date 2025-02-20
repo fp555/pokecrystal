@@ -280,12 +280,12 @@ ChooseWildEncounter:
 	jr nz, .ok
 	; Check if we buff the wild mon, and by how much.
 	call Random
-	cp 60 percent ; level +0: 60% chance
+	cp 50 percent ; level +0: 50% chance
 	jr c, .ok
 	inc b
-	cp 90 percent ; level +1: 30% chance
+	cp 80 percent ; level +1: 30% chance
 	jr c, .ok
-	inc b ; level +2: 10% chance
+	inc b ; level +2: 20% chance
 .ok
 	; Store the level
 	ld a, b

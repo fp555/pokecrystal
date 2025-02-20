@@ -19,30 +19,21 @@ PokeSeer:
 	ld a, SEER_INTRO
 	call PrintSeerText
 	call JoyWaitAorB
-
 	ld b, PARTY_LENGTH
 	farcall SelectMonFromParty
 	jr c, .cancel
-
 	ld a, [wCurPartySpecies]
 	cp EGG
 	jr z, .egg
-
 	call IsAPokemon
-	jr c, .no_mon
-
+	ret c
 	call ReadCaughtData
 	call SeerAction
 	ret
-
 .cancel
 	ld a, SEER_CANCEL
 	call PrintSeerText
 	ret
-
-.no_mon
-	ret
-
 .egg
 	ld a, SEER_EGG
 	call PrintSeerText
@@ -103,24 +94,19 @@ ReadCaughtData:
 	ld [wSeerCaughtGender], a
 	or [hl]
 	jr z, .error
-
 	ld a, SEERACTION_TRADED
 	ld [wSeerAction], a
-
 	ld a, MON_OT_ID
 	call GetPartyParamLocation
 	ld a, [wPlayerID]
 	cp [hl]
 	jr nz, .traded
-
 	inc hl
 	ld a, [wPlayerID + 1]
 	; cp [hl]
 	jr nz, .traded
-
 	ld a, SEERACTION_MET
 	ld [wSeerAction], a
-
 .traded
 	call GetCaughtLevel
 	call GetCaughtOT
@@ -129,7 +115,6 @@ ReadCaughtData:
 	call GetCaughtLocation
 	and a
 	ret
-
 .error
 	ld a, SEERACTION_CANT_TELL_1
 	ld [wSeerAction], a
@@ -150,7 +135,6 @@ GetCaughtLevel:
 	ld hl, wSeerCaughtLevelString
 	ld bc, 4
 	call ByteFill
-
 	; caught level
 	; Limited to between 1 and 63 since it's a 6-bit quantity.
 	ld a, [wSeerCaughtData]
@@ -159,7 +143,6 @@ GetCaughtLevel:
 	cp CAUGHT_EGG_LEVEL ; egg marker value
 	jr nz, .print
 	ld a, EGG_LEVEL ; egg hatch level
-
 .print
 	ld [wSeerCaughtLevel], a
 	ld hl, wSeerCaughtLevelString
@@ -167,14 +150,12 @@ GetCaughtLevel:
 	lb bc, PRINTNUM_LEFTALIGN | 1, 3
 	call PrintNum
 	ret
-
 .unknown
 	ld de, wSeerCaughtLevelString
 	ld hl, .unknown_level
 	ld bc, 4
 	call CopyBytes
 	ret
-
 .unknown_level
 	db "???@"
 
@@ -182,7 +163,6 @@ GetCaughtTime:
 	ld a, [wSeerCaughtData]
 	and CAUGHT_TIME_MASK
 	jr z, .none
-
 	rlca
 	rlca
 	dec a
@@ -194,12 +174,10 @@ GetCaughtTime:
 	call CopyName2
 	and a
 	ret
-
 .none
 	ld de, wSeerTimeOfDay
 	call UnknownCaughtData
 	ret
-
 .times
 	db "Morning@"
 	db "Day@"
@@ -210,7 +188,6 @@ UnknownCaughtData:
 	ld bc, NAME_LENGTH
 	call CopyBytes
 	ret
-
 .unknown
 	db "Unknown@"
 
@@ -230,17 +207,14 @@ GetCaughtLocation:
 	call CopyBytes
 	and a
 	ret
-
 .Unknown:
 	ld de, wSeerCaughtLocation
 	jp UnknownCaughtData
-
 .event
 	ld a, SEERACTION_LEVEL_ONLY
 	ld [wSeerAction], a
 	scf
 	ret
-
 .fail
 	ld a, SEERACTION_CANT_TELL_2
 	ld [wSeerAction], a
@@ -255,20 +229,17 @@ GetCaughtOT:
 	ld de, wSeerOT
 	ld bc, NAME_LENGTH
 	call CopyBytes
-
-; this routine is useless in Western localizations
+	; this routine is useless in Western localizations
 	ld hl, .male
 	ld a, [wSeerCaughtGender]
 	bit 7, a
 	jr z, .got_grammar
 	ld hl, .female
-
 .got_grammar
 	ld de, wSeerOTGrammar
 	ld a, "@"
 	ld [de], a
 	ret
-
 .male
 	db "@"
 .female
@@ -336,7 +307,6 @@ SeerAdvice:
 	ld a, [hl]
 	sub c
 	ld c, a
-
 	ld hl, SeerAdviceTexts
 	ld de, 3
 .next
@@ -345,7 +315,6 @@ SeerAdvice:
 	jr z, .print
 	add hl, de
 	jr .next
-
 .print
 	inc hl
 	ld a, [hli]
@@ -386,23 +355,19 @@ SeerImpressedText:
 GetCaughtGender:
 	ld hl, MON_CAUGHTGENDER
 	add hl, bc
-
 	ld a, [hl]
 	and CAUGHT_LOCATION_MASK
 	jr z, .genderless
 	cp LANDMARK_EVENT
 	jr z, .genderless
-
 	ld a, [hl]
 	and CAUGHT_GENDER_MASK
 	jr nz, .male
 	ld c, CAUGHT_BY_GIRL
 	ret
-
 .male
 	ld c, CAUGHT_BY_BOY
 	ret
-
 .genderless
 	ld c, CAUGHT_BY_UNKNOWN
 	ret

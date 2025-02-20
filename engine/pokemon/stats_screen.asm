@@ -25,8 +25,7 @@ StatsScreenInit:
 
 _MobileStatsScreenInit:
 	ld hl, StatsScreenMobile
-	jr StatsScreenInit_gotaddress
-
+	; fallthrough
 StatsScreenInit_gotaddress:
 	ldh a, [hMapAnims]
 	push af
@@ -573,7 +572,7 @@ LoadPinkPage:
 	hlcoord 19, 12
 	ld [hl], $41 ; right exp bar end cap
 	; place OT
-	ld de, .OTString
+	ld de, OTString
 	hlcoord 10, 14
 	call PlaceString
 	ld hl, .OTNamePointers
@@ -595,7 +594,7 @@ LoadPinkPage:
 	hlcoord 19, 15
 	ld [hl], a
 	; place ID
-	ld de, .IDNoString
+	ld de, IDNoString
 	hlcoord 10, 16
 	call PlaceString
 	hlcoord 14, 16
@@ -648,10 +647,6 @@ LoadPinkPage:
 	db "Next@"
 .PkrsStr:
 	db "#RUS@"
-.IDNoString:
-	db "<ID>№.@"
-.OTString:
-	db "OT/@"
 
 LoadGreenPage:
 	ld de, .Item
@@ -692,62 +687,82 @@ LoadGreenPage:
 	db "Moves@"
 
 LoadBluePage:
-	call .PlaceOTInfo
-	hlcoord 10, 8
-	ld de, SCREEN_WIDTH
-	ld b, 10
-	ld a, $31 ; vertical divider
-.vertical_divider
-	ld [hl], a
-	add hl, de
-	dec b
-	jr nz, .vertical_divider
-	hlcoord 11, 8
-	ld bc, 6
-	predef PrintTempMonStats
-	ret
-.PlaceOTInfo:
-	ld de, IDNoString
-	hlcoord 0, 9
+	ld de, .NatureString
+	hlcoord 0, 8
 	call PlaceString
-	ld de, OTString
-	hlcoord 0, 12
+	ld de, .ThreeDashes ; dummy
+	hlcoord 8, 8
 	call PlaceString
-	hlcoord 2, 10
-	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
-	ld de, wTempMonID
+	ld de, .StatNames
+	hlcoord 0, 11
+	call PlaceString
+	ld de, .StatString
+	hlcoord 9, 10
+	call PlaceString
+	ld de, .SExpString
+	hlcoord 15, 10
+	call PlaceString
+	; place stats values
+	hlcoord 10, 11
+	lb bc, 2, 3 ; 2 bytes value, max 3 digits
+	ld de, wTempMonMaxHP
+	call .print_stat
+	ld de, wTempMonAttack
+	call .print_stat
+	ld de, wTempMonDefense
+	call .print_stat
+	ld de, wTempMonSpeed
+	call .print_stat
+	ld de, wTempMonSpclAtk
+	call .print_stat
+	ld de, wTempMonSpclDef
 	call PrintNum
-	ld hl, .OTNamePointers
-	call GetNicknamePointer
-	call CopyNickname
-	farcall CorrectNickErrors
-	hlcoord 2, 13
-	call PlaceString
-	ld a, [wTempMonCaughtGender]
-	and a
-	jr z, .done
-	cp $7f
-	jr z, .done
-	and CAUGHT_GENDER_MASK
-	ld a, "♂"
-	jr z, .got_gender
-	ld a, "♀"
-.got_gender
-	hlcoord 9, 13
-	ld [hl], a
-.done
+	; place stat exp values
+	hlcoord 15, 11
+	ld de, wTempMonExp + 3 ; wTempMonHPExp
+	lb bc, 2, 5 ; 2 bytes value, max 5 digits
+	push de
+	call .print_stat
+	pop de
+	inc de
+	inc de ; wTempMonAtkExp
+	push de
+	call .print_stat
+	pop de
+	inc de
+	inc de ; wTempMonDefExp
+	push de
+	call .print_stat
+	pop de
+	inc de
+	inc de ; wTempMonSpdExp
+	push de
+	call .print_stat
+	pop de
+	inc de
+	inc de ; wTempMonSpcExp
+.print_stat
+	push hl
+	call PrintNum
+	pop hl
+	ld de, SCREEN_WIDTH
+	add hl, de ; next line
 	ret
-.OTNamePointers:
-	dw wPartyMonOTs
-	dw wOTPartyMonOTs
-	dw sBoxMonOTs
-	dw wBufferMonOT
-
-IDNoString:
-	db "<ID>№.@"
-
-OTString:
-	db "OT/@"
+.NatureString:
+	db "Nature@"
+.ThreeDashes:
+	db "---@"
+.StatString:
+	db "Stats@"
+.SExpString:
+	db "S.EXP@"
+.StatNames:
+	db   "MAX HP"
+	next "ATTACK"
+	next "DEFENSE"
+	next "SPEED"
+	next "SPCL.ATK"
+	next "SPCL.DEF@"
 
 StatsScreen_PlaceFrontpic:
 	ld hl, wTempMonDVs
@@ -901,7 +916,7 @@ EggStatsScreen:
 	ld b, SCGB_STATS_SCREEN_HP_PALS
 	call GetSGBLayout
 	call StatsScreen_PlaceHorizontalDivider
-	ld de, EggString
+	ld de, .EggString
 	hlcoord 8, 1
 	call PlaceString
 	ld de, IDNoString
@@ -910,34 +925,23 @@ EggStatsScreen:
 	ld de, OTString
 	hlcoord 8, 5
 	call PlaceString
-	ld de, FiveQMarkString
+	ld de, .FiveQMarkString
 	hlcoord 11, 3
 	call PlaceString
-	ld de, FiveQMarkString
+	ld de, .FiveQMarkString
 	hlcoord 11, 5
 	call PlaceString
-if DEF(_DEBUG)
-	ld de, .PushStartString
-	hlcoord 8, 17
-	call PlaceString
-	jr .placed_push_start
-
-.PushStartString:
-	db "▶PUSH START.@"
-
-.placed_push_start
-endc
 	ld a, [wTempMonHappiness] ; egg status
-	ld de, EggSoonString
+	ld de, .EggSoonString
 	cp $6
 	jr c, .picked
-	ld de, EggCloseString
+	ld de, .EggCloseString
 	cp $b
 	jr c, .picked
-	ld de, EggMoreTimeString
+	ld de, .EggMoreTimeString
 	cp $29
 	jr c, .picked
-	ld de, EggALotMoreTimeString
+	ld de, .EggALotMoreTimeString
 .picked
 	hlcoord 1, 9
 	call PlaceString
@@ -949,40 +953,39 @@ endc
 	call PrepMonFrontpic
 	farcall HDMATransferTilemapToWRAMBank3
 	call StatsScreen_AnimateEgg
-
 	ld a, [wTempMonHappiness]
 	cp 6
 	ret nc
 	ld de, SFX_2_BOOPS
 	call PlaySFX
 	ret
-
-EggString:
+.EggString:
 	db "EGG@"
-
-FiveQMarkString:
+.FiveQMarkString:
 	db "?????@"
-
-EggSoonString:
+.EggSoonString:
 	db   "It's making sounds"
 	next "inside. It's going"
 	next "to hatch soon!@"
-
-EggCloseString:
+.EggCloseString:
 	db   "It moves around"
 	next "inside sometimes."
 	next "It must be close"
 	next "to hatching.@"
-
-EggMoreTimeString:
+.EggMoreTimeString:
 	db   "Wonder what's"
 	next "inside? It needs"
 	next "more time, though.@"
-
-EggALotMoreTimeString:
+.EggALotMoreTimeString:
 	db   "This EGG needs a"
 	next "lot more time to"
 	next "hatch.@"
+
+IDNoString:
+	db "<ID>№.@"
+
+OTString:
+	db "OT/@"
 
 StatsScreen_AnimateEgg:
 	call StatsScreen_GetAnimationParam
@@ -995,7 +998,6 @@ StatsScreen_AnimateEgg:
 	cp 11
 	jr c, .animate
 	ret
-
 .animate
 	push de
 	ld a, $1
@@ -1046,8 +1048,6 @@ StatsScreen_LoadPageIndicators:
 CopyNickname:
 	ld de, wStringBuffer1
 	ld bc, MON_NAME_LENGTH
-	jr .okay ; utterly pointless
-.okay
 	ld a, [wMonType]
 	cp BOXMON
 	jr nz, .partymon
@@ -1058,7 +1058,6 @@ CopyNickname:
 	pop de
 	call CloseSRAM
 	ret
-
 .partymon
 	push de
 	call CopyBytes
@@ -1093,7 +1092,6 @@ CheckFaintedFrzSlp:
 	jr nz, .fainted_frz_slp
 	and a
 	ret
-
 .fainted_frz_slp
 	scf
 	ret

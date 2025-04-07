@@ -18,7 +18,6 @@ ResetFlashIfOutOfCave::
 	cp TOWN
 	jr z, .outdoors
 	ret
-
 .outdoors
 	ld hl, wStatusFlags
 	res STATUSFLAGS_FLASH_F, [hl]
@@ -31,7 +30,6 @@ EventFlagAction::
 
 FlagAction::
 ; Perform action b on bit de in flag array hl.
-
 ; inputs:
 ; b: function
 ;    0  RESET_FLAG  clear bit
@@ -39,18 +37,16 @@ FlagAction::
 ;    2  CHECK_FLAG  check bit
 ; de: bit number
 ; hl: pointer to the flag array
-
+;---------------------------------------------
 	; get index within the byte
 	ld a, e
 	and 7
-
 	; shift de right by three bits (get the index within memory)
 rept 3
 	srl d
 	rr e
 endr
 	add hl, de
-
 	; implement a decoder
 	ld c, 1
 	rrca
@@ -66,26 +62,22 @@ endr
 	jr nc, .three
 	swap c
 .three
-
 	; check b's value: 0, 1, 2
 	ld a, b
 	cp SET_FLAG
 	jr c, .clearbit ; RESET_FLAG
 	jr z, .setbit ; SET_FLAG
-
 	; check bit
 	ld a, [hl]
 	and c
 	ld c, a
 	ret
-
 .setbit
 	; set bit
 	ld a, [hl]
 	or c
 	ld [hl], a
 	ret
-
 .clearbit
 	; clear bit
 	ld a, c
@@ -100,31 +92,4 @@ CheckReceivedDex::
 	farcall EngineFlagAction
 	ld a, c
 	and a
-	ret
-
-CheckBPressedDebug:: ; unreferenced
-; Used in debug ROMs to walk through walls and avoid encounters.
-
-	ld a, [wDebugFlags]
-	bit DEBUG_FIELD_F, a
-	ret z
-
-	ldh a, [hJoyDown]
-	bit B_BUTTON_F, a
-	ret
-
-xor_a::
-	xor a
-	ret
-
-xor_a_dec_a::
-	xor a
-	dec a
-	ret
-
-CheckFieldDebug:: ; unreferenced
-	push hl
-	ld hl, wDebugFlags
-	bit DEBUG_FIELD_F, [hl]
-	pop hl
 	ret

@@ -236,7 +236,7 @@ INCLUDE "engine/gfx/cgb_layouts.asm"
 CopyFourPalettes:
 	ld de, wBGPals1
 	ld c, 4
-
+	; fallthrough
 CopyPalettes:
 .loop
 	push bc

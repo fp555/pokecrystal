@@ -712,17 +712,10 @@ DebugColor_TMHMJoypad:
 	jr nz, .cancel
 	call .scroll
 	ret
-
 .cancel
 	ld a, DEBUGCOLORMAIN_INITSCREEN
 	ld [wJumptableIndex], a
 	ret
-
-.exit ; unreferenced
-	ld hl, wJumptableIndex
-	set JUMPTABLE_EXIT_F, [hl]
-	ret
-
 .scroll:
 	ld hl, hJoyLast
 	ld a, [hl]
@@ -732,28 +725,23 @@ DebugColor_TMHMJoypad:
 	and D_DOWN
 	jr nz, .down
 	ret
-
 .up
 	ld a, [wDebugColorCurTMHM]
 	cp NUM_TM_HM_TUTOR - 1
 	jr z, .wrap_down
 	inc a
 	jr .done
-
 .wrap_down
 	xor a
 	jr .done
-
 .down
 	ld a, [wDebugColorCurTMHM]
 	and a
 	jr z, .wrap_up
 	dec a
 	jr .done
-
 .wrap_up
 	ld a, NUM_TM_HM_TUTOR - 1
-
 .done
 	ld [wDebugColorCurTMHM], a
 	call DebugColor_PrintTMHMMove
@@ -768,7 +756,6 @@ DebugColor_PrintTMHMMove:
 	call .ClearRow
 	hlcoord 10, 14
 	call .ClearRow
-
 	ld a, [wDebugColorCurTMHM]
 	inc a
 	ld [wTempTMHM], a
@@ -778,7 +765,6 @@ DebugColor_PrintTMHMMove:
 	call GetMoveName
 	hlcoord 10, 12
 	call PlaceString
-
 	ld a, [wDebugColorCurTMHM]
 	call .GetNumberedTMHM
 	ld [wCurItem], a
@@ -1435,10 +1421,4 @@ DebugTileset_CalculatePalette:
 	ld a, e
 	ld [hli], a
 	ld [hl], d
-	ret
-
-.dummy1: ; unreferenced
-	ret
-
-.dummy2: ; unreferenced
 	ret

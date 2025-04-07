@@ -221,7 +221,7 @@ _CGB_StatsScreenHPPals:
 	lb bc, 8, SCREEN_WIDTH
 	ld a, $1 ; mon palette
 	call FillBoxCGB
-	hlcoord 10, 16, wAttrmap
+	hlcoord 10, 12, wAttrmap
 	ld bc, 10
 	ld a, $2 ; exp palette
 	call ByteFill

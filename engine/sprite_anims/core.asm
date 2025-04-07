@@ -491,8 +491,6 @@ INCLUDE "data/sprite_anims/framesets.asm"
 
 INCLUDE "data/sprite_anims/oam.asm"
 
-INCLUDE "data/sprite_anims/unused_gfx.asm"
-
 Sprites_Cosine:
 ; a = d * cos(a * pi/32)
 	add %010000 ; cos(x) = sin(x + pi/2)

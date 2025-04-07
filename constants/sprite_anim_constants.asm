@@ -20,15 +20,13 @@ DEF SPRITEANIMSTRUCT_LENGTH EQU _RS
 DEF NUM_SPRITE_ANIM_STRUCTS EQU 10 ; see wSpriteAnimationStructs
 
 ; wSpriteAnimDict keys (see wram.asm)
-; UnusedSpriteAnimGFX indexes (see data/sprite_anims/unused_gfx.asm)
 	const_def
 	const SPRITE_ANIM_DICT_DEFAULT      ; 0
-	const_skip 4                        ; unused
-	const SPRITE_ANIM_DICT_TEXT_CURSOR  ; 5
-	const SPRITE_ANIM_DICT_GS_SPLASH    ; 6
-	const SPRITE_ANIM_DICT_SLOTS        ; 7
-	const SPRITE_ANIM_DICT_ARROW_CURSOR ; 8
-DEF NUM_SPRITE_ANIM_GFX EQU const_value
+	const SPRITE_ANIM_DICT_TEXT_CURSOR  ; 1
+	const SPRITE_ANIM_DICT_GS_SPLASH    ; 2
+	const SPRITE_ANIM_DICT_SLOTS        ; 3
+	const SPRITE_ANIM_DICT_ARROW_CURSOR ; 4
+DEF NUM_SPRITE_ANIM_GFX EQU const_value ; unused
 
 ; wSpriteAnimDict size (see wram.asm)
 DEF NUM_SPRITEANIMDICT_ENTRIES EQU 10

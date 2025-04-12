@@ -116,25 +116,25 @@ Route36FloriaScript:
 	closetext
 	end
 
-Route36RockSmashGuyScript:
+Route36WhirlpoolGuyScript:
 	faceplayer
 	opentext
-	checkevent EVENT_GOT_TM08_ROCK_SMASH
-	iftrue .AlreadyGotRockSmash
+	checkevent EVENT_GOT_TM08_WHIRLPOOL
+	iftrue .AlreadyGotWhirlpool
 	checkevent EVENT_FOUGHT_SUDOWOODO
 	iftrue .ClearedSudowoodo
-	writetext RockSmashGuyText1
+	writetext WhirlpoolGuyText1
 	waitbutton
 	closetext
 	end
 .ClearedSudowoodo:
-	writetext RockSmashGuyText2
+	writetext WhirlpoolGuyText2
 	promptbutton
-	verbosegiveitem TM_ROCK_SMASH
+	verbosegiveitem TM_WHIRLPOOL
 	iffalse .NoRoomForTM
-	setevent EVENT_GOT_TM08_ROCK_SMASH
-.AlreadyGotRockSmash:
-	writetext RockSmashGuyText3
+	setevent EVENT_GOT_TM08_WHIRLPOOL
+.AlreadyGotWhirlpool:
+	writetext WhirlpoolGuyText3
 	waitbutton
 .NoRoomForTM:
 	closetext
@@ -423,7 +423,7 @@ FloriaText2:
 	line "bottle…"
 	done
 
-RockSmashGuyText1:
+WhirlpoolGuyText1:
 	text "Wa-hey!"
 
 	para "I was going to"
@@ -436,7 +436,7 @@ RockSmashGuyText1:
 	line "I'm a failure!"
 	done
 
-RockSmashGuyText2:
+WhirlpoolGuyText2:
 	text "Did you clear that"
 	line "wretched tree?"
 
@@ -445,19 +445,16 @@ RockSmashGuyText2:
 	cont "have this."
 	done
 
-RockSmashGuyText3:
+WhirlpoolGuyText3:
 	text "That happens to be"
-	line "ROCK SMASH."
+	line "WHIRLPOOL."
 
-	para "You can shatter"
-	line "rocks with just a"
+	para "It can trap enemy"
+	line "#MON and wear"
+	cont "them down."
 
-	para "single well-aimed"
-	line "smack."
-
-	para "If any rocks are"
-	line "in your way, just"
-	cont "smash 'em up!"
+	para "Use this and they"
+	line "won't run away!"
 	done
 
 Route36LassText:
@@ -620,7 +617,7 @@ Route36_MapEvents:
 	object_event 31, 14, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 5, TrainerSchoolboyAlan1, -1
 	object_event 35,  9, SPRITE_SUDOWOODO, SPRITEMOVEDATA_SUDOWOODO, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SudowoodoScript, EVENT_ROUTE_36_SUDOWOODO
 	object_event 51,  8, SPRITE_LASS, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route36LassScript, -1
-	object_event 44,  9, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route36RockSmashGuyScript, -1
+	object_event 44,  9, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route36WhirlpoolGuyScript, -1
 	object_event 21,  4, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route36FruitTree, -1
 	object_event 46,  6, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ArthurScript, EVENT_ROUTE_36_ARTHUR_OF_THURSDAY
 	object_event 33, 12, SPRITE_LASS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route36FloriaScript, EVENT_FLORIA_AT_SUDOWOODO

@@ -17,7 +17,6 @@ GoldenrodDeptStore5FCheckIfSundayCallback:
 	ifequal SUNDAY, .yes
 	disappear GOLDENRODDEPTSTORE5F_RECEPTIONIST
 	endcallback
-
 .yes
 	appear GOLDENRODDEPTSTORE5F_RECEPTIONIST
 	endcallback
@@ -27,30 +26,25 @@ GoldenrodDeptStore5FClerkScript:
 	opentext
 	checkevent EVENT_GOT_TM02_HEADBUTT
 	iftrue .headbutt
-	checkevent EVENT_GOT_TM08_ROCK_SMASH
-	iftrue .onlyrocksmash
+	checkevent EVENT_GOT_TM08_WHIRLPOOL
+	iftrue .onlywhirlpool
 	sjump .neither
-
 .headbutt
-	checkevent EVENT_GOT_TM08_ROCK_SMASH
+	checkevent EVENT_GOT_TM08_WHIRLPOOL
 	iftrue .both
 	sjump .onlyheadbutt
-
 .neither
 	pokemart MARTTYPE_STANDARD, MART_GOLDENROD_5F_1
 	closetext
 	end
-
 .onlyheadbutt
 	pokemart MARTTYPE_STANDARD, MART_GOLDENROD_5F_2
 	closetext
 	end
-
-.onlyrocksmash
+.onlywhirlpool
 	pokemart MARTTYPE_STANDARD, MART_GOLDENROD_5F_3
 	closetext
 	end
-
 .both
 	pokemart MARTTYPE_STANDARD, MART_GOLDENROD_5F_4
 	closetext
@@ -69,7 +63,6 @@ GoldenrodDeptStore5FReceptionistScript:
 	ifgreater 150 - 1, .VeryHappy
 	ifgreater 50 - 1, .SomewhatHappy
 	sjump .NotVeryHappy
-
 .VeryHappy:
 	writetext GoldenrodDeptStore5FReceptionistThisMoveShouldBePerfectText
 	promptbutton
@@ -78,13 +71,11 @@ GoldenrodDeptStore5FReceptionistScript:
 	setflag ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN
 	closetext
 	end
-
 .SomewhatHappy:
 	writetext GoldenrodDeptStore5FReceptionistItsAdorableText
 	waitbutton
 	closetext
 	end
-
 .NotVeryHappy:
 	writetext GoldenrodDeptStore5FReceptionistItLooksEvilHowAboutThisTMText
 	promptbutton
@@ -93,7 +84,6 @@ GoldenrodDeptStore5FReceptionistScript:
 	setflag ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN
 	closetext
 	end
-
 .EventIsOver:
 	writetext GoldenrodDeptStore5FReceptionistThereAreTMsPerfectForMonText
 	waitbutton
@@ -104,18 +94,10 @@ GoldenrodDeptStore5FReceptionistScript:
 Carrie:
 	faceplayer
 	opentext
-	special GameboyCheck
-	ifnotequal GBCHECK_CGB, .NotGBC ; This is a dummy check from Gold/Silver
 	writetext GoldenrodDeptStore5FCarrieMysteryGiftExplanationText
 	waitbutton
 	closetext
 	special UnlockMysteryGift
-	end
-
-.NotGBC:
-	writetext GoldenrodDeptStore5FCarrieMysteryGiftRequiresGBCText
-	waitbutton
-	closetext
 	end
 
 GoldenrodDeptStore5FLassScript:
@@ -178,13 +160,7 @@ GoldenrodDeptStore5FCarrieMysteryGiftExplanationText:
 
 	para "With just a"
 	line "little beep, you"
-	cont "get a gift."
-	done
-
-GoldenrodDeptStore5FCarrieMysteryGiftRequiresGBCText:
-	text "The MYSTERY GIFT"
-	line "option requires a"
-	cont "Game Boy Color."
+	cont "get a gift!"
 	done
 
 GoldenrodDeptStore5FLassText:

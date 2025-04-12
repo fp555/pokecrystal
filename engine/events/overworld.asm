@@ -965,48 +965,17 @@ TryStrengthOW:
 	ld [wScriptVar], a
 	ret
 
-WhirlpoolFunction:
-	call FieldMoveJumptableReset
-.loop
-	ld hl, .Jumptable
-	call FieldMoveJumptable
-	jr nc, .loop
-	and JUMPTABLE_INDEX_MASK
-	ld [wFieldMoveSucceeded], a
-	ret
-.Jumptable:
-	dw .TryWhirlpool
-	dw .DoWhirlpool
-	dw .FailWhirlpool
-.TryWhirlpool:
-	ld de, ENGINE_GLACIERBADGE
-	call CheckBadge
-	jr c, .noglacierbadge
-	call TryWhirlpoolMenu
-	jr c, .failed
-	ld a, $1
-	ret
-.failed
-	ld a, $2
-	ret
-.noglacierbadge
-	ld a, JUMPTABLE_EXIT
-	ret
-.DoWhirlpool:
-	ld hl, Script_WhirlpoolFromMenu
-	call QueueScript
-	ld a, JUMPTABLE_EXIT | $1
-	ret
-.FailWhirlpool:
-	call FieldMoveFailed
-	ld a, JUMPTABLE_EXIT
-	ret
-
-UseWhirlpoolText:
-	text_far _UseWhirlpoolText
-	text_end
-
-TryWhirlpoolMenu:
+TryWhirlpoolOW::
+; Whirlpools are only found on Route 41 (Whirl Islands)
+; WHIRLPOOL move has no field effect
+; -----------------------------------------------------
+	; Silver Wing is required to pass
+	ld a, SILVER_WING
+	ld [wCurItem], a
+	ld hl, wNumItems
+	call CheckItem
+	jr nc, .failed
+	; TryWhirlpoolMenu
 	call GetFacingTileCoord
 	ld c, a
 	push de
@@ -1029,23 +998,42 @@ TryWhirlpoolMenu:
 	ld [wCutWhirlpoolReplacementBlock], a
 	ld a, c
 	ld [wCutWhirlpoolAnimationType], a
-	xor a
-	ret
+	ld a, BANK(Script_AskWhirlpoolOW)
+	ld hl, Script_AskWhirlpoolOW
+	jr .done
 .failed
+	ld a, BANK(Script_MightyWhirlpool)
+	ld hl, Script_MightyWhirlpool
+.done
+	call CallScript
 	scf
 	ret
 
-Script_WhirlpoolFromMenu:
-	refreshmap
-	special UpdateTimePals
+Script_MightyWhirlpool:
+	jumptext .MayPassWhirlpoolText
+.MayPassWhirlpoolText:
+	text_far _MayPassWhirlpoolText
+	text_end
 
-Script_UsedWhirlpool:
-	callasm GetPartyNickname
-	writetext UseWhirlpoolText
+Script_AskWhirlpoolOW:
+	opentext
+	writetext AskWhirlpoolText
+	yesorno
+	iffalse .End
+	writetext UseSilverWingText
 	refreshmap
 	callasm DisappearWhirlpool
+.End
 	closetext
 	end
+
+AskWhirlpoolText:
+	text_far _AskWhirlpoolText
+	text_end
+
+UseSilverWingText:
+	text_far _UseSilverWingWhirlpoolText
+	text_end
 
 DisappearWhirlpool:
 	ld hl, wCutWhirlpoolOverworldBlockAddr
@@ -1063,45 +1051,6 @@ DisappearWhirlpool:
 	call BufferScreen
 	call GetMovementPermissions
 	ret
-
-TryWhirlpoolOW::
-	ld d, WHIRLPOOL
-	call CheckPartyMove
-	jr c, .failed
-	ld de, ENGINE_GLACIERBADGE
-	call CheckEngineFlag
-	jr c, .failed
-	call TryWhirlpoolMenu
-	jr c, .failed
-	ld a, BANK(Script_AskWhirlpoolOW)
-	ld hl, Script_AskWhirlpoolOW
-	call CallScript
-	scf
-	ret
-.failed
-	ld a, BANK(Script_MightyWhirlpool)
-	ld hl, Script_MightyWhirlpool
-	call CallScript
-	scf
-	ret
-
-Script_MightyWhirlpool:
-	jumptext .MayPassWhirlpoolText
-.MayPassWhirlpoolText:
-	text_far _MayPassWhirlpoolText
-	text_end
-
-Script_AskWhirlpoolOW:
-	opentext
-	writetext AskWhirlpoolText
-	yesorno
-	iftrue Script_UsedWhirlpool
-	closetext
-	end
-
-AskWhirlpoolText:
-	text_far _AskWhirlpoolText
-	text_end
 
 HeadbuttFunction:
 	call TryHeadbuttFromMenu

@@ -397,18 +397,17 @@ _BouldersMayMoveText::
 	line "able to move this."
 	done
 
-_UseWhirlpoolText::
-	text_ram wStringBuffer2
-	text " used"
-	line "WHIRLPOOL!"
+_UseSilverWingWhirlpoolText::
+	text "<PLAYER> used"
+	line "SILVER WING!"
 	prompt
 
 _MayPassWhirlpoolText::
 	text "It's a vicious"
 	line "whirlpool!"
 
-	para "A #MON may be"
-	line "able to pass it."
+	para "A legendary item"
+	line "may help you pass."
 	done
 
 _AskWhirlpoolText::
@@ -416,7 +415,7 @@ _AskWhirlpoolText::
 	line "the way."
 
 	para "Want to use"
-	line "WHIRLPOOL?"
+	line "SILVER WING?"
 	done
 
 _UseHeadbuttText::

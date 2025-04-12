@@ -55,7 +55,7 @@ CianwoodLugiaSpeechHouseTwinText:
 	cont "sea creature."
 
 	para "You might need a"
-	line "special move to"
+	line "special item to"
 	cont "get past them."
 	done
 

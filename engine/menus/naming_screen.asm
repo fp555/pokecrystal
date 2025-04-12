@@ -59,26 +59,29 @@ NamingScreen:
 	ret
 .GetNamingScreenSetup:
 	ld a, [wNamingScreenType]
-	maskbits NUM_NAME_TYPES
+	maskbits NUM_NAMING_SCREEN_TYPES
 	ld e, a
 	ld d, 0
-	ld hl, .Jumptable
+	ld hl, NamingScreenJumptable
 	add hl, de
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	jp hl
-.Jumptable:
-; entries correspond to NAME_* constants
+
+NamingScreenJumptable:
+; entries correspond to NAME_* constants (see constants/menu_constants.asm)
+	table_width 2
 	dw .Pokemon
 	dw .Player
 	dw .Rival
 	dw .Mom
 	dw .Box
-	dw .Tomodachi
+	dw .Friend
 	dw .Pokemon
 	dw .Pokemon
+	assert_table_length NUM_NAMING_SCREEN_TYPES
 .Pokemon:
 	ld a, [wCurPartySpecies]
 	ld [wTempIconSpecies], a
@@ -187,13 +190,13 @@ NamingScreen:
 	ret
 .BoxNameString:
 	db "BOX NAME?@"
-.Tomodachi:
+.Friend:
 	hlcoord 3, 2
-	ld de, .oTomodachi_no_namae_sutoringu
+	ld de, .FriendsNameString
 	call PlaceString
 	call .StoreSpriteIconParams
 	ret
-.oTomodachi_no_namae_sutoringu
+.FriendsNameString:
 	db "おともだち　の　なまえは？@"
 .LoadSprite:
 	push de
@@ -885,7 +888,8 @@ _ComposeMailMessage:
 	add hl, de
 	ld [hl], "<NEXT>"
 	ret
-.MailIcon: INCBIN "gfx/naming_screen/mail.2bpp"
+.MailIcon:
+INCBIN "gfx/naming_screen/mail.2bpp"
 .initwNamingScreenMaxNameLength
 	ld a, MAIL_MSG_LENGTH + 1
 	ld [wNamingScreenMaxNameLength], a

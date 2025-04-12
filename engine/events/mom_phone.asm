@@ -1,6 +1,12 @@
-DEF NUM_MOM_ITEMS_1 EQUS "((MomItems_1.End - MomItems_1) / 8)"
-DEF NUM_MOM_ITEMS_2 EQUS "((MomItems_2.End - MomItems_2) / 8)"
+; Constants for momitem offsets (see data/items/mom_phone.asm)
+rsreset
+DEF MOMITEM_TRIGGER rb 3 ; 0
+DEF MOMITEM_COST    rb 3 ; 3
+DEF MOMITEM_KIND    rb   ; 6
+DEF MOMITEM_ITEM    rb   ; 7
+DEF MOMITEM_SIZE EQU _RS ; 8
 
+; momitem kind values
 	const_def 1
 	const MOM_ITEM
 	const MOM_DOLL
@@ -55,9 +61,10 @@ MomTriesToBuySomething::
 
 CheckBalance_MomItem2:
 	ld a, [wWhichMomItem]
-	cp NUM_MOM_ITEMS_2
+	cp (MomItems_2.End - MomItems_2) / MOMITEM_SIZE
 	jr nc, .nope
 	call GetItemFromMom
+	assert MOMITEM_TRIGGER == 0
 	ld a, [hli]
 	ldh [hMoneyTemp], a
 	ld a, [hli]
@@ -93,7 +100,7 @@ CheckBalance_MomItem2:
 	ret
 .exact
 	call .AddMoney
-	ld a, NUM_MOM_ITEMS_1
+	ld a, (MomItems_1.End - MomItems_1) / MOMITEM_SIZE
 	call RandomRange
 	inc a
 	ld [wWhichMomItemSet], a
@@ -107,7 +114,7 @@ CheckBalance_MomItem2:
 
 MomBuysItem_DeductFunds:
 	call GetItemFromMom
-	ld de, 3 ; cost
+	ld de, MOMITEM_COST
 	add hl, de
 	ld a, [hli]
 	ldh [hMoneyTemp], a
@@ -122,11 +129,12 @@ MomBuysItem_DeductFunds:
 
 Mom_GiveItemOrDoll:
 	call GetItemFromMom
-	ld de, 6 ; item type
+	ld de, MOMITEM_KIND
 	add hl, de
 	ld a, [hli]
 	cp MOM_ITEM
 	jr z, .not_doll
+	assert MOMITEM_KIND + 1 == MOMITEM_ITEM
 	ld a, [hl]
 	ld c, a
 	ld b, 1
@@ -144,7 +152,7 @@ Mom_GiveItemOrDoll:
 
 Mom_GetScriptPointer:
 	call GetItemFromMom
-	ld de, 6 ; item type
+	ld de, MOMITEM_KIND
 	add hl, de
 	ld a, [hli]
 	ld de, .ItemScript
@@ -174,7 +182,7 @@ GetItemFromMom:
 	jr .GetFromList1
 .zero
 	ld a, [wWhichMomItem]
-	cp NUM_MOM_ITEMS_2
+	cp (MomItems_2.End - MomItems_2) / MOMITEM_SIZE
 	jr c, .ok
 	xor a
 .ok
@@ -182,7 +190,8 @@ GetItemFromMom:
 .GetFromList1:
 	ld l, a
 	ld h, 0
-rept 3 ; multiply hl by 8
+	assert MOMITEM_SIZE == 8
+rept 3 ; multiply hl by MOMITEM_SIZE
 	add hl, hl
 endr
 	add hl, de

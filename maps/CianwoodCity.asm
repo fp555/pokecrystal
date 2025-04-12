@@ -247,8 +247,8 @@ CianwoodCityPokefanMText:
 	para "They may be hiding"
 	line "something."
 
-	para "Your #MON could"
-	line "use ROCK SMASH to"
+	para "You need to use"
+	line "ROCK SMASH to"
 	cont "break them."
 	done
 

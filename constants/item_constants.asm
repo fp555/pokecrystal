@@ -226,7 +226,7 @@ DEF TM01 EQU const_value
 	add_tm ROAR         ; c5
 	add_tm TOXIC        ; c6
 	add_tm ZAP_CANNON   ; c7
-	add_tm ROCK_SMASH   ; c8
+	add_tm WHIRLPOOL    ; c8
 	add_tm PSYCH_UP     ; c9
 	add_tm HIDDEN_POWER ; ca
 	add_tm SUNNY_DAY    ; cb
@@ -288,7 +288,7 @@ DEF HM01 EQU const_value
 	add_hm SURF         ; f5
 	add_hm STRENGTH     ; f6
 	add_hm FLASH        ; f7
-	add_hm WHIRLPOOL    ; f8
+	add_hm ROCK_SMASH   ; f8
 	add_hm WATERFALL    ; f9
 DEF NUM_HMS EQU __tmhm_value__ - NUM_TMS - 1
 

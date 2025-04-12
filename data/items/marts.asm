@@ -155,7 +155,7 @@ MartGoldenrod5F3:
 	db TM_THUNDERPUNCH
 	db TM_FIRE_PUNCH
 	db TM_ICE_PUNCH
-	db TM_ROCK_SMASH
+	db TM_WHIRLPOOL
 	db -1 ; end
 
 MartGoldenrod5F4:
@@ -164,7 +164,7 @@ MartGoldenrod5F4:
 	db TM_FIRE_PUNCH
 	db TM_ICE_PUNCH
 	db TM_HEADBUTT
-	db TM_ROCK_SMASH
+	db TM_WHIRLPOOL
 	db -1 ; end
 
 MartOlivine:

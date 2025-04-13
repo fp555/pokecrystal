@@ -20,28 +20,10 @@ GetCrystalCGBLayout:
 	jp hl
 .done:
 	ret
-
 .Jumptable:
 	dw _CrystalCGB_MobileLayout0
 	dw _CrystalCGB_MobileLayout1
 	dw _CrystalCGB_NameCard
-
-Crystal_FillBoxCGB:
-; This is a copy of FillBoxCGB.
-.row
-	push bc
-	push hl
-.col
-	ld [hli], a
-	dec c
-	jr nz, .col
-	pop hl
-	ld bc, SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	dec b
-	jr nz, .row
-	ret
 
 Crystal_WipeAttrmap:
 ; This is a copy of WipeAttrmap.
@@ -76,33 +58,33 @@ MG_Mobile_Layout_CreatePalBoxes:
 	hlcoord 0, 0, wAttrmap
 	lb bc, 4, 1
 	ld a, $1
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 2, 1
 	ld a, $2
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 6, 1
 	ld a, $3
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 1, 0, wAttrmap
 	ld a, $1
 	lb bc, 3, 18
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 2, 18
 	ld a, $2
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 12, 18
 	ld a, $3
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 19, 0, wAttrmap
 	lb bc, 4, 1
 	ld a, $1
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 2, 1
 	ld a, $2
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	lb bc, 6, 1
 	ld a, $3
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 0, 12, wAttrmap
 	ld bc, 6 * SCREEN_WIDTH
 	ld a, $7
@@ -152,7 +134,6 @@ _CrystalCGB_MobileLayout1:
 	jr z, .asm_49464
 	call .Function49480
 	jr .done
-
 .asm_49464
 	call .Function49496
 .done
@@ -161,27 +142,24 @@ _CrystalCGB_MobileLayout1:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-
 .TextPalette:
 INCLUDE "gfx/mystery_gift/mobile_text.pal"
-
 .Function49480:
 	hlcoord 0, 0, wAttrmap
 	lb bc, 4, SCREEN_WIDTH
 	ld a, $7
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 0, 2, wAttrmap
 	ld a, $4
 	ld [hl], a
 	hlcoord 19, 2, wAttrmap
 	ld [hl], a
 	ret
-
 .Function49496:
 	hlcoord 0, 0, wAttrmap
 	lb bc, 2, SCREEN_WIDTH
 	ld a, $7
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 0, 1, wAttrmap
 	ld a, $4
 	ld [hl], a
@@ -206,10 +184,8 @@ _CrystalCGB_NameCard:
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
 	ret
-
 .BGPalette:
 INCLUDE "gfx/mystery_gift/name_card_bg.pal"
-
 .OBPalette:
 INCLUDE "gfx/mystery_gift/name_card_ob.pal"
 
@@ -221,7 +197,6 @@ Function49742:
 	call FarCopyWRAM
 	farcall ApplyPals
 	ret
-
 .MobileBorderPalettes:
 INCLUDE "gfx/trade/mobile_border.pal"
 
@@ -229,38 +204,38 @@ _InitMG_Mobile_LinkTradePalMap:
 	hlcoord 0, 0, wAttrmap
 	lb bc, 16, 2
 	ld a, $4
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $3
 	ldcoord_a 0, 1, wAttrmap
 	ldcoord_a 0, 14, wAttrmap
 	hlcoord 2, 0, wAttrmap
 	lb bc, 8, 18
 	ld a, $5
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 2, 8, wAttrmap
 	lb bc, 8, 18
 	ld a, $6
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	hlcoord 0, 16, wAttrmap
 	lb bc, 2, SCREEN_WIDTH
 	ld a, $4
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $3
 	lb bc, 6, 1
 	hlcoord 6, 1, wAttrmap
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $3
 	lb bc, 6, 1
 	hlcoord 17, 1, wAttrmap
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $3
 	lb bc, 6, 1
 	hlcoord 6, 9, wAttrmap
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $3
 	lb bc, 6, 1
 	hlcoord 17, 9, wAttrmap
-	call Crystal_FillBoxCGB
+	call FillBoxWithByte
 	ld a, $2
 	hlcoord 2, 16, wAttrmap
 	ld [hli], a

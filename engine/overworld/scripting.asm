@@ -392,7 +392,7 @@ Script_loadmenu:
 	ld h, a
 	ld de, LoadMenuHeader
 	ld a, [wScriptBank]
-	call Call_a_de
+	call FarCall_de
 	call UpdateSprites
 	ret
 
@@ -921,7 +921,6 @@ ApplyObjectFacing:
 	pop de
 	scf
 	ret
-
 .DisableTextTiles:
 	call LoadOverworldTilemap
 	hlcoord 0, 0

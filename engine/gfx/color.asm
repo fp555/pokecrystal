@@ -161,7 +161,7 @@ ApplyHPBarPals:
 .done
 	lb bc, 2, 8
 	ld a, e
-	call FillBoxCGB
+	call FillBoxWithByte
 	ret
 
 LoadStatsScreenPals:
@@ -304,22 +304,6 @@ LoadPalette_White_Col1_Col2_Black:
 	ldh [rSVBK], a
 	ret
 
-FillBoxCGB:
-.row
-	push bc
-	push hl
-.col
-	ld [hli], a
-	dec c
-	jr nz, .col
-	pop hl
-	ld bc, SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	dec b
-	jr nz, .row
-	ret
-
 ResetBGPals:
 	push af
 	push bc
@@ -432,7 +416,7 @@ CGB_ApplyPartyMenuHPPals:
 .done
 	lb bc, 2, 8
 	ld a, e
-	call FillBoxCGB
+	call FillBoxWithByte
 	ret
 
 InitPartyMenuOBPals:

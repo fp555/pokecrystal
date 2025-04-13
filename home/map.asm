@@ -26,6 +26,7 @@ CheckScenes::
 GetCurrentMapSceneID::
 ; Grabs the wram map scene script pointer for the current map and loads it into wCurMapSceneScriptPointer.
 ; If there is no scene, both bytes of wCurMapSceneScriptPointer are wiped clean.
+; --------------------------------------------------------------------------------------------------------
 	; Copy the current map group and number into bc.  This is needed for GetMapSceneID.
 	ld a, [wMapGroup]
 	ld b, a
@@ -955,20 +956,6 @@ MapTextbox::
 	ldh [hOAMUpdate], a
 	pop af
 	rst Bankswitch
-	ret
-
-Call_a_de::
-	ldh [hTempBank], a
-	ldh a, [hROMBank]
-	push af
-	ldh a, [hTempBank]
-	rst Bankswitch
-	call .de
-	pop af
-	rst Bankswitch
-	ret
-.de
-	push de
 	ret
 
 GetMovementData::

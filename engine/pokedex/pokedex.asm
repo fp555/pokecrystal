@@ -111,9 +111,9 @@ Pokedex_InitCursorPosition:
 	ld hl, wPokedexOrder
 	ld a, [wPrevDexEntry]
 	and a
-	jr z, .done
+	ret z
 	cp NUM_POKEMON + 1
-	jr nc, .done
+	ret nc
 	ld b, a
 	ld a, [wDexListingEnd]
 	cp $8
@@ -123,7 +123,7 @@ Pokedex_InitCursorPosition:
 .loop1
 	ld a, b
 	cp [hl]
-	jr z, .done
+	ret z
 	inc hl
 	ld a, [wDexListingScrollOffset]
 	inc a
@@ -135,14 +135,13 @@ Pokedex_InitCursorPosition:
 .loop2
 	ld a, b
 	cp [hl]
-	jr z, .done
+	ret z
 	inc hl
 	ld a, [wDexListingCursor]
 	inc a
 	ld [wDexListingCursor], a
 	dec c
 	jr nz, .loop2
-.done
 	ret
 
 Pokedex_GetLandmark:
@@ -757,8 +756,7 @@ Pokedex_UpdateUnownMode:
 	ld a, [hl]
 	and A_BUTTON | B_BUTTON
 	jr nz, .a_b
-	call Pokedex_UnownModeHandleDPadInput
-	ret
+	jr Pokedex_UnownModeHandleDPadInput
 .a_b
 	call Pokedex_BlackOutBG
 	ld a, DEXSTATE_OPTION_SCR
@@ -767,14 +765,12 @@ Pokedex_UpdateUnownMode:
 	call Pokedex_CheckSGB
 	jr nz, .decompress
 	farcall LoadSGBPokedexGFX2
-	jr .done
+	ret
 .decompress
 	ld hl, PokedexLZ
 	ld de, vTiles2 tile $31
 	lb bc, BANK(PokedexLZ), 58
-	call DecompressRequest2bpp
-.done
-	ret
+	jp DecompressRequest2bpp
 
 Pokedex_UnownModeHandleDPadInput:
 	ld hl, hJoyLast
@@ -1066,7 +1062,6 @@ String_OWN:
 String_SELECT_OPTION:
 	db $3b, $48, $49, $4a, $44, $45, $46, $47 ; SELECT > OPTION
 	; fallthrough
-
 String_START_SEARCH:
 	db $3c, $3b, $41, $42, $43, $4b, $4c, $4d, $4e, $3c, -1 ; START > SEARCH
 
@@ -1308,6 +1303,7 @@ Pokedex_FillBackgroundColor2:
 
 Pokedex_PlaceFrontpicTopLeftCorner:
 	hlcoord 1, 1
+	; fallthrough
 Pokedex_PlaceFrontpicAtHL:
 	xor a
 	ld b, $7
@@ -1344,8 +1340,7 @@ Pokedex_PlaceBorder:
 	ld [hli], a
 	ld d, $34
 	call .FillRow
-	ld a, $35
-	ld [hl], a
+	ld [hl], $35
 	pop hl
 	ld de, SCREEN_WIDTH
 	add hl, de
@@ -1355,8 +1350,7 @@ Pokedex_PlaceBorder:
 	ld [hli], a
 	ld d, $7f
 	call .FillRow
-	ld a, $37
-	ld [hl], a
+	ld [hl], $37
 	pop hl
 	ld de, SCREEN_WIDTH
 	add hl, de
@@ -1366,10 +1360,8 @@ Pokedex_PlaceBorder:
 	ld [hli], a
 	ld d, $39
 	call .FillRow
-	ld a, $3a
-	ld [hl], a
+	ld [hl], $3a
 	ret
-
 .FillRow:
 	ld e, c
 .row_loop
@@ -1383,19 +1375,8 @@ Pokedex_PlaceBorder:
 
 Pokedex_PrintListing:
 ; Prints the list of Pokémon on the main Pokédex screen.
-
-; This check is completely useless.
-	ld a, [wCurDexMode]
-	cp DEXMODE_OLD
-	jr z, .okay
 	ld c, 11
-	jr .resume
-.okay
-	ld c, 11
-; End useless check
-
-.resume
-; Clear (2 * [wDexListingHeight] + 1) by 11 box starting at 0,1
+	; Clear (2 * [wDexListingHeight] + 1) by 11 box starting at 0,1
 	hlcoord 0, 1
 	ld a, [wDexListingHeight]
 	add a
@@ -1403,8 +1384,7 @@ Pokedex_PrintListing:
 	ld b, a
 	ld a, " "
 	call Pokedex_FillBox
-
-; Load de with wPokedexOrder + [wDexListingScrollOffset]
+	; Load de with wPokedexOrder + [wDexListingScrollOffset]
 	ld a, [wDexListingScrollOffset]
 	ld e, a
 	ld d, 0
@@ -1430,11 +1410,9 @@ Pokedex_PrintListing:
 	pop af
 	dec a
 	jr nz, .loop
-	call Pokedex_LoadSelectedMonTiles
-	ret
-
+	jp Pokedex_LoadSelectedMonTiles
 .PrintEntry:
-; Prints one entry in the list of Pokémon on the main Pokédex screen.
+	; Prints one entry in the list of Pokémon on the main Pokédex screen.
 	and a
 	ret z
 	call Pokedex_PrintNumberIfOldMode
@@ -1444,15 +1422,13 @@ Pokedex_PrintListing:
 	push hl
 	call GetPokemonName
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 
 Pokedex_PrintNumberIfOldMode:
 	ld a, [wCurDexMode]
 	cp DEXMODE_OLD
 	jr z, .printnum
 	ret
-
 .printnum
 	push hl
 	ld de, -SCREEN_WIDTH
@@ -1468,7 +1444,6 @@ Pokedex_PlaceCaughtSymbolIfCaught:
 	jr nz, .place_caught_symbol
 	inc hl
 	ret
-
 .place_caught_symbol
 	ld a, $4f
 	ld [hli], a
@@ -1482,7 +1457,6 @@ Pokedex_PlaceDefaultStringIfNotSeen:
 	call PlaceString
 	scf
 	ret
-
 .NameNotSeen:
 	db "-----@"
 
@@ -1543,12 +1517,10 @@ Pokedex_OrderMonsByMode:
 	ld hl, .Jumptable
 	call Pokedex_LoadPointer
 	jp hl
-
 .Jumptable:
 	dw .NewMode
 	dw .OldMode
 	dw Pokedex_ABCMode
-
 .NewMode:
 	ld de, NewPokedexOrder
 	ld hl, wPokedexOrder
@@ -1559,9 +1531,7 @@ Pokedex_OrderMonsByMode:
 	ld [hli], a
 	dec c
 	jr nz, .loopnew
-	call .FindLastSeen
-	ret
-
+	jr .FindLastSeen
 .OldMode:
 	ld hl, wPokedexOrder
 	ld a, $1
@@ -1571,9 +1541,6 @@ Pokedex_OrderMonsByMode:
 	inc a
 	dec c
 	jr nz, .loopold
-	call .FindLastSeen
-	ret
-
 .FindLastSeen:
 	ld hl, wPokedexOrder + NUM_POKEMON - 1
 	ld d, NUM_POKEMON
@@ -1608,7 +1575,6 @@ Pokedex_ABCMode:
 	ld a, [wDexListingEnd]
 	inc a
 	ld [wDexListingEnd], a
-
 .skipabc
 	inc de
 	pop bc
@@ -1618,14 +1584,11 @@ Pokedex_ABCMode:
 	ld c, 0
 .loop2abc
 	cp NUM_POKEMON
-	jr z, .doneabc
+	ret z
 	ld [hl], c
 	inc hl
 	inc a
 	jr .loop2abc
-
-.doneabc
-	ret
 
 INCLUDE "data/pokemon/dex_order_alpha.asm"
 
@@ -1647,25 +1610,20 @@ Pokedex_DisplayModeDescription:
 	ld a, $1
 	ldh [hBGMapMode], a
 	ret
-
 .Modes:
 	dw .NewMode
 	dw .OldMode
 	dw .ABCMode
 	dw .UnownMode
-
 .NewMode:
 	db   "<PK><MN> are listed by"
 	next "evolution type.@"
-
 .OldMode:
 	db   "<PK><MN> are listed by"
 	next "official type.@"
-
 .ABCMode:
 	db   "<PK><MN> are listed"
 	next "alphabetically.@"
-
 .UnownMode:
 	db   "UNOWN are listed"
 	next "in catching order.@"

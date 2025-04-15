@@ -1308,7 +1308,7 @@ FishFunction:
 	ld a, JUMPTABLE_EXIT | $1
 	ret
 .FishNoFish:
-	ld a, $0
+	xor a
 	ld [wFishingResult], a
 	ld hl, Script_NotEvenANibble2
 	call QueueScript

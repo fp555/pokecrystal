@@ -29,11 +29,6 @@ EnableEvents::
 	ld [wEnabledPlayerEvents], a
 	ret
 
-CheckEnabledMapEventsBit5:
-	ld hl, wEnabledPlayerEvents
-	bit PLAYEREVENTS_UNUSED, [hl]
-	ret
-
 EnableWildEncounters:
 	ld hl, wEnabledPlayerEvents
 	set PLAYEREVENTS_WILD_ENCOUNTERS, [hl]
@@ -194,7 +189,6 @@ PlayerEvents:
 	ld a, [wScriptRunning]
 	and a
 	ret nz
-	call Dummy_CheckEnabledMapEventsBit5 ; This is a waste of time
 	call CheckTrainerEvent
 	jr c, .ok
 	call CheckTileEvent
@@ -301,22 +295,6 @@ CheckWildEncounterCooldown::
 SetUpFiveStepWildEncounterCooldown:
 	ld a, 5
 	ld [wWildEncounterCooldown], a
-	ret
-
-SetMinTwoStepWildEncounterCooldown:
-; dummied out
-	ret
-	ld a, [wWildEncounterCooldown]
-	cp 2
-	ret nc
-	ld a, 2
-	ld [wWildEncounterCooldown], a
-	ret
-
-Dummy_CheckEnabledMapEventsBit5:
-	call CheckEnabledMapEventsBit5
-	ret z
-	call SetXYCompareFlags
 	ret
 
 RunSceneScript:

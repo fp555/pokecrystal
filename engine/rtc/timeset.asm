@@ -7,7 +7,7 @@ InitClock:
 	push af
 	ld a, $1
 	ldh [hInMenu], a
-	ld a, FALSE
+	xor a
 	ld [wSpriteUpdatesEnabled], a
 	ld a, $10
 	ld [wMusicFade], a
@@ -234,8 +234,7 @@ DisplayMinutesWithMinString:
 	call PrintTwoDigitNumberLeftAlign
 	inc hl
 	ld de, String_min
-	call PlaceString
-	ret
+	jp PlaceString
 
 PrintTwoDigitNumberLeftAlign:
 	push hl
@@ -244,8 +243,7 @@ PrintTwoDigitNumberLeftAlign:
 	ld [hl], a
 	pop hl
 	lb bc, PRINTNUM_LEFTALIGN | 1, 2
-	call PrintNum
-	ret
+	jp PrintNum
 
 OakTimeWokeUpText:
 	text_far _OakTimeWokeUpText
@@ -447,8 +445,7 @@ SetDayOfWeek:
 	ld d, [hl]
 	ld e, a
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 .WeekdayStrings:
 ; entries correspond to wCurDay constants (see constants/ram_constants.asm)
 	dw .Sunday
@@ -487,8 +484,7 @@ InitialSetDSTFlag:
 	lb bc, 3, 18
 	call ClearBox
 	ld hl, .Text
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 .Text:
 	text_asm
 	call UpdateTime
@@ -512,8 +508,7 @@ InitialClearDSTFlag:
 	lb bc, 3, 18
 	call ClearBox
 	ld hl, .Text
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 .Text:
 	text_asm
 	call UpdateTime
@@ -542,8 +537,7 @@ PrintHour:
 	call AdjustHourForAMorPM
 	ld [wTextDecimalByte], a
 	ld de, wTextDecimalByte
-	call PrintTwoDigitNumberLeftAlign
-	ret
+	jp PrintTwoDigitNumberLeftAlign ; jr?
 
 GetTimeOfDayString:
 	ld a, c

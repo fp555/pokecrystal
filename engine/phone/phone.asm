@@ -87,8 +87,7 @@ CheckPhoneCall::
 ; Check if the phone is ringing in the overworld.
 	call CheckStandingOnEntrance
 	jr z, .no_call
-	call .timecheck
-	nop
+	farcall CheckReceiveCallTimer
 	jr nc, .no_call
 	; 50% chance for a call
 	call Random
@@ -111,9 +110,6 @@ CheckPhoneCall::
 	ret
 .no_call
 	xor a
-	ret
-.timecheck
-	farcall CheckReceiveCallTimer
 	ret
 
 CheckPhoneContactTimeOfDay:
@@ -345,8 +341,6 @@ LoadOutOfAreaScript:
 	endcallback
 
 LoadCallerScript:
-	nop
-	nop
 	ld a, e
 	ld [wCurCaller], a
 	and a
@@ -389,7 +383,6 @@ Script_ReceivePhoneCall:
 Script_SpecialBillCall::
 	callasm .LoadBillScript
 	sjump Script_ReceivePhoneCall
-
 .LoadBillScript:
 	ld e, PHONE_BILL
 	jp LoadCallerScript
@@ -457,7 +450,6 @@ HangUp::
 	call HangUp_Beep
 	call HangUp_Wait20Frames
 	;  fallthrough
-
 Phone_CallEnd:
 	call HangUp_BoopOn
 	call HangUp_Wait20Frames

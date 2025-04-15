@@ -1299,7 +1299,7 @@ RevivalHerbEffect:
 	ld c, HAPPINESS_REVIVALHERB
 	farcall ChangeHappiness
 	call LooksBitterMessage
-	ld a, $0
+	xor a
 .not_used
 	jp StatusHealer_Jumptable
 

@@ -43,8 +43,7 @@ GetClock::
 	ld a, [de]
 	ldh [hRTCDayHi], a
 	; unlatch clock / disable clock r/w
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 FixDays::
 ; fix day count, mod by 140
@@ -141,7 +140,6 @@ FixTime::
 InitTimeOfDay::
 	xor a
 	ld [wStringBuffer2], a
-	ld a, 0 ; useless
 	ld [wStringBuffer2 + 3], a
 	jr InitTime
 
@@ -159,20 +157,16 @@ InitTime::
 	ret
 
 ClearClock::
-	call .ClearhRTC
-	call SetClock
-	ret
-.ClearhRTC:
 	xor a
 	ldh [hRTCSeconds], a
 	ldh [hRTCMinutes], a
 	ldh [hRTCHours], a
 	ldh [hRTCDayLo], a
 	ldh [hRTCDayHi], a
-	ret
-
+	; fallthrough
 SetClock::
 ; set clock data from hram
+; ------------------------
 	; enable clock r/w
 	ld a, SRAM_ENABLE
 	ld [MBC3SRamEnable], a
@@ -209,8 +203,7 @@ SetClock::
 	res RTC_DH_HALT, a ; make sure timer is active
 	ld [de], a
 	; cleanup
-	call CloseSRAM ; unlatch clock, disable clock r/w
-	ret
+	jp CloseSRAM ; unlatch clock, disable clock r/w
 
 RecordRTCStatus::
 ; append flags to sRTCStatusFlags
@@ -221,13 +214,11 @@ RecordRTCStatus::
 	pop af
 	or [hl]
 	ld [hl], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 CheckRTCStatus::
 ; check sRTCStatusFlags
 	ld a, BANK(sRTCStatusFlags)
 	call OpenSRAM
 	ld a, [sRTCStatusFlags]
-	call CloseSRAM
-	ret
+	jp CloseSRAM

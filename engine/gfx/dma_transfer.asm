@@ -279,6 +279,7 @@ HDMATransfer_WaitForScanline124:
 
 HDMATransfer_WaitForScanline128:
 	ld b, $7f
+	; fallthrough
 _continue_HDMATransfer:
 ; a lot of waiting around for hardware registers
 	; [rHDMA1, rHDMA2] = hl & $fff0
@@ -358,6 +359,7 @@ PadAttrmapForHDMATransfer:
 	; fallthrough
 PadMapForHDMATransfer:
 ; pad a 20x18 map to 32x18 for HDMA transfer
+; ------------------------------------------
 	; back up the padding value in c to hMapObjectIndex
 	ldh a, [hMapObjectIndex]
 	push af
@@ -391,6 +393,7 @@ PadMapForHDMATransfer:
 
 HDMATransfer2bpp::
 ; 2bpp when [rLCDC] & $80
+; -----------------------
 	; switch to WRAM bank 6
 	ldh a, [rSVBK]
 	push af
@@ -517,11 +520,12 @@ HDMATransfer_OnlyTopFourRows:
 	inc de
 	dec c
 	jr nz, .inner_loop
-	ld a, l
-	add BG_MAP_WIDTH - SCREEN_WIDTH
+	ld a, BG_MAP_WIDTH - SCREEN_WIDTH
+	; hl += a
+	add l
 	ld l, a
-	ld a, h
-	adc 0
+	adc h
+	sub l
 	ld h, a
 	dec b
 	jr nz, .outer_loop

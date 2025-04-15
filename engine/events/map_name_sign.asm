@@ -9,7 +9,14 @@ InitMapNameSign::
 	ld c, a
 	call GetWorldMapLocation
 	ld [wCurLandmark], a
-	call .CheckNationalParkGate
+	; check if National Park gate
+	ld a, [wMapGroup]
+	cp GROUP_ROUTE_35_NATIONAL_PARK_GATE
+	jr nz, .not_gate
+	ld a, [wMapNumber]
+	cp MAP_ROUTE_35_NATIONAL_PARK_GATE
+	jr z, .gate
+	cp MAP_ROUTE_36_NATIONAL_PARK_GATE
 	jr z, .gate
 	call GetMapEnvironment
 	cp GATE
@@ -23,11 +30,28 @@ InitMapNameSign::
 	bit SHOWN_MAP_NAME_SIGN, [hl]
 	res SHOWN_MAP_NAME_SIGN, [hl]
 	jr nz, .dont_do_map_sign
-	call .CheckMovingWithinLandmark
-	jr z, .dont_do_map_sign
+	; check if moving within landmark
+	ld a, [wCurLandmark]
+	ld c, a
+	ld a, [wPrevLandmark]
+	cp c
 	ld a, [wCurLandmark]
 	ld [wPrevLandmark], a
-	call .CheckSpecialMap
+	jr z, .dont_do_map_sign
+	; These landmarks do not get pop-up signs
+	cp LANDMARK_SPECIAL
+	jr z, .dont_do_map_sign
+	cp LANDMARK_RADIO_TOWER
+	jr z, .dont_do_map_sign
+	cp LANDMARK_LAV_RADIO_TOWER
+	jr z, .dont_do_map_sign
+	cp LANDMARK_UNDERGROUND_PATH
+	jr z, .dont_do_map_sign
+	cp LANDMARK_INDIGO_PLATEAU
+	jr z, .dont_do_map_sign
+	cp LANDMARK_POWER_PLANT
+	jr z, .dont_do_map_sign
+	cp -1
 	jr z, .dont_do_map_sign
 	; Display for 60 frames
 	ld a, 60
@@ -36,49 +60,11 @@ InitMapNameSign::
 	farcall HDMATransfer_OnlyTopFourRows
 	ret
 .dont_do_map_sign
-	ld a, [wCurLandmark]
-	ld [wPrevLandmark], a
 	ld a, $90
 	ldh [rWY], a
 	ldh [hWY], a
 	xor a
 	ldh [hLCDCPointer], a
-	ret
-.CheckMovingWithinLandmark:
-	ld a, [wCurLandmark]
-	ld c, a
-	ld a, [wPrevLandmark]
-	cp c
-	ret z
-	cp LANDMARK_SPECIAL
-	ret
-.CheckSpecialMap:
-; These landmarks do not get pop-up signs.
-	cp -1
-	ret z
-	cp LANDMARK_SPECIAL ; redundant check
-	ret z
-	cp LANDMARK_RADIO_TOWER
-	ret z
-	cp LANDMARK_LAV_RADIO_TOWER
-	ret z
-	cp LANDMARK_UNDERGROUND_PATH
-	ret z
-	cp LANDMARK_INDIGO_PLATEAU
-	ret z
-	cp LANDMARK_POWER_PLANT
-	ret z
-	ld a, 1
-	and a
-	ret
-.CheckNationalParkGate:
-	ld a, [wMapGroup]
-	cp GROUP_ROUTE_35_NATIONAL_PARK_GATE
-	ret nz
-	ld a, [wMapNumber]
-	cp MAP_ROUTE_35_NATIONAL_PARK_GATE
-	ret z
-	cp MAP_ROUTE_36_NATIONAL_PARK_GATE
 	ret
 
 PlaceMapNameSign::

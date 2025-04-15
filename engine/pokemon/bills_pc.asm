@@ -144,9 +144,8 @@ BillsPCDepositFuncDeposit:
 	jp c, BillsPCDepositFuncCancel
 	call DepositPokemon
 	jr c, .box_full
-	ld a, $0
-	ld [wJumptableIndex], a
 	xor a
+	ld [wJumptableIndex], a
 	ld [wBillsPC_CursorPosition], a
 	ld [wBillsPC_ScrollPosition], a
 	ret
@@ -191,9 +190,8 @@ BillsPCDepositFuncRelease:
 	ld [wPokemonWithdrawDepositParameter], a
 	farcall RemoveMonFromPartyOrBox
 	call ReleasePKMN_ByePKMN
-	ld a, $0
-	ld [wJumptableIndex], a
 	xor a
+	ld [wJumptableIndex], a
 	ld [wBillsPC_CursorPosition], a
 	ld [wBillsPC_ScrollPosition], a
 	pop af
@@ -206,7 +204,7 @@ BillsPCDepositFuncRelease:
 	ret
 
 BillsPCDepositFuncCancel:
-	ld a, $0
+	xor a
 	ld [wJumptableIndex], a
 	ret
 
@@ -413,9 +411,8 @@ BillsPC_Withdraw:
 	ld [wPokemonWithdrawDepositParameter], a
 	farcall RemoveMonFromPartyOrBox
 	call ReleasePKMN_ByePKMN
-	ld a, $0
-	ld [wJumptableIndex], a
 	xor a
+	ld [wJumptableIndex], a
 	ld [wBillsPC_CursorPosition], a
 	ld [wBillsPC_ScrollPosition], a
 	pop af
@@ -427,7 +424,7 @@ BillsPC_Withdraw:
 	ld [wMenuCursorY], a
 	ret
 .cancel
-	ld a, $0
+	xor a
 	ld [wJumptableIndex], a
 	ret
 .MenuHeader:
@@ -547,7 +544,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
 	ret z
-	cp -1
+	inc a ; cp -1
 	jr z, .b_button
 	ld a, $2
 	ld [wJumptableIndex], a
@@ -616,7 +613,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_ApplyPalettes
 	ret
 .Cancel:
-	ld a, $0
+	xor a
 	ld [wJumptableIndex], a
 	ret
 .MenuHeader:
@@ -663,9 +660,8 @@ _MovePKMNWithoutMail:
 	call BillsPC_RefreshTextboxes
 	ld a, $1
 	ldh [hBGMapMode], a
-	call DelayFrame
-	call DelayFrame
-	ret
+	ld c, 2
+	jp DelayFrames
 .dpad_2
 	xor a
 	ld [wBillsPC_CursorPosition], a
@@ -677,7 +673,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_CheckSpaceInDestination
 	jr c, .no_space
 	call MovePKMNWithoutMail_InsertMon
-	ld a, $0
+	xor a
 	ld [wJumptableIndex], a
 	ret
 .no_space
@@ -691,7 +687,7 @@ _MovePKMNWithoutMail:
 	ld [wBillsPC_CursorPosition], a
 	ld a, [wBillsPC_BackupLoadedBox]
 	ld [wBillsPC_LoadedBox], a
-	ld a, $0
+	xor a
 	ld [wJumptableIndex], a
 	ret
 
@@ -728,10 +724,10 @@ _StatsScreenDPad:
 	ld d, a
 	ld a, [wBillsPC_NumMonsInBox]
 	and a
-	jr z, .empty
+	jp z, BillsPC_JoypadDidNothing
 	dec a
 	cp $1
-	jr z, .empty
+	jp z, BillsPC_JoypadDidNothing
 	ld e, a
 	ld a, [hl]
 	and D_UP
@@ -739,7 +735,6 @@ _StatsScreenDPad:
 	ld a, [hl]
 	and D_DOWN
 	jr nz, BillsPC_PressDown
-.empty
 	jp BillsPC_JoypadDidNothing
 
 Withdraw_UpDown:
@@ -749,14 +744,13 @@ Withdraw_UpDown:
 	ld a, [wBillsPC_NumMonsInBox]
 	ld e, a
 	and a
-	jr z, .empty
+	jp z, BillsPC_JoypadDidNothing
 	ld a, [hl]
 	and D_UP
 	jr nz, BillsPC_PressUp
 	ld a, [hl]
 	and D_DOWN
 	jr nz, BillsPC_PressDown
-.empty
 	jp BillsPC_JoypadDidNothing
 
 MoveMonWithoutMail_DPad:
@@ -923,8 +917,7 @@ BillsPC_BoxName:
 
 PCMonInfo:
 ; Display a monster's pic and attributes when highlighting
-; it in a PC menu. Includes the neat cascading
-; effect when showing the pic.
+; it in a PC menu. Includes the cascading effect when showing the pic.
 	hlcoord 0, 0
 	lb bc, 15, 8
 	call ClearBox
@@ -1252,9 +1245,9 @@ BillsPC_RefreshTextboxes:
 MACRO copy_box_data
 .loop\@
 	ld a, [hl]
-	cp -1
+	inc a ; cp -1
 	jr z, .done\@
-	and a
+	dec a ; and a, but compensates previous inc
 	jr z, .done\@
 	ld [de], a ; species
 	inc de

@@ -29,13 +29,11 @@ Printer_PrepareTilemapForPrint:
 	call Printer_StartTransmission
 	pop af
 	ld [wPrinterMargins], a
-	call Printer_CopyTilemapToBuffer
-	ret
+	jp Printer_CopyTilemapToBuffer
 
 Printer_ExitPrinter:
 	call ReturnToMapFromSubmenu
-	call Printer_RestartMapMusic
-	ret
+	jp RestartMapMusic
 
 PrintDexEntry:
 	ld a, [wPrinterQueueLength]
@@ -180,8 +178,7 @@ PrintPCBox:
 
 Printer_ResetRegistersAndStartDataSend:
 	call Printer_ResetJoypadRegisters
-	call SendScreenToPrinter
-	ret
+	jp SendScreenToPrinter
 
 PrintUnownStamp:
 	ld a, [wPrinterQueueLength]
@@ -242,8 +239,7 @@ PrintUnownStamp:
 
 PrintMailAndExit:
 	call PrintMail
-	call Printer_ExitPrinter
-	ret
+	jp Printer_ExitPrinter
 
 PrintMail:
 	ld a, [wPrinterQueueLength]
@@ -419,15 +415,13 @@ Printer_CopyTilemapToBuffer:
 	hlcoord 0, 0
 	ld de, wPrinterTilemapBuffer
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 Printer_CopyBufferToTilemap:
 	ld hl, wPrinterTilemapBuffer
 	decoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 Printer_ResetJoypadRegisters:
 	xor a
@@ -439,15 +433,11 @@ Printer_ResetJoypadRegisters:
 
 Printer_PlayMusic:
 	ld de, MUSIC_PRINTER
-	call PlayMusic2
-	ret
-
-Printer_RestartMapMusic:
-	call RestartMapMusic
-	ret
+	jp PlayMusic2
 
 CheckPrinterStatus:
 ; Check for printer errors
+; ------------------------
 	; If [wPrinterHandshake] == -1, we're disconnected
 	ld a, [wPrinterHandshake]
 	cp -1
@@ -555,8 +545,7 @@ PrintPCBox_Page1:
 	call Printer_GetBoxMonSpecies
 	hlcoord 2, 9
 	ld c, 3
-	call Printer_PrintBoxListSegment
-	ret
+	jp Printer_PrintBoxListSegment ; jr?
 .String_PokemonList:
 	db "#MON LIST@"
 
@@ -574,8 +563,7 @@ PrintPCBox_Page2:
 	call Printer_GetBoxMonSpecies
 	hlcoord 2, 0
 	ld c, 6
-	call Printer_PrintBoxListSegment
-	ret
+	jp Printer_PrintBoxListSegment ; jr?
 
 PrintPCBox_Page3:
 	hlcoord 0, 0
@@ -591,8 +579,7 @@ PrintPCBox_Page3:
 	call Printer_GetBoxMonSpecies
 	hlcoord 2, 0
 	ld c, 6
-	call Printer_PrintBoxListSegment
-	ret
+	jr Printer_PrintBoxListSegment
 
 PrintPCBox_Page4:
 	hlcoord 0, 0
@@ -612,9 +599,7 @@ PrintPCBox_Page4:
 	call Printer_GetBoxMonSpecies
 	hlcoord 2, 0
 	ld c, 5
-	call Printer_PrintBoxListSegment
-	ret
-
+	; fallthrough
 Printer_PrintBoxListSegment:
 	ld a, [wBankOfBoxToPrint]
 	call OpenSRAM
@@ -702,8 +687,7 @@ Printer_PrintBoxListSegment:
 	ld a, $1
 	ld [wFinishedPrintingBox], a
 .max_length
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 Printer_GetMonGender:
 	push hl
@@ -761,19 +745,17 @@ Printer_PlaceTopBorder:
 	ld [hli], a
 	dec c
 	jr nz, .loop
-	ld a, "┐"
-	ld [hl], a
+	ld [hl], "┐"
 	ret
 
 Printer_PlaceSideBorders:
 	hlcoord 0, 0
 	ld de, SCREEN_WIDTH - 1
 	ld c, SCREEN_HEIGHT
-.loop
 	ld a, "│"
+.loop
 	ld [hl], a
 	add hl, de
-	ld a, "│"
 	ld [hli], a
 	dec c
 	jr nz, .loop
@@ -789,8 +771,7 @@ Printer_PlaceBottomBorders:
 	ld [hli], a
 	dec c
 	jr nz, .loop
-	ld a, "┘"
-	ld [hl], a
+	ld [hl], "┘"
 	ret
 
 Printer_PlaceEmptyBoxSlotString:

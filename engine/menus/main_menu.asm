@@ -40,14 +40,12 @@ MainMenu:
 	call LoadMenuHeader
 	call MainMenuJoypadLoop
 	call CloseWindow
-	jr c, .quit
+	ret c
 	call ClearTilemap
 	ld a, [wMenuSelection]
 	ld hl, .Jumptable
 	rst JumpTable
 	jr .loop
-.quit
-	ret
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 16, 7
@@ -175,9 +173,6 @@ endc
 	db -1
 
 MainMenu_GetWhichMenu:
-	nop
-	nop
-	nop
 	ld a, [wSaveFileExists]
 	and a
 	jr nz, .next
@@ -185,9 +180,9 @@ MainMenu_GetWhichMenu:
 	ret
 .next
 	ldh a, [hCGB]
-	cp TRUE
+	and a ; cp FALSE
 	ld a, MAINMENU_CONTINUE
-	ret nz
+	ret z
 	ld a, BANK(sNumDailyMysteryGiftPartnerIDs)
 	call OpenSRAM
 	ld a, [sNumDailyMysteryGiftPartnerIDs]
@@ -228,7 +223,14 @@ MainMenu_PrintCurrentTimeAndDay:
 	ret z
 	xor a
 	ldh [hBGMapMode], a
-	call .PlaceBox
+	; PlaceBox
+	call CheckRTCStatus
+	and RTC_RESET
+	jp nz, SpeechTextbox
+	hlcoord 0, 14
+	ld b, 2
+	ld c, 18
+	call Textbox
 	ld hl, wOptions
 	ld a, [hl]
 	push af
@@ -239,25 +241,13 @@ MainMenu_PrintCurrentTimeAndDay:
 	ld a, $1
 	ldh [hBGMapMode], a
 	ret
-.PlaceBox:
-	call CheckRTCStatus
-	and RTC_RESET
-	jr nz, .TimeFail
-	hlcoord 0, 14
-	ld b, 2
-	ld c, 18
-	call Textbox
-	ret
-.TimeFail:
-	call SpeechTextbox
-	ret
 .PlaceTime:
 	ld a, [wSaveFileExists]
 	and a
 	ret z
 	call CheckRTCStatus
 	and RTC_RESET
-	jp nz, .PrintTimeNotSet
+	jr nz, .PrintTimeNotSet
 	call UpdateTime
 	call GetWeekday
 	ld b, a
@@ -271,13 +261,11 @@ MainMenu_PrintCurrentTimeAndDay:
 	inc hl
 	ld de, hMinutes
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
-	call PrintNum
-	ret
+	jp PrintNum
 .PrintTimeNotSet:
 	hlcoord 1, 14
 	ld de, .TimeNotSetString
-	call PlaceString
-	ret
+	jp PlaceString
 .TimeNotSetString:
 	db "TIME NOT SET@"
 .PrintDayOfWeek:
@@ -292,8 +280,7 @@ MainMenu_PrintCurrentTimeAndDay:
 	ld h, b
 	ld l, c
 	ld de, .Day
-	call PlaceString
-	ret
+	jp PlaceString
 .Days:
 	db "SUN@"
 	db "MON@"
@@ -311,8 +298,7 @@ ClearTilemapEtc:
 	call ClearTilemap
 	call LoadFontsExtra
 	call LoadStandardFont
-	call ClearWindowData
-	ret
+	jp ClearWindowData
 
 MainMenu_NewGame:
 	farcall NewGame

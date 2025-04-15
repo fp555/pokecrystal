@@ -45,8 +45,7 @@ ApplyTilemap::
 	ld a, 1
 	ldh [hBGMapMode], a
 	ld c, 4
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 CGBOnly_CopyTilemapAtOnce::
 	ldh a, [hCGB]

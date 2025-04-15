@@ -138,8 +138,7 @@ BuenaPrintText::
 	; fallthrough
 PrintTextboxText::
 	bccoord TEXTBOX_INNERX, TEXTBOX_INNERY
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 
 SetUpTextbox::
 	push hl
@@ -185,7 +184,6 @@ MACRO dict
 		jp z, \2
 	endc
 ENDM
-
 	dict "<MOBILE>",  MobileScriptChar
 	dict "<LINE>",    LineChar
 	dict "<NEXT>",    NextLineChar
@@ -489,7 +487,7 @@ PromptText::
 	cp LINK_MOBILE
 	jr z, DoneText
 	call UnloadBlinkingCursor
-
+	; fallthrough
 DoneText::
 	pop hl
 	ld de, .stop
@@ -529,8 +527,7 @@ TextScroll::
 	ld bc, TEXTBOX_INNERW
 	call ByteFill
 	ld c, 5
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 Text_WaitBGMap::
 	push bc
@@ -864,7 +861,6 @@ TextCommand_DOTS::
 	pop de
 	dec d
 	jr nz, .loop
-
 	ld b, h
 	ld c, l
 	pop hl

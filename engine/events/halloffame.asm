@@ -213,7 +213,7 @@ AnimateHOFMonEntrance:
 	inc hl
 	ld a, [hli]
 	ld [wTempMonDVs], a
-	ld a, [hli]
+	ld a, [hl]
 	ld [wTempMonDVs + 1], a
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
@@ -317,7 +317,6 @@ _HallOfFamePC:
 .start_button
 	and a
 	ret
-
 .DisplayMonAndStrings:
 ; Print the number of times the player has entered the Hall of Fame.
 ; If that number is at least HOF_MASTER_COUNT, print "HOF Master!" instead.

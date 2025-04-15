@@ -126,8 +126,7 @@ RunBattleTowerTrainer:
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	add "1"
 	ld [hli], a
-	ld a, "@"
-	ld [hl], a
+	ld [hl], "@"
 .lost
 	pop af
 	ld [wInBattleTowerBattle], a
@@ -140,8 +139,8 @@ RunBattleTowerTrainer:
 ReadBTTrainerParty:
 	; Initialise the BattleTower-Trainer and his mon
 	call CopyBTTrainer_FromBT_OT_TowBT_OTTemp
-	; Check the nicknames for illegal characters, and replace bad nicknames
-	; with their species names.
+	; Check the nicknames for illegal characters
+	; and replace bad nicknames with their species names
 	ld de, wBT_OTTempMon1Name
 	ld c, MON_NAME_LENGTH
 	farcall CheckStringForErrors
@@ -440,8 +439,7 @@ Function1704e1:
 	ld de, SCREEN_WIDTH
 	ld c, 12
 .left_border_loop
-	ld a, "│"
-	ld [hl], a
+	ld [hl], "│"
 	add hl, de
 	dec c
 	jr nz, .left_border_loop
@@ -453,14 +451,12 @@ Function1704e1:
 	ld [hli], a
 	dec c
 	jr nz, .bottom_border_loop
-	ld a, "┘"
-	ld [hl], a
+	ld [hl], "┘"
 	ld de, -SCREEN_WIDTH
 	add hl, de
 	ld c, 12
 .right_border_loop
-	ld a, "│"
-	ld [hl], a
+	ld [hl], "│"
 	add hl, de
 	dec c
 	jr nz, .right_border_loop
@@ -549,15 +545,13 @@ Function1704e1:
 	and a
 	jr z, .nope
 	hlcoord 18, 5
-	ld a, "▲"
-	ld [hl], a
+	ld [hl], "▲"
 .nope
 	ld a, [wNrOfBeatenBattleTowerTrainers]
 	cp 60
 	ret z
 	hlcoord 18, 16
-	ld a, "▼"
-	ld [hl], a
+	ld [hl], "▼"
 	ret
 .String_Mail:
 	db "ルーム@"
@@ -721,7 +715,6 @@ BattleTowerAction_SetByteToQuickSaveChallenge:
 BattleTowerAction_SetByteToCancelChallenge:
 	ld c, BATTLETOWER_NO_CHALLENGE
 	; fallthrough
-
 SetBattleTowerChallengeState:
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
@@ -770,7 +763,7 @@ BattleTowerAction_05:
 .asm_1707ef
 	ld a, 8
 	ld [wScriptVar], a
-
+	; fallthrough
 BattleTowerAction_06:
 	ld a, BANK(s5_be46) ; aka BANK(s5_aa8b) and BANK(s5_aa8c)
 	call OpenSRAM
@@ -992,7 +985,7 @@ rept 4
 endr
 	ld a, "@"
 	ld [hli], a
-	ld [hli], a
+	ld [hl], a
 	pop hl
 	ld a, EGG_TICKET
 	ld [wCurItem], a
@@ -1150,7 +1143,6 @@ BattleTowerAction_11:
 BattleTowerAction_12:
 	ld c, TRUE
 	; fallthrough
-
 Set_s5_aa8d:
 	ld a, BANK(s5_aa8d)
 	call OpenSRAM

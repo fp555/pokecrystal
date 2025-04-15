@@ -1,12 +1,10 @@
-	; _DebugRoom.MenuItems indexes
-	const_def
+	const_def ; _DebugRoom.MenuItems indexes
 	const DEBUGROOMMENU_PAGE_1 ; 0
 	const DEBUGROOMMENU_PAGE_2 ; 1
 	const DEBUGROOMMENU_PAGE_3 ; 2
 DEF DEBUGROOMMENU_NUM_PAGES EQU const_value
 
-	; _DebugRoom.Strings and _DebugRoom.Jumptable indexes
-	const_def
+	const_def ; _DebugRoom.Strings and _DebugRoom.Jumptable indexes
 	const DEBUGROOMMENUITEM_SP_CLEAR     ; 00
 	const DEBUGROOMMENUITEM_WIN_WORK_CLR ; 01
 	const DEBUGROOMMENUITEM_POKEMON_GET  ; 02
@@ -71,20 +69,17 @@ _DebugRoom:
 	pop af
 	ldh [hDebugRoomMenuPage], a
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 15, SCREEN_HEIGHT - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 0 ; items
 	dw .MenuItems
 	dw PlaceMenuStrings
 	dw .Strings
-
 .Strings:
 ; entries correspond to DEBUGROOMMENUITEM_* constants
 	db "SP CLEAR@"
@@ -108,7 +103,6 @@ _DebugRoom:
 	db "RAM FLAG CLR@"
 	db "CHANGE SEX@"
 	db "BT BUG POKE@"
-
 .Jumptable:
 ; entries correspond to DEBUGROOMMENUITEM_* constants
 	dw DebugRoomMenu_SpClear
@@ -132,10 +126,9 @@ _DebugRoom:
 	dw DebugRoomMenu_RAMFlagClr
 	dw DebugRoomMenu_ChangeSex
 	dw DebugRoomMenu_BTBugPoke
-
 .MenuItems:
 ; entries correspond to DEBUGROOMMENU_* constants
-
+; -----------------------------------------------
 	; DEBUGROOMMENU_PAGE_1
 	db 8
 	db DEBUGROOMMENUITEM_SP_CLEAR
@@ -147,7 +140,6 @@ _DebugRoom:
 	db DEBUGROOMMENUITEM_BTL_REC_CLR
 	db DEBUGROOMMENUITEM_NEXT
 	db -1
-
 	; DEBUGROOMMENU_PAGE_2
 	db 8
 	db DEBUGROOMMENUITEM_POKEMON_GET
@@ -159,7 +151,6 @@ _DebugRoom:
 	db DEBUGROOMMENUITEM_ROM_CHECKSUM
 	db DEBUGROOMMENUITEM_NEXT
 	db -1
-
 	; DEBUGROOMMENU_PAGE_3
 	db 6
 	db DEBUGROOMMENUITEM_TEL_DEBUG
@@ -242,7 +233,6 @@ DebugRoom_PrintStackBottomTop:
 	call PrintHexNumber
 	pop de
 	ret
-
 .SPString:
 	db "SP:@"
 
@@ -273,7 +263,6 @@ DebugRoomMenu_WinWorkClr:
 
 DebugRoom_PrintWindowStackBottomTop:
 	ret ; stubbed out
-
 	ld a, $00
 	call OpenSRAM
 	ld hl, wWindowStack
@@ -313,7 +302,6 @@ DebugRoom_PrintWindowStackBottomTop:
 	ld de, .WSPString
 	call PlaceString
 	ret
-
 .WSPString:
 	db "WSP:@"
 
@@ -402,7 +390,6 @@ DebugRoom_PrintBattleSkip:
 .ok
 	call PlaceString
 	ret
-
 .BTLString:
 	db "BTL:@"
 .DoString:
@@ -436,7 +423,6 @@ DebugRoom_PrintGender:
 	hlcoord 19, 1
 	ld [hl], a
 	ret
-
 .SexString:
 	db "SEX:@"
 
@@ -472,7 +458,6 @@ DebugRoom_PrintTelDebug:
 .ok
 	call PlaceString
 	ret
-
 .TelString:
 	db "TEL:@"
 .OffString:
@@ -504,7 +489,6 @@ DebugRoom_PrintRAMFlag:
 	ld de, .RamString
 	call PlaceString
 	ret
-
 .RamString:
 	db "RAM:@"
 
@@ -547,7 +531,6 @@ MACRO paged_value
 	dw \6 ; value name function
 	db \7 ; is hex value?
 ENDM
-
 DEF PAGED_VALUE_SIZE EQU 10
 
 DebugRoom_EditPagedValues:
@@ -628,7 +611,8 @@ DebugRoom_EditPagedValues:
 	jp c, DebugRoom_NextPagedValue
 	pop hl
 .continue
-; call wDebugRoomAutoFunction if it's not null, then jump to .resume
+	; call wDebugRoomAutoFunction if it's not null
+	; then jump to .resume
 	ld hl, .resume
 	push hl
 	ld a, [wDebugRoomAutoFunction]
@@ -638,7 +622,6 @@ DebugRoom_EditPagedValues:
 	or l
 	ret z
 	jp hl
-
 .done
 	pop af
 	ldh [hInMenu], a
@@ -656,7 +639,6 @@ DebugRoom_PagedValuePressedSelect:
 DebugRoom_PagedValuePressedStart:
 	ld hl, wDebugRoomStartFunction
 	; fallthrough
-
 _CallNonNullPointer:
 	ld a, [hli]
 	ld h, [hl]
@@ -771,7 +753,6 @@ DebugRoom_PrevPagedValue:
 	ld a, -1
 	ld [wDebugRoomCurValue], a
 	jr DebugRoom_PrevPage
-
 .decrement:
 	dec a
 	jr DebugRoom_UpdateValueCursor
@@ -830,7 +811,6 @@ DebugRoom_InitializePagedValues:
 	pop af
 	jr nz, .page_loop
 	ret
-
 .InitializePage:
 ; Load the initial values for page a
 	ld b, a
@@ -854,7 +834,6 @@ DebugRoom_InitializePagedValues:
 	dec c
 	jr nz, .value_loop
 	ret
-
 .InitializeValue:
 ; Load the initial value for page b, value c
 	ld h, 0
@@ -1007,7 +986,6 @@ DebugRoomMenu_ItemGet:
 	ld hl, .PagedValuesHeader
 	call DebugRoom_EditPagedValues
 	ret
-
 .PagedValuesHeader:
 	dw NULL ; A function
 	dw NULL ; Select function
@@ -1033,7 +1011,6 @@ DebugRoom_SaveItem:
 	inc hl
 	inc hl
 	jr .loop1
-
 .found
 	inc hl
 	ld a, [wDebugRoomItemQuantity]
@@ -1045,7 +1022,6 @@ DebugRoom_SaveItem:
 	ld [hl], a
 	ld hl, .ItemNumberAddedText
 	jr .done
-
 .not_found
 	ld a, [sPlayerData + (wNumPCItems - wPlayerData)]
 	cp MAX_PC_ITEMS
@@ -1059,7 +1035,6 @@ DebugRoom_SaveItem:
 	ld [hl], -1 ; terminator
 	ld hl, .CreatedNewItemText
 	jr .done
-
 .full
 	ld hl, .StockFullText
 .done
@@ -1069,15 +1044,12 @@ DebugRoom_SaveItem:
 	call CloseWindow
 	call DebugRoom_SaveChecksum
 	ret
-
 .ItemNumberAddedText:
 	text "Item number added!"
 	done
-
 .CreatedNewItemText:
 	text "Created new item!"
 	done
-
 .StockFullText:
 	text "Stock full!!"
 	done
@@ -1099,7 +1071,6 @@ DebugRoomMenu_ItemGet_Page1Values:
 	db 2
 	paged_value wDebugRoomItemID,       1, NUM_POKEMON, MASTER_BALL, .ItemNameString, DebugRoom_PrintItemName, FALSE
 	paged_value wDebugRoomItemQuantity, 1, 99,          1,           .NumberString,   NULL,                    FALSE
-
 .ItemNameString: db "ITEM NAME@"
 .NumberString:   db "NUMBER@"
 
@@ -1107,7 +1078,6 @@ DebugRoomMenu_PokemonGet:
 	ld hl, .PagedValuesHeader
 	call DebugRoom_EditPagedValues
 	ret
-
 .PagedValuesHeader:
 	dw NULL ; A function
 	dw NULL ; Select function
@@ -1205,7 +1175,6 @@ DebugRoom_SavePokemon:
 	call DebugRoom_JoyWaitABSelect
 	call CloseWindow
 	ret
-
 .full
 	call CloseSRAM
 	ld hl, .BoxIsFullText
@@ -1213,17 +1182,13 @@ DebugRoom_SavePokemon:
 	call DebugRoom_JoyWaitABSelect
 	call CloseWindow
 	ret
-
 .OTString:
 	db "DEBUG▶OT@"
-
 .NicknameString:
 	db "DEBUG▶<PK><MN>@"
-
 .CompletedText:
 	text "COMPLETED!"
 	done
-
 .BoxIsFullText:
 	text "BOX IS FULL!"
 	done
@@ -1365,7 +1330,6 @@ DebugRoomMenu_RTCEdit:
 	ld hl, .PagedValuesHeader
 	call DebugRoom_EditPagedValues
 	ret
-
 .PagedValuesHeader:
 	dw NULL ; A function
 	dw NULL ; Select function
@@ -1461,7 +1425,6 @@ DebugRoomMenu_RTCEdit_Page1Values:
 	paged_value wDebugRoomRTCHour,  0,   24 - 1, 0, .HourString,   NULL, FALSE
 	paged_value wDebugRoomRTCDay+0, $00, $ff,    0, .DayLString,   NULL, TRUE
 	paged_value wDebugRoomRTCDay+1, $00, $ff,    0, .DayHString,   NULL, TRUE
-
 .SecondString: db "SECOND@"
 .MinuteString: db "MINUTE@"
 .HourString:   db "HOUR@"
@@ -1505,13 +1468,10 @@ DebugRoom_PrintRTCHaltChk:
 	hlcoord 16, 10
 	call PlaceString
 	ret
-
 .RTCString:
 	db "RTC:@"
-
 .OKString:
 	db "  OK@"
-
 .HaltString:
 	db "HALT@"
 
@@ -1519,7 +1479,6 @@ DebugRoomMenu_GBIDSet:
 	ld hl, .PagedValuesHeader
 	call DebugRoom_EditPagedValues
 	ret
-
 .PagedValuesHeader:
 	dw NULL ; A function
 	dw NULL ; Select function
@@ -1546,7 +1505,6 @@ DebugRoomMenu_GBIDSet_Page1Values:
 	db 2
 	paged_value wDebugRoomGBID+0, $00, $ff, $00, .GBID0String, NULL, TRUE
 	paged_value wDebugRoomGBID+1, $00, $ff, $00, .GBID1String, NULL, TRUE
-
 .GBID0String: db "GB ID [0]@"
 .GBID1String: db "GB ID [1]@"
 
@@ -1606,7 +1564,6 @@ ComputeROMChecksum:
 	ld a, e
 	ld [wDebugRoomROMChecksum + 1], a
 	ret
-
 .AddAtoDE:
 	add e
 	ld e, a
@@ -1614,7 +1571,6 @@ ComputeROMChecksum:
 	adc 0
 	ld d, a
 	ret
-
 .ComputeROM0Checksum:
 	ld hl, $0000 ; ROM0 start
 .rom0_loop
@@ -1624,8 +1580,7 @@ ComputeROMChecksum:
 	cp $40 ; HIGH(ROM0 end)
 	jr c, .rom0_loop
 	ret
-
-.ComputeROMXChecksum: ; unreferenced
+.ComputeROMXChecksum:
 	ld hl, $4000 ; ROMX start
 .romx_loop
 	ld a, c
@@ -1636,19 +1591,6 @@ ComputeROMChecksum:
 	cp $80 ; HIGH(ROMX end)
 	jr c, .romx_loop
 	ret
-
-DebugRoom_PrintROMChecksum: ; unreferenced
-	hlcoord 16, 0
-	ld de, .SumString
-	call PlaceString
-	hlcoord 16, 1
-	ld de, wDebugRoomROMChecksum
-	ld c, 2
-	call PrintHexNumber
-	ret
-
-.SumString:
-	db "SUM:@"
 
 DebugRoomMenu_ROMChecksum:
 	ld hl, .WaitText
@@ -1665,11 +1607,9 @@ DebugRoomMenu_ROMChecksum:
 	call DebugRoom_JoyWaitABSelect
 	call CloseWindow
 	ret
-
 .WaitText:
 	text "Wait..."
 	done
-
 .ROMChecksumText:
 	text "ROM CHECKSUM:"
 	next ""
@@ -1687,11 +1627,9 @@ DebugRoomMenu_BTBugPoke:
 	call DebugRoom_JoyWaitABSelect
 	call CloseWindow
 	ret
-
 .NoBugMonText:
 	text "No bug #MON."
 	done
-
 .bug_mon:
 	ld hl, .ItsBugMonText
 	call MenuTextbox
@@ -1710,7 +1648,6 @@ DebugRoomMenu_BTBugPoke:
 	call CloseSRAM
 	call CloseWindow
 	ret
-
 .ItsBugMonText:
 	text "It'", "s bug #MON!"
 	next "No.    Clear flag?"
@@ -1725,7 +1662,6 @@ PrintHexNumber:
 	dec c
 	jr nz, .loop
 	ret
-
 .HandleByte:
 	ld a, [de]
 	swap a
@@ -1738,7 +1674,6 @@ PrintHexNumber:
 	ld [hli], a
 	inc de
 	ret
-
 .PrintDigit:
 	ld bc, .HexDigits
 	add c
@@ -1748,6 +1683,5 @@ PrintHexNumber:
 	ld b, a
 	ld a, [bc]
 	ret
-
 .HexDigits:
 	db "0123456789ABCDEF"

@@ -9,21 +9,17 @@ MonSubmenu:
 	call LoadMenuHeader
 	call .GetTopCoord
 	call PopulateMonMenu
-
 	ld a, 1
 	ldh [hBGMapMode], a
 	call MonMenuLoop
 	ld [wMenuSelection], a
-
 	call ExitMenu
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 6, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw 0
 	db 1 ; default option
-
 .GetTopCoord:
 ; [wMenuBorderTopCoord] = 1 + [wMenuBorderBottomCoord] - 2 * ([wMonSubmenuCount] + 1)
 	ld a, [wMonSubmenuCount]
@@ -55,11 +51,9 @@ MonMenuLoop:
 	bit B_BUTTON_F, a
 	jr nz, .cancel
 	jr .loop
-
 .cancel
 	ld a, MONMENUITEM_CANCEL
 	ret
-
 .select
 	ld a, [wMenuCursorY]
 	dec a
@@ -103,7 +97,6 @@ GetMonMenuString:
 	ld [wNamedObjectIndex], a
 	call GetMoveName
 	ret
-
 .NotMove:
 	inc hl
 	ld a, [hl]
@@ -138,14 +131,12 @@ GetMonSubmenuItems:
 	pop hl
 	jr nc, .next
 	call AddMonMenuItem
-
 .next
 	pop de
 	inc de
 	pop bc
 	dec c
 	jr nz, .loop
-
 .skip_moves
 	ld a, MONMENUITEM_STATS
 	call AddMonMenuItem
@@ -165,21 +156,16 @@ GetMonSubmenuItems:
 	ld a, MONMENUITEM_MAIL
 	jr c, .ok
 	ld a, MONMENUITEM_ITEM
-
 .ok
 	call AddMonMenuItem
-
 .skip2
 	ld a, [wMonSubmenuCount]
 	cp NUM_MONMENU_ITEMS
 	jr z, .ok2
 	ld a, MONMENUITEM_CANCEL
 	call AddMonMenuItem
-
 .ok2
-	call TerminateMonSubmenu
-	ret
-
+	jr TerminateMonSubmenu
 .egg
 	ld a, MONMENUITEM_STATS
 	call AddMonMenuItem
@@ -187,8 +173,7 @@ GetMonSubmenuItems:
 	call AddMonMenuItem
 	ld a, MONMENUITEM_CANCEL
 	call AddMonMenuItem
-	call TerminateMonSubmenu
-	ret
+	jr TerminateMonSubmenu
 
 IsFieldMove:
 	ld b, a
@@ -196,9 +181,9 @@ IsFieldMove:
 .next
 	ld a, [hli]
 	cp -1
-	jr z, .nope
+	ret z
 	cp MONMENU_MENUOPTION
-	jr z, .nope
+	ret z
 	ld d, [hl]
 	inc hl
 	ld a, [hli]
@@ -206,8 +191,6 @@ IsFieldMove:
 	jr nz, .next
 	ld a, d
 	scf
-
-.nope
 	ret
 
 ResetMonSubmenu:
@@ -267,21 +250,17 @@ BattleMonMenu:
 	bit B_BUTTON_F, a
 	jr z, .clear_carry
 	ret z
-
 .set_carry
 	scf
 	ret
-
 .clear_carry
 	and a
 	ret
-
 .MenuHeader:
 	db 0 ; flags
 	menu_coords 11, 11, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING ; flags
 	db 3 ; items

@@ -1740,7 +1740,11 @@ Mobile_MoveSelectionScreen:
 	farcall CheckPlayerHasUsableMoves
 	ret z
 	call Function100dd8
-	jp c, xor_a_dec_a
+	jr nc, .next
+	xor a
+	dec a
+	ret
+.next
 	call Function100e72
 	call .GetMoveSelection
 	push af

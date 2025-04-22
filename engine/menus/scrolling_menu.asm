@@ -101,13 +101,13 @@ ScrollingMenuJoyAction:
 .select
 	ld a, [wMenuDataFlags]
 	bit SCROLLINGMENU_ENABLE_SELECT_F, a
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, [wMenuCursorY]
 	dec a
 	call ScrollingMenu_GetListItemCoordAndFunctionArgs
 	ld a, [wMenuSelection]
 	cp -1
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	call ScrollingMenu_GetCursorPosition
 	dec a
 	ld [wScrollingMenuCursorPosition], a
@@ -117,57 +117,60 @@ ScrollingMenuJoyAction:
 .start
 	ld a, [wMenuDataFlags]
 	bit SCROLLINGMENU_ENABLE_START_F, a
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, START
 	scf
 	ret
 .d_left
 	ld hl, w2DMenuFlags2
 	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, [hl]
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, [wMenuDataFlags]
 	bit SCROLLINGMENU_ENABLE_LEFT_F, a
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, D_LEFT
 	scf
 	ret
 .d_right
 	ld hl, w2DMenuFlags2
 	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, [hl]
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, [wMenuDataFlags]
 	bit SCROLLINGMENU_ENABLE_RIGHT_F, a
-	jp z, xor_a_dec_a
+	jr z, .xor_a_dec_a
 	ld a, D_RIGHT
 	scf
 	ret
 .d_up
 	ld hl, w2DMenuFlags2
 	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, [hl]
-	jp z, xor_a
+	jr z, .xor_a
 	ld hl, wMenuScrollPosition
 	ld a, [hl]
 	and a
-	jr z, .xor_dec_up
+	jr z, .xor_a_dec_a
 	dec [hl]
-	jp xor_a
-.xor_dec_up
-	jp xor_a_dec_a
+	xor a
+	ret
 .d_down
 	ld hl, w2DMenuFlags2
 	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, [hl]
-	jp z, xor_a
+	jr z, .xor_a
 	ld hl, wMenuScrollPosition
 	ld a, [wMenuData_ScrollingMenuHeight]
 	add [hl]
 	ld b, a
 	ld a, [wScrollingMenuListSize]
 	cp b
-	jr c, .xor_dec_down
+	jr c, .xor_a_dec_a
 	inc [hl]
-	jp xor_a
-.xor_dec_down
-	jp xor_a_dec_a
+.xor_a
+	xor a
+	ret
+.xor_a_dec_a
+	xor a
+	dec a
+	ret
 
 ScrollingMenu_GetCursorPosition:
 	ld a, [wMenuScrollPosition]

@@ -1027,9 +1027,9 @@ DebugColor_PlaceCursor:
 	ret
 
 DebugColor_AreYouFinishedString:
-	db   "おわりますか？"                        ; Are you finished?
-	next "はい<DOT><DOT><DOT>", DEBUGTEST_A ; YES...(A)
-	next "いいえ<DOT><DOT>", DEBUGTEST_B     ; NO..(B)
+	db   "おわりますか？"           ; Are you finished?
+	next "はい...", DEBUGTEST_A  ; YES...(A)
+	next "いいえ..", DEBUGTEST_B  ; NO..(B)
 	db   "@"
 
 DebugColor_UpArrowGFX:

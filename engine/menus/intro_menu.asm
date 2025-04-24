@@ -21,8 +21,7 @@ PrintDayOfWeek:
 	ld h, b
 	ld l, c
 	ld de, .Day
-	call PlaceString
-	ret
+	jp PlaceString
 .Days:
 	db "SUN@"
 	db "MON@"
@@ -40,8 +39,7 @@ NewGame_ClearTilemapEtc:
 	call ClearTilemap
 	call LoadFontsExtra
 	call LoadStandardFont
-	call ClearWindowData
-	ret
+	jp ClearWindowData
 
 MysteryGift:
 	call UpdateTime
@@ -88,9 +86,7 @@ endc
 ResetWRAM:
 	xor a
 	ldh [hBGMapMode], a
-	call _ResetWRAM
-	ret
-
+	; fallthrough
 _ResetWRAM:
 	ld hl, wShadowOAM
 	ld bc, wOptions - wShadowOAM
@@ -186,8 +182,7 @@ endc
 	farcall InitDecorations
 	farcall DeletePartyMonMail
 	farcall ClearGSBallFlag
-	call ResetGameTime
-	ret
+	jp ResetGameTime
 .InitList:
 ; Loads 0 in the count and -1 in the first item or mon slot.
 	xor a
@@ -252,8 +247,7 @@ InitializeNPCNames:
 	ld de, wGreensName
 .Copy:
 	ld bc, NAME_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 .Rival:  db "???@"
 .Red:    db "RED@"
 .Green:  db "GREEN@"
@@ -331,20 +325,19 @@ Continue:
 	jr z, .SpawnAfterE4
 	ld a, MAPSETUP_CONTINUE
 	ldh [hMapEntryMethod], a
-	jp FinishContinueFunction
+	jp FinishContinueFunction ; jr?
 .FailToLoad:
 	ret
-
 .SpawnAfterE4:
 	ld a, SPAWN_NEW_BARK
 	ld [wDefaultSpawnpoint], a
 	call PostCreditsSpawn
-	jp FinishContinueFunction
+	jp FinishContinueFunction ; jr?
 
 SpawnAfterRed:
 	ld a, SPAWN_MT_SILVER
 	ld [wDefaultSpawnpoint], a
-
+	; fallthrough
 PostCreditsSpawn:
 	xor a
 	ld [wSpawnAfterChampion], a
@@ -376,8 +369,7 @@ Continue_MobileAdapterMenu:
 	ld a, HIGH(MUSIC_NONE)
 	ld [wMusicFadeID + 1], a
 	ld c, 35
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 ConfirmContinue:
 .loop
@@ -385,12 +377,10 @@ ConfirmContinue:
 	call GetJoypad
 	ld hl, hJoyPressed
 	bit A_BUTTON_F, [hl]
-	jr nz, .PressA
+	ret nz
 	bit B_BUTTON_F, [hl]
 	jr z, .loop
 	scf
-	ret
-.PressA:
 	ret
 
 Continue_CheckRTC_RestartClock:
@@ -431,32 +421,27 @@ DisplaySaveInfoOnContinue:
 	and RTC_RESET
 	jr z, .clock_ok
 	lb de, 4, 8
-	call DisplayContinueDataWithRTCError
-	ret
+	jr DisplayContinueDataWithRTCError
 .clock_ok
 	lb de, 4, 8
-	call DisplayNormalContinueData
-	ret
+	jr DisplayNormalContinueData
 
 DisplaySaveInfoOnSave:
 	lb de, 4, 0
-	jr DisplayNormalContinueData
-
+	; fallthrough
 DisplayNormalContinueData:
 	call Continue_LoadMenuHeader
 	call Continue_DisplayBadgesDexPlayerName
 	call Continue_PrintGameTime
 	call LoadFontsExtra
-	call UpdateSprites
-	ret
+	jp UpdateSprites
 
 DisplayContinueDataWithRTCError:
 	call Continue_LoadMenuHeader
 	call Continue_DisplayBadgesDexPlayerName
 	call Continue_UnknownGameTime
 	call LoadFontsExtra
-	call UpdateSprites
-	ret
+	jp UpdateSprites
 
 Continue_LoadMenuHeader:
 	xor a
@@ -469,8 +454,7 @@ Continue_LoadMenuHeader:
 .show_menu
 	call _OffsetMenuHeader
 	call MenuBox
-	call PlaceVerticalMenuItems
-	ret
+	jp PlaceVerticalMenuItems
 .MenuHeader_Dex:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 15, 9
@@ -521,15 +505,13 @@ Continue_DisplayBadgesDexPlayerName:
 Continue_PrintGameTime:
 	decoord 9, 8, 0
 	add hl, de
-	call Continue_DisplayGameTime
-	ret
+	jr Continue_DisplayGameTime
 
 Continue_UnknownGameTime:
 	decoord 9, 8, 0
 	add hl, de
 	ld de, .three_question_marks
-	call PlaceString
-	ret
+	jp PlaceString
 .three_question_marks
 	db " ???@"
 
@@ -564,7 +546,7 @@ Continue_DisplayGameTime:
 	ld de, wGameTimeHours
 	lb bc, 2, 3
 	call PrintNum
-	ld [hl], "<COLON>"
+	ld [hl], ":"
 	inc hl
 	ld de, wGameTimeMinutes
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
@@ -630,8 +612,7 @@ OakSpeech:
 	call PrintText
 	call NamePlayer
 	ld hl, OakText7
-	call PrintText
-	ret
+	jp PrintText
 
 OakText1:
 	text_far _OakText1
@@ -697,8 +678,7 @@ NamePlayer:
 	jr z, .Male
 	ld de, .Kris
 .Male:
-	call InitName
-	ret
+	jp InitName
 .Chris:
 	db "CHRIS@@@@@@"
 .Kris:
@@ -711,8 +691,7 @@ StorePlayerName:
 	call ByteFill
 	ld hl, wPlayerName
 	ld de, wStringBuffer2
-	call CopyName2
-	ret
+	jp CopyName2
 
 ShrinkPlayer:
 	ldh a, [hROMBank]
@@ -751,8 +730,7 @@ ShrinkPlayer:
 	ld c, 50
 	call DelayFrames
 	call RotateThreePalettesRight
-	call ClearTilemap
-	ret
+	jp ClearTilemap
 
 Intro_RotatePalettesLeftFrontpic:
 	ld hl, IntroFadePalettes
@@ -863,7 +841,6 @@ IntroSequence:
 	jr c, StartTitleScreen
 	farcall CrystalIntro
 	; fallthrough
-
 StartTitleScreen:
 	ldh a, [rSVBK]
 	push af
@@ -948,6 +925,7 @@ TitleScreenScene:
 
 TitleScreenEntrance:
 ; Animate the logo
+; ----------------
 	; Move each line by 4 pixels until our count hits 0.
 	ldh a, [hSCX]
 	and a

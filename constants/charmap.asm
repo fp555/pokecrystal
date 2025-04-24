@@ -130,7 +130,7 @@
 	charmap "☎",        $d9
 	charmap "<BOLD_V>",  $da
 	charmap "<BOLD_S>",  $db
-	charmap "<COLON>",   $dc ; colon with tinier dots than ":"
+	charmap "<%>",		 $dc ; unused
 	charmap "“",         $dd ; opening quote
 	charmap "”",         $de ; closing quote
 	charmap "←",         $df
@@ -143,7 +143,6 @@
 	charmap "?",         $e6
 	charmap "!",         $e7
 	charmap ".",         $e8
-	charmap "<DOT>",     $e8 ; decimal point; same as "."
 	charmap "&",         $e9
 	charmap "é",         $ea
 	charmap "→",         $eb

@@ -3320,7 +3320,6 @@ BattleAnimFunc_Shiny:
 .anon_dw
 	dw .zero
 	dw .one
-
 .zero:
 	call BattleAnim_IncAnonJumptableIndex
 	ld hl, BATTLEANIMSTRUCT_PARAM
@@ -3353,7 +3352,6 @@ BattleAnimFunc_SkyAttack:
 	dw .one
 	dw .two
 	dw .three
-
 .zero
 	call BattleAnim_IncAnonJumptableIndex
 	ldh a, [hBattleTurn]
@@ -3361,7 +3359,6 @@ BattleAnimFunc_SkyAttack:
 	jr nz, .enemy_turn
 	ld a, $f0
 	jr .got_var1
-
 .enemy_turn
 	ld a, $cc
 .got_var1
@@ -3369,11 +3366,8 @@ BattleAnimFunc_SkyAttack:
 	add hl, bc
 	ld [hl], a
 	ret
-
 .one
-	call .SkyAttack_CyclePalette
-	ret
-
+	jr .SkyAttack_CyclePalette
 .two
 ; Moves towards target and stops at x coord $84
 	call .SkyAttack_CyclePalette
@@ -3383,9 +3377,7 @@ BattleAnimFunc_SkyAttack:
 	cp $84
 	ret nc
 	ld a, $4
-	call BattleAnim_StepToTarget
-	ret
-
+	jp BattleAnim_StepToTarget
 .three
 ; Moves towards target and disappears at x coord $d0
 	call .SkyAttack_CyclePalette
@@ -3393,15 +3385,9 @@ BattleAnimFunc_SkyAttack:
 	add hl, bc
 	ld a, [hl]
 	cp $d0
-	jr nc, .done
+	jp nc, DeinitBattleAnimation
 	ld a, $4
-	call BattleAnim_StepToTarget
-	ret
-
-.done
-	call DeinitBattleAnimation
-	ret
-
+	jp BattleAnim_StepToTarget
 .SkyAttack_CyclePalette:
 ; Cycles wOBP0 pallete
 	ld hl, BATTLEANIMSTRUCT_VAR2
@@ -3412,15 +3398,8 @@ BattleAnimFunc_SkyAttack:
 	srl a
 	ld e, a
 	ld d, 0
-	ldh a, [hSGB]
-	and a
-	jr nz, .sgb
+	; assumes CGB
 	ld hl, .GBCPals
-	jr .got_pals
-
-.sgb
-	ld hl, .SGBPals
-.got_pals
 	add hl, de
 	ld a, [hl]
 	ld hl, BATTLEANIMSTRUCT_VAR1
@@ -3428,11 +3407,8 @@ BattleAnimFunc_SkyAttack:
 	and [hl]
 	ld [wOBP0], a
 	ret
-
 .GBCPals:
 	db $ff, $aa, $55, $aa
-.SGBPals:
-	db $ff, $ff, $00, $00
 
 BattleAnimFunc_GrowthSwordsDance:
 ; Moves object in a circle where the height is 1/8 the width, while also moving upward 2 pixels per frame

@@ -165,11 +165,6 @@ Slots_GetPals:
 	ld a, %11100100
 	call DmgToCgbBGPals
 	lb de, %11100100, %11100100
-	ldh a, [hCGB]
-	and a
-	jr nz, .cgb
-	lb de, %11000000, %11100100
-.cgb
 	call DmgToCgbObjPals
 	ret
 
@@ -183,7 +178,6 @@ SlotsLoop:
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForFirst16Sprites
 	call .PrintCoinsAndPayout
-	
 	call DelayFrame
 	and a
 	ret
@@ -293,7 +287,6 @@ SlotsAction_WaitReel1:
 	call Slots_StopReel1
 	ld [wReel1ReelAction], a
 	; fallthrough
-
 SlotsAction_WaitStopReel1:
 	ld a, [wReel1ReelAction]
 	cp REEL_ACTION_DO_NOTHING
@@ -307,7 +300,6 @@ SlotsAction_WaitStopReel1:
 	xor a
 	ldh [hJoypadSum], a
 	; fallthrough
-
 SlotsAction_WaitReel2:
 	ld hl, hJoypadSum
 	ld a, [hl]
@@ -317,7 +309,6 @@ SlotsAction_WaitReel2:
 	call Slots_StopReel2
 	ld [wReel2ReelAction], a
 	; fallthrough
-
 SlotsAction_WaitStopReel2:
 	ld a, [wReel2ReelAction]
 	cp REEL_ACTION_DO_NOTHING
@@ -331,7 +322,6 @@ SlotsAction_WaitStopReel2:
 	xor a
 	ldh [hJoypadSum], a
 	; fallthrough
-
 SlotsAction_WaitReel3:
 	ld hl, hJoypadSum
 	ld a, [hl]
@@ -341,7 +331,6 @@ SlotsAction_WaitReel3:
 	call Slots_StopReel3
 	ld [wReel3ReelAction], a
 	; fallthrough
-
 SlotsAction_WaitStopReel3:
 	ld a, [wReel3ReelAction]
 	cp REEL_ACTION_DO_NOTHING
@@ -361,14 +350,12 @@ SlotsAction_FlashIfWin:
 	cp SLOTS_NO_MATCH
 	jr nz, .GotIt
 	call SlotsAction_Next
-	call SlotsAction_Next
-	ret
+	jp SlotsAction_Next
 .GotIt:
 	call SlotsAction_Next
 	ld a, 16
 	ld [wSlotsDelay], a
 	; fallthrough
-
 SlotsAction_FlashScreen:
 	ld hl, wSlotsDelay
 	ld a, [hl]
@@ -381,12 +368,10 @@ SlotsAction_FlashScreen:
 	xor $ff
 	ld e, a
 	ld d, a
-	call DmgToCgbObjPals
-	ret
+	jp DmgToCgbObjPals
 .done
 	call Slots_GetPals
-	call SlotsAction_Next
-	ret
+	jp SlotsAction_Next
 
 SlotsAction_GiveEarnedCoins:
 	xor a
@@ -397,14 +382,12 @@ SlotsAction_GiveEarnedCoins:
 	call Slots_GetPayout
 	xor a
 	ld [wSlotsDelay], a
-	call SlotsAction_Next
-	ret
+	jp SlotsAction_Next
 
 SlotsAction_PayoutTextAndAnim:
 	call Slots_PayoutText
 	call SlotsAction_Next
 	; fallthrough
-
 SlotsAction_PayoutAnim:
 	ld hl, wSlotsDelay
 	ld a, [hl]
@@ -415,7 +398,7 @@ SlotsAction_PayoutAnim:
 	ld a, [hli]
 	ld d, a
 	or [hl]
-	jr z, .done
+	jp z, SlotsAction_Next
 	ld e, [hl]
 	dec de
 	ld [hl], e
@@ -436,11 +419,7 @@ SlotsAction_PayoutAnim:
 	and $7
 	ret nz
 	ld de, SFX_GET_COIN_FROM_SLOTS
-	call PlaySFX
-	ret
-.done
-	call SlotsAction_Next
-	ret
+	jp PlaySFX
 
 SlotsAction_RestartOrQuit:
 	call Slots_DeilluminateBetLights
@@ -647,8 +626,6 @@ Slots_InitReelTiles:
 	ld hl, REEL_X_COORD
 	add hl, bc
 	ld [hl], 14 * TILE_WIDTH
-	call .OAM
-	ret
 .OAM:
 	ld hl, REEL_ACTION
 	add hl, bc
@@ -659,8 +636,7 @@ Slots_InitReelTiles:
 	ld hl, REEL_SPIN_DISTANCE
 	add hl, bc
 	ld [hl], REEL_ACTION_DO_NOTHING
-	call Slots_UpdateReelPositionAndOAM
-	ret
+	jr Slots_UpdateReelPositionAndOAM
 
 Slots_SpinReels:
 	ld bc, wReel1
@@ -668,8 +644,6 @@ Slots_SpinReels:
 	ld bc, wReel2
 	call .SpinReel
 	ld bc, wReel3
-	call .SpinReel
-	ret
 .SpinReel:
 	ld hl, REEL_SPIN_DISTANCE
 	add hl, bc
@@ -859,7 +833,6 @@ Slots_StopReel:
 	add hl, bc
 	ld [hl], 3
 	; fallthrough
-
 ReelAction_StopReelIgnoreJoypad:
 	ld hl, REEL_STOP_DELAY
 	add hl, bc
@@ -891,8 +864,7 @@ ReelAction_StopReel1:
 	call .CheckForBias
 	ret nz
 .NoBias:
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel ; jr?
 .CheckForBias:
 	call Slots_GetCurrentReelState
 	ld a, [wSlotBias]
@@ -917,20 +889,17 @@ ReelAction_StopReel2:
 	ld a, [wSlotBuildingMatch]
 	ld hl, wSlotBias
 	cp [hl]
-	jr z, .NoBias
+	jp z, Slots_StopReel
 .nope
 	ld a, [wSlotBias]
 	cp SLOTS_NO_BIAS
-	jr z, .NoBias
+	jp z, Slots_StopReel
 	ld hl, REEL_MANIP_COUNTER
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .NoBias
+	jp z, Slots_StopReel
 	dec [hl]
-	ret
-.NoBias:
-	call Slots_StopReel
 	ret
 
 ReelAction_StopReel3:
@@ -941,7 +910,7 @@ ReelAction_StopReel3:
 	jr nc, .NoMatch
 	ld hl, wSlotBias
 	cp [hl]
-	jr z, .NoBias
+	jp z, Slots_StopReel
 	ld hl, REEL_MANIP_COUNTER
 	add hl, bc
 	ld a, [hl]
@@ -952,16 +921,13 @@ ReelAction_StopReel3:
 .NoMatch:
 	ld a, [wSlotBias]
 	cp SLOTS_NO_BIAS
-	jr z, .NoBias
+	jp z, Slots_StopReel
 	ld hl, REEL_MANIP_COUNTER
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .NoBias
+	jp z, Slots_StopReel
 	dec [hl]
-	ret
-.NoBias:
-	call Slots_StopReel
 	ret
 
 ReelAction_SetUpReel2SkipTo7:
@@ -974,8 +940,7 @@ ReelAction_SetUpReel2SkipTo7:
 	ld a, [wFirstTwoReelsMatchingSevens]
 	and a
 	jr z, .no_match
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel
 .no_match
 	ld a, SFX_STOP_SLOT
 	call Slots_PlaySFX
@@ -1015,8 +980,7 @@ ReelAction_FastSpinReel2UntilLinedUp7s:
 	ld a, [wFirstTwoReelsMatchingSevens]
 	and a
 	ret z
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel
 
 ReelAction_InitGolem:
 ; Ensures SEVENs are lined up if there's bias to SEVEN.
@@ -1058,8 +1022,7 @@ ReelAction_WaitGolem:
 	ret
 .two
 	call Slots_CheckMatchedAllThreeReels
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel
 .one
 	ld hl, REEL_ACTION
 	add hl, bc
@@ -1115,7 +1078,6 @@ ReelAction_WaitChansey:
 	ld a, 2
 	ld [wSlotsDelay], a
 	; fallthrough
-
 ReelAction_WaitEgg:
 	ld a, [wSlotsDelay]
 	cp $4
@@ -1130,7 +1092,6 @@ ReelAction_WaitEgg:
 	add hl, bc
 	ld [hl], 17
 	; fallthrough
-
 ReelAction_DropReel:
 	ld hl, REEL_MANIP_DELAY
 	add hl, bc
@@ -1146,8 +1107,7 @@ ReelAction_DropReel:
 	jr nz, .EggAgain
 	ld a, 5
 	ld [wSlotsDelay], a
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel
 .EggAgain:
 	ld hl, REEL_SPIN_RATE
 	add hl, bc
@@ -1174,7 +1134,6 @@ ReelAction_Unused:
 	add hl, bc
 	ld [hl], a
 	; fallthrough
-
 ReelAction_CheckDropReel:
 	ld hl, REEL_MANIP_DELAY
 	add hl, bc
@@ -1182,8 +1141,7 @@ ReelAction_CheckDropReel:
 	and a
 	jr nz, .spin
 	call Slots_CheckMatchedAllThreeReels
-	call Slots_StopReel
-	ret
+	jp Slots_StopReel
 .spin
 	dec [hl]
 	ld hl, REEL_ACTION
@@ -1196,7 +1154,6 @@ ReelAction_CheckDropReel:
 	add hl, bc
 	ld [hl], 0
 	; fallthrough
-
 ReelAction_WaitDropReel:
 	ld hl, REEL_DROP_COUNTER
 	add hl, bc
@@ -1235,7 +1192,6 @@ ReelAction_StartSlowAdvanceReel3:
 	add hl, bc
 	ld [hl], 16
 	; fallthrough
-
 ReelAction_WaitSlowAdvanceReel3:
 	ld hl, REEL_MANIP_DELAY
 	add hl, bc
@@ -1245,8 +1201,7 @@ ReelAction_WaitSlowAdvanceReel3:
 	dec [hl]
 .play_sfx
 	ld a, SFX_GOT_SAFARI_BALLS
-	call Slots_PlaySFX
-	ret
+	jp Slots_PlaySFX
 .check1
 	ld a, [wSlotBias]
 	and a
@@ -1256,14 +1211,12 @@ ReelAction_WaitSlowAdvanceReel3:
 	and a
 	jr nz, .play_sfx
 	call Slots_StopReel
-	call WaitSFX
-	ret
+	jp WaitSFX
 .check2
 	call Slots_CheckMatchedAllThreeReels
 	jr c, .play_sfx
 	call Slots_StopReel
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 Slots_CheckMatchedFirstTwoReels:
 	xor a
@@ -1309,32 +1262,27 @@ Slots_CheckMatchedFirstTwoReels:
 	ld hl, wCurReelStopped
 	ld a, [wReel1Stopped]
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckUpwardsDiag:
 	ld hl, wCurReelStopped + 1
 	ld a, [wReel1Stopped]
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckMiddleRow:
 	ld hl, wCurReelStopped + 1
 	ld a, [wReel1Stopped + 1]
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckDownwardsDiag:
 	ld hl, wCurReelStopped + 1
 	ld a, [wReel1Stopped + 2]
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckTopRow:
 	ld hl, wCurReelStopped + 2
 	ld a, [wReel1Stopped + 2]
 	cp [hl]
-	call z, .StoreResult
-	ret
+	ret nz
 .StoreResult:
 	ld [wSlotBuildingMatch], a
 	and a
@@ -1395,8 +1343,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 	ld hl, wReel2Stopped
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckUpwardsDiag:
 	ld hl, wCurReelStopped + 2
 	ld a, [wReel1Stopped]
@@ -1404,8 +1351,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 	ld hl, wReel2Stopped + 1
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckMiddleRow:
 	ld hl, wCurReelStopped + 1
 	ld a, [wReel1Stopped + 1]
@@ -1413,8 +1359,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 	ld hl, wReel2Stopped + 1
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckDownwardsDiag:
 	ld hl, wCurReelStopped
 	ld a, [wReel1Stopped + 2]
@@ -1422,8 +1367,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 	ld hl, wReel2Stopped + 1
 	cp [hl]
-	call z, .StoreResult
-	ret
+	jr z, .StoreResult
 .CheckTopRow:
 	ld hl, wCurReelStopped + 2
 	ld a, [wReel1Stopped + 2]
@@ -1431,8 +1375,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 	ld hl, wReel2Stopped + 2
 	cp [hl]
-	call z, .StoreResult
-	ret
+	ret nz
 .StoreResult:
 	ld [wSlotMatched], a
 	ret
@@ -1547,22 +1490,22 @@ Slots_IlluminateBetLights:
 
 Slots_DeilluminateBetLights:
 	ld b, $23 ; turned off
-
+	; fallthrough
 Slots_Lights3OnOff:
 	hlcoord 3, 2
 	call Slots_TurnLightsOnOrOff
 	hlcoord 3, 10
 	call Slots_TurnLightsOnOrOff
-
+	; fallthrough
 Slots_Lights2OnOff:
 	hlcoord 3, 4
 	call Slots_TurnLightsOnOrOff
 	hlcoord 3, 8
 	call Slots_TurnLightsOnOrOff
-
+	; fallthrough
 Slots_Lights1OnOff:
 	hlcoord 3, 6
-
+	; fallthrough
 Slots_TurnLightsOnOrOff:
 	ld a, b
 	ld [hl], a
@@ -1709,8 +1652,7 @@ Slots_PayoutText:
 	cp SLOTS_NO_MATCH
 	jr nz, .MatchedSomething
 	ld hl, .SlotsDarnText
-	call PrintText
-	ret
+	jp PrintText
 .MatchedSomething:
 	srl a
 	ld e, a
@@ -1730,8 +1672,7 @@ Slots_PayoutText:
 	jp hl
 .return
 	ld hl, .Text_PrintPayout
-	call PrintText
-	ret
+	jp PrintText
 .PayoutStrings:
 	table_width 6
 	dbw "300@", .LinedUpSevens      ; SLOTS_SEVEN
@@ -1792,13 +1733,12 @@ endr
 .LinedUpPokeballs:
 	ld a, SFX_3RD_PLACE
 	call Slots_PlaySFX
-	call WaitSFX
-	ret
+	jp WaitSFX
 .LinedUpMonOrCherry:
 	ld a, SFX_PRESENT
 	call Slots_PlaySFX
-	call WaitSFX
-	ret
+	jp WaitSFX
+
 Slots_AnimateGolem:
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc
@@ -1863,8 +1803,7 @@ Slots_AnimateGolem:
 	ld a, 1
 	ld [wSlotsDelay], a
 	ld a, SFX_PLACE_PUZZLE_PIECE_DOWN
-	call Slots_PlaySFX
-	ret
+	jp Slots_PlaySFX
 .roll
 	ld hl, SPRITEANIMSTRUCT_XOFFSET
 	add hl, bc
@@ -1916,8 +1855,7 @@ Slots_AnimateChansey:
 	and $f
 	ret nz
 	ld de, SFX_JUMP_OVER_LEDGE
-	call PlaySFX
-	ret
+	jp PlaySFX
 .limit
 	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
 	add hl, bc

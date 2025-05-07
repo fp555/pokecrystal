@@ -148,7 +148,6 @@ RunTradeAnimScript:
 	pop af
 	ldh [hMapAnims], a
 	ret
-
 .TradeAnimLayout:
 	xor a
 	ld [wJumptableIndex], a
@@ -158,9 +157,7 @@ RunTradeAnimScript:
 	call DisableLCD
 	call LoadFontsBattleExtra
 	callfar ClearSpriteAnims
-	ldh a, [hCGB]
-	and a
-	jr z, .NotCGB
+	; assume cgb
 	ld a, $1
 	ldh [rVBK], a
 	ld hl, STARTOF(VRAM)
@@ -169,7 +166,6 @@ RunTradeAnimScript:
 	call ByteFill
 	xor a
 	ldh [rVBK], a
-.NotCGB:
 	hlbgcoord 0, 0
 	ld bc, STARTOF(VRAM) + SIZEOF(VRAM) - vBGMap0
 	ld a, " "
@@ -211,8 +207,7 @@ RunTradeAnimScript:
 	ld a, [wOTTrademonSpecies]
 	ld de, wOTTrademonSpeciesName
 	call TradeAnim_GetNicknamename
-	call TradeAnim_NormalPals
-	ret
+	jp TradeAnim_NormalPals
 
 DoTradeAnimation:
 	ld a, [wJumptableIndex]
@@ -1193,12 +1188,8 @@ TradeAnim_CopyBoxFromDEtoHL:
 	ret
 
 TradeAnim_NormalPals:
-	ldh a, [hSGB]
-	and a
+; assume CGB
 	ld a, %11100100 ; 3,2,1,0
-	jr z, .not_sgb
-	ld a, $f0
-.not_sgb
 	call DmgToCgbObjPal0
 	ld a, %11100100 ; 3,2,1,0
 	jp DmgToCgbBGPals

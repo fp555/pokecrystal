@@ -1,26 +1,14 @@
 ; Functions to fade the screen in and out.
 
 RotateFourPalettesRight::
-	ldh a, [hCGB]
-	and a
-	jr z, .dmg
+; assume cgb
 	ld hl, IncGradGBPalTable_00
-	ld b, 4
-	jr RotatePalettesRight
-.dmg
-	ld hl, IncGradGBPalTable_08
 	ld b, 4
 	jr RotatePalettesRight
 
 RotateThreePalettesRight::
-	ldh a, [hCGB]
-	and a
-	jr z, .dmg
+; assume cgb
 	ld hl, IncGradGBPalTable_05
-	ld b, 3
-	jr RotatePalettesRight
-.dmg
-	ld hl, IncGradGBPalTable_13
 	ld b, 3
 	; fallthrough
 RotatePalettesRight::
@@ -42,26 +30,14 @@ RotatePalettesRight::
 	ret
 
 RotateFourPalettesLeft::
-	ldh a, [hCGB]
-	and a
-	jr z, .dmg
+; assume cgb
 	ld hl, IncGradGBPalTable_04 - 1
-	ld b, 4
-	jr RotatePalettesLeft
-.dmg
-	ld hl, IncGradGBPalTable_12 - 1
 	ld b, 4
 	jr RotatePalettesLeft
 
 RotateThreePalettesLeft::
-	ldh a, [hCGB]
-	and a
-	jr z, .dmg
+; assume cgb
 	ld hl, IncGradGBPalTable_07 - 1
-	ld b, 3
-	jr RotatePalettesLeft
-.dmg
-	ld hl, IncGradGBPalTable_15 - 1
 	ld b, 3
 	; fallthrough
 RotatePalettesLeft::
@@ -83,23 +59,19 @@ RotatePalettesLeft::
 	ret
 
 IncGradGBPalTable_00:: dc 3,3,3,3, 3,3,3,3, 3,3,3,3
-IncGradGBPalTable_01:: dc 3,3,3,2, 3,3,3,2, 3,3,3,2
-IncGradGBPalTable_02:: dc 3,3,2,1, 3,3,2,1, 3,3,2,1
-IncGradGBPalTable_03:: dc 3,2,1,0, 3,2,1,0, 3,2,1,0
-
+IncGradGBPalTable_01:: dc 3,3,3,2, 3,3,3,2, 3,3,3,2 ; unreferenced
+IncGradGBPalTable_02:: dc 3,3,2,1, 3,3,2,1, 3,3,2,1 ; unreferenced
+IncGradGBPalTable_03:: dc 3,2,1,0, 3,2,1,0, 3,2,1,0 ; unreferenced
 IncGradGBPalTable_04:: dc 3,2,1,0, 3,2,1,0, 3,2,1,0
 IncGradGBPalTable_05:: dc 2,1,0,0, 2,1,0,0, 2,1,0,0
-IncGradGBPalTable_06:: dc 1,0,0,0, 1,0,0,0, 1,0,0,0
-
+IncGradGBPalTable_06:: dc 1,0,0,0, 1,0,0,0, 1,0,0,0 ; unreferenced
 IncGradGBPalTable_07:: dc 0,0,0,0, 0,0,0,0, 0,0,0,0
 ;                           bgp      obp1     obp2
-IncGradGBPalTable_08:: dc 3,3,3,3, 3,3,3,3, 3,3,3,3
-IncGradGBPalTable_09:: dc 3,3,3,2, 3,3,3,2, 3,3,2,0
-IncGradGBPalTable_10:: dc 3,3,2,1, 3,2,1,0, 3,2,1,0
-IncGradGBPalTable_11:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0
-
-IncGradGBPalTable_12:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0
-IncGradGBPalTable_13:: dc 2,1,0,0, 2,0,0,0, 2,1,0,0
-IncGradGBPalTable_14:: dc 1,0,0,0, 1,0,0,0, 1,0,0,0
-
-IncGradGBPalTable_15:: dc 0,0,0,0, 0,0,0,0, 0,0,0,0
+IncGradGBPalTable_08:: dc 3,3,3,3, 3,3,3,3, 3,3,3,3 ; unreferenced
+IncGradGBPalTable_09:: dc 3,3,3,2, 3,3,3,2, 3,3,2,0 ; unreferenced
+IncGradGBPalTable_10:: dc 3,3,2,1, 3,2,1,0, 3,2,1,0 ; unreferenced
+IncGradGBPalTable_11:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0 ; unreferenced
+IncGradGBPalTable_12:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0 ; unreferenced
+IncGradGBPalTable_13:: dc 2,1,0,0, 2,0,0,0, 2,1,0,0 ; unreferenced
+IncGradGBPalTable_14:: dc 1,0,0,0, 1,0,0,0, 1,0,0,0 ; unreferenced
+IncGradGBPalTable_15:: dc 0,0,0,0, 0,0,0,0, 0,0,0,0 ; unreferenced

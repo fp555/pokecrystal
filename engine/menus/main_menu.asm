@@ -179,10 +179,6 @@ MainMenu_GetWhichMenu:
 	ld a, MAINMENU_NEW_GAME
 	ret
 .next
-	ldh a, [hCGB]
-	and a ; cp FALSE
-	ld a, MAINMENU_CONTINUE
-	ret z
 	ld a, BANK(sNumDailyMysteryGiftPartnerIDs)
 	call OpenSRAM
 	ld a, [sNumDailyMysteryGiftPartnerIDs]

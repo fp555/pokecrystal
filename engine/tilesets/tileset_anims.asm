@@ -507,10 +507,9 @@ AnimateFlowerTile:
 	; A cycle of 2 frames, updating every other tick
 	ld a, [wTileAnimationTimer]
 	and %10
-	; CGB has different tile graphics for flowers
+	; assume CGB
 	ld e, a
-	ldh a, [hCGB]
-	and 1
+	ld a, 1
 	add e
 	; hl = .FlowerTileFrames + a * 16
 	swap a
@@ -687,7 +686,6 @@ ReadTileToAnimBuffer:
 	ld sp, hl
 	ld hl, wTileAnimBuffer
 	; fallthrough
-
 WriteTile:
 ; Write one tile from sp to hl.
 ; The stack pointer has been saved in bc.
@@ -713,10 +711,8 @@ endr
 
 AnimateWaterPalette:
 ; Transition between color values 0-2 for color 0 in palette 3.
-	; Don't update the palette on DMG
-	ldh a, [hCGB]
-	and a
-	ret z
+; -------------------------------------------------------------
+	; Assume CGB
 	; Don't update a non-standard palette order
 	ldh a, [rBGP]
 	cp %11100100
@@ -766,10 +762,7 @@ AnimateWaterPalette:
 	ret
 
 FlickeringCaveEntrancePalette:
-	; Don't update the palette on DMG
-	ldh a, [hCGB]
-	and a
-	ret z
+	; Assume CGB
 	; Don't update a non-standard palette order
 	ldh a, [rBGP]
 	cp %11100100

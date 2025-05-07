@@ -131,7 +131,6 @@ Init::
 	ldh [rIE], a
 	ei
 	call DelayFrame
-	predef InitSGBBorder
 	call InitSound
 	xor a
 	ld [wMapMusic], a

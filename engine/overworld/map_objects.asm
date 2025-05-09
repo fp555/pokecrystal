@@ -109,7 +109,7 @@ HandleStepType:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	bit FROZEN_F, [hl]
-	jr nz, .frozen
+	ret nz
 	cp STEP_TYPE_FROM_MOVEMENT
 	jr z, .one
 	jr .ok3
@@ -118,7 +118,7 @@ HandleStepType:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	bit FROZEN_F, [hl]
-	jr nz, .frozen
+	ret nz
 .one
 	call StepFunction_FromMovement
 	ld hl, OBJECT_STEP_TYPE
@@ -131,8 +131,6 @@ HandleStepType:
 .ok3
 	ld hl, StepTypesJumptable
 	rst JumpTable
-	ret
-.frozen
 	ret
 
 HandleObjectAction:
@@ -159,8 +157,7 @@ HandleFrozenObjectAction:
 _CallFrozenObjectAction:
 	; use second column (frozen)
 	ld de, ObjectActionPairPointers + 2
-	jr CallObjectAction ; pointless
-
+	; fallthrough
 CallObjectAction:
 	ld hl, OBJECT_ACTION
 	add hl, bc
@@ -173,8 +170,7 @@ CallObjectAction:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call _hl_
-	ret
+	jp _hl_
 
 INCLUDE "engine/overworld/map_object_action.asm"
 
@@ -250,7 +246,6 @@ SetTallGrassFlags:
 	add hl, bc
 	set OVERHEAD_F, [hl]
 	ret
-
 .reset
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
@@ -288,7 +283,6 @@ InitStep:
 	add hl, bc
 	ld [hl], a
 	; fallthrough
-
 GetNextTile:
 	call GetStepVector
 	ld hl, OBJECT_STEP_DURATION
@@ -356,6 +350,7 @@ GetStepVector:
 
 StepVectors:
 ; x,  y, duration, speed
+; ----------------------
 	; slow
 	db  0,  1, 16, 1
 	db  0, -1, 16, 1
@@ -481,7 +476,6 @@ StepFunction_FromMovement:
 	ld hl, .Pointers
 	rst JumpTable
 	ret
-
 .Pointers:
 ; entries correspond to SPRITEMOVEFN_* constants (see constants/map_object_constants.asm)
 	table_width 2
@@ -1490,7 +1484,6 @@ StepFunction_Restore:
 .anon_dw
 	dw .Reset
 	dw StepFunction_Standing
-
 .Reset:
 	call RestoreDefaultMovement
 	call GetInitialFacing
@@ -1499,16 +1492,13 @@ StepFunction_Restore:
 	ld [hl], a
 	call ObjectStep_IncAnonJumptableIndex
 	; fallthrough
-
 StepFunction_Standing:
-	call Stubbed_UpdateYOffset
 	ld hl, OBJECT_WALKING
 	add hl, bc
 	ld [hl], STANDING
 	ret
 
 StepFunction_NPCWalk:
-	call Stubbed_UpdateYOffset
 	call AddStepVector
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -1537,7 +1527,6 @@ StepFunction_PlayerWalk:
 .anon_dw
 	dw .init
 	dw .step
-
 .init
 	ld hl, wPlayerStepFlags
 	set PLAYERSTEP_START_F, [hl]
@@ -1566,7 +1555,6 @@ StepFunction_Turn:
 	dw .step1
 	dw .init2
 	dw .step2
-
 .init1
 	ld hl, OBJECT_WALKING
 	add hl, bc
@@ -1676,7 +1664,6 @@ StepFunction_ScreenShake:
 .anon_dw
 	dw .Init
 	dw .Run
-
 .Init:
 	xor a
 	ld hl, OBJECT_1D
@@ -1704,11 +1691,8 @@ StepFunction_ScreenShake:
 	add d
 	ld [wPlayerStepVectorY], a
 	ret
-
 .ok
-	call DeleteMapObject
-	ret
-
+	jp DeleteMapObject
 .GetSign:
 	ld hl, OBJECT_1E
 	add hl, bc
@@ -1736,7 +1720,6 @@ StepFunction_SkyfallTop:
 .anon_dw
 	dw .Init
 	dw .Run
-
 .Init:
 	ld hl, OBJECT_ACTION
 	add hl, bc
@@ -1745,7 +1728,6 @@ StepFunction_SkyfallTop:
 	add hl, bc
 	ld [hl], 16
 	call ObjectStep_IncAnonJumptableIndex
-
 .Run:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -1762,29 +1744,6 @@ StepFunction_SkyfallTop:
 	ld [hl], STEP_TYPE_FROM_MOVEMENT
 	ret
 
-Stubbed_UpdateYOffset:
-; dummied out
-	ret
-	ld hl, OBJECT_1D
-	add hl, bc
-	inc [hl]
-	ld a, [hl]
-	srl a
-	srl a
-	and %00000111
-	ld l, a
-	ld h, 0
-	ld de, .y_offsets
-	add hl, de
-	ld a, [hl]
-	ld hl, OBJECT_SPRITE_Y_OFFSET
-	add hl, bc
-	ld [hl], a
-	ret
-
-.y_offsets:
-	db 0, -1, -2, -3, -4, -3, -2, -1
-
 UpdateJumpPosition:
 	call GetStepVector
 	ld a, h
@@ -1793,7 +1752,6 @@ UpdateJumpPosition:
 	ld e, [hl]
 	add e
 	ld [hl], a
-	nop
 	srl e
 	ld d, 0
 	ld hl, .y_offsets
@@ -1803,20 +1761,19 @@ UpdateJumpPosition:
 	add hl, bc
 	ld [hl], a
 	ret
-
 .y_offsets:
 	db  -4,  -6,  -8, -10, -11, -12, -12, -12
 	db -11, -10,  -9,  -8,  -6,  -4,   0,   0
 
 GetPlayerNextMovementIndex:
-; copy [wPlayerNextMovement] to [wPlayerMovement]
+	; copy [wPlayerNextMovement] to [wPlayerMovement]
 	ld a, [wPlayerNextMovement]
 	ld hl, wPlayerMovement
 	ld [hl], a
-; load [wPlayerNextMovement] with movement_step_sleep
+	; load [wPlayerNextMovement] with movement_step_sleep
 	ld a, movement_step_sleep
 	ld [wPlayerNextMovement], a
-; recover the previous value of [wPlayerNextMovement]
+	; recover the previous value of [wPlayerNextMovement]
 	ld a, [hl]
 	ret
 
@@ -1855,7 +1812,7 @@ GetIndexedMovementIndex2:
 
 _GetMovementObject:
 	ld hl, GetMovementObject
-	jp HandleMovementData
+	jr HandleMovementData
 
 GetMovementObject:
 	ld a, [wMovementObject]
@@ -2243,8 +2200,7 @@ UpdateObjectTile:
 	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
 	ld [hl], a
-	farcall UpdateTallGrassFlags ; no need to farcall
-	ret
+	jp UpdateTallGrassFlags
 
 CheckObjectOnScreen:
 	ld hl, OBJECT_MAP_X
@@ -2273,7 +2229,6 @@ CheckObjectOnScreen:
 .equal_y
 	xor a
 	ret
-
 .nope
 	scf
 	ret
@@ -2462,10 +2417,10 @@ SpawnInCustomFacing:
 
 SpawnInFacingDown:
 	ld a, DOWN
+	; fallthrough
 _ContinueSpawnFacing:
 	ld bc, wPlayerStruct
-	call SetSpriteDirection
-	ret
+	jp SetSpriteDirection
 
 _SetPlayerPalette:
 	ld a, d

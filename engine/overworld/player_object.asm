@@ -13,8 +13,7 @@ BlankScreen:
 	ld a, $7
 	call ByteFill
 	call WaitBGMap2
-	call SetDefaultBGPAndOBP
-	ret
+	jp SetDefaultBGPAndOBP
 
 SpawnPlayer:
 	ld a, -1
@@ -120,10 +119,6 @@ RefreshPlayerCoords:
 	ld hl, wPlayerLastMapY
 	ld [hl], e
 	ld e, a
-	; the next three lines are useless
-	ld a, [wObjectFollow_Leader]
-	cp PLAYER
-	ret nz
 	ret
 
 CopyObjectStruct::
@@ -158,10 +153,6 @@ CopyObjectStruct::
 	ret
 
 CopyMapObjectToObjectStruct:
-	call .CopyMapObjectToTempObject
-	call CopyTempObjectToObjectStruct
-	ret
-.CopyMapObjectToTempObject:
 	ldh a, [hObjectStructIndex]
 	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
 	add hl, bc
@@ -206,7 +197,7 @@ CopyMapObjectToObjectStruct:
 	add hl, bc
 	ld a, [hl]
 	ld [wTempObjectCopyRadius], a
-	ret
+	jp CopyTempObjectToObjectStruct
 
 InitializeVisibleSprites:
 	ld bc, wMap1Object
@@ -246,7 +237,7 @@ InitializeVisibleSprites:
 	push bc
 	call CopyObjectStruct
 	pop bc
-	jp c, .ret
+	ret c
 .next
 	ld hl, MAPOBJECT_LENGTH
 	add hl, bc
@@ -257,11 +248,8 @@ InitializeVisibleSprites:
 	cp NUM_OBJECTS
 	jr nz, .loop
 	ret
-.ret
-	ret
 
 CheckObjectEnteringVisibleRange::
-	nop
 	ld a, [wPlayerStepDirection]
 	cp STANDING
 	ret z
@@ -482,8 +470,7 @@ TrainerWalkToPlayer:
 	call DecrementMovementBufferCount
 .TerminateStep:
 	ld a, movement_step_end
-	call AppendToMovementBuffer
-	ret
+	jp AppendToMovementBuffer
 .GetPathToPlayer:
 	push de
 	push bc
@@ -521,8 +508,7 @@ TrainerWalkToPlayer:
 	ld e, [hl]
 	ld d, a
 	pop af
-	call ComputePathToWalkToPlayer
-	ret
+	jp ComputePathToWalkToPlayer
 
 SurfStartStep:
 	ld a, [wPlayerDirection]
@@ -642,15 +628,6 @@ GetRelativeFacing::
 	cp NUM_OBJECT_STRUCTS
 	jr nc, .carry
 	ld e, a
-	call .GetFacing_e_relativeto_d
-	ret
-.carry
-	scf
-	ret
-
-.GetFacing_e_relativeto_d:
-; Determines which way object e would have to turn to face object d.
-; Returns carry if it's impossible.
 	; load the coordinates of object d into bc
 	ld a, d
 	call GetObjectStruct
@@ -696,7 +673,7 @@ GetRelativeFacing::
 	; compare the y coordinates
 	ld a, c
 	cp e
-	jr z, .same_x_and_y
+	jr z, .carry
 	jr c, .c_directly_below_e
 	; c directly above e
 	ld d, DOWN
@@ -709,7 +686,7 @@ GetRelativeFacing::
 .same_y_1
 	ld a, b
 	cp d
-	jr z, .same_x_and_y
+	jr z, .carry
 	jr c, .b_directly_right_of_d
 	; b directly left of d
 	ld d, RIGHT
@@ -719,7 +696,7 @@ GetRelativeFacing::
 	ld d, LEFT
 	and a
 	ret
-.same_x_and_y
+.carry
 	scf
 	ret
 

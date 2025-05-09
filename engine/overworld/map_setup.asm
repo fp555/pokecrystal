@@ -10,8 +10,7 @@ RunMapSetupScript::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call ReadMapSetupScript
-	ret
+	jp ReadMapSetupScript
 
 INCLUDE "data/maps/setup_scripts.asm"
 
@@ -85,16 +84,12 @@ SkipUpdateMapSprites:
 	ret
 
 CheckUpdatePlayerSprite:
-	nop
 	call .CheckForcedBiking
-	jr c, .ok
+	jp c, UpdatePlayerSprite
 	call .CheckSurfing
-	jr c, .ok
+	jp c, UpdatePlayerSprite
 	call .ResetSurfingOrBikingState
-	jr c, .ok
-	ret
-.ok
-	call UpdatePlayerSprite
+	jp c, UpdatePlayerSprite
 	ret
 .CheckForcedBiking:
 	and a
@@ -137,7 +132,7 @@ CheckUpdatePlayerSprite:
 	ret
 .CheckSurfing:
 	call CheckOnWater
-	jr nz, .nope2
+	jr nz, .nope
 	ld a, [wPlayerState]
 	cp PLAYER_SURF
 	jr z, .is_surfing
@@ -148,14 +143,10 @@ CheckUpdatePlayerSprite:
 .is_surfing
 	scf
 	ret
-.nope2
-	and a
-	ret
 
 FadeOutMapMusic:
 	ld a, 6
-	call SkipMusic
-	ret
+	jp SkipMusic
 
 ApplyMapPalettes:
 	farcall _UpdateTimePals
@@ -168,8 +159,7 @@ FadeMapMusicAndPalettes:
 	ld a, [wMusicFadeID + 1]
 	ld a, $4
 	ld [wMusicFade], a
-	call RotateThreePalettesRight
-	ret
+	jp RotateThreePalettesRight
 
 ForceMapMusic:
 	ld a, [wPlayerState]
@@ -179,5 +169,4 @@ ForceMapMusic:
 	ld a, $88
 	ld [wMusicFade], a
 .notbiking
-	call TryRestartMapMusic
-	ret
+	jp TryRestartMapMusic

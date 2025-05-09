@@ -121,11 +121,8 @@ MapEvents:
 .no_events:
 	ret
 
-MaxOverworldDelay:
-	db 2
-
 ResetOverworldDelay:
-	ld a, [MaxOverworldDelay]
+	ld a, 2
 	ld [wOverworldDelay], a
 	ret
 
@@ -134,8 +131,7 @@ NextOverworldFrame:
 	and a
 	ret z
 	ld c, a
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 HandleMapTimeAndJoypad:
 	ld a, [wMapEventStatus]
@@ -143,14 +139,12 @@ HandleMapTimeAndJoypad:
 	ret z
 	call UpdateTime
 	call GetJoypad
-	call TimeOfDayPals
-	ret
+	jp TimeOfDayPals
 
 HandleMapObjects:
 	farcall HandleNPCStep
 	farcall _HandlePlayerStep
-	call _CheckObjectEnteringVisibleRange
-	ret
+	jr _CheckObjectEnteringVisibleRange
 
 HandleMapBackground:
 	farcall _UpdateSprites
@@ -221,8 +215,6 @@ PlayerEvents:
 	ret
 
 CheckTrainerEvent:
-	nop
-	nop
 	call CheckTrainerBattle
 	jr nc, .nope
 	ld a, PLAYEREVENT_SEENBYTRAINER
@@ -1060,8 +1052,6 @@ TryWildEncounter_BugContest:
 INCLUDE "data/wild/bug_contest_mons.asm"
 
 DoBikeStep::
-	nop
-	nop
 	; If the bike shop owner doesn't have our number, or
 	; if we've already gotten the call, we don't have to
 	; be here.

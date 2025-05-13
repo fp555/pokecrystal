@@ -130,7 +130,7 @@
 	charmap "☎",        $d9
 	charmap "<BOLD_V>",  $da
 	charmap "<BOLD_S>",  $db
-	charmap "<%>",		 $dc ; unused
+	charmap "<%>",		 $dc
 	charmap "“",         $dd ; opening quote
 	charmap "”",         $de ; closing quote
 	charmap "←",         $df

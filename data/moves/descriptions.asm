@@ -260,7 +260,6 @@ MoveDescriptions::
 	dw Move00Description
 	assert_table_length $100
 
-MoveFCDescription:
 MoveFDDescription:
 MoveFEDescription:
 MoveFFDescription:
@@ -295,15 +294,15 @@ FireBlastDescription:
 FirePunchDescription:
 FlamethrowerDescription:
 	db   "May burn target"
-	next "(10<%>).@"
+	next "(30<%>).@"
 
 FlameWheelDescription:
 	db   "Thaws user. May"
-	next "burn target (10<%>).@"
+	next "burn target (30<%>).@"
 
 SacredFireDescription:
-	db   "Thaws user. May"
-	next "burn target (50<%>).@"
+	db   "Thaws user and"
+	next "burns target.@"
 
 BlizzardDescription:
 IceBeamDescription:
@@ -312,17 +311,15 @@ PowderSnowDescription:
 	db   "May freeze target"
 	next "(10<%>).@"
 
-ThunderboltDescription:
-ThunderpunchDescription:
-ThundershockDescription:
-	db   "May paralyze"
-	next "target (10<%>).@"
-
 BodySlamDescription:
 DragonbreathDescription:
 LickDescription:
 SparkDescription:
+StunSporeDescription:
 ThunderDescription:
+ThunderboltDescription:
+ThunderpunchDescription:
+ThundershockDescription:
 	db   "May paralyze"
 	next "target (30<%>).@"
 
@@ -333,21 +330,15 @@ ZapCannonDescription:
 
 TriAttackDescription:
 	db   "May paralyze, burn"
-	next "or freeze (20<%>).@"
-
-TwineedleDescription:
-	db   "May poison target"
-	next "(20<%>).@"
+	next "or freeze (30<%>).@"
 
 PoisonStingDescription:
 SludgeDescription:
 SludgeBombDescription:
+SmogDescription:
+TwineedleDescription:
 	db   "May poison target"
 	next "(30<%>).@"
-
-SmogDescription:
-	db   "May poison target"
-	next "(40<%>).@"
 
 PoisonGasDescription:
 PoisonpowderDescription:
@@ -365,13 +356,10 @@ SporeDescription:
 	db   "Makes target fall"
 	next "asleep.@"
 
-BoneClubDescription:
-HyperFangDescription:
-	db   "May make target"
-	next "flinch (10<%>).@"
-
 BiteDescription:
+BoneClubDescription:
 HeadbuttDescription:
+HyperFangDescription:
 LowKickDescription:
 RockSlideDescription:
 RollingKickDescription:
@@ -380,13 +368,10 @@ StompDescription:
 	next "flinch (30<%>).@"
 
 ConfusionDescription:
+DizzyPunchDescription:
 PsybeamDescription:
 	db   "May confuse target"
-	next "(10<%>).@"
-
-DizzyPunchDescription:
-	db   "May confuse target"
-	next "(20<%>).@"
+	next "(30<%>).@"
 
 ConfuseRayDescription:
 DynamicpunchDescription:
@@ -479,16 +464,10 @@ ReflectDescription:
 	next "for 5 turns.@"
 
 AcidDescription:
-	db   "May lower target"
-	next "DEFENSE (10<%>).@"
-
 IronTailDescription:
-	db   "May lower target"
-	next "DEFENSE (30<%>).@"
-
 RockSmashDescription:
 	db   "May lower target"
-	next "DEFENSE (50<%>).@"
+	next "DEFENSE (30<%>).@"
 
 LeerDescription:
 TailWhipDescription:
@@ -503,21 +482,21 @@ AgilityDescription:
 	db   "Sharply raises the"
 	next "user's SPEED.@"
 
-CottonSporeDescription:
-ScaryFaceDescription:
-	db   "Sharply lowers the"
-	next "target's SPEED.@"
-
 BubbleDescription:
 BubblebeamDescription:
 ConstrictDescription:
 	db   "May lower target"
-	next "SPEED (10<%>).@"
+	next "SPEED (30<%>).@"
 
 IcyWindDescription:
 StringShotDescription:
 	db   "Lowers target's"
 	next "SPEED.@"
+
+CottonSporeDescription:
+ScaryFaceDescription:
+	db   "Sharply lowers the"
+	next "target's SPEED.@"
 
 GrowthDescription:
 	db   "Raises the user's"
@@ -531,14 +510,11 @@ LightScreenDescription:
 	db   "Doubles SPCL.DEF"
 	next "for 5 turns.@"
 	
-PsychicMDescription:
-	db   "May lower target"
-	next "SPCL.DEF (10<%>).@"
-
 CrunchDescription:
+PsychicMDescription:
 ShadowBallDescription:
 	db   "May lower target"
-	next "SPCL.DEF (20<%>).@"
+	next "SPCL.DEF (30<%>).@"
 
 BulkUpDescription:
 	db   "Raises ATK and DEF"
@@ -550,7 +526,7 @@ AncientpowerDescription:
 
 OctazookaDescription:
 	db   "May lower target"
-	next "accuracy (50<%>).@"
+	next "accuracy (30<%>).@"
 
 FlashDescription:
 KinesisDescription:
@@ -583,6 +559,10 @@ MistDescription:
 
 SafeguardDescription:
 	db   "Prevents all"
+	next "status problems.@"
+
+HealBellDescription:
+	db   "Eliminates all"
 	next "status problems.@"
 
 RainDanceDescription:
@@ -907,8 +887,8 @@ PainSplitDescription:
 	next "HPs. Shares total.@"
 
 BatonPassDescription:
-	db   "Switches user out"
-	next "and passes status.@"
+	db   "Switches user pas-"
+	next "sing stat changes.@"
 
 RapidSpinDescription:
 	db   "Frees user from"

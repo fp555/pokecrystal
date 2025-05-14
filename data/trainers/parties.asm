@@ -203,14 +203,7 @@ WillGroup:
 	db -1 ; end
 
 PKMNTrainerGroup:
-	; CAL (2)
-	db "CAL@", TRAINERTYPE_NORMAL
-	db 30, BAYLEEF
-	db 30, QUILAVA
-	db 30, CROCONAW
-	db -1 ; end
-
-	; CAL (3)
+	; CAL (1)
 	db "CAL@", TRAINERTYPE_NORMAL
 	db 50, MEGANIUM
 	db 50, TYPHLOSION

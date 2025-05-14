@@ -75,8 +75,7 @@ DEF KRIS EQU __trainer_class__
 	const WILL1
 
 	trainerclass CAL ; c
-	const CAL2
-	const CAL3
+	const CAL1
 
 	trainerclass BRUNO ; d
 	const BRUNO1

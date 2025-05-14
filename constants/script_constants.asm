@@ -242,12 +242,6 @@ DEF NUM_DECODESCS EQU const_value
 	const FISHSWARM_QWILFISH ; 1
 	const FISHSWARM_REMORAID ; 2
 
-; SpecialGameboyCheck return values
-	const_def
-	const GBCHECK_GB  ; 0
-	const GBCHECK_SGB ; 1
-	const GBCHECK_CGB ; 2
-
 ; CheckMagikarpLength return values
 	const_def
 	const MAGIKARPLENGTH_NOT_MAGIKARP ; 0

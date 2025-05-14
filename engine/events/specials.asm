@@ -365,25 +365,6 @@ PlayCurMonCry:
 	ld a, [wCurPartySpecies]
 	jp PlayMonCry
 
-GameboyCheck:
-	ldh a, [hCGB]
-	and a
-	jr nz, .cgb
-	ldh a, [hSGB]
-	and a
-	jr nz, .sgb
-	; gb
-	xor a ; GBCHECK_GB
-	jr .done
-.sgb
-	ld a, GBCHECK_SGB
-	jr .done
-.cgb
-	ld a, GBCHECK_CGB
-.done
-	ld [wScriptVar], a
-	ret
-
 FadeOutMusic:
 	ld a, LOW(MUSIC_NONE)
 	ld [wMusicFadeID], a
@@ -405,7 +386,7 @@ PrintDiploma:
 	call ExitAllMenus
 	ret
 
-TrainerHouse:
+TrainerHouse: ; unused
 	ld a, BANK(sMysteryGiftTrainerHouseFlag)
 	call OpenSRAM
 	ld a, [sMysteryGiftTrainerHouseFlag]

@@ -1840,20 +1840,15 @@ DireHitEffect:
 XItemEffect:
 	call UseItemText
 	ld a, [wCurItem]
-	ld hl, XItemStats
-.loop
-	cp [hl]
-	jr z, .got_it
-	inc hl
-	inc hl
-	jr .loop
-.got_it
-	inc hl
-	ld b, [hl]
+	ld b, a
+	farcall GetItemHeldEffect
+	; stat to raise (param) is in c
+	ld b, c
 	xor a
 	ldh [hBattleTurn], a
 	ld [wAttackMissed], a
 	ld [wEffectFailed], a
+	; raise stat in b
 	farcall RaiseStat
 	call WaitSFX
 	farcall BattleCommand_StatUpMessage
@@ -1863,8 +1858,6 @@ XItemEffect:
 	ld c, HAPPINESS_USEDXITEM
 	farcall ChangeHappiness
 	ret
-
-INCLUDE "data/items/x_stats.asm"
 
 PokeFluteEffect:
 	ld a, [wBattleMode]

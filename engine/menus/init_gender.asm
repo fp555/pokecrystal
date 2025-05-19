@@ -11,10 +11,7 @@ InitCrystalData:
 	ld [wd002], a
 	ld [wd003], a
 	ld a, [wCrystalFlags]
-	res 0, a ; ???
-	ld [wCrystalFlags], a
-	ld a, [wCrystalFlags]
-	res 1, a ; ???
+	and %11111100
 	ld [wCrystalFlags], a
 	ret
 
@@ -39,13 +36,11 @@ InitGender:
 	ld c, 10
 	call DelayFrames
 	ret
-
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 6, 4, 12, 9
 	dw .MenuData
 	db 1 ; default option
-
 .MenuData:
 	db STATICMENU_CURSOR | STATICMENU_WRAP | STATICMENU_DISABLE_B ; flags
 	db 2 ; items
@@ -67,7 +62,7 @@ InitGenderScreen:
 	call DelayFrames
 	call ClearBGPalettes
 	call InitCrystalData
-	call LoadFontsExtra
+	call LoadFrame
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
 	ld a, $0
@@ -86,7 +81,6 @@ LoadGenderScreenPal:
 	call FarCopyWRAM
 	farcall ApplyPals
 	ret
-
 .Palette:
 INCLUDE "gfx/new_game/gender_screen.pal"
 
@@ -96,6 +90,5 @@ LoadGenderScreenLightBlueTile:
 	lb bc, BANK(.LightBlueTile), 1
 	call Get2bpp
 	ret
-
 .LightBlueTile:
 INCBIN "gfx/new_game/gender_screen.2bpp"

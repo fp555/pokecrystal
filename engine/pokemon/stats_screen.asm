@@ -155,12 +155,10 @@ MonStatsInit:
 	ld hl, wStatsScreenFlags
 	set STATS_SCREEN_PLACE_FRONTPIC, [hl]
 	ld h, 4
-	call StatsScreen_SetJumptableIndex
-	ret
+	jr StatsScreen_SetJumptableIndex
 .egg
 	ld h, 1
-	call StatsScreen_SetJumptableIndex
-	ret
+	jr StatsScreen_SetJumptableIndex
 
 EggStatsInit:
 	call EggStatsScreen
@@ -173,8 +171,7 @@ EggStatsJoypad:
 	call StatsScreen_GetJoypad
 	jr nc, .check
 	ld h, 0
-	call StatsScreen_SetJumptableIndex
-	ret
+	jr StatsScreen_SetJumptableIndex
 .check
 	bit B_PAD_A, a
 	jr nz, .quit
@@ -182,8 +179,7 @@ EggStatsJoypad:
 	jp StatsScreen_JoypadAction
 .quit
 	ld h, 7
-	call StatsScreen_SetJumptableIndex
-	ret
+	jr StatsScreen_SetJumptableIndex
 
 StatsScreen_LoadPage:
 	call StatsScreen_LoadGFX
@@ -198,8 +194,7 @@ MonStatsJoypad:
 	call StatsScreen_GetJoypad
 	jr nc, .next
 	ld h, 0
-	call StatsScreen_SetJumptableIndex
-	ret
+	jp StatsScreen_SetJumptableIndex ; jr?
 .next
 	and PAD_CTRL_PAD | PAD_A | PAD_B
 	jp StatsScreen_JoypadAction
@@ -340,16 +335,13 @@ StatsScreen_JoypadAction:
 	or c
 	ld [wStatsScreenFlags], a
 	ld h, 4
-	call StatsScreen_SetJumptableIndex
-	ret
+	jp StatsScreen_SetJumptableIndex
 .load_mon
 	ld h, 0
-	call StatsScreen_SetJumptableIndex
-	ret
+	jp StatsScreen_SetJumptableIndex
 .b_button
 	ld h, 7
-	call StatsScreen_SetJumptableIndex
-	ret
+	jp StatsScreen_SetJumptableIndex
 
 StatsScreen_InitUpperHalf:
 	call .PlaceHPBar
@@ -385,8 +377,7 @@ StatsScreen_InitUpperHalf:
 	call PlaceString
 	call StatsScreen_PlaceHorizontalDivider
 	call StatsScreen_PlacePageSwitchArrows
-	call StatsScreen_PlaceShinyIcon
-	ret
+	jr StatsScreen_PlaceShinyIcon
 .PlaceHPBar:
 	ld hl, wTempMonHP
 	ld a, [hli]
@@ -401,8 +392,7 @@ StatsScreen_InitUpperHalf:
 	call SetHPPal
 	ld b, SCGB_STATS_SCREEN_HP_PALS
 	call GetSGBLayout
-	call DelayFrame
-	ret
+	jp DelayFrame
 .PlaceGenderChar:
 	push hl
 	farcall GetGender
@@ -457,11 +447,9 @@ StatsScreen_LoadGFX:
 	ld hl, wStatsScreenFlags
 	bit STATS_SCREEN_PLACE_FRONTPIC, [hl]
 	jr nz, .place_frontpic
-	call SetDefaultBGPAndOBP
-	ret
+	jp SetDefaultBGPAndOBP
 .place_frontpic
-	call StatsScreen_PlaceFrontpic
-	ret
+	jp StatsScreen_PlaceFrontpic
 .ClearBox:
 	ld a, [wStatsScreenFlags]
 	maskbits NUM_STAT_PAGES
@@ -469,8 +457,7 @@ StatsScreen_LoadGFX:
 	call StatsScreen_LoadPageIndicators
 	hlcoord 0, 8
 	lb bc, 10, 20
-	call ClearBox
-	ret
+	jp ClearBox
 .LoadPals:
 	ld a, [wStatsScreenFlags]
 	maskbits NUM_STAT_PAGES
@@ -677,8 +664,7 @@ LoadGreenPage:
 	and a
 	ret z
 	ld [wNamedObjectIndex], a
-	call GetItemName
-	ret
+	jp GetItemName
 .Item:
 	db "Item@"
 .ThreeDashes:

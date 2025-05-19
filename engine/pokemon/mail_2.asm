@@ -27,7 +27,7 @@ ReadAnyMail:
 	call ClearSprites
 	call ClearTilemap
 	call DisableLCD
-	call LoadFontsExtra
+	call LoadFrame
 	pop de
 	push de
 	ld a, BANK(sPartyMail)

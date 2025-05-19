@@ -475,7 +475,7 @@ Function893b3:
 	call DisableLCD
 	call ClearSprites
 	call LoadStandardFont
-	call LoadFontsExtra
+	call LoadFrame
 	call Function893ef
 	call Function8942b
 	call Function89455
@@ -486,7 +486,7 @@ Function893cc:
 	call DisableLCD
 	call ClearSprites
 	call LoadStandardFont
-	call LoadFontsExtra
+	call LoadFrame
 	call Function893ef
 	call Function89464
 	call EnableLCD

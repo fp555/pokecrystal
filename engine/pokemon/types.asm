@@ -45,7 +45,7 @@ PrintMoveType:
 	and TYPE_MASK
 	pop hl
 	ld b, a
-
+	; fallthrough
 PrintType:
 ; Print type b at hl.
 	ld a, b

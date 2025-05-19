@@ -796,7 +796,7 @@ Function106464::
 	ld hl, vTiles2 tile $6b
 	ld b, $0f ; no graphics at 0f:40b0; JP leftover???
 	call Get2bpp
-	farcall LoadFrame
+	call LoadFrame
 	ret
 
 Function1064c3:

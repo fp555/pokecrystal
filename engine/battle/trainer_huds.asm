@@ -19,7 +19,6 @@ ShowPlayerMonsRemaining:
 	ld hl, wPartyMon1HP
 	ld de, wPartyCount
 	call StageBallTilesData
-	; ldpixel wPlaceBallsX, 12, 12
 	ld a, 12 * TILE_WIDTH
 	ld hl, wPlaceBallsX
 	ld [hli], a
@@ -34,7 +33,6 @@ ShowOTTrainerMonsRemaining:
 	ld hl, wOTPartyMon1HP
 	ld de, wOTPartyCount
 	call StageBallTilesData
-	; ldpixel wPlaceBallsX, 9, 4
 	ld hl, wPlaceBallsX
 	ld a, 9 * TILE_WIDTH
 	ld [hli], a
@@ -56,7 +54,6 @@ StageBallTilesData:
 	dec c
 	jr nz, .loop1
 	pop af
-
 	ld de, wBattleHUDTiles
 .loop2
 	push af
@@ -66,7 +63,6 @@ StageBallTilesData:
 	dec a
 	jr nz, .loop2
 	ret
-
 .GetHUDTile:
 	ld a, [hli]
 	and a
@@ -75,7 +71,6 @@ StageBallTilesData:
 	and a
 	ld b, $33 ; fainted
 	jr z, .fainted
-
 .got_hp
 	dec hl
 	dec hl
@@ -86,12 +81,10 @@ StageBallTilesData:
 	jr nz, .load
 	dec b ; normal
 	jr .load
-
 .fainted
 	dec hl
 	dec hl
 	dec hl
-
 .load
 	ld a, b
 	ld [de], a
@@ -107,7 +100,6 @@ DrawPlayerHUDBorder:
 	hlcoord 18, 10
 	ld de, -1 ; start on right
 	jr PlaceHUDBorderTiles
-
 .tiles
 	db $73 ; right side
 	db $77 ; bottom right
@@ -123,7 +115,6 @@ DrawPlayerPartyIconHUDBorder:
 	hlcoord 18, 10
 	ld de, -1 ; start on right
 	jr PlaceHUDBorderTiles
-
 .tiles
 	db $73 ; right side
 	db $5c ; bottom right
@@ -149,7 +140,6 @@ DrawEnemyHUDBorder:
 	hlcoord 1, 1
 	ld [hl], $5d
 	ret
-
 .tiles
 	db $6d ; left side
 	db $74 ; bottom left
@@ -189,7 +179,6 @@ LinkBattle_TrainerHuds:
 	ld [wPlaceBallsDirection], a
 	ld hl, wShadowOAMSprite00
 	call LoadTrainerHudOAM
-
 	ld hl, wOTPartyMon1HP
 	ld de, wOTPartyCount
 	call StageBallTilesData
@@ -226,15 +215,13 @@ LoadBallIconGFX:
 	ld de, .gfx
 	ld hl, vTiles0 tile $31
 	lb bc, BANK(LoadBallIconGFX), 4
-	call Get2bppViaHDMA
-	ret
-
+	jp Get2bppViaHDMA
 .gfx
 INCBIN "gfx/battle/balls.2bpp"
 
 _ShowLinkBattleParticipants:
 	call ClearBGPalettes
-	call LoadFontsExtra
+	call LoadFrame
 	hlcoord 2, 3
 	ld b, 9
 	ld c, 14

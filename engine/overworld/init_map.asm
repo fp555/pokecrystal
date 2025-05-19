@@ -61,7 +61,7 @@ LoadFonts_NoOAMUpdate::
 	ldh [hOAMUpdate], a
 	ret
 .LoadGFX:
-	call LoadFontsExtra
+	call LoadFrame
 	ld a, $90
 	ldh [hWY], a
 	call SafeUpdateSprites

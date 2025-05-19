@@ -1796,7 +1796,7 @@ ReloadTilesetAndPalettes::
 	call ClearSprites
 	farcall RefreshSprites
 	call LoadStandardFont
-	call LoadFontsExtra
+	call LoadFrame
 	ldh a, [hROMBank]
 	push af
 	ld a, [wMapGroup]

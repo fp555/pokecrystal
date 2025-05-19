@@ -862,12 +862,12 @@ _PhoneJustTalkToThemText::
 	line "that person!"
 	done
 
-_PasswordAskResetText::
+_AskResetText::
 	text "Select CONTINUE &"
 	line "reset settings."
 	prompt
 
-_PasswordAskResetClockText::
+_AskResetClockText::
 	text "Reset the clock?"
 	done
 

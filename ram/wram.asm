@@ -2250,9 +2250,8 @@ wMailboxItems:: ds MAILBOX_CAPACITY
 ENDU
 
 wListPointer:: dw
-wUnusedNamesPointer:: dw
 
-wItemAttributesPointer:: dw
+	ds 4
 
 wCurItem:: db
 wCurItemQuantity::
@@ -2616,7 +2615,7 @@ wNiteEncounterRate::  db
 wWaterEncounterRate:: db
 wListMoves_MoveIndicesBuffer:: ds NUM_MOVES
 wPutativeTMHMMove:: db
-wInitListType:: db
+	ds 1
 wBattleHasJustStarted:: db
 
 wNamedObjectIndex::

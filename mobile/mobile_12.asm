@@ -20,7 +20,7 @@ InitMobileProfile:
 	ld [wd003], a
 .not_yet_initialized
 	call Function486bf
-	call LoadFontsExtra
+	call LoadFrame
 	ld de, MobileUpArrowGFX
 	ld hl, vTiles2 tile $10
 	lb bc, BANK(MobileUpArrowGFX), 1

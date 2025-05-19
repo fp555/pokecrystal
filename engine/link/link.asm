@@ -169,10 +169,6 @@ endc
 	ld [de], a
 	ld hl, wTimeCapsulePlayerData
 	call Link_ConvertPartyStruct1to2
-	ld a, LOW(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer], a
-	ld a, HIGH(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer + 1], a
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -414,10 +410,6 @@ endc
 	ld de, wOTPartyMons
 	ld bc, wOTPartyDataEnd - wOTPartyMons
 	call CopyBytes
-	ld a, LOW(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer], a
-	ld a, HIGH(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer + 1], a
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -1184,9 +1176,6 @@ LinkTradeOTPartymonMenuLoop:
 	jp z, LinkTradePartiesMenuMasterLoop
 	bit B_PAD_A, a
 	jr z, .not_a_button
-	ld a, INIT_ENEMYOT_LIST
-	ld [wInitListType], a
-	callfar InitList
 	ld hl, wOTPartyMon1Species
 	farcall LinkMonStatsScreen
 	jp LinkTradePartiesMenuMasterLoop
@@ -1366,9 +1355,6 @@ LinkTrade_TradeStatsMenu:
 .show_stats
 	pop af
 	ld [wMenuCursorY], a
-	ld a, INIT_PLAYEROT_LIST
-	ld [wInitListType], a
-	callfar InitList
 	farcall LinkMonStatsScreen
 	call SafeLoadTempTilemapToTilemap
 	hlcoord 6, 1

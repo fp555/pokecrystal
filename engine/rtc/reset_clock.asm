@@ -3,10 +3,10 @@ _ResetClock:
 	ld b, SCGB_DIPLOMA
 	call GetSGBLayout
 	call LoadStandardFont
-	call LoadFontsExtra
+	call LoadFrame
 	ld de, MUSIC_MAIN_MENU
 	call PlayMusic
-	ld hl, .PasswordAskResetClockText
+	ld hl, .AskResetClockText
 	call PrintText
 	ld hl, .NoYes_MenuHeader
 	call CopyMenuHeader
@@ -20,14 +20,14 @@ _ResetClock:
 	ld a, RTC_RESET
 	ld [sRTCStatusFlags], a
 	call CloseSRAM
-	ld hl, .PasswordAskResetText
+	ld hl, .AskResetText
 	call PrintText
 	ret
-.PasswordAskResetText:
-	text_far _PasswordAskResetText
+.AskResetText:
+	text_far _AskResetText
 	text_end
-.PasswordAskResetClockText:
-	text_far _PasswordAskResetClockText
+.AskResetClockText:
+	text_far _AskResetClockText
 	text_end
 .NoYes_MenuHeader:
 	db 0 ; flags

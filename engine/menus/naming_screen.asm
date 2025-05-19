@@ -774,7 +774,7 @@ LoadNamingScreenGFX:
 	call ClearSprites
 	callfar ClearSpriteAnims
 	call LoadStandardFont
-	call LoadFontsExtra
+	call LoadFrame
 	ld de, NamingScreenGFX_MiddleLine
 	ld hl, vTiles0 tile NAMINGSCREEN_MIDDLELINE
 	lb bc, BANK(NamingScreenGFX_MiddleLine), 1

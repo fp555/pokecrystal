@@ -38,8 +38,8 @@ LoadFontsBattleExtra::
 	farcall _LoadFontsBattleExtra
 	ret
 
-LoadFontsExtra::
-	farcall _LoadFontsExtra
+LoadFrame::
+	farcall _LoadFrame
 	ret
 
 DecompressRequest2bpp::
@@ -48,14 +48,11 @@ DecompressRequest2bpp::
 	ld a, BANK(sScratch)
 	call OpenSRAM
 	push bc
-
 	ld de, sScratch
 	ld a, b
 	call FarDecompress
-
 	pop bc
 	pop hl
-
 	ld de, sScratch
 	call Request2bpp
 	call CloseSRAM
@@ -63,15 +60,12 @@ DecompressRequest2bpp::
 
 FarCopyBytes::
 ; copy bc bytes from a:hl to de
-
 	ldh [hTempBank], a
 	ldh a, [hROMBank]
 	push af
 	ldh a, [hTempBank]
 	rst Bankswitch
-
 	call CopyBytes
-
 	pop af
 	rst Bankswitch
 	ret
@@ -79,25 +73,21 @@ FarCopyBytes::
 FarCopyBytesDouble:
 ; Copy bc bytes from a:hl to bc*2 bytes at de,
 ; doubling each byte in the process.
-
 	ldh [hTempBank], a
 	ldh a, [hROMBank]
 	push af
 	ldh a, [hTempBank]
 	rst Bankswitch
-
-; switcheroo, de <> hl
+	; switcheroo, de <> hl
 	ld a, h
 	ld h, d
 	ld d, a
 	ld a, l
 	ld l, e
 	ld e, a
-
 	inc b
 	inc c
 	jr .dec
-
 .loop
 	ld a, [de]
 	inc de
@@ -108,7 +98,6 @@ FarCopyBytesDouble:
 	jr nz, .loop
 	dec b
 	jr nz, .loop
-
 	pop af
 	rst Bankswitch
 	ret
@@ -119,17 +108,14 @@ Request2bpp::
 	push af
 	xor a
 	ldh [hBGMapMode], a
-
 	ldh a, [hROMBank]
 	push af
 	ld a, b
 	rst Bankswitch
-
 	ldh a, [hTilesPerCycle]
 	push af
 	ld a, TILES_PER_CYCLE
 	ldh [hTilesPerCycle], a
-
 	ld a, [wLinkMode]
 	cp LINK_MOBILE
 	jr nz, .NotMobile
@@ -138,7 +124,6 @@ Request2bpp::
 	jr nz, .NotMobile
 	ld a, MOBILE_TILES_PER_CYCLE
 	ldh [hTilesPerCycle], a
-
 .NotMobile:
 	ld a, e
 	ld [wRequested2bppSource], a
@@ -153,34 +138,27 @@ Request2bpp::
 	ld hl, hTilesPerCycle
 	cp [hl]
 	jr nc, .cycle
-
 	ld [wRequested2bppSize], a
 .wait
 	call DelayFrame
 	ld a, [wRequested2bppSize]
 	and a
 	jr nz, .wait
-
 	pop af
 	ldh [hTilesPerCycle], a
-
 	pop af
 	rst Bankswitch
-
 	pop af
 	ldh [hBGMapMode], a
 	ret
-
 .cycle
 	ldh a, [hTilesPerCycle]
 	ld [wRequested2bppSize], a
-
 .wait2
 	call DelayFrame
 	ld a, [wRequested2bppSize]
 	and a
 	jr nz, .wait2
-
 	ld a, c
 	ld hl, hTilesPerCycle
 	sub [hl]
@@ -193,17 +171,14 @@ Request1bpp::
 	push af
 	xor a
 	ldh [hBGMapMode], a
-
 	ldh a, [hROMBank]
 	push af
 	ld a, b
 	rst Bankswitch
-
 	ldh a, [hTilesPerCycle]
 	push af
 	ld a, TILES_PER_CYCLE
 	ldh [hTilesPerCycle], a
-
 	ld a, [wLinkMode]
 	cp LINK_MOBILE
 	jr nz, .NotMobile
@@ -212,7 +187,6 @@ Request1bpp::
 	jr nz, .NotMobile
 	ld a, MOBILE_TILES_PER_CYCLE
 	ldh [hTilesPerCycle], a
-
 .NotMobile:
 	ld a, e
 	ld [wRequested1bppSource], a
@@ -227,34 +201,27 @@ Request1bpp::
 	ld hl, hTilesPerCycle
 	cp [hl]
 	jr nc, .cycle
-
 	ld [wRequested1bppSize], a
 .wait
 	call DelayFrame
 	ld a, [wRequested1bppSize]
 	and a
 	jr nz, .wait
-
 	pop af
 	ldh [hTilesPerCycle], a
-
 	pop af
 	rst Bankswitch
-
 	pop af
 	ldh [hBGMapMode], a
 	ret
-
 .cycle
 	ldh a, [hTilesPerCycle]
 	ld [wRequested1bppSize], a
-
 .wait2
 	call DelayFrame
 	ld a, [wRequested1bppSize]
 	and a
 	jr nz, .wait2
-
 	ld a, c
 	ld hl, hTilesPerCycle
 	sub [hl]
@@ -267,17 +234,14 @@ Get2bpp::
 	bit B_LCDC_ENABLE, a
 	jp nz, Request2bpp
 	; fallthrough
-
 Copy2bpp:
 	push hl
 	ld h, d
 	ld l, e
 	pop de
-
-; bank
+	; bank
 	ld a, b
-
-; bc = c * TILE_SIZE
+	; bc = c * TILE_SIZE
 	push af
 	swap c
 	ld a, $f
@@ -287,7 +251,6 @@ Copy2bpp:
 	and c
 	ld c, a
 	pop af
-
 	jp FarCopyBytes
 
 Get1bpp::
@@ -296,16 +259,13 @@ Get1bpp::
 	bit B_LCDC_ENABLE, a
 	jp nz, Request1bpp
 	; fallthrough
-
 Copy1bpp::
 	push de
 	ld d, h
 	ld e, l
-
-; bank
+	; bank
 	ld a, b
-
-; bc = c * TILE_1BPP_SIZE
+	; bc = c * TILE_1BPP_SIZE
 	push af
 	ld h, 0
 	ld l, c
@@ -315,6 +275,5 @@ Copy1bpp::
 	ld b, h
 	ld c, l
 	pop af
-
 	pop hl
 	jp FarCopyBytesDouble

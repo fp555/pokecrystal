@@ -62,7 +62,7 @@ GetRemainingSpaceInPhoneList:
 	cp -1
 	jr z, .done
 	cp c
-	jr z, .continue
+	jr z, .loop
 	push bc
 	push hl
 	ld c, a
@@ -73,7 +73,6 @@ GetRemainingSpaceInPhoneList:
 .permanent
 	pop hl
 	pop bc
-.continue
 	jr .loop
 .done
 	ld a, CONTACT_LIST_SIZE

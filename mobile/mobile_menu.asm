@@ -199,7 +199,7 @@ Function4a100:
 
 asm_4a111:
 	pop bc
-	call LoadFontsExtra
+	call LoadFrame
 	jp Function49f0a
 
 Function4a118:
@@ -394,7 +394,7 @@ Function4a28a:
 	farcall Function11765d
 	call ClearBGPalettes
 	call Call_ExitMenu
-	call LoadFontsExtra
+	call LoadFrame
 	scf
 	ret
 .DeleteLoginPassword:
@@ -771,7 +771,7 @@ Function4a6ab:
 	call GetSGBLayout
 	farcall Function11c1ab
 	pop bc
-	call LoadFontsExtra
+	call LoadFrame
 	jp Function4a4c4
 
 Function4a6c5:
@@ -782,8 +782,7 @@ Function4a6c5:
 	ld a, d
 	ld [wMusicFadeID + 1], a
 	ld c, 22
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 Function4a6d8:
 	push bc

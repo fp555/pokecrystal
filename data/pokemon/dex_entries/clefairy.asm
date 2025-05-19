@@ -1,10 +1,10 @@
 	db "FAIRY@" ; species name
-	dw 200, 170 ; height, weight
+	dw 200, 75 ; height, weight
 
-	db   "Though rarely"
-	next "seen, it becomes"
-	next "easier to spot,"
+	db   "Popular for its"
+	next "cuteness and"
+	next "playful behavior."
 
-	page "for some reason,"
-	next "on the night of a "
-	next "full moon.@"
+	page "However, it is"
+	next "rare and difficult"
+	next "to find.@"

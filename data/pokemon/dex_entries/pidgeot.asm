@@ -1,10 +1,10 @@
 	db "BIRD@" ; species name
-	dw 411, 870 ; height, weight
+	dw 411, 395 ; height, weight
 
-	db   "Its outstanding"
-	next "vision allows it"
-	next "to spot splashing"
+	db   "It spreads its"
+	next "beautiful wings"
+	next "wide to frighten"
 
-	page "MAGIKARP, even"
-	next "while flying at"
-	next "3300 feet.@"
+	page "its enemies. It"
+	next "can fly at Mach 2"
+	next "speed.@"

@@ -1,10 +1,10 @@
 	db "WEED@" ; species name
-	dw 207, 190 ; height, weight
+	dw 207, 86 ; height, weight
 
-	db   "The smell from its"
-	next "drool-like syrup"
-	next "and the pollen on"
+	db   "It secretes a"
+	next "sticky, drool-like"
+	next "honey. Although"
 
-	page "its petals is so"
-	next "bad, it may make"
-	next "opponents faint.@"
+	page "sweet, it smells"
+	next "too repulsive to"
+	next "get very close.@"

@@ -1,10 +1,10 @@
 	db "BIRD@" ; species name
-	dw 307, 660 ; height, weight
+	dw 307, 300 ; height, weight
 
-	db   "It slowly flies in"
-	next "a circular pat-"
-	next "tern, all the"
+	db   "It has outstanding"
+	next "vision. However"
+	next "high it flies, it"
 
-	page "while keeping a"
-	next "sharp lookout for"
-	next "prey.@"
+	page "is able to distin-"
+	next "guish how its prey"
+	next "is moving.@"

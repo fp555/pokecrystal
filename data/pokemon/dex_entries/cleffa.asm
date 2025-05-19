@@ -1,10 +1,10 @@
 	db "STARSHAPE@" ; species name
-	dw 100, 70 ; height, weight
+	dw 100, 30 ; height, weight
 
-	db   "If the impact site"
-	next "of a meteorite is"
-	next "found, this"
+	db   "Because of its"
+	next "unusual, star-like"
+	next "shape, people be-"
 
-	page "#MON is certain"
-	next "to be within the"
-	next "immediate area.@"
+	page "lieve that it"
+	next "arrived here from"
+	next "shooting stars.@"

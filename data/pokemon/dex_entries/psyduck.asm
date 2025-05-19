@@ -1,10 +1,10 @@
 	db "DUCK@" ; species name
-	dw 207, 430 ; height, weight
+	dw 207, 196 ; height, weight
 
-	db   "The only time it"
-	next "can use its psy-"
-	next "chic power is when"
+	db   "It has psychic"
+	next "powers, but its"
+	next "constant headache"
 
-	page "its sleeping brain"
-	next "cells happen to"
-	next "wake.@"
+	page "makes it forget"
+	next "every time it uses"
+	next "them.@"

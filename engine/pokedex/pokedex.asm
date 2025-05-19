@@ -987,7 +987,7 @@ Pokedex_DrawMainScreenBG:
 	lb bc, 6, 7
 	call Pokedex_PlaceBorder
 	hlcoord 1, 11
-	ld de, String_SEEN
+	ld de, .String_SEEN
 	call Pokedex_PlaceString
 	ld hl, wPokedexSeen
 	ld b, wEndPokedexSeen - wPokedexSeen
@@ -997,7 +997,7 @@ Pokedex_DrawMainScreenBG:
 	lb bc, 1, 3
 	call PrintNum
 	hlcoord 1, 14
-	ld de, String_OWN
+	ld de, .String_OWN
 	call Pokedex_PlaceString
 	ld hl, wPokedexCaught
 	ld b, wEndPokedexCaught - wPokedexCaught
@@ -1026,11 +1026,9 @@ Pokedex_DrawMainScreenBG:
 	hlcoord 8, 16
 	ld [hl], $5b
 	jp Pokedex_PlaceFrontpicTopLeftCorner
-
-String_SEEN:
+.String_SEEN:
 	db "SEEN", -1
-
-String_OWN:
+.String_OWN:
 	db "OWN", -1
 
 String_SELECT_OPTION:
@@ -1072,7 +1070,7 @@ Pokedex_DrawDexEntryScreenBG:
 .Height:
 	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
 .Weight:
-	db "WT   ???lb", -1
+	db "WT   ???kg", -1
 .MenuItems:
 	db $3b, " PAGE AREA CRY PRNT", -1
 
@@ -1166,7 +1164,7 @@ Pokedex_DrawSearchResultsScreenBG:
 	ld [hl], $69
 	hlcoord 8, 10
 	ld [hl], $6a
-	jp Pokedex_PlaceFrontpicTopLeftCorner ; jr?
+	jp Pokedex_PlaceFrontpicTopLeftCorner
 .BottomWindowText:
 	db   "SEARCH RESULTS"
 	next "  TYPE"
@@ -1181,14 +1179,13 @@ Pokedex_PlaceSearchResultsTypeStrings:
 	ld b, a
 	ld a, [wDexSearchMonType2]
 	and a
-	jr z, .done
+	ret z
 	cp b
-	jr z, .done
+	ret z
 	hlcoord 2, 15
 	call Pokedex_PlaceTypeString
 	hlcoord 1, 15
 	ld [hl], "/"
-.done
 	ret
 
 Pokedex_DrawUnownModeBG:
@@ -1236,7 +1233,7 @@ endr
 
 UnownModeLetterAndCursorCoords:
 ; entries correspond to Unown forms
-;           letter, cursor
+;           letter,  cursor
 	dwcoord   4,11,   3,11 ; A
 	dwcoord   4,10,   3,10 ; B
 	dwcoord   4, 9,   3, 9 ; C
@@ -1352,7 +1349,7 @@ Pokedex_PrintListing:
 	inc a
 	ld b, a
 	ld a, " "
-	call Pokedex_FillBox
+	call FillBoxWithByte
 	; Load de with wPokedexOrder + [wDexListingScrollOffset]
 	ld a, [wDexListingScrollOffset]
 	ld e, a
@@ -1603,7 +1600,7 @@ Pokedex_DisplayChangingModesMessage:
 	hlcoord 0, 12
 	lb bc, 4, 18
 	call Pokedex_PlaceBorder
-	ld de, String_ChangingModesPleaseWait
+	ld de, .String_ChangingModesPleaseWait
 	hlcoord 1, 14
 	call PlaceString
 	ld a, $1
@@ -1614,8 +1611,7 @@ Pokedex_DisplayChangingModesMessage:
 	call PlaySFX
 	ld c, 64
 	jp DelayFrames
-
-String_ChangingModesPleaseWait:
+.String_ChangingModesPleaseWait:
 	db   "Changing modes."
 	next "Please wait.@"
 
@@ -1689,7 +1685,7 @@ Pokedex_PlaceSearchScreenTypeStrings:
 	hlcoord 9, 3
 	lb bc, 4, 8
 	ld a, " "
-	call Pokedex_FillBox
+	call FillBoxWithByte
 	ld a, [wDexSearchMonType1]
 	hlcoord 9, 4
 	call Pokedex_PlaceTypeString
@@ -2118,9 +2114,6 @@ Pokedex_ArrowCursorDelay:
 	scf
 	ret
 
-Pokedex_FillBox:
-	jp FillBoxWithByte
-
 Pokedex_BlackOutBG:
 	ldh a, [rWBK]
 	push af
@@ -2132,14 +2125,13 @@ Pokedex_BlackOutBG:
 	call ByteFill
 	pop af
 	ldh [rWBK], a
-
+	; fallthrough
 Pokedex_ApplyPrintPals:
 	ld a, $ff
 	call DmgToCgbBGPals
 	ld a, $ff
 	call DmgToCgbObjPal0
-	call DelayFrame
-	ret
+	jp DelayFrame
 
 Pokedex_GetSGBLayout:
 	ld b, a
@@ -2150,8 +2142,7 @@ Pokedex_ApplyUsualPals:
 	ld a, $e4
 	call DmgToCgbBGPals
 	ld a, $e0
-	call DmgToCgbObjPal0
-	ret
+	jp DmgToCgbObjPal0
 
 Pokedex_LoadPointer:
 	ld e, a
@@ -2190,7 +2181,7 @@ Pokedex_LoadSelectedMonTiles:
 
 Pokedex_LoadCurrentFootprint:
 	call Pokedex_GetSelectedMon
-
+	; fallthrough
 Pokedex_LoadAnyFootprint:
 	ld a, [wTempSpecies]
 	dec a
@@ -2250,8 +2241,8 @@ Pokedex_InvertTiles:
 	dec bc
 	ld a, b
 	or c
-	jr nz, .loop
-	ret
+	ret z
+	jr .loop
 
 PokedexLZ:
 INCBIN "gfx/pokedex/pokedex.2bpp.lz"

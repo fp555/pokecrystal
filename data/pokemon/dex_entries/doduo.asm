@@ -1,5 +1,5 @@
 	db "TWIN BIRD@" ; species name
-	dw 407, 860 ; height, weight
+	dw 407, 392 ; height, weight
 
 	db   "It lives on a"
 	next "grassy plain where"
@@ -7,4 +7,4 @@
 
 	page "way. If it sees an"
 	next "enemy, it runs"
-	next "away at 60 mph.@"
+	next "away at 100 kmh.@"

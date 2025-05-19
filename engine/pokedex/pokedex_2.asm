@@ -24,8 +24,7 @@ AnimateDexSearchSlowpoke:
 	ld [wDexSearchSlowpokeFrame], a
 	call DoDexSearchSlowpokeFrame
 	ld c, 32
-	call DelayFrames
-	ret
+	jp DelayFrames
 .FrameIDs:
 	; frame ID, duration
 	db 0, 7
@@ -145,12 +144,12 @@ DisplayDexEntry:
 	or d
 	jr z, .skip_weight
 	push de
-	; Print the weight, with four of the five digits in front of the decimal point
+	; Print the weight, with three of the four digits in front of the decimal point
 	ld hl, sp+0
 	ld d, h
 	ld e, l
-	hlcoord 11, 9
-	lb bc, 2, (4 << 4) | 5
+	hlcoord 12, 9
+	lb bc, 2, (3 << 4) | 4
 	call PrintNum
 	pop de
 .skip_weight
@@ -204,8 +203,7 @@ DisplayDexEntry:
 	inc de
 	pop af
 	hlcoord 2, 11
-	call PlaceFarString
-	ret
+	jp PlaceFarString
 
 GetDexEntryPointer:
 ; return dex entry pointer b:de

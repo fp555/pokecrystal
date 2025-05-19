@@ -1,10 +1,10 @@
 	db "PAINTER@" ; species name
-	dw 311, 1280 ; height, weight
+	dw 311, 580 ; height, weight
 
-	db   "The color of the"
-	next "mysterious fluid"
-	next "secreted from its"
+	db   "A special fluid"
+	next "oozes from the tip"
+	next "of its tail. It"
 
-	page "tail is predeter-"
-	next "mined for each"
-	next "SMEARGLE.@"
+	page "paints the fluid"
+	next "everywhere to mark"
+	next "its territory.@"

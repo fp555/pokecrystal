@@ -1,10 +1,10 @@
 	db "SINGLEHORN@" ; species name
-	dw 411, 1190 ; height, weight
+	dw 411, 540 ; height, weight
 
-	db   "With its Herculean"
-	next "powers, it can"
-	next "easily throw arou-"
+	db   "Usually docile,"
+	next "but if disturbed"
+	next "while sipping ho-"
 
-	page "nd an object that"
-	next "is 100 times its"
-	next "own weight.@"
+	page "ney, it chases off"
+	next "the intruder with"
+	next "its horn.@"

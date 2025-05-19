@@ -1,10 +1,10 @@
 	db "BAGWORM@" ; species name
-	dw 311, 2770 ; height, weight
+	dw 311, 1258 ; height, weight
 
-	db   "Usually found"
-	next "hanging on to a"
-	next "fat tree trunk. It"
+	db   "It remains immova-"
+	next "bly rooted to its"
+	next "tree. It scatters"
 
-	page "shoots out bits of"
-	next "its shell when it"
-	next "sees action.@"
+	page "pieces of its hard"
+	next "shell to drive its"
+	next "enemies away.@"

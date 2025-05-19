@@ -1,10 +1,10 @@
 	db "SHELLFISH@" ; species name
-	dw 403, 890 ; height, weight
+	dw 403, 405 ; height, weight
 
-	db   "It was able to"
-	next "swim quickly thro-"
-	next "ugh the water by"
+	db   "With his sickles,"
+	next "this ancient"
+	next "#MON ripped"
 
-	page "compactly folding"
-	next "up its razor-sharp"
-	next "sickles.@"
+	page "apart preys and"
+	next "drained their"
+	next "body fluids.@"

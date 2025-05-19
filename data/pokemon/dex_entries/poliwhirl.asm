@@ -1,9 +1,9 @@
 	db "TADPOLE@" ; species name
-	dw 303, 440 ; height, weight
+	dw 303, 200 ; height, weight
 
-	db   "Though it is"
-	next "skilled at walk-"
-	next "ing, it prefers to"
+	db   "Its two legs are"
+	next "well developed,"
+	next "but it prefers to"
 
 	page "live underwater"
 	next "where there is"

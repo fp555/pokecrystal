@@ -1,10 +1,10 @@
 	db "SEED@" ; species name
-	dw 100, 40 ; height, weight
+	dw 100, 18 ; height, weight
 
-	db   "It is very weak."
-	next "Its only means of"
-	next "defense is to"
+	db   "It lives by drin-"
+	next "king only dewdrops"
+	next "from under the"
 
-	page "shake its leaves"
-	next "desperately at its"
-	next "attacker.@"
+	page "leaves of plants."
+	next "It doesn't eat"
+	next "anything else.@"

@@ -1,10 +1,10 @@
 	db "POISONMOTH@" ; species name
-	dw 411, 280 ; height, weight
+	dw 411, 125 ; height, weight
 
-	db   "The scales it"
-	next "scatters will"
-	next "paralyze anyone"
+	db   "The color of the"
+	next "dust-like scales"
+	next "covering its wings"
 
-	page "who touches them,"
-	next "making that person"
-	next "unable to stand.@"
+	page "indicate what kind"
+	next "of poison they"
+	next "have.@"

@@ -1,5 +1,5 @@
 	db "BARRIER@" ; species name
-	dw 403, 1200 ; height, weight
+	dw 403, 545 ; height, weight
 
 	db   "It uses the"
 	next "mysterious"

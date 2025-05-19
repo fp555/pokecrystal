@@ -1,10 +1,10 @@
 	db "MUSHROOM@" ; species name
-	dw 100, 120 ; height, weight
+	dw 100, 54 ; height, weight
 
-	db   "The tochukaso"
-	next "growing on this"
-	next "#MON's back"
+	db   "Grows by sucking"
+	next "nutrients from"
+	next "tree roots. As its"
 
-	page "orders it to"
-	next "extract juice from"
-	next "tree trunks.@"
+	page "body grows, mush-"
+	next "rooms sprout from"
+	next "its back.@"

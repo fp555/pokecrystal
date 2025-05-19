@@ -1,10 +1,10 @@
 	db "MANTIS@" ; species name
-	dw 411, 1230 ; height, weight
+	dw 411, 560 ; height, weight
 
-	db   "It's very proud of"
-	next "its speed. It"
-	next "moves so fast that"
+	db   "When it moves, it"
+	next "leaves only a"
+	next "blur. If it hides"
 
-	page "its opponent does"
-	next "not even know what"
-	next "knocked it down.@"
+	page "in grass, its pro-"
+	next "tective colors"
+	next "make it invisible.@"

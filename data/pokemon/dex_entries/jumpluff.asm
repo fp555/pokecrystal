@@ -1,10 +1,10 @@
 	db "COTTONWEED@" ; species name
-	dw 207, 70 ; height, weight
+	dw 207, 30 ; height, weight
 
-	db   "Even in the fierc-"
-	next "est wind, it can"
-	next "control its fluff"
+	db   "Drifts on seasonal"
+	next "winds and spreads"
+	next "its cotton-like"
 
-	page "to make its way to"
-	next "any place in the"
-	next "world it wants.@"
+	page "spores all over"
+	next "the world to make"
+	next "more offspring.@"

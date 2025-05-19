@@ -1,10 +1,10 @@
 	db "AURORA@" ; species name
-	dw 607, 4120 ; height, weight
+	dw 607, 1870 ; height, weight
 
-	db   "This divine"
-	next "#MON blows"
-	next "around the world,"
+	db   "Said to be the"
+	next "embodiment of"
+	next "north winds, it"
 
-	page "always in search"
-	next "of a pure"
-	next "reservoir.@"
+	page "can instantly"
+	next "purify filthy,"
+	next "murky water.@"

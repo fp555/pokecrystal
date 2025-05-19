@@ -1,10 +1,10 @@
 	db "COCONUT@" ; species name
-	dw 607, 2650 ; height, weight
+	dw 607, 1200 ; height, weight
 
-	db   "Living in a good"
-	next "environment makes"
-	next "it grow lots of"
+	db   "Its cries are very"
+	next "noisy. This is"
+	next "because each of"
 
-	page "heads. A head that"
-	next "drops off becomes"
-	next "an EXEGGCUTE.@"
+	page "the 3 heads thinks"
+	next "about whatever it"
+	next "likes.@"

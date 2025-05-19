@@ -1,10 +1,10 @@
 	db "LIVE COAL@" ; species name
-	dw 204, 470 ; height, weight
+	dw 204, 214 ; height, weight
 
-	db   "It naturally spits"
-	next "an 1100-degree"
-	next "flame. It is said"
+	db   "If it is spouting"
+	next "yellow flames, it"
+	next "is in good health."
 
-	page "when many appear,"
-	next "it heralds a"
-	next "volcanic eruption.@"
+	page "When tired, black"
+	next "smoke will mix in"
+	next "with the flames.@"

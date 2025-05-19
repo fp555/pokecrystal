@@ -1,10 +1,10 @@
 	db "MILK COW@" ; species name
-	dw 311, 1660 ; height, weight
+	dw 311, 755 ; height, weight
 
-	db   "In order to milk a"
-	next "MILTANK, one must"
-	next "have a knack for"
+	db   "If it has just had"
+	next "a baby, the milk"
+	next "it produces"
 
-	page "rhythmically pull-"
-	next "ing up and down"
-	next "on its udders.@"
+	page "contains much more"
+	next "nutrition than"
+	next "usual.@"

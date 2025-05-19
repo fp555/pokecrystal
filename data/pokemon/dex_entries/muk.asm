@@ -1,5 +1,5 @@
 	db "SLUDGE@" ; species name
-	dw 311, 660 ; height, weight
+	dw 311, 300 ; height, weight
 
 	db   "As it moves, a"
 	next "very strong poison"
@@ -7,4 +7,4 @@
 
 	page "making the ground"
 	next "there barren for"
-	next "three years.@"
+	next "a long time.@"

@@ -1,13 +1,19 @@
 ClearSpriteAnims:
+	xor a
 	ld hl, wSpriteAnimData
 	ld bc, wSpriteAnimDataEnd - wSpriteAnimData
-.loop
-	ld [hl], 0
-	inc hl
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
+	jp ByteFill
+
+ClearSpriteAnims2:
+	push hl
+	push de
+	push bc
+	push af
+	call ClearSpriteAnims
+	pop af
+	pop bc
+	pop de
+	pop hl
 	ret
 
 PlaySpriteAnimationsAndDelayFrame:
@@ -553,23 +559,3 @@ AnimateEndOfExpBar:
 
 EndOfExpBarGFX:
 INCBIN "gfx/battle/expbarend.2bpp"
-
-ClearSpriteAnims2:
-	push hl
-	push de
-	push bc
-	push af
-	ld hl, wSpriteAnimData
-	ld bc, wSpriteAnimDataEnd - wSpriteAnimData
-.loop
-	ld [hl], 0
-	inc hl
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
-	pop af
-	pop bc
-	pop de
-	pop hl
-	ret

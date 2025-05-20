@@ -56,13 +56,7 @@ Init::
 	; Clear WRAM bank 0
 	ld hl, STARTOF(WRAM0)
 	ld bc, SIZEOF(WRAM0)
-.ByteFill:
-	ld [hl], 0
-	inc hl
-	dec bc
-	ld a, b
-	or c
-	jr nz, .ByteFill
+	call ByteFill
 	ld sp, wStackTop
 	; Clear HRAM
 	ldh a, [hCGB]

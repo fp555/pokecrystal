@@ -26,7 +26,7 @@ _Start::
 	ldh [hCGB], a
 	ld a, TRUE
 	ldh [hSystemBooted], a
-
+	; fallthrough
 Init::
 	di
 	xor a
@@ -53,7 +53,12 @@ Init::
 	jr nz, .wait
 	xor a
 	ldh [rLCDC], a
+	; Enable double speed mode
+	ldh a, [hCGB]
+	and a
+	call nz, DoubleSpeed
 	; Clear WRAM bank 0
+	xor a
 	ld hl, STARTOF(WRAM0)
 	ld bc, SIZEOF(WRAM0)
 	call ByteFill
@@ -114,12 +119,6 @@ Init::
 	xor a ; RAMG_SRAM_DISABLE
 	ld [rRTCLATCH], a
 	ld [rRAMG], a
-	ldh a, [hCGB]
-	and a
-	jr z, .no_double_speed
-	call NormalSpeed
-.no_double_speed
-	xor a
 	ldh [rIF], a
 	ld a, IE_DEFAULT
 	ldh [rIE], a
@@ -141,8 +140,7 @@ ClearVRAM::
 	ld hl, STARTOF(VRAM)
 	ld bc, SIZEOF(VRAM)
 	xor a
-	call ByteFill
-	ret
+	jp ByteFill
 
 ClearWRAM::
 ; Wipe swappable WRAM banks (1-7)
@@ -158,8 +156,8 @@ ClearWRAM::
 	pop af
 	inc a
 	cp 8
-	jr c, .bank_loop
-	ret
+	ret nc
+	jr .bank_loop
 
 ClearsScratch::
 ; Wipe the first 32 bytes of sScratch
@@ -169,5 +167,4 @@ ClearsScratch::
 	ld bc, $20
 	xor a
 	call ByteFill
-	call CloseSRAM
-	ret
+	jp CloseSRAM

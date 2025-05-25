@@ -508,9 +508,7 @@ AnimateFlowerTile:
 	ld a, [wTileAnimationTimer]
 	and %10
 	; assume CGB
-	ld e, a
-	ld a, 1
-	add e
+	rrca
 	; hl = .FlowerTileFrames + a * 16
 	swap a
 	ld e, a
@@ -522,9 +520,7 @@ AnimateFlowerTile:
 	ld hl, vTiles2 tile $03
 	jp WriteTile
 .FlowerTileFrames:
-	INCBIN "gfx/tilesets/flower/dmg_1.2bpp"
 	INCBIN "gfx/tilesets/flower/cgb_1.2bpp"
-	INCBIN "gfx/tilesets/flower/dmg_2.2bpp"
 	INCBIN "gfx/tilesets/flower/cgb_2.2bpp"
 
 AnimateLavaBubbleTile1:

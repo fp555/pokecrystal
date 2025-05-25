@@ -64,7 +64,7 @@ DoBattleTransition:
 	call UpdateSprites
 	call DelayFrame
 	call .NonMobile_LoadPokeballTiles
-	call BattleStart_CopyTilemapAtOnce
+	call CGBOnly_CopyTilemapAtOnce
 	jr .resume
 .mobile
 	call LoadTrainerBattlePokeballTiles
@@ -612,8 +612,7 @@ StartTrainerBattle_LoadTransitionGraphics:
 	pop bc
 	dec b
 	jr nz, .tile_loop
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr nz, .cgb
 	ld a, 1
 	ldh [hBGMapMode], a
@@ -646,10 +645,9 @@ StartTrainerBattle_LoadTransitionGraphics:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	call DelayFrame
-	call BattleStart_CopyTilemapAtOnce
+	call CGBOnly_CopyTilemapAtOnce
 .nextscene
-	call StartTrainerBattle_NextScene
-	ret
+	jp StartTrainerBattle_NextScene
 .copypals
 	ld de, wBGPals1 palette PAL_BG_TEXT
 	call .copy

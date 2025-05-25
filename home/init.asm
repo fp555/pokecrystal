@@ -54,8 +54,7 @@ Init::
 	xor a
 	ldh [rLCDC], a
 	; Enable double speed mode
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	call nz, DoubleSpeed
 	; Clear WRAM bank 0
 	xor a

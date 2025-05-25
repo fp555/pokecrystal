@@ -143,7 +143,7 @@ INCBIN "gfx/overworld/heal_machine.2bpp"
 	dbsprite   9,   7, 1, 1, $7d, PAL_OW_TREE | OAM_PAL1
 	dbsprite  11,   7, 5, 1, $7d, PAL_OW_TREE | OAM_PAL1
 .LoadPalettes:
-	call IsCGB
+	rst IsCGB
 	jr nz, .cgb
 	ld a, %11100000
 	ldh [rOBP1], a
@@ -159,7 +159,6 @@ INCBIN "gfx/overworld/heal_machine.2bpp"
 	ret
 .palettes
 INCLUDE "gfx/overworld/heal_machine.pal"
-
 .FlashPalettes8Times:
 	ld c, 8
 .palette_loop
@@ -172,7 +171,7 @@ INCLUDE "gfx/overworld/heal_machine.pal"
 	jr nz, .palette_loop
 	ret
 .FlashPalettes:
-	call IsCGB
+	rst IsCGB
 	jr nz, .go
 	ldh a, [rOBP1]
 	xor %00101000

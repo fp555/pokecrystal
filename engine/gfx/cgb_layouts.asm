@@ -1,10 +1,5 @@
 ; Replaces the functionality of sgb.asm to work with CGB hardware.
 
-CheckCGB:
-	ldh a, [hCGB]
-	and a
-	ret
-
 LoadSGBLayoutCGB:
 	ld a, b
 	cp SCGB_DEFAULT

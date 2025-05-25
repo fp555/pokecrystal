@@ -4,11 +4,9 @@ UpdatePalsIfCGB::
 ; update bgp data from wBGPals2
 ; update obp data from wOBPals2
 ; return carry if successful
-	; check cgb
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	ret z
-
+	; fallthrough
 UpdateCGBPals::
 ; return carry if successful
 ; any pals to update?
@@ -61,8 +59,7 @@ DmgToCgbBGPals::
 	ldh [rBGP], a
 	push af
 	; Don't need to be here if DMG
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, .end
 	push hl
 	push de
@@ -99,8 +96,7 @@ DmgToCgbObjPals::
 	ldh [rOBP0], a
 	ld a, d
 	ldh [rOBP1], a
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	ret z
 	push hl
 	push de
@@ -132,8 +128,7 @@ DmgToCgbObjPal0::
 	ldh [rOBP0], a
 	push af
 	; Don't need to be here if not CGB
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, .dmg
 	push hl
 	push de
@@ -162,8 +157,7 @@ DmgToCgbObjPal0::
 DmgToCgbObjPal1::
 	ldh [rOBP1], a
 	push af
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, .dmg
 	push hl
 	push de
@@ -237,8 +231,7 @@ endr
 	ret
 
 ClearVBank1::
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	ret z
 	ld a, 1
 	ldh [rVBK], a
@@ -251,8 +244,7 @@ ClearVBank1::
 	ret
 
 ReloadSpritesNoPalettes::
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	ret z
 	ldh a, [rWBK]
 	push af
@@ -266,5 +258,4 @@ ReloadSpritesNoPalettes::
 	ldh [rWBK], a
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
-	call DelayFrame
-	ret
+	jp DelayFrame

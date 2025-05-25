@@ -15,17 +15,6 @@ Get1bppViaHDMA::
 	homecall HDMATransfer1bpp
 	ret
 
-FarCopyBytesDouble_DoubleBankSwitch::
-	ldh [hTempBank], a
-	ldh a, [hROMBank]
-	push af
-	ldh a, [hTempBank]
-	rst Bankswitch
-	call FarCopyBytesDouble
-	pop af
-	rst Bankswitch
-	ret
-
 UpdatePlayerSprite::
 	farcall _UpdatePlayerSprite
 	ret
@@ -56,50 +45,6 @@ DecompressRequest2bpp::
 	ld de, sScratch
 	call Request2bpp
 	call CloseSRAM
-	ret
-
-FarCopyBytes::
-; copy bc bytes from a:hl to de
-	ldh [hTempBank], a
-	ldh a, [hROMBank]
-	push af
-	ldh a, [hTempBank]
-	rst Bankswitch
-	call CopyBytes
-	pop af
-	rst Bankswitch
-	ret
-
-FarCopyBytesDouble:
-; Copy bc bytes from a:hl to bc*2 bytes at de,
-; doubling each byte in the process.
-	ldh [hTempBank], a
-	ldh a, [hROMBank]
-	push af
-	ldh a, [hTempBank]
-	rst Bankswitch
-	; switcheroo, de <> hl
-	ld a, h
-	ld h, d
-	ld d, a
-	ld a, l
-	ld l, e
-	ld e, a
-	inc b
-	inc c
-	jr .dec
-.loop
-	ld a, [de]
-	inc de
-	ld [hli], a
-	ld [hli], a
-.dec
-	dec c
-	jr nz, .loop
-	dec b
-	jr nz, .loop
-	pop af
-	rst Bankswitch
 	ret
 
 Request2bpp::

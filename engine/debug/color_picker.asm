@@ -34,8 +34,7 @@
 
 DebugColorPicker: ; unreferenced
 ; A debug menu to test monster and trainer palettes at runtime.
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr nz, .cgb
 	ldh a, [hSGB]
 	and a
@@ -180,8 +179,7 @@ DebugColor_LoadGFX:
 	ret
 
 DebugColor_InitPalettes:
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	ret z
 
 	ldh a, [rWBK]
@@ -439,8 +437,7 @@ DebugColor_SetRGBMeter:
 	ret
 
 DebugColor_UpdateScreen:
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, .sgb
 
 	ld a, 2
@@ -457,8 +454,7 @@ DebugColor_UpdateScreen:
 	ret
 
 DebugColor_UpdatePalettes:
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, .sgb
 
 ; cgb

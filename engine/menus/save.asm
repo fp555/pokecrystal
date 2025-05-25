@@ -3,7 +3,9 @@ SaveMenu:
 	farcall DisplaySaveInfoOnSave
 	call SpeechTextbox
 	call UpdateSprites
-	farcall SaveMenu_CopyTilemapAtOnce
+	ld a, $60
+	ldh [hCopyTilemapAtOnceWait], a
+	call CopyTilemapAtOnce
 	ld hl, WouldYouLikeToSaveTheGameText
 	call SaveTheGame_yesorno
 	jr nz, .refused
@@ -17,7 +19,9 @@ SaveMenu:
 	ret
 .refused
 	call ExitMenu
-	farcall SaveMenu_CopyTilemapAtOnce
+	ld a, $60
+	ldh [hCopyTilemapAtOnceWait], a
+	call CopyTilemapAtOnce
 	scf
 	ret
 

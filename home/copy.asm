@@ -108,3 +108,72 @@ GetFarWRAMByte::
 	ldh [rWBK], a
 	ldh a, [hFarByte]
 	ret
+
+FarCopyBytes::
+; copy bc bytes from a:hl to de
+	ldh [hTempBank], a
+	ldh a, [hROMBank]
+	push af
+	ldh a, [hTempBank]
+	rst Bankswitch
+	call CopyBytes
+	pop af
+	rst Bankswitch
+	ret
+
+FarCopyBytesDouble:
+; Copy bc bytes from a:hl to bc*2 bytes at de,
+; doubling each byte in the process.
+	ldh [hTempBank], a
+	ldh a, [hROMBank]
+	push af
+	ldh a, [hTempBank]
+	rst Bankswitch
+	; switcheroo, de <> hl
+	ld a, h
+	ld h, d
+	ld d, a
+	ld a, l
+	ld l, e
+	ld e, a
+	inc b
+	inc c
+	jr .dec
+.loop
+	ld a, [de]
+	inc de
+	ld [hli], a
+	ld [hli], a
+.dec
+	dec c
+	jr nz, .loop
+	dec b
+	jr nz, .loop
+	pop af
+	rst Bankswitch
+	ret
+
+FarCopyBytesDouble_DoubleBankSwitch::
+	ldh [hTempBank], a
+	ldh a, [hROMBank]
+	push af
+	ldh a, [hTempBank]
+	rst Bankswitch
+	call FarCopyBytesDouble
+	pop af
+	rst Bankswitch
+	ret
+
+CopyName1::
+; Copies the name from de to wStringBuffer2
+	ld hl, wStringBuffer2
+	; fallthrough
+CopyName2::
+; Copies the name from de to hl
+.loop
+	ld a, [de]
+	inc de
+	ld [hli], a
+	cp "@"
+	jr nz, .loop
+	ret

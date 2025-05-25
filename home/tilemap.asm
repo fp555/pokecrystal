@@ -7,55 +7,35 @@ WaitBGMap::
 	ldh [hBGMapMode], a
 	; Wait for it to do its magic
 	ld c, 4
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 WaitBGMap2::
-	ldh a, [hCGB]
-	and a
-	jr z, .bg0
+	rst IsCGB
+	jr z, WaitBGMap
 	ld a, 2
 	ldh [hBGMapMode], a
 	ld c, 4
 	call DelayFrames
-.bg0
-	ld a, 1
-	ldh [hBGMapMode], a
-	ld c, 4
-	call DelayFrames
-	ret
-
-IsCGB::
-	ldh a, [hCGB]
-	and a
-	ret
+	jr WaitBGMap
 
 ApplyTilemap::
-	ldh a, [hCGB]
-	and a
-	jr z, .dmg
+	rst IsCGB
+	jr z, WaitBGMap
 	ld a, [wSpriteUpdatesEnabled]
 	cp FALSE
-	jr z, .dmg
+	jr z, WaitBGMap
 	ld a, 1
 	ldh [hBGMapMode], a
 	jr CopyTilemapAtOnce
-.dmg
-; WaitBGMap
-	ld a, 1
-	ldh [hBGMapMode], a
-	ld c, 4
-	jp DelayFrames
 
 CGBOnly_CopyTilemapAtOnce::
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr z, WaitBGMap
+	; wait for [rLY] to be $80 - 1
+	ld a, $80 - 1
+	ldh [hCopyTilemapAtOnceWait], a
 	; fallthrough
 CopyTilemapAtOnce::
-	jr _CopyTilemapAtOnce
-
-_CopyTilemapAtOnce:
 	ldh a, [hBGMapMode]
 	push af
 	xor a
@@ -64,9 +44,11 @@ _CopyTilemapAtOnce:
 	push af
 	xor a
 	ldh [hMapAnims], a
+	ldh a, [hCopyTilemapAtOnceWait]
+	ld b, a
 .wait
 	ldh a, [rLY]
-	cp $80 - 1
+	cp b
 	jr c, .wait
 	di
 	ld a, BANK(vBGMap2)
@@ -77,9 +59,11 @@ _CopyTilemapAtOnce:
 	ldh [rVBK], a
 	hlcoord 0, 0
 	call .CopyBGMapViaStack
+	ldh a, [hCopyTilemapAtOnceWait]
+	ld b, a
 .wait2
 	ldh a, [rLY]
-	cp $80 - 1
+	cp b
 	jr c, .wait2
 	ei
 	pop af
@@ -128,8 +112,7 @@ endr
 SetDefaultBGPAndOBP::
 ; Inits the Palettes
 ; depending on the system the monochromes palettes or color palettes
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr nz, .SetDefaultBGPAndOBPForGameBoyColor
 	ld a, %11100100
 	ldh [rBGP], a
@@ -149,8 +132,7 @@ SetDefaultBGPAndOBP::
 ClearPalettes::
 ; Make all palettes white
 	; CGB: make all the palette colors white
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr nz, .cgb
 	; DMG: just change palettes to 0 (white)
 	xor a
@@ -180,8 +162,7 @@ GetMemSGBLayout::
 	; fallthrough
 GetSGBLayout::
 ; load sgb packets unless dmg
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jr nz, .sgb
 	ldh a, [hSGB]
 	and a
@@ -207,4 +188,40 @@ GetHPPal::
 	ret nc
 	assert HP_YELLOW + 1 == HP_RED
 	inc d
+	ret
+
+LoadTilemapToTempTilemap::
+; Load wTilemap into wTempTilemap
+	ldh a, [rSVBK]
+	push af
+	ld a, BANK(wTempTilemap)
+	ldh [rSVBK], a
+	hlcoord 0, 0
+	decoord 0, 0, wTempTilemap
+	ld bc, wTilemapEnd - wTilemap
+	call CopyBytes
+	pop af
+	ldh [rSVBK], a
+	ret
+
+SafeLoadTempTilemapToTilemap::
+	xor a
+	ldh [hBGMapMode], a
+	call LoadTempTilemapToTilemap
+	ld a, 1
+	ldh [hBGMapMode], a
+	ret
+
+LoadTempTilemapToTilemap::
+; Load wTempTilemap into wTilemap
+	ldh a, [rSVBK]
+	push af
+	ld a, BANK(wTempTilemap)
+	ldh [rSVBK], a
+	hlcoord 0, 0, wTempTilemap
+	decoord 0, 0
+	ld bc, wTilemapEnd - wTilemap
+	call CopyBytes
+	pop af
+	ldh [rSVBK], a
 	ret

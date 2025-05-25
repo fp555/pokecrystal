@@ -1,5 +1,5 @@
 LoadSGBLayout:
-	call CheckCGB
+	rst IsCGB
 	jp nz, LoadSGBLayoutCGB
 	ld a, b
 	cp SCGB_DEFAULT

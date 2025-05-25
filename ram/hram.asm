@@ -146,7 +146,7 @@ hSPBuffer::  dw
 hBGMapUpdate::    db
 hBGMapTileCount:: db
 
-	ds 1
+hCopyTilemapAtOnceWait:: db
 
 hMapAnims::      db
 hTileAnimFrame:: db

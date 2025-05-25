@@ -1,9 +1,7 @@
 ; VBlank is the interrupt responsible for updating VRAM.
-
 ; In Pokemon Crystal, VBlank has been hijacked to act as the
 ; main loop. After time-sensitive graphics operations have been
 ; performed, joypad input and sound functions are executed.
-
 ; This prevents the display and audio output from lagging.
 
 VBlank::
@@ -11,10 +9,8 @@ VBlank::
 	push bc
 	push de
 	push hl
-
 	ldh a, [hVBlank]
 	maskbits NUM_VBLANK_HANDLERS
-
 	ld e, a
 	ld d, 0
 	ld hl, VBlankHandlers
@@ -23,11 +19,8 @@ VBlank::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
 	call _hl_
-
 	call GameTimer
-
 	pop hl
 	pop de
 	pop bc
@@ -48,8 +41,7 @@ VBlankHandlers:
 	assert_table_length NUM_VBLANK_HANDLERS
 
 VBlank_Normal::
-; normal operation
-
+; normal operation:
 ; rng
 ; scx, scy, wy, wx
 ; bg map buffer
@@ -60,27 +52,23 @@ VBlank_Normal::
 ; oam
 ; joypad
 ; sound
-
+; ----------------
 	; inc frame counter
 	ld hl, hVBlankCounter
 	inc [hl]
-
 	; advance random variables
 	ldh a, [rDIV]
 	ld b, a
 	ldh a, [hRandomAdd]
 	adc b
 	ldh [hRandomAdd], a
-
 	ldh a, [rDIV]
 	ld b, a
 	ldh a, [hRandomSub]
 	sbc b
 	ldh [hRandomSub], a
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	ldh a, [hSCX]
 	ldh [rSCX], a
 	ldh a, [hSCY]
@@ -89,10 +77,8 @@ VBlank_Normal::
 	ldh [rWY], a
 	ldh a, [hWX]
 	ldh [rWX], a
-
 	; There's only time to call one of these in one vblank.
 	; Calls are in order of priority.
-
 	call UpdateBGMapBuffer
 	jr c, .done
 	call UpdatePalsIfCGB
@@ -100,66 +86,50 @@ VBlank_Normal::
 	call DMATransfer
 	jr c, .done
 	call UpdateBGMap
-
 	; These have their own timing checks.
-
 	call Serve2bppRequest
 	call Serve1bppRequest
 	call AnimateTileset
-
 .done
-
 	ldh a, [hOAMUpdate]
 	and a
 	jr nz, .done_oam
 	call hTransferShadowOAM
 .done_oam
-
-	; vblank-sensitive operations are done
-
+; vblank-sensitive operations are done
 	xor a
 	ld [wVBlankOccurred], a
-
 	ld a, [wOverworldDelay]
 	and a
 	jr z, .ok
 	dec a
 	ld [wOverworldDelay], a
 .ok
-
 	ld a, [wTextDelayFrames]
 	and a
 	jr z, .ok2
 	dec a
 	ld [wTextDelayFrames], a
 .ok2
-
 	call UpdateJoypad
-
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
 	call _UpdateSound
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
-
 	ldh a, [hSeconds]
 	ldh [hUnusedBackup], a
-
 	ret
 
 VBlank_SoundOnly::
 ; sound only
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
 	call _UpdateSound
-
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
-
 	xor a
 	ld [wVBlankOccurred], a
 	ret
@@ -171,27 +141,20 @@ VBlank_Cutscene::
 ; tiles
 ; oam
 ; sound / lcd stat
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	ldh a, [hSCX]
 	ldh [rSCX], a
 	ldh a, [hSCY]
 	ldh [rSCY], a
-
 	call UpdatePals
 	jr c, .done
-
 	call UpdateBGMap
 	call Serve2bppRequest_VBlank
-
 	call hTransferShadowOAM
-
 .done
 	xor a
 	ld [wVBlankOccurred], a
-
 	; get requested ints
 	ldh a, [rIF]
 	ld b, a
@@ -207,7 +170,6 @@ VBlank_Cutscene::
 	and IF_SERIAL
 	or IF_STAT
 	ldh [rIF], a
-
 	ei
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
@@ -215,7 +177,6 @@ VBlank_Cutscene::
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
 	di
-
 	; get requested ints
 	ldh a, [rIF]
 	ld b, a
@@ -232,11 +193,8 @@ VBlank_Cutscene::
 
 UpdatePals::
 ; update pals for either dmg or cgb
-
-	ldh a, [hCGB]
-	and a
+	rst IsCGB
 	jp nz, UpdateCGBPals
-
 	; update gb pals
 	ld a, [wBGP]
 	ldh [rBGP], a
@@ -244,7 +202,6 @@ UpdatePals::
 	ldh [rOBP0], a
 	ld a, [wOBP1]
 	ldh [rOBP1], a
-
 	and a
 	ret
 
@@ -255,29 +212,22 @@ VBlank_CutsceneCGB::
 ; tiles
 ; oam
 ; sound / lcd stat
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	ldh a, [hSCX]
 	ldh [rSCX], a
 	ldh a, [hSCY]
 	ldh [rSCY], a
-
 	ldh a, [hCGBPalUpdate]
 	and a
 	call nz, ForceUpdateCGBPals
 	jr c, .done
-
 	call UpdateBGMap
 	call Serve2bppRequest_VBlank
-
 	call hTransferShadowOAM
 .done
-
 	xor a
 	ld [wVBlankOccurred], a
-
 	ldh a, [rIF]
 	push af
 	xor a
@@ -286,7 +236,6 @@ VBlank_CutsceneCGB::
 	ldh [rIE], a
 	assert IE_STAT == IF_STAT
 	ldh [rIF], a
-
 	ei
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
@@ -294,7 +243,6 @@ VBlank_CutsceneCGB::
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
 	di
-
 	; request lcdstat
 	ldh a, [rIF]
 	ld b, a
@@ -320,26 +268,18 @@ VBlank_Serial::
 ; joypad
 ; serial
 ; sound
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	call UpdateBGMap
 	call Serve2bppRequest
-
 	call hTransferShadowOAM
-
 	call UpdateJoypad
-
 	xor a
 	ld [wVBlankOccurred], a
-
 	call AskSerial
-
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
 	call _UpdateSound
-
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
 	ret
@@ -350,25 +290,18 @@ VBlank_Credits::
 ; bg map
 ; tiles
 ; joypad
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	ldh a, [hSCX]
 	ldh [rSCX], a
-
 	call UpdatePalsIfCGB
 	jr c, .done
-
 	call UpdateBGMap
 	call Serve2bppRequest
 .done
-
 	xor a
 	ld [wVBlankOccurred], a
-
 	call UpdateJoypad
-
 	xor a
 	ldh [rIF], a
 	ld a, IE_STAT
@@ -376,7 +309,6 @@ VBlank_Credits::
 	; request lcd stat
 	assert IE_STAT == IF_STAT
 	ldh [rIF], a
-
 	ei
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
@@ -384,7 +316,6 @@ VBlank_Credits::
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
 	di
-
 	xor a
 	ldh [rIF], a
 	; enable ints besides joypad
@@ -397,29 +328,22 @@ VBlank_DMATransfer::
 ; tiles
 ; dma transfer
 ; sound
-
 	ldh a, [hROMBank]
 	ldh [hROMBankBackup], a
-
 	; inc frame counter
 	ld hl, hVBlankCounter
 	inc [hl]
-
 	call UpdateCGBPals
 	jr c, .done
-
 	call Serve2bppRequest
 	call Serve1bppRequest
 	call DMATransfer
 .done
-
 	xor a
 	ld [wVBlankOccurred], a
-
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
 	call _UpdateSound
-
 	ldh a, [hROMBankBackup]
 	rst Bankswitch
 	ret

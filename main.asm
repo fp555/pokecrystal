@@ -192,11 +192,9 @@ SECTION "bank13", ROMX
 
 INCLUDE "data/collision/collision_permissions.asm"
 INCLUDE "engine/menus/empty_sram.asm"
-INCLUDE "engine/menus/savemenu_copytilemapatonce.asm"
 INCLUDE "engine/events/checksave.asm"
 INCLUDE "data/maps/scenes.asm"
 INCLUDE "engine/overworld/load_map_part.asm"
-INCLUDE "engine/phone/phonering_copytilemapatonce.asm"
 
 
 SECTION "bank13_2", ROMX
@@ -296,7 +294,6 @@ INCLUDE "engine/tilesets/timeofday_pals.asm"
 INCLUDE "engine/battle/battle_transition.asm"
 INCLUDE "engine/events/field_moves.asm"
 INCLUDE "engine/events/magnet_train.asm"
-INCLUDE "engine/battle/battlestart_copytilemapatonce.asm"
 INCLUDE "engine/sprite_anims/core.asm"
 INCLUDE "engine/gfx/mon_icons.asm"
 

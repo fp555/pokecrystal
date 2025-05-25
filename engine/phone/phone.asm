@@ -477,14 +477,22 @@ Phone_StartRinging:
 	call PlaySFX
 	call Phone_CallerTextbox
 	call UpdateSprites
-	farcall PhoneRing_CopyTilemapAtOnce
-	ret
+	ld a, [wSpriteUpdatesEnabled]
+	cp FALSE
+	jp z, WaitBGMap
+	ld a, LY_VBLANK - 1
+	ldh [hCopyTilemapAtOnceWait], a
+	jp CopyTilemapAtOnce
 
 Phone_Wait20Frames:
 	ld c, 20
 	call DelayFrames
-	farcall PhoneRing_CopyTilemapAtOnce
-	ret
+	ld a, [wSpriteUpdatesEnabled]
+	cp FALSE
+	jp z, WaitBGMap
+	ld a, LY_VBLANK - 1
+	ldh [hCopyTilemapAtOnceWait], a
+	jp CopyTilemapAtOnce
 
 Phone_TextboxWithName:
 	push bc

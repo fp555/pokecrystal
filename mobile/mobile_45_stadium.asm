@@ -1,7 +1,3 @@
-GiveOddEgg:
-	farcall _GiveOddEgg
-	ret
-
 Function11765d:
 	ldh a, [hInMenu]
 	push af

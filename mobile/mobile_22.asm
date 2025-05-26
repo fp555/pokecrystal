@@ -2035,7 +2035,7 @@ Function89d5e:
 Function89d75:
 	push hl
 	call Mobile22_SetBGMapMode0
-	call _hl_
+	rst CallHL
 	farcall Mobile_HDMATransferTilemapAndAttrmap_Menu
 	pop hl
 	jr asm_89d90
@@ -2043,14 +2043,14 @@ Function89d75:
 Function89d85:
 	push hl
 	call Mobile22_SetBGMapMode0
-	call _hl_
+	rst CallHL
 	call CGBOnly_CopyTilemapAtOnce
 	pop hl
 
 asm_89d90:
 	call Mobile22_SetBGMapMode0
 	push hl
-	call _hl_
+	rst CallHL
 	call Function89dab
 	ld a, [wMenuCursorY]
 	push af

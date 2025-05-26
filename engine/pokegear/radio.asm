@@ -1452,7 +1452,7 @@ GetBuenasPassword:
 	ld h, [hl]
 	ld l, a
 	pop de ; de now contains the pointer to the value of this week's password, in Blue Card Points.
-	call _hl_
+	rst CallHL
 	pop hl
 	ld c, [hl]
 	ret

@@ -9,10 +9,8 @@ FarCall::
 	jp FarCall_hl
 
 SECTION "rst10", ROM0[$0010]
-Bankswitch::
-	ldh [hROMBank], a
-	ld [rROMB], a
-	ret
+CallHL::
+	jp hl
 
 SECTION "rst18", ROM0[$0018]
 IsCGB::
@@ -21,7 +19,10 @@ IsCGB::
 	ret
 
 SECTION "rst20", ROM0[$0020]
-	rst $38
+Bankswitch::
+	ldh [hROMBank], a
+	ld [rROMB], a
+	ret
 
 SECTION "rst28", ROM0[$0028]
 JumpTable::

@@ -44,7 +44,7 @@ StatsScreenInit_gotaddress:
 	call UpdateSprites
 	farcall StatsScreen_LoadFont
 	pop hl
-	call _hl_
+	rst CallHL
 	call ClearBGPalettes
 	call ClearTilemap
 	pop bc

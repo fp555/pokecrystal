@@ -211,7 +211,7 @@ CheckSpecialPhoneCall::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call _hl_
+	rst CallHL
 	jr nc, .NoPhoneCall
 	call .DoSpecialPhoneCall
 	inc hl

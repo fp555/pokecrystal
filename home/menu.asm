@@ -23,14 +23,11 @@ Load2DMenuData::
 
 StaticMenuJoypad::
 	callfar _StaticMenuJoypad
-	call GetMenuJoypad
-	ret
+	jr GetMenuJoypad
 
 ScrollingMenuJoypad::
 	callfar _ScrollingMenuJoypad
-	call GetMenuJoypad
-	ret
-
+	; fallthrough
 GetMenuJoypad::
 	push bc
 	push af
@@ -88,8 +85,6 @@ RestoreTileBackup::
 	call MenuBoxCoord2Tile
 	call .copy
 	call MenuBoxCoord2Attr
-	call .copy
-	ret
 .copy
 	call GetMenuBoxDims
 	inc b
@@ -219,9 +214,8 @@ GetMenuTextStartCoord::
 	; if set, leave extra room on the left
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_CURSOR_F, a
-	jr z, .no_cursor
+	ret z
 	inc c
-.no_cursor
 	ret
 
 ClearMenuBoxInterior::
@@ -231,16 +225,14 @@ ClearMenuBoxInterior::
 	call GetMenuBoxDims
 	dec b
 	dec c
-	call ClearBox
-	ret
+	jp ClearBox
 
 ClearWholeMenuBox::
 	call MenuBoxCoord2Tile
 	call GetMenuBoxDims
 	inc c
 	inc b
-	call ClearBox
-	ret
+	jp ClearBox
 
 MenuBoxCoord2Tile::
 	ld a, [wMenuBorderLeftCoord]
@@ -296,8 +288,7 @@ MenuBoxCoord2Attr::
 
 LoadMenuHeader::
 	call CopyMenuHeader
-	call PushWindow
-	ret
+	jp PushWindow
 
 CopyMenuHeader::
 	ld de, wMenuHeader
@@ -319,8 +310,7 @@ MenuTextbox::
 
 LoadMenuTextbox::
 	ld hl, .MenuHeader
-	call LoadMenuHeader
-	ret
+	jr LoadMenuHeader
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 12, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -329,13 +319,11 @@ LoadMenuTextbox::
 
 MenuTextboxBackup::
 	call MenuTextbox
-	call CloseWindow
-	ret
+	jp CloseWindow
 
 LoadStandardMenuHeader::
 	ld hl, .MenuHeader
-	call LoadMenuHeader
-	ret
+	jr LoadMenuHeader
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -343,8 +331,7 @@ LoadStandardMenuHeader::
 	db 1 ; default option
 
 Call_ExitMenu::
-	call ExitMenu
-	ret
+	jp ExitMenu
 
 VerticalMenu::
 	xor a
@@ -397,11 +384,8 @@ CopyNameFromMenu::
 
 YesNoBox::
 	lb bc, SCREEN_WIDTH - 6, 7
-
+	; fallthrough
 PlaceYesNoBox::
-	jr _YesNoBox
-
-_YesNoBox::
 ; Return nc (yes) or c (no).
 	push bc
 	ld hl, YesNoMenuHeader
@@ -422,7 +406,7 @@ _YesNoBox::
 	add 4
 	ld [wMenuBorderBottomCoord], a
 	call PushWindow
-
+	; fallthrough
 InterpretTwoOptionMenu::
 	call VerticalMenu
 	push af
@@ -455,8 +439,7 @@ YesNoMenuHeader::
 
 OffsetMenuHeader::
 	call _OffsetMenuHeader
-	call PushWindow
-	ret
+	jp PushWindow
 
 _OffsetMenuHeader::
 	push de
@@ -488,8 +471,7 @@ DoNthMenu::
 	call InitMenuCursorAndButtonPermissions
 	call GetStaticMenuJoypad
 	call GetMenuJoypad
-	call MenuClickSound
-	ret
+	jp MenuClickSound
 
 SetUpMenu::
 	call DrawVariableLengthMenuBox
@@ -503,8 +485,7 @@ DrawVariableLengthMenuBox::
 	call CopyMenuData
 	call GetMenuIndexSet
 	call AutomaticGetMenuBottomCoord
-	call MenuBox
-	ret
+	jp MenuBox
 
 MenuWriteText::
 	xor a
@@ -552,7 +533,6 @@ GetMenuIndexSet::
 	jr nz, .loop
 	dec b
 	jr nz, .loop
-
 .skip
 	ld d, h
 	ld e, l
@@ -575,13 +555,13 @@ RunMenuItemPrintingFunction::
 	ld d, h
 	ld e, l
 	ld hl, wMenuDataDisplayFunctionPointer
-	call ._hl_
+	call .jphl
 	pop hl
 	ld de, 2 * SCREEN_WIDTH
 	add hl, de
 	pop de
 	jr .loop
-._hl_
+.jphl
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -597,10 +577,9 @@ InitMenuCursorAndButtonPermissions::
 .disallow_start
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_ENABLE_LEFT_RIGHT_F, a
-	jr z, .disallow_left_right
+	ret z
 	set B_PAD_LEFT, [hl]
 	set B_PAD_RIGHT, [hl]
-.disallow_left_right
 	ret
 
 GetScrollingMenuJoypad::
@@ -670,8 +649,7 @@ PlaceMenuStrings::
 	ld d, h
 	ld e, l
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 
 PlaceNthMenuStrings::
 	push de
@@ -683,8 +661,7 @@ PlaceNthMenuStrings::
 	ld d, [hl]
 	ld e, a
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 
 MenuJumptable::
 	ld a, [wMenuSelection]
@@ -737,8 +714,7 @@ ClearWindowData::
 	assert wMenuMetadataEnd - wMenuMetadata == wMenuDataEnd - wMenuData
 	assert wMenuMetadataEnd - wMenuMetadata == wMoreMenuDataEnd - wMoreMenuData
 	xor a
-	call ByteFill
-	ret
+	jp ByteFill
 
 MenuClickSound::
 	push af
@@ -762,8 +738,7 @@ PlayClickSFX::
 MenuTextboxWaitButton::
 	call MenuTextbox
 	call WaitButton
-	call ExitMenu
-	ret
+	jp ExitMenu
 
 Place2DMenuItemName::
 	ldh [hTempBank], a

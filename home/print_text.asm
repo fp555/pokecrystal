@@ -108,7 +108,7 @@ CallPointerAt::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call _hl_
+	rst CallHL
 	pop hl
 	ld a, h
 	rst Bankswitch

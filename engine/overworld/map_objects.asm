@@ -153,7 +153,7 @@ HandleFrozenObjectAction:
 	add hl, bc
 	bit INVISIBLE_F, [hl]
 	jr nz, SetFacingStanding
-
+	; fallthrough
 _CallFrozenObjectAction:
 	; use second column (frozen)
 	ld de, ObjectActionPairPointers + 2
@@ -170,7 +170,7 @@ CallObjectAction:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	jp _hl_
+	jp hl
 
 INCLUDE "engine/overworld/map_object_action.asm"
 

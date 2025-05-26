@@ -19,7 +19,7 @@ VBlank::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call _hl_
+	rst CallHL
 	call GameTimer
 	pop hl
 	pop de

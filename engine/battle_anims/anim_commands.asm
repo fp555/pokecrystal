@@ -12,13 +12,10 @@ PlayBattleAnim:
 
 _PlayBattleAnim:
 	ld c, 6
-.wait
-	call BattleAnimDelayFrame
-	dec c
-	jr nz, .wait
+	call DelayFrames
 	call BattleAnimAssignPals
 	call BattleAnimRequestPals
-	call BattleAnimDelayFrame
+	call DelayFrame
 	ld c, VBLANK_CUTSCENE
 	ldh a, [rSPD]
 	bit B_SPD_DOUBLE, a
@@ -34,11 +31,9 @@ _PlayBattleAnim:
 	ldh [hVBlank], a
 	ld a, 1
 	ldh [hBGMapMode], a
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitSFX
-	ret
+	ld c, 3
+	call DelayFrames
+	jp WaitSFX
 
 BattleAnimRunScript:
 	ld a, [wFXAnimID + 1]
@@ -57,7 +52,7 @@ BattleAnimRunScript:
 	xor a
 	ldh [hSCX], a
 	ldh [hSCY], a
-	call BattleAnimDelayFrame
+	call DelayFrame
 	call BattleAnimRestoreHuds
 .disabled
 	ld a, [wBattleAfterAnim]
@@ -103,28 +98,25 @@ RunBattleAnimScript:
 	dec b
 	jr nz, .find
 .not_rollout
-	call BattleAnimDelayFrame
+	call DelayFrame
 .done
 	ld a, [wBattleAnimFlags]
 	bit BATTLEANIM_STOP_F, a
 	jr z, .playframe
-	call BattleAnim_ClearOAM
-	ret
+	jr BattleAnim_ClearOAM
 
 BattleAnimClearHud:
-	call BattleAnimDelayFrame
+	call DelayFrame
 	call WaitTop
 	call ClearActorHud
 	ld a, $1
 	ldh [hBGMapMode], a
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitTop
-	ret
+	ld c, 3
+	call DelayFrames
+	jp WaitTop
 
 BattleAnimRestoreHuds:
-	call BattleAnimDelayFrame
+	call DelayFrame
 	call WaitTop
 	ldh a, [rWBK]
 	push af
@@ -135,11 +127,9 @@ BattleAnimRestoreHuds:
 	ldh [rWBK], a
 	ld a, $1
 	ldh [hBGMapMode], a
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitTop
-	ret
+	ld c, 3
+	call DelayFrames
+	jp WaitTop
 
 BattleAnimRequestPals:
 	ldh a, [rBGP]
@@ -154,29 +144,17 @@ BattleAnimRequestPals:
 	call nz, BattleAnim_SetOBPals
 	ret
 
-BattleAnimDelayFrame:
-; Like DelayFrame but wastes battery life.
-	ld a, 1
-	ld [wVBlankOccurred], a
-.wait
-	ld a, [wVBlankOccurred]
-	and a
-	jr nz, .wait
-	ret
-
 ClearActorHud:
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .player
 	hlcoord 1, 0
 	lb bc, 4, 10
-	call ClearBox
-	ret
+	jp ClearBox
 .player
 	hlcoord 9, 7
 	lb bc, 5, 11
-	call ClearBox
-	ret
+	jp ClearBox
 
 BattleAnim_ClearOAM:
 	ld a, [wBattleAnimFlags]
@@ -526,8 +504,7 @@ BattleAnimCmd_Obj:
 	ld [wBattleObjectTempYCoord], a
 	call GetBattleAnimByte
 	ld [wBattleObjectTempParam], a
-	call QueueBattleAnimation
-	ret
+	jp QueueBattleAnimation
 
 BattleAnimCmd_BGEffect:
 	call GetBattleAnimByte
@@ -538,8 +515,7 @@ BattleAnimCmd_BGEffect:
 	ld [wBattleBGEffectTempTurn], a
 	call GetBattleAnimByte
 	ld [wBattleBGEffectTempParam], a
-	call _QueueBGEffect
-	ret
+	jp _QueueBGEffect
 
 BattleAnimCmd_BGP:
 	call GetBattleAnimByte
@@ -712,8 +688,6 @@ BattleAnimCmd_BattlerGFX_1Row:
 	ld a, 6 tiles ; Player pic height
 	ld [wBattleAnimGFXTempPicHeight], a
 	ld a, 6 ; Copy 6x1 tiles
-	call .LoadFeet
-	ret
 .LoadFeet:
 	push af
 	push hl
@@ -762,8 +736,6 @@ BattleAnimCmd_BattlerGFX_2Row:
 	ld a, 6 tiles ; Player pic height
 	ld [wBattleAnimGFXTempPicHeight], a
 	ld a, 6 ; Copy 6x2 tiles
-	call .LoadHead
-	ret
 .LoadHead:
 	push af
 	push hl
@@ -833,14 +805,12 @@ BattleAnimCmd_UpdateActorPic:
 	ld hl, vTiles2 tile $00
 	ld b, 0
 	ld c, 7 * 7
-	call Request2bpp
-	ret
+	jp Request2bpp
 .player
 	ld hl, vTiles2 tile $31
 	ld b, 0
 	ld c, 6 * 6
-	call Request2bpp
-	ret
+	jp Request2bpp
 
 BattleAnimCmd_RaiseSub:
 	ldh a, [rWBK]
@@ -849,7 +819,7 @@ BattleAnimCmd_RaiseSub:
 	ldh [rWBK], a
 	xor a ; BANK(sScratch)
 	call OpenSRAM
-
+	; fallthrough
 GetSubstitutePic: ; used only for BANK(GetSubstitutePic)
 	ld hl, sScratch
 	ld bc, (7 * 7) tiles
@@ -905,8 +875,7 @@ GetSubstitutePic: ; used only for BANK(GetSubstitutePic)
 .CopyTile:
 	ld bc, 1 tiles
 	ld a, BANK(MonsterSpriteGFX)
-	call FarCopyBytes
-	ret
+	jp FarCopyBytes
 
 BattleAnimCmd_MinimizeOpp:
 	ldh a, [rWBK]
@@ -953,8 +922,7 @@ CopyMinimizePic:
 	ld hl, MinimizePic
 	ld bc, $10
 	ld a, BANK(MinimizePic)
-	call FarCopyBytes
-	ret
+	jp FarCopyBytes
 
 MinimizePic:
 INCBIN "gfx/battle/minimize.2bpp"
@@ -1166,8 +1134,7 @@ PlayHitSound:
 	jr nc, .play
 	ld de, SFX_NOT_VERY_EFFECTIVE
 .play
-	call PlaySFX
-	ret
+	jp PlaySFX
 
 BattleAnimAssignPals:
 	ld a, %11100100
@@ -1176,8 +1143,7 @@ BattleAnimAssignPals:
 	ld [wOBP1], a
 	call DmgToCgbBGPals
 	lb de, %11100100, %11100100
-	call DmgToCgbObjPals
-	ret
+	jp DmgToCgbObjPals
 
 ClearBattleAnims::
 ; Clear animation block
@@ -1199,8 +1165,7 @@ ClearBattleAnims::
 	add hl, de
 	call GetBattleAnimPointer
 	call BattleAnimAssignPals
-	call BattleAnimDelayFrame
-	ret
+	jp DelayFrame
 
 BattleAnim_RevertPals:
 	call WaitTop
@@ -1214,7 +1179,7 @@ BattleAnim_RevertPals:
 	xor a
 	ldh [hSCX], a
 	ldh [hSCY], a
-	call BattleAnimDelayFrame
+	call DelayFrame
 	ld a, $1
 	ldh [hBGMapMode], a
 	ret
@@ -1278,7 +1243,7 @@ BattleAnim_UpdateOAM_All:
 	call BattleAnimOAMUpdate
 	pop de
 	pop hl
-	jr c, .done
+	ret c
 .next
 	ld bc, BATTLEANIMSTRUCT_LENGTH
 	add hl, bc
@@ -1290,9 +1255,8 @@ BattleAnim_UpdateOAM_All:
 .loop2
 	ld a, l
 	cp LOW(wShadowOAMEnd)
-	jr nc, .done
+	ret nc
 	xor a
 	ld [hli], a
 	jr .loop2
-.done
 	ret

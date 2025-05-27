@@ -99,7 +99,7 @@ _PlayerDecorationMenu:
 	or e
 	ret z
 	push hl
-	call _de_
+	call .callde
 	pop hl
 	jr nc, .next
 	ld a, [hl]
@@ -120,6 +120,9 @@ _PlayerDecorationMenu:
 	dwb FindOwnedBigDolls,  6 ; big doll
 	assert_table_length NUM_DECO_CATEGORIES
 	dw 0 ; end
+.callde:
+	push de
+	ret
 
 Deco_FillTempWithMinusOne:
 	xor a
@@ -837,8 +840,7 @@ GetDecorationName_c_de:
 	ld a, c
 	ld h, d
 	ld l, e
-	call GetDecorationName
-	ret
+	jp GetDecorationName
 
 DecorationFlagAction_c:
 	ld a, c
@@ -1077,5 +1079,4 @@ PadCoords_de:
 	ld a, e
 	add 4
 	ld e, a
-	call GetBlockLocation
-	ret
+	jp GetBlockLocation

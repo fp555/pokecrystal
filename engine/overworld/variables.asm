@@ -17,22 +17,21 @@ _GetVarAction::
 	ld b, [hl]
 	ld a, b
 	and RETVAR_EXECUTE
-	jr nz, .call
+	jr z, .nocall
+	call .callde
+	ret
+.nocall
 	ld a, b
 	and RETVAR_ADDR_DE
 	ret nz
 	ld a, [de]
-	jr .loadstringbuffer2
-
-.call
-	call _de_
-	ret
-
 .loadstringbuffer2
 	ld de, wStringBuffer2
 	ld [de], a
 	ret
-
+.callde:
+	push de
+	ret
 .VarActionTable:
 ; entries correspond to VAR_* constants
 	; RETVAR_STRBUF2: copy [de] to wStringBuffer2
@@ -66,23 +65,20 @@ _GetVarAction::
 	dwb wBuenasPassword,                RETVAR_ADDR_DE
 	dwb wKenjiBreakTimer,               RETVAR_STRBUF2
 	dwb NULL,                           RETVAR_STRBUF2
-
 .CountCaughtMons:
 ; Caught mons.
 	ld hl, wPokedexCaught
 	ld b, wEndPokedexCaught - wPokedexCaught
 	call CountSetBits
 	ld a, [wNumSetBits]
-	jp .loadstringbuffer2
-
+	jp .loadstringbuffer2 ; jr?
 .CountSeenMons:
 ; Seen mons.
 	ld hl, wPokedexSeen
 	ld b, wEndPokedexSeen - wPokedexSeen
 	call CountSetBits
 	ld a, [wNumSetBits]
-	jp .loadstringbuffer2
-
+	jp .loadstringbuffer2 ; jr?
 .CountBadges:
 ; Number of owned badges.
 	ld hl, wBadges
@@ -90,7 +86,6 @@ _GetVarAction::
 	call CountSetBits
 	ld a, [wNumSetBits]
 	jp .loadstringbuffer2
-
 .PlayerFacing:
 ; The direction the player is facing.
 	ld a, [wPlayerDirection]
@@ -98,18 +93,15 @@ _GetVarAction::
 	rrca
 	rrca
 	jp .loadstringbuffer2
-
 .DayOfWeek:
 ; The day of the week.
 	call GetWeekday
 	jp .loadstringbuffer2
-
 .UnownCaught:
 ; Number of unique Unown caught.
 	call .count_unown
 	ld a, b
 	jp .loadstringbuffer2
-
 .count_unown
 	ld hl, wUnownDex
 	ld b, 0
@@ -122,7 +114,6 @@ _GetVarAction::
 	cp NUM_UNOWN
 	jr c, .loop
 	ret
-
 .BoxFreeSpace:
 ; Remaining slots in the current box.
 	ld a, BANK(sBoxCount)
@@ -134,7 +125,6 @@ _GetVarAction::
 	call CloseSRAM
 	ld a, b
 	jp .loadstringbuffer2
-
 .BattleResult:
 	ld a, [wBattleResult]
 	and ~BATTLERESULT_BITMASK

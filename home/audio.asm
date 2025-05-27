@@ -146,6 +146,9 @@ endr
 	pop hl
 	ret
 
+WaitPlaySFX::
+	call WaitSFX
+	; fallthrough
 PlaySFX::
 ; Play sound effect de.
 ; Sound effects are ordered by priority (highest to lowest)
@@ -178,10 +181,6 @@ PlaySFX::
 	pop de
 	pop hl
 	ret
-
-WaitPlaySFX::
-	call WaitSFX
-	jr PlaySFX
 
 WaitSFX::
 ; infinite loop until sfx is done playing

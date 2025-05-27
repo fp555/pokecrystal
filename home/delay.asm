@@ -2,9 +2,8 @@ DelayFrame::
 ; Wait for one frame
 	ld a, 1
 	ld [wVBlankOccurred], a
-
-; Wait for the next VBlank, halting to conserve battery
 .halt
+	; Wait for the next VBlank, halting to conserve battery
 	halt
 	nop
 	ld a, [wVBlankOccurred]

@@ -221,8 +221,7 @@ CheckWarpTile::
 WarpCheck::
 	call GetDestinationWarpNumber
 	ret nc
-	call CopyWarpData
-	ret
+	jr CopyWarpData
 
 GetDestinationWarpNumber::
 	farcall CheckWarpCollision
@@ -350,24 +349,21 @@ LoadMapAttributes::
 	call SwitchToMapScriptsBank
 	call ReadMapScripts
 	xor a ; do not skip object events
-	call ReadMapEvents
-	ret
+	jr ReadMapEvents
 
 LoadMapAttributes_SkipObjects::
 	call CopyMapPartialAndAttributes
 	call SwitchToMapScriptsBank
 	call ReadMapScripts
 	ld a, TRUE ; skip object events
-	call ReadMapEvents
-	ret
+	jr ReadMapEvents
 
 CopyMapPartialAndAttributes::
 	call CopyMapPartial
 	call SwitchToMapAttributesBank
 	call GetMapAttributesPointer
 	call CopyMapAttributes
-	call GetMapConnections
-	ret
+	jr GetMapConnections
 
 ReadMapEvents::
 	push af
@@ -383,8 +379,7 @@ ReadMapEvents::
 	pop af
 	and a ; skip object events?
 	ret nz
-	call ReadObjectEvents
-	ret
+	jp ReadObjectEvents
 
 ReadMapScripts::
 	ld hl, wMapScriptsPointer
@@ -392,8 +387,7 @@ ReadMapScripts::
 	ld h, [hl]
 	ld l, a
 	call ReadMapSceneScripts
-	call ReadMapCallbacks
-	ret
+	jp ReadMapCallbacks ; jr?
 
 CopyMapAttributes::
 	ld de, wMapAttributes
@@ -459,8 +453,7 @@ ReadMapSceneScripts::
 	and a
 	ret z
 	ld bc, SCENE_SCRIPT_SIZE
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 ReadMapCallbacks::
 	ld a, [hli]
@@ -474,8 +467,7 @@ ReadMapCallbacks::
 	and a
 	ret z
 	ld bc, CALLBACK_SIZE
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 ReadWarpEvents::
 	ld a, [hli]
@@ -489,8 +481,7 @@ ReadWarpEvents::
 	and a
 	ret z
 	ld bc, WARP_EVENT_SIZE
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 ReadCoordEvents::
 	ld a, [hli]
@@ -504,8 +495,7 @@ ReadCoordEvents::
 	and a
 	ret z
 	ld bc, COORD_EVENT_SIZE
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 ReadBGEvents::
 	ld a, [hli]
@@ -519,8 +509,7 @@ ReadBGEvents::
 	and a
 	ret z
 	ld bc, BG_EVENT_SIZE
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 ReadObjectEvents::
 	push hl
@@ -644,8 +633,7 @@ LoadBlockData::
 	call ChangeMap
 	call FillMapConnections
 	ld a, MAPCALLBACK_TILES
-	call RunMapCallback
-	ret
+	jp RunMapCallback
 
 ChangeMap::
 	ldh a, [hROMBank]
@@ -760,7 +748,7 @@ FillMapConnections::
 .East:
 	ld a, [wEastConnectedMapGroup]
 	cp $ff
-	jr z, .Done
+	ret z
 	ld b, a
 	ld a, [wEastConnectedMapNumber]
 	ld c, a
@@ -777,9 +765,7 @@ FillMapConnections::
 	ld b, a
 	ld a, [wEastConnectedMapWidth]
 	ldh [hConnectionStripLength], a
-	call FillEastConnectionStrip
-.Done:
-	ret
+	jr FillEastConnectionStrip
 
 FillNorthConnectionStrip::
 FillSouthConnectionStrip::
@@ -1415,8 +1401,7 @@ GetMovementPermissions::
 	dec e
 	call GetCoordTileCollision
 	ld [wTileUp], a
-	call .Up
-	ret
+	jr .Up
 .LeftRight:
 	ld a, [wPlayerMapX]
 	ld d, a
@@ -1431,8 +1416,7 @@ GetMovementPermissions::
 	inc d
 	call GetCoordTileCollision
 	ld [wTileRight], a
-	call .Right
-	ret
+	jr .Right
 .Down:
 	call .CheckHiNybble
 	ret nz
@@ -1449,7 +1433,7 @@ GetMovementPermissions::
 	or FACE_DOWN
 	ld [wTilePermissions], a
 	ret
-.Up:
+.Up
 	call .CheckHiNybble
 	ret nz
 	ld a, [wTileUp]
@@ -1465,7 +1449,7 @@ GetMovementPermissions::
 	or FACE_UP
 	ld [wTilePermissions], a
 	ret
-.Right:
+.Right
 	call .CheckHiNybble
 	ret nz
 	ld a, [wTileRight]
@@ -1568,8 +1552,7 @@ GetCoordTileCollision::
 	inc hl
 .nocarry2
 	ld a, [wTilesetCollisionBank]
-	call GetFarByte
-	ret
+	jp GetFarByte
 .nope
 	ld a, -1
 	ret
@@ -1736,8 +1719,7 @@ FadeToMenu::
 	call LoadStandardMenuHeader
 	farcall FadeOutToWhite
 	call ClearSprites
-	call DisableSpriteUpdates
-	ret
+	jp DisableSpriteUpdates
 
 CloseSubmenu::
 	call ClearBGPalettes
@@ -1751,14 +1733,14 @@ ExitAllMenus::
 	call Call_ExitMenu
 	call ReloadTilesetAndPalettes
 	call UpdateSprites
+	; fallthrough
 FinishExitMenu::
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	farcall LoadOW_BGPal7
 	call WaitBGMap2
 	farcall FadeInFromWhite
-	call EnableSpriteUpdates
-	ret
+	jp EnableSpriteUpdates
 
 ReturnToMapWithSpeechTextbox::
 	push af
@@ -1804,8 +1786,7 @@ ReloadTilesetAndPalettes::
 	call SkipMusic
 	pop af
 	rst Bankswitch
-	call EnableLCD
-	ret
+	jp EnableLCD
 
 GetMapPointer::
 	ld a, [wMapGroup]
@@ -1813,7 +1794,6 @@ GetMapPointer::
 	ld a, [wMapNumber]
 	ld c, a
 	; fallthrough
-
 GetAnyMapPointer::
 ; Prior to calling this function, you must have switched banks so that
 ; MapGroupPointers is visible.
@@ -1821,7 +1801,9 @@ GetAnyMapPointer::
 ; b = map group, c = map number
 ; outputs:
 ; hl points to the map within its group
-	push bc ; save map number for later
+; -------------------------------------
+	; save map number for later
+	push bc
 	; get pointer to map group
 	dec b
 	ld c, b
@@ -1832,13 +1814,13 @@ GetAnyMapPointer::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	pop bc ; restore map number
+	; restore map number
+	pop bc
 	; find the cth map within the group
 	dec c
 	ld b, 0
 	ld a, MAP_LENGTH
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 GetMapField::
 ; Extract data from the current map's group entry.
@@ -1852,7 +1834,6 @@ GetMapField::
 	ld a, [wMapNumber]
 	ld c, a
 	; fallthrough
-
 GetAnyMapField::
 	; bankswitch
 	ldh a, [hROMBank]

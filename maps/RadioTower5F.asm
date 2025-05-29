@@ -58,7 +58,6 @@ Director:
 	waitbutton
 	closetext
 	end
-
 .TrueDirector:
 	writetext RadioTower5FDirectorText
 	waitbutton
@@ -67,7 +66,6 @@ Director:
 
 TrainerExecutivef1:
 	trainer EXECUTIVEF, EXECUTIVEF_1, EVENT_BEAT_ROCKET_EXECUTIVEF_1, Executivef1SeenText, Executivef1BeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -128,9 +126,6 @@ RadioTower5FRocketBossScript:
 	setmapscene ECRUTEAK_TIN_TOWER_ENTRANCE, SCENE_ECRUTEAKTINTOWERENTRANCE_SAGE_BLOCKS
 	setevent EVENT_GOT_CLEAR_BELL
 	setevent EVENT_TEAM_ROCKET_DISBANDED
-	sjump .UselessJump
-
-.UselessJump:
 	applymovement RADIOTOWER5F_DIRECTOR, RadioTower5FDirectorWalksOut
 	playsound SFX_EXIT_BUILDING
 	disappear RADIOTOWER5F_DIRECTOR

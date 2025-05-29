@@ -6,8 +6,7 @@ PlayWhirlpoolSound:
 	call WaitSFX
 	ld de, SFX_SURF
 	call PlaySFX
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 BlindingFlash:
 	farcall FadeOutToWhite
@@ -71,15 +70,14 @@ ShakeHeadbuttTree:
 	ld hl, vTiles1
 	lb bc, BANK(Font), 12
 	call Get1bpp
-	call UpdatePlayerSprite
-	ret
+	jp UpdatePlayerSprite
 
 HeadbuttTreeGFX:
 INCBIN "gfx/overworld/headbutt_tree.2bpp"
 
 HideHeadbuttTree:
-	; Replaces all four headbutted tree tiles with tile $05
-	; Assumes any tileset with headbutt trees has grass at tile $05
+; Replaces all four headbutted tree tiles with tile $05
+; Assumes any tileset with headbutt trees has grass at tile $05
 	xor a
 	ldh [hBGMapMode], a
 	ld a, [wPlayerDirection]
@@ -123,17 +121,15 @@ OWCutAnimation:
 .loop
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
-	jr nz, .finish
+	ret nz
 	ld a, 36 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForAllSprites
 	call OWCutJumptable
 	call DelayFrame
 	jr .loop
-.finish
-	ret
 .LoadCutGFX:
-	callfar ClearSpriteAnims ; pointless to farcall
+	call ClearSpriteAnims ; in the same bank (bank23)
 	ld de, CutGrassGFX
 	ld hl, vTiles0 tile FIELDMOVE_GRASS
 	lb bc, BANK(CutGrassGFX), 4
@@ -141,8 +137,7 @@ OWCutAnimation:
 	ld de, CutTreeGFX
 	ld hl, vTiles0 tile FIELDMOVE_TREE
 	lb bc, BANK(CutTreeGFX), 4
-	call Request2bpp
-	ret
+	jp Request2bpp
 
 CutTreeGFX:
 INCBIN "gfx/overworld/cut_tree.2bpp"
@@ -196,7 +191,7 @@ Cut_StartWaiting:
 	; Cut_WaitAnimSFX
 	ld hl, wJumptableIndex
 	inc [hl]
-
+	; fallthrough
 Cut_WaitAnimSFX:
 	ld hl, wFrameCounter
 	ld a, [hl]
@@ -357,9 +352,6 @@ FlyToAnim:
 .exit
 	pop af
 	ld [wStateFlags], a
-	call .RestorePlayerSprite_DespawnLeaves
-	ret
-.RestorePlayerSprite_DespawnLeaves:
 	ld hl, wShadowOAMSprite00TileID
 	xor a
 	ld c, 4
@@ -374,8 +366,7 @@ endr
 	ld hl, wShadowOAMSprite04
 	ld bc, wShadowOAMEnd - wShadowOAMSprite04
 	xor a
-	call ByteFill
-	ret
+	jp ByteFill
 
 FlyFunction_InitGFX:
 	callfar ClearSpriteAnims
@@ -408,8 +399,7 @@ FlyFunction_FrameTimer:
 	and $7
 	ret nz
 	ld de, SFX_FLY
-	call PlaySFX
-	ret
+	jp PlaySFX
 .exit
 	ld hl, wJumptableIndex
 	set JUMPTABLE_EXIT_F, [hl]

@@ -44,8 +44,7 @@ DecompressRequest2bpp::
 	pop hl
 	ld de, sScratch
 	call Request2bpp
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 Request2bpp::
 ; Load 2bpp at b:de to occupy c tiles of hl.

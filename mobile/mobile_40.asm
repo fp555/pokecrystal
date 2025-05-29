@@ -2046,13 +2046,13 @@ Mobile_SetOverworldDelay:
 Function100dd8:
 	ld c, $01
 	ld b, $03
-	farcall AdvanceMobileInactivityTimerAndCheckExpired
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	jr c, .asm_100dfb
 	ld c, $3c
 	ld b, $01
 	call Function10079c
 	jr c, .asm_100dfb
-	farcall Function10032e
+	call Function10032e
 	ld a, [wcd2b]
 	and a
 	jr nz, .asm_100dfb
@@ -2071,7 +2071,7 @@ MobileComms_CheckInactivityTimer:
 	ld c, a
 	ld b, 3
 	push bc
-	farcall AdvanceMobileInactivityTimerAndCheckExpired ; useless to farcall
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	pop bc
 	jr c, .quit
 	ld b, 1
@@ -2079,7 +2079,7 @@ MobileComms_CheckInactivityTimer:
 	jr c, .quit
 	call Function1009f3
 	jr c, .quit
-	farcall Function10032e ; useless to farcall
+	call Function10032e
 	ld a, [wcd2b]
 	and a
 	jr nz, .quit
@@ -2098,7 +2098,7 @@ Function100e2d:
 	ld c, a
 	ld b, 3
 	push bc
-	farcall AdvanceMobileInactivityTimerAndCheckExpired
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	pop bc
 	jr c, .asm_100e61
 	ld b, 1
@@ -2106,7 +2106,7 @@ Function100e2d:
 	jr c, .asm_100e61
 	call Function1009f3
 	jr c, .asm_100e61
-	farcall Function10032e
+	call Function10032e
 	ld a, [wcd2b]
 	and a
 	jr nz, .asm_100e61
@@ -3139,7 +3139,7 @@ Function10156d:
 	ret c
 
 Function101571:
-	farcall Function10032e
+	call Function10032e
 	ret c
 	ret z
 	ld a, e
@@ -3287,7 +3287,7 @@ Function10168e:
 	ret c
 	ld c, $01
 	ld b, $03
-	farcall AdvanceMobileInactivityTimerAndCheckExpired
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	ret c
 	ld a, [wcd26]
 	ld hl, Jumptable_1016c3
@@ -3505,7 +3505,7 @@ Function1017f5:
 	ret c
 	ld c, $01
 	ld b, $03
-	farcall AdvanceMobileInactivityTimerAndCheckExpired
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	ret c
 	farcall Function100382
 	ld a, [wcd27]
@@ -4881,7 +4881,7 @@ Function1022ca:
 	ret
 
 Function1022d0:
-	farcall Function10032e
+	call Function10032e
 	ld a, [wcd2b]
 	and a
 	jr nz, .asm_1022f3
@@ -4892,7 +4892,7 @@ Function1022d0:
 	sub c
 	ld c, a
 	ld b, 03
-	farcall AdvanceMobileInactivityTimerAndCheckExpired
+	call AdvanceMobileInactivityTimerAndCheckExpired
 	jr c, .asm_1022f3
 	xor a
 	ret
@@ -6335,8 +6335,7 @@ Function102dd3:
 	lb bc, BANK(MobileTradeLightsGFX), 4
 	call Get2bpp
 	farcall __LoadTradeScreenBorderGFX
-	call EnableLCD
-	ret
+	jp EnableLCD
 
 Function102dec:
 	ld hl, MobileTradeLightsPalettes
@@ -6346,8 +6345,7 @@ Function102dec:
 	call FarCopyWRAM
 	farcall Function49742
 	call SetDefaultBGPAndOBP
-	call DelayFrame
-	ret
+	jp DelayFrame
 
 Function102e07:
 	hlcoord 3, 10
@@ -6357,32 +6355,22 @@ Function102e07:
 	and a
 	jr z, .link_battle
 	call Textbox
-	jr .okay
-
-.link_battle
-; the next three operations are pointless
-	hlcoord 3, 10
-	ld b,  1
-	ld c, 11
-	ld d, h
-	ld e, l
-	farcall _LinkTextbox
-
 .okay
 	ld de, .waiting
 	hlcoord 4, 11
-	call PlaceString
-	ret
-
+	jp PlaceString
 .waiting
 	db "Waiting...!@"
+.link_battle
+	ld d, h
+	ld e, l
+	farcall _LinkTextbox
+	jr .okay
 
 Function102e3e:
 	ld de, .CancelString
 	hlcoord 10, 17
-	call PlaceString
-	ret
-
+	jp PlaceString
 .CancelString:
 	db "CANCEL@"
 
@@ -6404,9 +6392,6 @@ Function102e4f:
 	call .PlaceSpeciesNames
 	hlcoord 7, 9
 	ld de, wOTPartySpecies
-	call .PlaceSpeciesNames
-	ret
-
 .PlaceSpeciesNames:
 	ld c, 0
 .count_loop
@@ -6457,8 +6442,7 @@ Function102ea8:
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, TradingMonForOTMonText
-	call PrintTextboxText
-	ret
+	jp PrintTextboxText
 
 TradingMonForOTMonText:
 	text_far _TradingMonForOTMonText
@@ -6468,8 +6452,7 @@ Function102ee7:
 	call Function102dc3
 	ld de, String_102ef4
 	hlcoord 1, 14
-	call PlaceString
-	ret
+	jp PlaceString
 
 String_102ef4:
 	db   "Too bad! The trade"

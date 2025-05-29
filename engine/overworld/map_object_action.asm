@@ -29,7 +29,6 @@ SetFacingStanding:
 
 SetFacingCurrent:
 	call GetSpriteDirection
-	or FACING_STEP_DOWN_0 ; useless
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld [hl], a
@@ -48,21 +47,17 @@ SetFacingStepAction:
 	add hl, bc
 	bit SLIDING_F, [hl]
 	jp nz, SetFacingCurrent
-
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld a, [hl]
 	inc a
 	and %00001111
 	ld [hl], a
-
 	rrca
 	rrca
 	maskbits NUM_DIRECTIONS
 	ld d, a
-
 	call GetSpriteDirection
-	or FACING_STEP_DOWN_0 ; useless
 	or d
 	ld hl, OBJECT_FACING
 	add hl, bc
@@ -74,21 +69,17 @@ SetFacingSkyfall:
 	add hl, bc
 	bit SLIDING_F, [hl]
 	jp nz, SetFacingCurrent
-
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld a, [hl]
 	add 2
 	and %00001111
 	ld [hl], a
-
 	rrca
 	rrca
 	maskbits NUM_DIRECTIONS
 	ld d, a
-
 	call GetSpriteDirection
-	or FACING_STEP_DOWN_0 ; useless
 	or d
 	ld hl, OBJECT_FACING
 	add hl, bc
@@ -100,20 +91,16 @@ SetFacingBumpAction:
 	add hl, bc
 	bit SLIDING_F, [hl]
 	jp nz, SetFacingCurrent
-
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	inc [hl]
-
 	ld a, [hl]
 	rrca
 	rrca
 	rrca
 	maskbits NUM_DIRECTIONS
 	ld d, a
-
 	call GetSpriteDirection
-	or FACING_STEP_DOWN_0 ; useless
 	or d
 	ld hl, OBJECT_FACING
 	add hl, bc
@@ -125,7 +112,6 @@ SetFacingCounterclockwiseSpin:
 	ld hl, OBJECT_DIRECTION
 	add hl, bc
 	ld a, [hl]
-	or FACING_STEP_DOWN_0 ; useless
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld [hl], a
@@ -145,25 +131,21 @@ CounterclockwiseSpinAction:
 	ld a, [hl]
 	and %11110000
 	ld e, a
-
 	ld a, [hl]
 	inc a
 	and %00001111
 	ld d, a
 	cp 4
 	jr c, .ok
-
 	ld d, 0
 	ld a, e
 	add $10
 	and %00110000
 	ld e, a
-
 .ok
 	ld a, d
 	or e
 	ld [hl], a
-
 	swap e
 	ld d, 0
 	ld hl, .facings
@@ -173,7 +155,6 @@ CounterclockwiseSpinAction:
 	add hl, bc
 	ld [hl], a
 	ret
-
 .facings:
 	db OW_DOWN
 	db OW_RIGHT
@@ -257,7 +238,6 @@ SetFacingBigDoll:
 	cp SPRITE_BIG_LAPRAS
 	jr z, .ok
 	ld d, FACING_BIG_DOLL_ASYM ; asymmetric
-
 .ok
 	ld hl, OBJECT_FACING
 	add hl, bc
@@ -269,7 +249,6 @@ SetFacingBoulderDust:
 	add hl, bc
 	inc [hl]
 	ld a, [hl]
-
 	ld hl, OBJECT_FACING
 	add hl, bc
 	and 2

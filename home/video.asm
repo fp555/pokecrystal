@@ -100,7 +100,6 @@ UpdateBGMap::
 	dec a ; 2
 	jr z, .Attr
 	; BG Map 1
-	dec a ; useless
 	ldh a, [hBGMapAddress]
 	ld l, a
 	ldh a, [hBGMapAddress + 1]

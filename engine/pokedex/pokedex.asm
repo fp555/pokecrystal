@@ -2132,14 +2132,13 @@ Pokedex_BlackOutBG:
 	call ByteFill
 	pop af
 	ldh [rSVBK], a
-
+	; fallthrough
 Pokedex_ApplyPrintPals:
 	ld a, $ff
 	call DmgToCgbBGPals
 	ld a, $ff
 	call DmgToCgbObjPal0
-	call DelayFrame
-	ret
+	jp DelayFrame
 
 Pokedex_GetSGBLayout:
 	ld b, a
@@ -2150,8 +2149,7 @@ Pokedex_ApplyUsualPals:
 	ld a, $e4
 	call DmgToCgbBGPals
 	ld a, $e0
-	call DmgToCgbObjPal0
-	ret
+	jp DmgToCgbObjPal0
 
 Pokedex_LoadPointer:
 	ld e, a
@@ -2190,7 +2188,7 @@ Pokedex_LoadSelectedMonTiles:
 
 Pokedex_LoadCurrentFootprint:
 	call Pokedex_GetSelectedMon
-
+	; fallthrough
 Pokedex_LoadAnyFootprint:
 	ld a, [wTempSpecies]
 	dec a

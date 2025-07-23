@@ -368,8 +368,8 @@ RareCandyDesc:
 	next "#MON by one.@"
 
 XAccuracyDesc:
-	db   "Raises accuracy."
-	next "(1 BTL)@"
+	db   "Raises accuracy"
+	next "until battle ends.@"
 
 MetalPowderDesc:
 	db   "Raises DEFENSE of"
@@ -396,8 +396,8 @@ MaxReviveDesc:
 	next "fainted #MON.@"
 
 GuardSpecDesc:
-	db   "Prevents stats"
-	next "reduction. (1 BTL)@"
+	db   "Protects stats"
+	next "until battle ends.@"
 
 SuperRepelDesc:
 	db   "Repels weak #-"
@@ -408,8 +408,8 @@ MaxRepelDesc:
 	next "MON for 250 steps.@"
 
 DireHitDesc:
-	db   "Ups critical hit"
-	next "ratio. (1 BTL)@"
+	db   "Raises crit.chance"
+	next "until battle ends.@"
 
 FreshWaterDesc:
 	db   "Restores #MON"
@@ -423,25 +423,25 @@ LemonadeDesc:
 	db   "Restores #MON"
 	next "HP by 80.@"
 
-XAttackDesc:
-	db   "Raises SPECIAL"
-	next "DEFENSE. (1 BTL)@"
-
 XSpDefDesc:
-	db   "Raises ATTACK."
-	next "(1 BTL)@"
+	db   "Raises SP.DEFENSE"
+	next "until battle ends.@"
+
+XAttackDesc:
+	db   "Raises ATTACK"
+	next "until battle ends.@"
 
 XDefendDesc:
-	db   "Raises DEFENSE."
-	next "(1 BTL)@"
+	db   "Raises DEFENSE"
+	next "until battle ends.@"
 
 XSpeedDesc:
-	db   "Raises SPEED."
-	next "(1 BTL)@"
+	db   "Raises SPEED until"
+	next "battle ends.@"
 
 XSpecialDesc:
-	db   "Raises SPECIAL"
-	next "ATTACK. (1 BTL)@"
+	db   "Raises SP.ATTACK"
+	next "until battle ends.@"
 
 CoinCaseDesc:
 	db   "Holds up to 9,999"
@@ -822,9 +822,6 @@ LoveBallDesc:
 	next "opposite gender.@"
 
 NormalBoxDesc:
-	db   "Open it and see"
-	next "what's inside.@"
-
 GorgeousBoxDesc:
 	db   "Open it and see"
 	next "what's inside.@"

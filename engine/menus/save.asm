@@ -35,7 +35,7 @@ SaveAfterLinkTrade:
 	call SaveBackupChecksum
 	farcall BackupPartyMonMail
 	farcall SaveRTC
-	jp ResumeGameLogic ; jr?
+	jr ResumeGameLogic
 
 ChangeBoxSaveGame:
 	push de
@@ -77,7 +77,7 @@ MoveMonWOMail_SaveGame:
 	ld a, e
 	ld [wCurBox], a
 	call LoadBox
-	jp ResumeGameLogic
+	jr ResumeGameLogic
 
 MoveMonWOMail_InsertMon_SaveGame:
 	call PauseGameLogic

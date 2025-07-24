@@ -25,7 +25,7 @@ TrainerCard:
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .quit
 	ldh a, [hJoyLast]
-	and B_BUTTON
+	and PAD_B
 	jr nz, .quit
 	call .RunJumptable
 	call DelayFrame
@@ -106,14 +106,13 @@ TrainerCard_Page1_LoadGFX:
 	lb bc, BANK(CardStatusGFX), 86
 	call Request2bpp
 	call TrainerCard_Page1_PrintDexCaught_GameTime
-	call TrainerCard_IncrementJumptable
-	ret
+	jr TrainerCard_IncrementJumptable
 
 TrainerCard_Page1_Joypad:
 	call TrainerCard_Page1_PrintGameTime
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_RIGHT | A_BUTTON
+	and PAD_RIGHT | PAD_A
 	jr nz, .pressed_right_a
 	ret
 .pressed_right_a
@@ -141,21 +140,20 @@ TrainerCard_Page2_LoadGFX:
 	call Request2bpp
 	ld hl, TrainerCard_JohtoBadgesOAM
 	call TrainerCard_Page2_3_InitObjectsAndStrings
-	call TrainerCard_IncrementJumptable
-	ret
+	jr TrainerCard_IncrementJumptable
 
 TrainerCard_Page2_Joypad:
 	ld hl, TrainerCard_JohtoBadgesOAM
 	call TrainerCard_Page2_3_AnimateBadges
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_LEFT
+	and PAD_LEFT
 	jr nz, .pressed_left
 	ld a, [wKantoBadges]
 	and a
 	jr nz, .has_kanto_badges
 	ld a, [hl]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .Quit
 	ret
 .has_kanto_badges
@@ -196,18 +194,17 @@ TrainerCard_Page3_LoadGFX:
 	call Request2bpp
 	ld hl, TrainerCard_KantoBadgesOAM
 	call TrainerCard_Page2_3_InitObjectsAndStrings
-	call TrainerCard_IncrementJumptable
-	ret
+	jp TrainerCard_IncrementJumptable ; jr?
 
 TrainerCard_Page3_Joypad:
 	ld hl, TrainerCard_KantoBadgesOAM
 	call TrainerCard_Page2_3_AnimateBadges
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_LEFT
+	and PAD_LEFT
 	jr nz, .pressed_left
 	ld a, [hl]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .pressed_a
 	ret
 .pressed_left
@@ -281,8 +278,7 @@ TrainerCard_Page1_PrintDexCaught_GameTime:
 	ret nz
 	hlcoord 1, 9
 	lb bc, 2, 17
-	call ClearBox
-	ret
+	jp ClearBox
 .Dex_PlayTime:
 	db   "#DEX"
 	next "PLAY TIME@"
@@ -319,8 +315,7 @@ endr
 	xor a
 	ld [wTrainerCardBadgeFrameCounter], a
 	pop hl
-	call TrainerCard_Page2_3_OAMUpdate
-	ret
+	jp TrainerCard_Page2_3_OAMUpdate
 .BadgesTilemap:
 	db $79, $7a, $7b, $7c, $7d, -1 ; "BADGES"
 
@@ -442,8 +437,7 @@ TrainerCard_Page2_3_AnimateBadges:
 	inc a
 	and %111
 	ld [wTrainerCardBadgeFrameCounter], a
-	jr TrainerCard_Page2_3_OAMUpdate
-
+	; fallthrough
 TrainerCard_Page2_3_OAMUpdate:
 	; copy flag array pointer
 	ld a, [hli]
@@ -521,10 +515,10 @@ TrainerCard_Page2_3_OAMUpdate:
 	dbsprite  1,  1,  0,  0, $03, 0
 	db -1
 .facing2
-	dbsprite  0,  0,  0,  0, $01, 0 | X_FLIP
-	dbsprite  1,  0,  0,  0, $00, 0 | X_FLIP
-	dbsprite  0,  1,  0,  0, $03, 0 | X_FLIP
-	dbsprite  1,  1,  0,  0, $02, 0 | X_FLIP
+	dbsprite  0,  0,  0,  0, $01, 0 | OAM_XFLIP
+	dbsprite  1,  0,  0,  0, $00, 0 | OAM_XFLIP
+	dbsprite  0,  1,  0,  0, $03, 0 | OAM_XFLIP
+	dbsprite  1,  1,  0,  0, $02, 0 | OAM_XFLIP
 	db -1
 
 TrainerCard_JohtoBadgesOAM:

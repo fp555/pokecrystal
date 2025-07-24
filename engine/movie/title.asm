@@ -22,41 +22,41 @@ _TitleScreen:
 	call Decompress
 	; Clear screen palettes
 	hlbgcoord 0, 0
-	ld bc, 20 * BG_MAP_WIDTH
+	ld bc, 20 * TILEMAP_WIDTH
 	xor a
 	call ByteFill
 	; Fill tile palettes:
 	; BG Map 1:
 	; line 0 (copyright)
 	hlbgcoord 0, 0, vBGMap1
-	ld bc, BG_MAP_WIDTH
+	ld bc, TILEMAP_WIDTH
 	ld a, 7 ; palette
 	call ByteFill
 	; BG Map 0:
 	; Apply logo gradient:
 	; lines 3-4
 	hlbgcoord 0, 3
-	ld bc, 2 * BG_MAP_WIDTH
+	ld bc, 2 * TILEMAP_WIDTH
 	ld a, 2
 	call ByteFill
 	; line 5
 	hlbgcoord 0, 5
-	ld bc, BG_MAP_WIDTH
+	ld bc, TILEMAP_WIDTH
 	ld a, 3
 	call ByteFill
 	; line 6
 	hlbgcoord 0, 6
-	ld bc, BG_MAP_WIDTH
+	ld bc, TILEMAP_WIDTH
 	ld a, 4
 	call ByteFill
 	; line 7
 	hlbgcoord 0, 7
-	ld bc, BG_MAP_WIDTH
+	ld bc, TILEMAP_WIDTH
 	ld a, 5
 	call ByteFill
 	; lines 8-9
 	hlbgcoord 0, 8
-	ld bc, 2 * BG_MAP_WIDTH
+	ld bc, 2 * TILEMAP_WIDTH
 	ld a, 6
 	call ByteFill
 	; 'CRYSTAL VERSION'
@@ -66,8 +66,8 @@ _TitleScreen:
 	call ByteFill
 	; Suicune gfx
 	hlbgcoord 0, 12
-	ld bc, 6 * BG_MAP_WIDTH ; the rest of the screen
-	ld a, 0 | VRAM_BANK_1
+	ld bc, 6 * TILEMAP_WIDTH ; the rest of the screen
+	ld a, 0 | OAM_BANK1
 	call ByteFill
 	; Back to VRAM bank 0
 	xor a
@@ -82,7 +82,7 @@ _TitleScreen:
 	call Decompress
 	; Clear screen tiles
 	hlbgcoord 0, 0
-	ld bc, 64 * BG_MAP_WIDTH
+	ld bc, 64 * TILEMAP_WIDTH
 	ld a, " "
 	call ByteFill
 	; Draw Pokemon logo
@@ -103,10 +103,10 @@ _TitleScreen:
 	; Initialize background crystal
 	call InitializeBackground
 	; Update palette colors
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, BANK(wBGPals1)
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, TitleScreenPalettes
 	ld de, wBGPals1
 	ld bc, 16 palettes
@@ -116,12 +116,12 @@ _TitleScreen:
 	ld bc, 16 palettes
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	; LY/SCX trickery starts here
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, BANK(wLYOverrides)
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	; Make alternating lines come in from opposite sides
 	; (This part is actually totally pointless, you can't
 	;  see anything until these values are overwritten!)
@@ -144,13 +144,13 @@ _TitleScreen:
 	ld a, LOW(rSCX)
 	ldh [hLCDCPointer], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	; Reset audio
 	call ChannelsOff
 	call EnableLCD
 	; Set sprite size to 8x16
 	ldh a, [rLCDC]
-	set rLCDC_SPRITE_SIZE, a
+	set B_LCDC_OBJ_SIZE, a
 	ldh [rLCDC], a
 	ld a, +112
 	ldh [hSCX], a
@@ -284,7 +284,7 @@ InitializeBackground:
 	ld [hli], a ; tile id
 	inc e
 	inc e
-	ld a, 0 | PRIORITY
+	ld a, 0 | OAM_PRIO
 	ld [hli], a ; attributes
 	dec c
 	jr nz, .loop2
@@ -304,7 +304,7 @@ AnimateTitleCrystal:
 	ld a, [hl]
 	add 2
 	ld [hli], a ; y
-rept SPRITEOAMSTRUCT_LENGTH - 1
+rept OBJ_SIZE - 1
 	inc hl
 endr
 	dec c

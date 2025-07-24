@@ -5,22 +5,22 @@
 ; collapses during the switch.
 
 DoubleSpeed::
-	ld hl, rKEY1
-	bit KEY1_DBLSPEED, [hl]
+	ld hl, rSPD
+	bit B_SPD_DOUBLE, [hl]
 	jr z, SwitchSpeed
 	ret
 
 NormalSpeed::
-	ld hl, rKEY1
-	bit KEY1_DBLSPEED, [hl]
+	ld hl, rSPD
+	bit B_SPD_DOUBLE, [hl]
 	ret z
 	; fallthrough
 SwitchSpeed:
-	set KEY1_PREPARE, [hl]
+	set B_SPD_PREPARE, [hl]
 	xor a
 	ldh [rIF], a
 	ldh [rIE], a
-	ld a, (1 << rJOYP_BUTTONS) | (1 << rJOYP_DPAD)
+	ld a, JOYP_GET_NONE
 	ldh [rJOYP], a
 	stop ; rgbasm adds a nop after this instruction by default
 	ret

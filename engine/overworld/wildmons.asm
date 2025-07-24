@@ -27,7 +27,7 @@ LoadWildMonData:
 FindNest:
 ; Parameters: e: 0 = Johto, 1 = Kanto; wNamedObjectIndex: species
 	hlcoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	xor a
 	call ByteFill
 	ld a, e
@@ -111,7 +111,7 @@ FindNest:
 	call GetWorldMapLocation
 	ld c, a
 	hlcoord 0, 0
-	ld de, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld de, SCREEN_AREA
 .AppendNestLoop:
 	ld a, [hli]
 	cp c

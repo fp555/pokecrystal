@@ -21,7 +21,7 @@ IsCGB::
 SECTION "rst20", ROM0[$0020]
 Bankswitch::
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ret
 
 SECTION "rst28", ROM0[$0028]

@@ -36,7 +36,7 @@ ShakeHeadbuttTree:
 	ld hl, SPRITEANIMSTRUCT_TILE_ID
 	add hl, bc
 	ld [hl], FIELDMOVE_TREE
-	ld a, 36 * SPRITEOAMSTRUCT_LENGTH
+	ld a, 36 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	farcall DoNextFrameForAllSprites
 	call HideHeadbuttTree
@@ -51,7 +51,7 @@ ShakeHeadbuttTree:
 	and a
 	jr z, .done
 	dec [hl]
-	ld a, 36 * SPRITEOAMSTRUCT_LENGTH
+	ld a, 36 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	farcall DoNextFrameForAllSprites
 	call DelayFrame
@@ -122,7 +122,7 @@ OWCutAnimation:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	ret nz
-	ld a, 36 * SPRITEOAMSTRUCT_LENGTH
+	ld a, 36 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForAllSprites
 	call OWCutJumptable
@@ -307,7 +307,7 @@ FlyFromAnim:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .exit
-	ld a, 0 * SPRITEOAMSTRUCT_LENGTH
+	ld a, 0 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForAllSprites
 	call FlyFunction_FrameTimer
@@ -343,7 +343,7 @@ FlyToAnim:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .exit
-	ld a, 0 * SPRITEOAMSTRUCT_LENGTH
+	ld a, 0 * OBJ_SIZE
 	ld [wCurSpriteOAMAddr], a
 	callfar DoNextFrameForAllSprites
 	call FlyFunction_FrameTimer
@@ -357,7 +357,7 @@ FlyToAnim:
 	ld c, 4
 .OAMloop
 	ld [hli], a ; tile id
-rept SPRITEOAMSTRUCT_LENGTH - 1
+rept OBJ_SIZE - 1
 	inc hl
 endr
 	inc a

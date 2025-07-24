@@ -25,14 +25,14 @@ DisableLCD::
 ; Turn the LCD off
 	; Don't need to do anything if the LCD is already off
 	ldh a, [rLCDC]
-	bit rLCDC_ENABLE, a
+	bit B_LCDC_ENABLE, a
 	ret z
 	xor a
 	ldh [rIF], a
 	ldh a, [rIE]
 	ld b, a
 	; Disable VBlank
-	res VBLANK, a
+	res B_IE_VBLANK, a
 	ldh [rIE], a
 .wait
 	; Wait until VBlank would normally happen
@@ -40,7 +40,7 @@ DisableLCD::
 	cp LY_VBLANK + 1
 	jr nz, .wait
 	ldh a, [rLCDC]
-	and ~(1 << rLCDC_ENABLE)
+	and ~LCDC_ON
 	ldh [rLCDC], a
 	xor a
 	ldh [rIF], a
@@ -50,6 +50,6 @@ DisableLCD::
 
 EnableLCD::
 	ldh a, [rLCDC]
-	set rLCDC_ENABLE, a
+	set B_LCDC_ENABLE, a
 	ldh [rLCDC], a
 	ret

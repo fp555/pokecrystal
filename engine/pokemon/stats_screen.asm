@@ -173,9 +173,9 @@ EggStatsJoypad:
 	ld h, 0
 	jr StatsScreen_SetJumptableIndex
 .check
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .quit
-	and D_DOWN | D_UP | A_BUTTON | B_BUTTON
+	and PAD_DOWN | PAD_UP | PAD_A | PAD_B
 	jp StatsScreen_JoypadAction
 .quit
 	ld h, 7
@@ -196,7 +196,7 @@ MonStatsJoypad:
 	ld h, 0
 	jp StatsScreen_SetJumptableIndex ; jr?
 .next
-	and D_DOWN | D_UP | D_LEFT | D_RIGHT | A_BUTTON | B_BUTTON
+	and PAD_CTRL_PAD | PAD_A | PAD_B
 	jp StatsScreen_JoypadAction
 
 StatsScreenWaitCry:
@@ -245,7 +245,7 @@ StatsScreen_GetJoypad:
 	pop de
 	pop hl
 	ld a, [wMenuJoypad]
-	and D_DOWN | D_UP
+	and PAD_DOWN | PAD_UP
 	jr nz, .set_carry
 	ld a, [wMenuJoypad]
 	jr .clear_carry
@@ -264,17 +264,17 @@ StatsScreen_JoypadAction:
 	maskbits NUM_STAT_PAGES
 	ld c, a
 	pop af
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jp nz, .b_button
-	bit D_LEFT_F, a
+	bit B_PAD_LEFT, a
 	jr nz, .d_left
-	bit D_RIGHT_F, a
+	bit B_PAD_RIGHT, a
 	jr nz, .d_right
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .a_button
-	bit D_UP_F, a
+	bit B_PAD_UP, a
 	jr nz, .d_up
-	bit D_DOWN_F, a
+	bit B_PAD_DOWN, a
 	jr nz, .d_down
 	ret
 .d_down

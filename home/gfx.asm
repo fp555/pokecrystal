@@ -3,14 +3,14 @@ DEF MOBILE_TILES_PER_CYCLE EQU 6
 
 Get2bppViaHDMA::
 	ldh a, [rLCDC]
-	bit rLCDC_ENABLE, a
+	bit B_LCDC_ENABLE, a
 	jp z, Copy2bpp
 	homecall HDMATransfer2bpp
 	ret
 
 Get1bppViaHDMA::
 	ldh a, [rLCDC]
-	bit rLCDC_ENABLE, a
+	bit B_LCDC_ENABLE, a
 	jp z, Copy1bpp
 	homecall HDMATransfer1bpp
 	ret
@@ -32,6 +32,7 @@ LoadFrame::
 	ret
 
 DecompressRequest2bpp::
+; Load compressed 2bpp at b:hl to occupy c tiles of de.
 	push de
 	ld a, BANK(sScratch)
 	call OpenSRAM
@@ -174,7 +175,7 @@ Request1bpp::
 Get2bpp::
 ; copy c 2bpp tiles from b:de to hl
 	ldh a, [rLCDC]
-	bit rLCDC_ENABLE, a
+	bit B_LCDC_ENABLE, a
 	jp nz, Request2bpp
 	; fallthrough
 Copy2bpp:
@@ -184,7 +185,7 @@ Copy2bpp:
 	pop de
 	; bank
 	ld a, b
-	; bc = c * LEN_2BPP_TILE
+	; bc = c * TILE_SIZE
 	push af
 	swap c
 	ld a, $f
@@ -199,7 +200,7 @@ Copy2bpp:
 Get1bpp::
 ; copy c 1bpp tiles from b:de to hl
 	ldh a, [rLCDC]
-	bit rLCDC_ENABLE, a
+	bit B_LCDC_ENABLE, a
 	jp nz, Request1bpp
 	; fallthrough
 Copy1bpp::
@@ -208,7 +209,7 @@ Copy1bpp::
 	ld e, l
 	; bank
 	ld a, b
-	; bc = c * LEN_1BPP_TILE
+	; bc = c * TILE_1BPP_SIZE
 	push af
 	ld h, 0
 	ld l, c

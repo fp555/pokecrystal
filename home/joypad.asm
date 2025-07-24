@@ -21,6 +21,7 @@ UpdateJoypad::
 ; hJoypadPressed: pressed this frame (delta)
 ; hJoypadDown: currently pressed
 ; hJoypadSum: pressed so far
+; ------------------------------------------------------------
 	; Any of these three bits can be used to disable input.
 	ld a, [wJoypadDisable]
 	and (1 << JOYPAD_DISABLE_MON_FAINT_F) | (1 << JOYPAD_DISABLE_SGB_TRANSFER_F) | (1 << 4)
@@ -31,7 +32,7 @@ UpdateJoypad::
 	ret nz
 	; We can only get four inputs at a time.
 	; We take d-pad first for no particular reason.
-	ld a, 1 << rJOYP_DPAD
+	ld a, JOYP_GET_CTRL_PAD
 	ldh [rJOYP], a
 	; Read twice to give the request time to take.
 	ldh a, [rJOYP]
@@ -39,13 +40,13 @@ UpdateJoypad::
 	; The Joypad register output is in the lo nybble (inversed).
 	; We make the hi nybble of our new container d-pad input.
 	cpl
-	and $f
+	and JOYP_INPUTS
 	swap a
 	; We'll keep this in b for now.
 	ld b, a
 	; Buttons make 8 total inputs (A, B, Select, Start).
 	; We can fit this into one byte.
-	ld a, 1 << rJOYP_BUTTONS
+	ld a, JOYP_GET_BUTTONS
 	ldh [rJOYP], a
 	; Wait for input to stabilize.
 rept 6
@@ -53,11 +54,11 @@ rept 6
 endr
 	; Buttons take the lo nybble.
 	cpl
-	and $f
+	and JOYP_INPUTS
 	or b
 	ld b, a
 	; Reset the joypad register since we're done with it.
-	ld a, (1 << rJOYP_BUTTONS) | (1 << rJOYP_DPAD)
+	ld a, JOYP_GET_NONE
 	ldh [rJOYP], a
 	; To get the delta we xor the last frame's input with the new one.
 	ldh a, [hJoypadDown] ; last frame
@@ -81,8 +82,8 @@ endr
 	ldh [hJoypadDown], a
 	; Now that we have the input, we can do stuff with it.
 	; For example, soft reset:
-	and A_BUTTON | B_BUTTON | SELECT | START
-	cp  A_BUTTON | B_BUTTON | SELECT | START
+	and PAD_BUTTONS
+	cp PAD_BUTTONS
 	jp z, Reset
 	ret
 
@@ -224,7 +225,7 @@ JoyWaitAorB::
 	call DelayFrame
 	call GetJoypad
 	ldh a, [hJoyPressed]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	ret nz
 	call UpdateTimeAndPals
 	jr JoyWaitAorB
@@ -288,7 +289,7 @@ WaitPressAorB_BlinkCursor::
 	pop hl
 	call JoyTextDelay
 	ldh a, [hJoyLast]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	jr z, .loop
 	pop af
 	ldh [hObjectStructIndex], a
@@ -299,7 +300,7 @@ WaitPressAorB_BlinkCursor::
 SimpleWaitPressAorB::
 	call JoyTextDelay
 	ldh a, [hJoyLast]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	ret nz
 	jr SimpleWaitPressAorB
 
@@ -332,7 +333,7 @@ PromptButton::
 	call .blink_cursor
 	call JoyTextDelay
 	ldh a, [hJoyPressed]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	jr nz, .received_input
 	call UpdateTimeAndPals
 	ld a, $1

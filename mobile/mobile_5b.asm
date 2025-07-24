@@ -23,8 +23,7 @@ Function16c0a8:
 	call ClearSprites
 	ld a, $90
 	ldh [hWY], a
-	call Function16c0fa
-	ret
+	jr Function16c0fa
 
 Function16c0ba:
 	call Function16c943
@@ -33,7 +32,7 @@ Function16c0ba:
 	inc a
 	ld [wd003], a
 	pop af
-	call c, Function16c0fa
+	jr c, Function16c0fa
 	ret
 
 Function16c0ca:
@@ -44,7 +43,7 @@ Function16c0ca:
 	inc a
 	ld [wd003], a
 	pop af
-	call z, Function16c0fa
+	jr z, Function16c0fa
 	ret
 
 Function16c0dc:
@@ -54,7 +53,7 @@ Function16c0dc:
 	inc a
 	ld [wd003], a
 	pop af
-	call c, Function16c0fa
+	jr c, Function16c0fa
 	ret
 
 Function16c0ec:
@@ -90,8 +89,7 @@ MobileSystemSplashScreen_InitGFX:
 	call Function16cc02
 	xor a
 	ldh [hBGMapMode], a
-	call EnableLCD
-	ret
+	jp EnableLCD
 .LoadPals:
 	ld de, wBGPals1
 	ld hl, MobileSplashScreenPalettes
@@ -108,8 +106,7 @@ MobileSystemSplashScreen_InitGFX:
 	ld hl, .Tilemap
 	decoord 0, 1
 	ld bc, $0154
-	call CopyBytes
-	ret
+	jp CopyBytes
 .LoadAttrmap:
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_WIDTH
@@ -118,14 +115,11 @@ MobileSystemSplashScreen_InitGFX:
 	ld hl, .Attrmap
 	decoord 0, 1, wAttrmap
 	ld bc, 17 * SCREEN_WIDTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 .Tiles:
 INCBIN "gfx/mobile/mobile_splash.2bpp"
-
 .Tilemap:
 INCBIN "gfx/mobile/mobile_splash.tilemap"
-
 .Attrmap:
 INCBIN "gfx/mobile/mobile_splash.attrmap"
 
@@ -136,21 +130,21 @@ Function16c943:
 	ld a, [wd003]
 	and a
 	jr nz, .asm_16c95e
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, $ff
 	ld bc, 1 palettes
 	ld hl, wBGPals1
 	call ByteFill
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 .asm_16c95e
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	ld a, $0
 .asm_16c969
@@ -224,25 +218,25 @@ Function16c943:
 	jr nz, .asm_16c969
 	farcall ApplyPals
 	call SetDefaultBGPAndOBP
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wd003]
 	cp $1f
 	jr z, .asm_16ca09
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	and a
 	ret
 .asm_16ca09
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	scf
 	ret
 
@@ -252,10 +246,10 @@ Function16ca11:
 	jr nz, .asm_16ca1d
 	farcall ApplyPals
 .asm_16ca1d
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	ld a, $0
 .asm_16ca28
@@ -317,24 +311,24 @@ Function16ca11:
 	jr nz, .asm_16ca28
 	farcall ApplyPals
 	call SetDefaultBGPAndOBP
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wd003]
 	cp $1f
 	jr z, .asm_16caae
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	and a
 	ret
 .asm_16caae
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	scf
 	ret
 
@@ -546,7 +540,7 @@ Function16cbd1:
 	ld hl, Unknown_16cfa3
 	call AddNTimes
 	ld de, wBGPals1 palette 1 color 2
-	ld bc, PAL_COLOR_SIZE
+	ld bc, COLOR_SIZE
 	ld a, $5
 	call FarCopyWRAM
 	farcall ApplyPals

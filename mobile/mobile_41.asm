@@ -784,7 +784,6 @@ Function106453:
 
 Stubbed_Function106462:
 	ret
-	ret
 
 Function106464::
 	ld de, MobileDialingFrameGFX
@@ -796,14 +795,13 @@ Function106464::
 	ld hl, vTiles2 tile $6b
 	ld b, $0f ; no graphics at 0f:40b0; JP leftover???
 	call Get2bpp
-	call LoadFrame
-	ret
+	jp LoadFrame
 
 Function1064c3:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $6
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	push bc
 	push hl
 	ld hl, Function3f88
@@ -812,16 +810,15 @@ Function1064c3:
 	pop hl
 	pop bc
 	pop af
-	ldh [rSVBK], a
-	jr asm_1064ed
-
+	ldh [rWBK], a
+	; fallthrough
 asm_1064ed:
 	ld de, wDecompressScratch
 	ld b, $0
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $6
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ldh a, [rVBK]
 	push af
 	ld a, $1
@@ -830,7 +827,7 @@ asm_1064ed:
 	pop af
 	ldh [rVBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 MobileDialingFrameGFX:

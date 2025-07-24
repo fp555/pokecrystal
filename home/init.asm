@@ -6,7 +6,7 @@ Reset::
 	call ClearPalettes
 	xor a
 	ldh [rIF], a
-	ld a, 1 << VBLANK
+	ld a, IE_VBLANK
 	ldh [rIE], a
 	ei
 	ld hl, wJoypadDisable
@@ -16,7 +16,7 @@ Reset::
 	jr Init
 
 _Start::
-	cp $11
+	cp BOOTUP_A_CGB
 	jr z, .cgb
 	xor a ; FALSE
 	jr .load
@@ -77,7 +77,7 @@ Init::
 	ldh [hCGB], a
 	call ClearWRAM
 	ld a, 1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	call ClearVRAM
 	call ClearSprites
 	call ClearsScratch
@@ -89,12 +89,12 @@ Init::
 	ldh [hSCX], a
 	ldh [hSCY], a
 	ldh [rJOYP], a
-	ld a, $8 ; HBlank int enable
+	ld a, STAT_MODE_0 ; HBlank int enable
 	ldh [rSTAT], a
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	ldh [rWY], a
-	ld a, 7
+	ld a, WX_OFS
 	ldh [hWX], a
 	ldh [rWX], a
 	ld a, LCDC_DEFAULT ; %11100011
@@ -115,10 +115,9 @@ Init::
 	xor a ; LOW(vBGMap1)
 	ldh [hBGMapAddress], a
 	farcall StartClock
-	xor a ; SRAM_DISABLE
-	ld [MBC3LatchClock], a
-	ld [MBC3SRamEnable], a
-	xor a
+	xor a ; RAMG_SRAM_DISABLE
+	ld [rRTCLATCH], a
+	ld [rRAMG], a
 	ldh [rIF], a
 	ld a, IE_DEFAULT
 	ldh [rIE], a
@@ -149,7 +148,7 @@ ClearWRAM::
 	ld a, 1
 .bank_loop
 	push af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	xor a
 	ld hl, STARTOF(WRAMX)
 	ld bc, SIZEOF(WRAMX)

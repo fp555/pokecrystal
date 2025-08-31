@@ -1008,7 +1008,7 @@ endr
 	ret
 
 String_MysteryJP:
-	db "なぞナゾ@@" ; MYSTERY
+	dname "なぞナゾ", NAME_LENGTH_JAPANESE ; "MYSTERY"
 
 BattleTowerAction_0F:
 	ldh a, [rWBK]

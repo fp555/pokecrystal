@@ -680,9 +680,9 @@ NamePlayer:
 .Male:
 	jp InitName
 .Chris:
-	db "CHRIS@@@@@@"
+	dname "CHRIS", NAME_LENGTH
 .Kris:
-	db "KRIS@@@@@@@"
+	dname "KRIS", NAME_LENGTH
 
 StorePlayerName:
 	ld a, "@"

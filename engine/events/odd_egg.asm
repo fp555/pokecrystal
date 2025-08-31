@@ -81,6 +81,6 @@ GiveOddEgg:
 	farcall AddMobileMonToParty
 	ret
 .Odd:
-	db "ODD@@@@@@@@@"
+	dname "ODD", MON_NAME_LENGTH + 1
 
 INCLUDE "data/events/odd_eggs.asm"

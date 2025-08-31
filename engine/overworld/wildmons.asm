@@ -380,16 +380,15 @@ _SwarmWildmonCheck:
 	call CopyCurrMapDE
 	ld a, [wSwarmMapGroup]
 	cp d
-	jr nz, _NoSwarmWildmon
+	jr nz, .noSwarm
 	ld a, [wSwarmMapNumber]
 	cp e
-	jr nz, _NoSwarmWildmon
+	jr nz, .noSwarm
 	call LookUpWildmonsForMapDE
-	jr nc, _NoSwarmWildmon
+	jr nc, .noSwarm
 	scf
 	ret
-
-_NoSwarmWildmon:
+.noSwarm:
 	and a
 	ret
 
@@ -706,6 +705,7 @@ RandomUnseenWildMon:
 	call LookUpWildmonsForMapDE
 	jr nc, .done
 .GetGrassmon:
+; BUG: RandomUnseenWildMon always picks a morning Pokémon species (see docs/bugs_and_glitches.md)
 	push hl
 	ld bc, 5 + 4 * 2 ; Location of the level of the 5th wild Pokemon in that map
 	add hl, bc

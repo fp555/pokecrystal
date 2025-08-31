@@ -35,7 +35,7 @@ SaveAfterLinkTrade:
 	call SaveBackupChecksum
 	farcall BackupPartyMonMail
 	farcall SaveRTC
-	jr ResumeGameLogic
+	jp ResumeGameLogic
 
 ChangeBoxSaveGame:
 	push de

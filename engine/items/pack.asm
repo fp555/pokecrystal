@@ -595,7 +595,7 @@ BattlePack:
 	ld c, PACKSTATE_INITBALLSPOCKET ; right
 	call Pack_InterpretJoypad
 	ret c
-	jr ItemSubmenu
+	jp ItemSubmenu
 .InitKeyItemsPocket:
 	ld a, KEY_ITEM_POCKET
 	ld [wCurPocket], a
@@ -762,7 +762,6 @@ TMHMSubmenu:
 .didnt_use_item
 	xor a
 	ld [wItemEffectSucceeded], a
-	ret
 .Quit:
 	ret
 

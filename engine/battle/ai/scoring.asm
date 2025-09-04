@@ -360,7 +360,7 @@ AI_Smart_Sleep:
 	jr c, .encourage
 	ld b, EFFECT_NIGHTMARE
 	call AIHasMoveEffect
-	ret nc
+	jr c, .encourage
 	call AI_50_50
 	ret c
 .encourage
@@ -824,7 +824,7 @@ AI_Smart_Reflect:
 	call AICheckEnemyMaxHP
 	ret c
 	call Random
-	cp 8 percent
+	cp 9 percent
 	ret c
 	inc [hl]
 	ret
@@ -1040,7 +1040,6 @@ AI_Smart_SpeedDownHit: ; Icy Wind
 
 AI_Smart_Substitute:
 ; Dismiss this move if enemy's HP is below 50%.
-
 	call AICheckEnemyHalfHP
 	ret c
 	jp AIDiscourageMove
@@ -1048,15 +1047,13 @@ AI_Smart_Substitute:
 AI_Smart_HyperBeam:
 	call AICheckEnemyHalfHP
 	jr c, .discourage
-
-; 50% chance to encourage this move if enemy's HP is below 25%.
+	; 50% chance to encourage this move if enemy's HP is below 25%.
 	call AICheckEnemyQuarterHP
 	ret c
 	call AI_50_50
 	ret c
 	dec [hl]
 	ret
-
 .discourage
 ; If enemy's HP is above 50%, discourage this move at random
 	call Random
@@ -2639,7 +2636,7 @@ AI_Status:
 
 AI_Risky:
 ; Use any move that will KO the target.
-; Risky moves will often be an exception (see below).
+; Selfdestructing moves are an exception (see below).
 	ld hl, wEnemyAIMoveScores - 1
 	ld de, wEnemyMonMoves
 	ld c, NUM_MOVES + 1
@@ -2708,11 +2705,9 @@ AIGetEnemyMove:
 	ld hl, Moves
 	ld bc, MOVE_LENGTH
 	call AddNTimes
-
 	ld de, wEnemyMoveStruct
 	ld a, BANK(Moves)
 	call FarCopyBytes
-
 	pop bc
 	pop de
 	pop hl

@@ -2,7 +2,6 @@ SelectMenu::
 	call CheckRegisteredItem
 	jr c, .NotRegistered
 	jp UseRegisteredItem
-
 .NotRegistered:
 	call OpenText
 	ld b, BANK(MayRegisterItemText)
@@ -25,14 +24,12 @@ CheckRegisteredItem:
 	ld hl, .Pockets
 	rst JumpTable
 	ret
-
 .Pockets:
 ; entries correspond to *_POCKET constants
 	dw .CheckItem
 	dw .CheckBall
 	dw .CheckKeyItem
 	dw .CheckTMHM
-
 .CheckItem:
 	ld hl, wNumItems
 	call .CheckRegisteredNo
@@ -46,7 +43,6 @@ CheckRegisteredItem:
 	jr c, .NoRegisteredItem
 	and a
 	ret
-
 .CheckKeyItem:
 	ld a, [wRegisteredItem]
 	ld hl, wKeyItems
@@ -57,7 +53,6 @@ CheckRegisteredItem:
 	ld [wCurItem], a
 	and a
 	ret
-
 .CheckBall:
 	ld hl, wNumBalls
 	call .CheckRegisteredNo
@@ -70,17 +65,16 @@ CheckRegisteredItem:
 	call .IsSameItem
 	jr c, .NoRegisteredItem
 	ret
-
 .CheckTMHM:
 	jr .NoRegisteredItem
-
 .NoRegisteredItem:
 	xor a
 	ld [wWhichRegisteredItem], a
 	ld [wRegisteredItem], a
+.NotEnoughItems:
+.NotSameItem:
 	scf
 	ret
-
 .CheckRegisteredNo:
 	ld a, [wWhichRegisteredItem]
 	and REGISTERED_NUMBER
@@ -90,11 +84,6 @@ CheckRegisteredItem:
 	ld [wCurItemQuantity], a
 	and a
 	ret
-
-.NotEnoughItems:
-	scf
-	ret
-
 .IsSameItem:
 	ld a, [wRegisteredItem]
 	cp [hl]
@@ -103,41 +92,24 @@ CheckRegisteredItem:
 	and a
 	ret
 
-.NotSameItem:
-	scf
-	ret
-
 UseRegisteredItem:
 	farcall CheckItemMenu
 	ld a, [wItemAttributeValue]
 	ld hl, .SwitchTo
 	rst JumpTable
 	ret
-
 .SwitchTo:
 ; entries correspond to ITEMMENU_* constants
-	dw .CantUse
-	dw .NoFunction
-	dw .NoFunction
-	dw .NoFunction
-	dw .Current
-	dw .Party
-	dw .Overworld
-
-.NoFunction:
-	call OpenText
-	call CantUseItem
-	call CloseText
-	and a
-	ret
-
+	dw .NoUse     ; ITEMMENU_NOUSE
+	dw .Current   ; ITEMMENU_CURRENT
+	dw .Party     ; ITEMMENU_PARTY
+	dw .Overworld ; ITEMMENU_CLOSE
 .Current:
 	call OpenText
 	call DoItemEffect
 	call CloseText
 	and a
 	ret
-
 .Party:
 	call ReanchorMap
 	call FadeToMenu
@@ -146,7 +118,6 @@ UseRegisteredItem:
 	call CloseText
 	and a
 	ret
-
 .Overworld:
 	call ReanchorMap
 	ld a, 1
@@ -156,16 +127,14 @@ UseRegisteredItem:
 	ld [wUsingItemWithSelect], a
 	ld a, [wItemEffectSucceeded]
 	cp 1
-	jr nz, ._cantuse
+	jr nz, .cantuse
 	scf
 	ld a, HMENURETURN_SCRIPT
 	ldh [hMenuReturn], a
 	ret
-
-.CantUse:
+.NoUse:
 	call ReanchorMap
-
-._cantuse
+.cantuse
 	call CantUseItem
 	call CloseText
 	and a

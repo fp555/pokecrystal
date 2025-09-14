@@ -1,16 +1,31 @@
-	; PokemonCenterPC.WhichPC indexes
+; PokemonCenterPC.WhichPC indexes
 	const_def
 	const PCPC_BEFORE_POKEDEX ; 0
 	const PCPC_BEFORE_HOF     ; 1
 	const PCPC_POSTGAME       ; 2
 
-	; PokemonCenterPC.Jumptable indexes
+; PokemonCenterPC.Jumptable indexes
 	const_def
 	const PCPCITEM_PLAYERS_PC   ; 0
 	const PCPCITEM_BILLS_PC     ; 1
 	const PCPCITEM_OAKS_PC      ; 2
 	const PCPCITEM_HALL_OF_FAME ; 3
 	const PCPCITEM_TURN_OFF     ; 4
+	
+; PlayersPCMenuData.WhichPC indexes
+	const_def
+	const PLAYERSPC_NORMAL ; 0
+	const PLAYERSPC_HOUSE  ; 1
+
+; PlayersPCMenuData.PlayersPCMenuPointers indexes
+	const_def
+	const PLAYERSPCITEM_WITHDRAW_ITEM ; 0
+	const PLAYERSPCITEM_DEPOSIT_ITEM  ; 1
+	const PLAYERSPCITEM_TOSS_ITEM     ; 2
+	const PLAYERSPCITEM_MAIL_BOX      ; 3
+	const PLAYERSPCITEM_DECORATION    ; 4
+	const PLAYERSPCITEM_LOG_OFF       ; 5
+	const PLAYERSPCITEM_TURN_OFF      ; 6
 
 PokemonCenterPC:
 	call PC_CheckPartyForPokemon
@@ -36,8 +51,7 @@ PokemonCenterPC:
 .shutdown
 	call PC_PlayShutdownSound
 	call ExitMenu
-	call CloseWindow
-	ret
+	jp CloseWindow
 .TopMenu:
 	db MENU_BACKUP_TILES | MENU_NO_CLICK_SFX ; flags
 	menu_coords 0, 0, 15, 12
@@ -111,21 +125,6 @@ PC_CheckPartyForPokemon:
 	text_far _PokecenterPCCantUseText
 	text_end
 
-	; PlayersPCMenuData.WhichPC indexes
-	const_def
-	const PLAYERSPC_NORMAL ; 0
-	const PLAYERSPC_HOUSE  ; 1
-
-	; PlayersPCMenuData.PlayersPCMenuPointers indexes
-	const_def
-	const PLAYERSPCITEM_WITHDRAW_ITEM ; 0
-	const PLAYERSPCITEM_DEPOSIT_ITEM  ; 1
-	const PLAYERSPCITEM_TOSS_ITEM     ; 2
-	const PLAYERSPCITEM_MAIL_BOX      ; 3
-	const PLAYERSPCITEM_DECORATION    ; 4
-	const PLAYERSPCITEM_LOG_OFF       ; 5
-	const PLAYERSPCITEM_TURN_OFF      ; 6
-
 BillsPC:
 	call PC_PlayChoosePCSound
 	ld hl, PokecenterBillsPCText
@@ -172,8 +171,7 @@ PC_PlayBootSound:
 PC_PlayShutdownSound:
 	ld de, SFX_SHUT_DOWN_PC
 	call PC_WaitPlaySFX
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 PC_PlayChoosePCSound:
 	ld de, SFX_CHOOSE_PC_OPTION
@@ -183,13 +181,12 @@ PC_PlaySwapItemsSound:
 	ld de, SFX_SWITCH_POKEMON
 	call PC_WaitPlaySFX
 	ld de, SFX_SWITCH_POKEMON
-
+	; fallthrough
 PC_WaitPlaySFX:
 	push de
 	call WaitSFX
 	pop de
-	call PlaySFX
-	ret
+	jp PlaySFX
 
 _PlayersHousePC:
 	call PC_PlayBootSound
@@ -220,8 +217,7 @@ _PlayersPC:
 	ld hl, PlayersPCAskWhatDoText
 	call PC_DisplayTextWaitMenu
 	call .PlayersPC
-	call ExitMenu
-	ret
+	jp ExitMenu
 .PlayersPC:
 	xor a
 	ld [wPCItemsCursor], a
@@ -238,8 +234,7 @@ _PlayersPC:
 .turn_off
 	xor a
 .done
-	call ExitMenu
-	ret
+	jp ExitMenu
 
 PlayersPCMenuData:
 	db MENU_BACKUP_TILES ; flags
@@ -330,7 +325,7 @@ PlayerWithdrawItemMenu:
 	farcall SelectQuantityToToss
 	call ExitMenu
 	call ExitMenu
-	jr c, .done
+	ret c
 .withdraw
 	ld a, [wItemQuantityChange]
 	ld [wPCItemQuantityChange], a
@@ -350,14 +345,10 @@ PlayerWithdrawItemMenu:
 	call MenuTextbox
 	xor a
 	ldh [hBGMapMode], a
-	call ExitMenu
-	ret
+	jp ExitMenu
 .PackFull:
 	ld hl, .PlayersPCNoRoomWithdrawText
-	call MenuTextboxBackup
-	ret
-.done
-	ret
+	jp MenuTextboxBackup
 .PlayersPCHowManyWithdrawText:
 	text_far _PlayersPCHowManyWithdrawText
 	text_end
@@ -430,24 +421,6 @@ PlayerDepositItemMenu:
 	ld a, FALSE
 	ld [wSpriteUpdatesEnabled], a
 	farcall CheckItemMenu
-	ld a, [wItemAttributeValue]
-	ld hl, .dw
-	rst JumpTable
-	pop af
-	ld [wSpriteUpdatesEnabled], a
-	ret
-.dw
-; entries correspond to ITEMMENU_* constants
-	dw .tossable ; ITEMMENU_NOUSE
-	dw .no_toss
-	dw .no_toss
-	dw .no_toss
-	dw .tossable ; ITEMMENU_CURRENT
-	dw .tossable ; ITEMMENU_PARTY
-	dw .tossable ; ITEMMENU_CLOSE
-.no_toss
-	ret
-.tossable
 	ld a, [wPCItemQuantityChange]
 	push af
 	ld a, [wPCItemQuantity]
@@ -457,6 +430,8 @@ PlayerDepositItemMenu:
 	ld [wPCItemQuantity], a
 	pop af
 	ld [wPCItemQuantityChange], a
+	pop af
+	ld [wSpriteUpdatesEnabled], a
 	ret
 .DepositItem:
 	farcall _CheckTossableItem
@@ -491,12 +466,10 @@ PlayerDepositItemMenu:
 	call TossItem
 	predef PartyMonItemName
 	ld hl, .PlayersPCDepositItemsText
-	call PrintText
-	ret
+	jp PrintText
 .NoRoomInPC:
 	ld hl, .PlayersPCNoRoomDepositText
-	call PrintText
-	ret
+	jp PrintText
 .DeclinedToDeposit:
 	and a
 	ret
@@ -594,8 +567,7 @@ PCItemsJoypad:
 
 PC_DisplayText:
 	call MenuTextbox
-	call ExitMenu
-	ret
+	jp ExitMenu
 
 PokecenterPCTurnOnText:
 	text_far _PokecenterPCTurnOnText

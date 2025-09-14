@@ -24,10 +24,9 @@ DEF NUM_ITEM_TYPES EQU const_value - 1
 ; UseRegisteredItem.SwitchTo indexes (see engine/overworld/select_menu.asm)
 	const_def
 	const ITEMMENU_NOUSE   ; 0
-	const_skip 3
-	const ITEMMENU_CURRENT ; 4
-	const ITEMMENU_PARTY   ; 5
-	const ITEMMENU_CLOSE   ; 6
+	const ITEMMENU_CURRENT ; 1
+	const ITEMMENU_PARTY   ; 2
+	const ITEMMENU_CLOSE   ; 3
 
 ; item actions
 	const_def 6

@@ -43,7 +43,7 @@ DrawBattleHPBar::
 	jr z, .done
 	ld e, 1
 .fill
-; Keep drawing tiles until pixel length is reached
+	; Keep drawing tiles until pixel length is reached
 	ld a, e
 	sub TILE_WIDTH
 	jr c, .lastbar
@@ -96,8 +96,7 @@ PlayStereoCry::
 	ld [wStereoPanningMask], a
 	pop af
 	call _PlayMonCry
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 PlayStereoCry2::
 ; Don't wait for the cry to end.
@@ -110,8 +109,7 @@ PlayStereoCry2::
 
 PlayMonCry::
 	call PlayMonCry2
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 PlayMonCry2::
 ; Don't wait for the cry to end.
@@ -120,8 +118,7 @@ PlayMonCry2::
 	ld [wStereoPanningMask], a
 	ld [wCryTracks], a
 	pop af
-	call _PlayMonCry
-	ret
+	jp _PlayMonCry
 
 _PlayMonCry::
 	push hl
@@ -200,7 +197,7 @@ PrintLevel_Force3Digits::
 	ld [hl], "<LV>"
 	inc hl
 	ld c, 3
-
+	; fallthrough
 Print8BitNumLeftAlign::
 	ld [wTextDecimalByte], a
 	ld de, wTextDecimalByte
@@ -218,7 +215,7 @@ GetBaseData::
 	; Egg doesn't have BaseData
 	ld a, [wCurSpecies]
 	cp EGG
-	jr z, .egg
+	jr z, .end
 	; Get BaseData
 	dec a
 	ld bc, BASE_DATA_SIZE
@@ -227,26 +224,9 @@ GetBaseData::
 	ld de, wCurBaseData
 	ld bc, BASE_DATA_SIZE
 	call CopyBytes
-	jr .end
-.egg
-	ld de, UnusedEggPic
-	; Sprite dimensions
-	ld b, $55 ; 5x5
-	ld hl, wBasePicSize
-	ld [hl], b
-	; Beta front and back sprites
-	; (see pokegold-spaceworld's data/pokemon/base_stats/*)
-	ld hl, wBaseUnusedFrontpic
-	ld [hl], e
-	inc hl
-	ld [hl], d
-	inc hl
-	ld [hl], e
-	inc hl
-	ld [hl], d
-.end
 	; Replace Pokedex # with species
 	ld a, [wCurSpecies]
+.end
 	ld [wBaseDexNo], a
 	pop af
 	rst Bankswitch
@@ -258,7 +238,7 @@ GetBaseData::
 GetCurNickname::
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMonNicknames
-
+	; fallthrough
 GetNickname::
 ; Get nickname a from list hl.
 	push hl

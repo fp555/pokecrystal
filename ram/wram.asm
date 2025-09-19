@@ -2595,8 +2595,7 @@ wBaseUnknown1:: db
 wBaseEggSteps:: db
 wBaseUnknown2:: db
 wBasePicSize:: db
-wBaseUnusedFrontpic:: dw
-wBaseUnusedBackpic:: dw
+	ds 4
 wBaseGrowthRate:: db
 wBaseEggGroups:: db
 wBaseTMHM:: flag_array NUM_TM_HM_TUTOR

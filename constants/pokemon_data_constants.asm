@@ -24,8 +24,7 @@ DEF BASE_GENDER      rb
 DEF BASE_EGG_STEPS   rb
                      rb_skip
 DEF BASE_PIC_SIZE    rb
-DEF BASE_FRONTPIC    rw
-DEF BASE_BACKPIC     rw
+					 rb_skip 4
 DEF BASE_GROWTH_RATE rb
 DEF BASE_EGG_GROUPS  rb
 DEF BASE_TMHM        rb (NUM_TM_HM_TUTOR + 7) / 8

@@ -1,15 +1,13 @@
 Kurt_PrintTextWhichApricorn:
 	ld hl, .WhichApricornText
-	call PrintText
-	ret
+	jp PrintText
 .WhichApricornText:
 	text_far _WhichApricornText
 	text_end
 
 Kurt_PrintTextHowMany:
 	ld hl, .HowManyShouldIMakeText
-	call PrintText
-	ret
+	jp PrintText
 .HowManyShouldIMakeText:
 	text_far _HowManyShouldIMakeText
 	text_end
@@ -43,8 +41,7 @@ SelectApricornForKurt:
 	ld [wKurtApricornQuantity], a
 	call Kurt_GiveUpSelectedQuantityOfSelectedApricorn
 .done
-	call Call_ExitMenu
-	ret
+	jp Call_ExitMenu
 
 Kurt_SelectApricorn:
 	farcall FindApricornsInBag
@@ -127,11 +124,9 @@ Kurt_SelectQuantity:
 	cp -1
 	jr z, .done
 	ld a, [wItemQuantityChange]
-	ld [wItemQuantityChange], a ; What is the point of this operation?
 	scf
 .done
-	call CloseWindow
-	ret
+	jp CloseWindow
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 6, 9, SCREEN_WIDTH - 1, 12
@@ -159,7 +154,7 @@ PlaceApricornQuantity:
 
 Kurt_GetQuantityOfApricorn:
 	push bc
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	ld a, [wCurItem]
 	ld c, a
 	ld b, 0
@@ -194,7 +189,7 @@ Kurt_GiveUpSelectedQuantityOfSelectedApricorn:
 	; Initialize the search.
 	push de
 	push bc
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	ld a, [wCurItem]
 	ld c, a
 	ld e, $0
@@ -202,9 +197,7 @@ Kurt_GiveUpSelectedQuantityOfSelectedApricorn:
 	ld [wCurItemQuantity], a
 	ld a, -1
 	ld [wApricorns], a
-.loop1
-; Search for [wCurItem] in the bag.
-; ---------------------------------
+.loop1 ; Search for [wCurItem] in the bag.
 	; Increase the total count.
 	ld a, [wCurItemQuantity]
 	inc a
@@ -231,7 +224,7 @@ Kurt_GiveUpSelectedQuantityOfSelectedApricorn:
 	pop hl
 	jr .loop1
 .okay1
-; How many stacks have we found?
+	; How many stacks have we found?
 	ld a, e
 	and a
 	jr z, .done
@@ -316,7 +309,7 @@ Kurt_GiveUpSelectedQuantityOfSelectedApricorn:
 Kurt_GetAddressOfApricornQuantity:
 	push hl
 	push bc
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	inc hl
 	ld c, a
 	ld b, 0
@@ -330,7 +323,7 @@ Kurt_GetAddressOfApricornQuantity:
 
 Kurt_GetRidOfItem:
 	push bc
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	ld a, [wCurItemQuantity]
 	ld c, a
 	ld b, 0
@@ -352,17 +345,15 @@ Kurt_GetRidOfItem:
 	jr nc, .okay
 	add c
 	ld b, a
-
 .okay
 	push bc
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	ld a, b
 	ld [wItemQuantityChange], a
 	call TossItem
 	pop bc
 	ld a, c
 	sub b
-
 .done
 	ld [wItemQuantityChange], a
 	pop bc

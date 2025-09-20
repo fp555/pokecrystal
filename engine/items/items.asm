@@ -10,11 +10,12 @@ _ReceiveItem::
 	rst JumpTable
 	ret
 .Pockets:
-	; entries correspond to item types
+; entries correspond to item types
 	dw .Item
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
+	dw .Berry
 .Item:
 	ld h, d
 	ld l, e
@@ -25,6 +26,9 @@ _ReceiveItem::
 	jp ReceiveKeyItem
 .Ball:
 	ld hl, wNumBalls
+	jp PutItemInPocket
+.Berry:
+	ld hl, wNumBerries
 	jp PutItemInPocket
 .TMHM:
 	ld h, d
@@ -51,8 +55,12 @@ _TossItem::
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
+	dw .Berry
 .Ball:
 	ld hl, wNumBalls
+	jp RemoveItemFromPocket
+.Berry:
+	ld hl, wNumBerries
 	jp RemoveItemFromPocket
 .TMHM:
 	ld h, d
@@ -73,7 +81,7 @@ _TossItem::
 
 _CheckItem::
 	call DoesHLEqualNumItems
-	jr nz, .nope
+	jp nz, CheckTheItem
 	push hl
 	call CheckItemPocket
 	pop de
@@ -88,8 +96,12 @@ _CheckItem::
 	dw .KeyItem
 	dw .Ball
 	dw .TMHM
+	dw .Berry
 .Ball:
 	ld hl, wNumBalls
+	jp CheckTheItem
+.Berry:
+	ld hl, wNumBerries
 	jp CheckTheItem
 .TMHM:
 	ld h, d
@@ -105,7 +117,6 @@ _CheckItem::
 .Item:
 	ld h, d
 	ld l, e
-.nope
 	jp CheckTheItem
 
 DoesHLEqualNumItems:
@@ -133,6 +144,14 @@ GetPocketCapacity:
 	cp HIGH(wNumPCItems)
 	ret z
 .not_pc
+	ld c, MAX_BERRIES
+	ld a, e
+	cp LOW(wNumBerries)
+	jr nz, .not_berries
+	ld a, d
+	cp HIGH(wNumBerries)
+	ret z
+.not_berries
 	ld c, MAX_BALLS
 	ret
 

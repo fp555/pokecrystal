@@ -203,7 +203,7 @@ FindApricornsInBag:
 	jr z, .done
 	push hl
 	ld [wCurItem], a
-	ld hl, wNumItems
+	ld hl, wNumBerries
 	call CheckItem
 	pop hl
 	jr nc, .nope

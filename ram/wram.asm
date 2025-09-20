@@ -2163,8 +2163,6 @@ wStringBuffer5:: ds STRING_BUFFER_LENGTH
 
 wBattleMenuCursorPosition:: db
 
-	ds 1
-
 wCurBattleMon::
 ; index of the player's mon currently in battle (0-5)
 	db
@@ -2179,13 +2177,14 @@ wItemsPocketCursor::    db
 wKeyItemsPocketCursor:: db
 wBallsPocketCursor::    db
 wTMHMPocketCursor::     db
+wBerryPocketCursor::    db
 
 wPCItemsScrollPosition::        db
-	ds 1
 wItemsPocketScrollPosition::    db
 wKeyItemsPocketScrollPosition:: db
 wBallsPocketScrollPosition::    db
 wTMHMPocketScrollPosition::     db
+wBerryPocketScrollPosition::    db
 
 wSwitchMon::
 wSwitchItem::
@@ -2685,6 +2684,7 @@ NEXTU
 wDudeNumItems:: db
 wDudeItems:: ds 2 * 4 + 1
 
+wDudeNumBerries::
 wDudeNumKeyItems:: db
 wDudeKeyItems:: ds 18 + 1
 
@@ -2853,14 +2853,11 @@ wObjectMasks:: ds NUM_OBJECTS
 wVariableSprites:: ds $100 - SPRITE_VARS
 
 wMapNameSignFlags:: db
-	ds 2
+
 wTimeOfDayPal:: db
-	ds 4
 wTimeOfDayPalFlags:: db
 wTimeOfDayPalset:: db
 wCurTimeOfDay:: db
-
-	ds 1
 
 wSecretID:: dw
 wStatusFlags::
@@ -2915,6 +2912,9 @@ wBalls:: ds MAX_BALLS * 2 + 1
 wNumPCItems:: db
 wPCItems:: ds MAX_PC_ITEMS * 2 + 1
 
+wNumBerries:: db
+wBerries:: ds MAX_BERRIES * 2 + 1
+
 wPokegearFlags::
 ; bit 0: map
 ; bit 1: radio
@@ -2924,21 +2924,17 @@ wPokegearFlags::
 	db
 wRadioTuningKnob:: db
 wLastDexMode:: db
-	ds 1
 wWhichRegisteredItem:: db
 wRegisteredItem:: db
-
 wPlayerState:: db
 
 wHallOfFameCount:: db
-	ds 1
+
 wTradeFlags:: flag_array NUM_NPC_TRADES
-	ds 1
+
 wMooMooBerries:: db
 wUndergroundSwitchPositions:: db
 wFarfetchdPosition:: db
-
-	ds 13
 
 ; map scene ids
 wPokecenter2FSceneID::                            db
@@ -3026,16 +3022,11 @@ wMobileBattleRoomSceneID::                        db
 wEventFlags:: flag_array NUM_EVENTS
 
 wCurBox:: db
-
-	ds 2
-
 wBoxNames:: ds BOX_NAME_LENGTH * NUM_BOXES
 
 wCelebiEvent::
 ; bit 2: forest is restless
 	db
-
-	ds 1
 
 wBikeFlags::
 ; bit 0: using strength
@@ -3060,8 +3051,6 @@ wCurMapSceneScriptsPointer:: dw
 wCurMapCallbackCount:: db
 wCurMapCallbacksPointer:: dw
 
-	ds 2
-
 ; Sprite id of each decoration
 wDecoBed::           db
 wDecoCarpet::        db
@@ -3082,16 +3071,12 @@ wDailyFlags1:: db
 wDailyFlags2:: db
 wSwarmFlags:: db
 wUnusedDailyFlag:: db
-	ds 1
 wTimerEventStartDay:: db
-	ds 3
 
 wFruitTreeFlags:: flag_array NUM_FRUIT_TREES
 
-	ds 2
-
 wLuckyNumberDayTimer:: dw
-	ds 2
+
 wSpecialPhoneCallID:: db
 	ds 3
 wBugContestStartTime:: ds 4 ; day, hour, min, sec
@@ -3114,13 +3099,11 @@ wPlayerMonSelection:: ds 3
 wdc5f:: db
 wdc60:: db
 
-	ds 18
+	ds 44
 
 wStepCount:: db
 wPoisonStepCount:: db
-	ds 2
 wHappinessStepCount:: db
-	ds 1
 
 wParkBallsRemaining::
 wSafariBallsRemaining:: db
@@ -3128,10 +3111,7 @@ wSafariTimeRemaining:: dw
 
 wPhoneList:: ds CONTACT_LIST_SIZE + 1
 
-	ds 22
-
 wLuckyNumberShowFlag:: db
-	ds 1
 wLuckyIDNumber:: dw
 
 wRepelEffect:: db ; If a Repel is in use, it contains the nr of steps it's still active

@@ -12,8 +12,7 @@ _UpdatePlayerSprite::
 	ldh [hUsedSpriteIndex], a
 	ld a, [wUsedSprites + 1]
 	ldh [hUsedSpriteTile], a
-	call GetUsedSprite
-	ret
+	jp GetUsedSprite
 
 LoadStandingSpritesGFX: ; mobile
 	ld hl, wSpriteFlags
@@ -38,10 +37,6 @@ LoadWalkingSpritesGFX: ; mobile
 	ret
 
 RefreshSprites::
-	call .Refresh
-	call LoadUsedSpritesGFX
-	ret
-.Refresh:
 	xor a
 	ld bc, wUsedSpritesEnd - wUsedSprites
 	ld hl, wUsedSprites
@@ -49,7 +44,7 @@ RefreshSprites::
 	call GetPlayerSprite
 	call AddMapSprites
 	call LoadAndSortSprites
-	ret
+	jp LoadUsedSpritesGFX
 
 GetPlayerSprite:
 ; Get Chris or Kris's sprite.
@@ -89,13 +84,8 @@ INCLUDE "data/sprites/player_sprites.asm"
 AddMapSprites:
 	call GetMapEnvironment
 	call CheckOutdoorMap
-	jr z, .outdoor
-	call AddIndoorSprites
-	ret
-.outdoor
-	call AddOutdoorSprites
-	ret
-
+	jr z, AddOutdoorSprites
+	; fallthrough
 AddIndoorSprites:
 	ld hl, wMap1ObjectSprite
 	ld a, 1
@@ -133,9 +123,7 @@ LoadUsedSpritesGFX:
 	ld a, MAPCALLBACK_SPRITES
 	call RunMapCallback
 	call GetUsedSprites
-	call LoadMiscTiles
-	ret
-
+	; fallthrough
 LoadMiscTiles:
 	ld a, [wSpriteFlags]
 	bit SPRITES_SKIP_WALKING_GFX_F, a
@@ -193,11 +181,7 @@ GetMonSprite:
 	jr z, .BreedMon2
 	cp SPRITE_VARS
 	jr nc, .Variable
-	jr .Icon
-.Normal:
-	and a
-	ret
-.Icon:
+	; icon
 	sub SPRITE_POKEMON
 	ld e, a
 	ld d, 0
@@ -205,6 +189,9 @@ GetMonSprite:
 	add hl, de
 	ld a, [hl]
 	jr .Mon
+.Normal:
+	and a
+	ret
 .BreedMon1
 	ld a, [wBreedMon1Species]
 	jr .Mon
@@ -278,8 +265,7 @@ _GetSpritePalette::
 
 LoadAndSortSprites:
 	call LoadSpriteGFX
-	call ArrangeUsedSprites
-	ret
+	jr ArrangeUsedSprites
 
 AddSpriteGFX:
 ; Add any new sprite ids to a list of graphics to be loaded.
@@ -321,20 +307,16 @@ LoadSpriteGFX:
 .loop
 	ld a, [hli]
 	and a
-	jr z, .done
+	ret z
 	push hl
-	call .LoadSprite
-	pop hl
-	ld [hli], a
-	dec b
-	jr nz, .loop
-.done
-	ret
-.LoadSprite:
 	push bc
 	call GetSprite
 	pop bc
 	ld a, l
+	pop hl
+	ld [hli], a
+	dec b
+	jr nz, .loop
 	ret
 
 ArrangeUsedSprites:
@@ -347,7 +329,7 @@ ArrangeUsedSprites:
 	; Keep going until the end of the list.
 	ld a, [hli]
 	and a
-	jr z, .quit
+	ret z
 	ld a, [hl]
 	call GetSpriteLength
 	; Spill over into the second table after $80 tiles.
@@ -370,31 +352,23 @@ ArrangeUsedSprites:
 	; Keep going until the end of the list.
 	ld a, [hli]
 	and a
-	jr z, .quit
+	ret z
 	ld a, [hl]
 	call GetSpriteLength
 	; There are only two tables, so don't go any further than that.
 	add b
-	jr c, .quit
+	ret c
 	ld [hl], b
 	ld b, a
 	inc hl
 	dec c
 	jr nz, .SecondTableLength
-.quit
 	ret
 
 GetSpriteLength:
 ; Return the length of sprite type a in tiles.
-	cp WALKING_SPRITE
-	jr z, .AnyDirection
-	cp STANDING_SPRITE
-	jr z, .AnyDirection
 	cp STILL_SPRITE
 	jr z, .OneDirection
-	ld a, 12
-	ret
-.AnyDirection:
 	ld a, 12
 	ret
 .OneDirection:
@@ -410,7 +384,7 @@ GetUsedSprites:
 	ld [wSpriteFlags], a
 	ld a, [hli]
 	and a
-	jr z, .done
+	ret z
 	ldh [hUsedSpriteIndex], a
 	ld a, [hli]
 	ldh [hUsedSpriteTile], a
@@ -427,14 +401,25 @@ GetUsedSprites:
 	pop bc
 	dec c
 	jr nz, .loop
-.done
 	ret
 
 GetUsedSprite:
 	ldh a, [hUsedSpriteIndex]
 	call SafeGetSprite
 	ldh a, [hUsedSpriteTile]
-	call .GetTileAddr
+	; Return the address of tile (a) in (hl).
+	and $7f
+	ld l, a
+	ld h, 0
+rept 4
+	add hl, hl
+endr
+	ld a, l
+	add LOW(vTiles0)
+	ld l, a
+	ld a, h
+	adc HIGH(vTiles0)
+	ld h, a
 	push hl
 	push de
 	push bc
@@ -456,34 +441,15 @@ endr
 	pop hl
 	ld a, [wSpriteFlags]
 	bit SPRITES_VRAM_BANK_0_F, a
-	jr nz, .done
+	ret nz
 	bit SPRITES_SKIP_WALKING_GFX_F, a
-	jr nz, .done
+	ret nz
 	ldh a, [hUsedSpriteIndex]
 	call _DoesSpriteHaveFacings
-	jr c, .done
+	ret c
 	ld a, h
 	add HIGH(vTiles1 - vTiles0)
 	ld h, a
-	call .CopyToVram
-.done
-	ret
-
-.GetTileAddr:
-; Return the address of tile (a) in (hl).
-	and $7f
-	ld l, a
-	ld h, 0
-rept 4
-	add hl, hl
-endr
-	ld a, l
-	add LOW(vTiles0)
-	ld l, a
-	ld a, h
-	adc HIGH(vTiles0)
-	ld h, a
-	ret
 .CopyToVram:
 	ldh a, [rVBK]
 	push af
@@ -525,8 +491,7 @@ LoadEmote::
 	ld a, c
 	and a
 	ret z
-	call GetEmote2bpp
-	ret
+	jp GetEmote2bpp
 
 INCLUDE "data/sprites/emotes.asm"
 

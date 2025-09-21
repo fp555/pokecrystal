@@ -80,10 +80,8 @@ DoMove:
 	pop bc
 	ld a, BANK(BattleCommandPointers)
 	call GetFarWord
-	call .DoMoveEffectCommand
+	rst CallHL
 	jr .ReadMoveEffectCommand
-.DoMoveEffectCommand:
-	jp hl
 
 BattleCommand_CheckTurn:
 ; Repurposed as hardcoded turn handling. Useless as a command.
@@ -457,7 +455,6 @@ CheckEnemyTurn:
 	call StdBattleTextbox
 	call CantMove
 	; fallthrough
-
 EndTurn:
 	ld a, $1
 	ld [wTurnEnded], a
@@ -784,7 +781,6 @@ BattleCommand_CheckObedience:
 IgnoreSleepOnly:
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
-
 	; Snore and Sleep Talk bypass sleep.
 	cp SNORE
 	jr z, .CheckSleep
@@ -792,19 +788,15 @@ IgnoreSleepOnly:
 	jr z, .CheckSleep
 	and a
 	ret
-
 .CheckSleep:
 	ld a, BATTLE_VARS_STATUS
 	call GetBattleVar
 	and SLP_MASK
 	ret z
-
-; 'ignored orders…sleeping!'
+	; 'ignored orders…sleeping!'
 	ld hl, IgnoredSleepingText
 	call StdBattleTextbox
-
 	call EndMoveEffect
-
 	scf
 	ret
 
@@ -825,77 +817,60 @@ CheckUserIsCharging:
 BattleCommand_DoTurn:
 	call CheckUserIsCharging
 	ret nz
-
 	ld hl, wBattleMonPP
 	ld de, wPlayerSubStatus3
 	ld bc, wPlayerTurnsTaken
-
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .proceed
-
 	ld hl, wEnemyMonPP
 	ld de, wEnemySubStatus3
 	ld bc, wEnemyTurnsTaken
-
 .proceed
-
 ; If we've gotten this far, this counts as a turn.
 	ld a, [bc]
 	inc a
 	ld [bc], a
-
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVar
 	cp STRUGGLE
 	ret z
-
 	ld a, [de]
 	and 1 << SUBSTATUS_IN_LOOP | 1 << SUBSTATUS_RAMPAGE | 1 << SUBSTATUS_BIDE
 	ret nz
-
 	call .consume_pp
 	ld a, b
 	and a
 	jp nz, EndMoveEffect
-
 	; SubStatus5
 	inc de
 	inc de
-
 	ld a, [de]
 	bit SUBSTATUS_TRANSFORMED, a
 	ret nz
-
 	ldh a, [hBattleTurn]
 	and a
-
 	ld hl, wPartyMon1PP
 	ld a, [wCurBattleMon]
 	jr z, .player
-
-; mimic this part entirely if wildbattle
+	; mimic this part entirely if wildbattle
 	ld a, [wBattleMode]
 	dec a
 	jr z, .wild
-
 	ld hl, wOTPartyMon1PP
 	ld a, [wCurOTMon]
-
 .player
 	call GetPartyLocation
 	push hl
 	call CheckMimicUsed
 	pop hl
 	ret c
-
 .consume_pp
 	ldh a, [hBattleTurn]
 	and a
 	ld a, [wCurMoveNum]
 	jr z, .okay
 	ld a, [wCurEnemyMoveNum]
-
 .okay
 	ld c, a
 	ld b, 0
@@ -906,7 +881,6 @@ BattleCommand_DoTurn:
 	dec [hl]
 	ld b, 0
 	ret
-
 .wild
 	ld hl, wEnemyMonMoves
 	ld a, [wCurEnemyMoveNum]
@@ -921,32 +895,27 @@ BattleCommand_DoTurn:
 	ld a, [hl]
 	cp MIMIC
 	ret z
-
 .mimic
 	ld hl, wWildMonPP
-	call .consume_pp
-	ret
-
+	jr .consume_pp
 .out_of_pp
 	call BattleCommand_MoveDelay
-; get move effect
+	; get move effect
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
-; continuous?
+	; continuous?
 	ld hl, .continuousmoves
 	ld de, 1
 	call IsInArray
-
-; 'has no pp left for [move]'
+	; 'has no pp left for [move]'
 	ld hl, HasNoPPLeftText
 	jr c, .print
-; 'but no pp is left for the move'
+	; 'but no pp is left for the move'
 	ld hl, NoPPLeftText
 .print
 	call StdBattleTextbox
 	ld b, 1
 	ret
-
 .continuousmoves
 	db EFFECT_RAZOR_WIND
 	db EFFECT_SKY_ATTACK
@@ -964,41 +933,33 @@ CheckMimicUsed:
 	ld a, [wCurMoveNum]
 	jr z, .player
 	ld a, [wCurEnemyMoveNum]
-
 .player
 	ld c, a
 	ld a, MON_MOVES
 	call UserPartyAttr
-
 	ld a, BATTLE_VARS_MOVE
 	call GetBattleVar
 	cp MIMIC
 	jr z, .mimic
-
 	ld b, 0
 	add hl, bc
 	ld a, [hl]
 	cp MIMIC
 	jr nz, .mimic
-
 	scf
 	ret
-
 .mimic
 	and a
 	ret
 
 BattleCommand_Critical:
 ; Determine whether this attack's hit will be critical.
-
 	xor a
 	ld [wCriticalHit], a
-
 	ld a, BATTLE_VARS_MOVE_POWER
 	call GetBattleVar
 	and a
 	ret z
-
 	ldh a, [hBattleTurn]
 	and a
 	ld hl, wEnemyMonItem
@@ -1006,40 +967,32 @@ BattleCommand_Critical:
 	jr nz, .Item
 	ld hl, wBattleMonItem
 	ld a, [wBattleMonSpecies]
-
 .Item:
 	ld c, 0
-
 	cp CHANSEY
 	jr nz, .Farfetchd
 	ld a, [hl]
 	cp LUCKY_PUNCH
 	jr nz, .FocusEnergy
-
-; +2 critical level
+	; +2 critical level
 	ld c, 2
 	jr .Tally
-
 .Farfetchd:
 	cp FARFETCH_D
 	jr nz, .FocusEnergy
 	ld a, [hl]
 	cp STICK
 	jr nz, .FocusEnergy
-
-; +2 critical level
+	; +2 critical level
 	ld c, 2
 	jr .Tally
-
 .FocusEnergy:
 	ld a, BATTLE_VARS_SUBSTATUS4
 	call GetBattleVar
 	bit SUBSTATUS_FOCUS_ENERGY, a
 	jr z, .CheckCritical
-
-; +1 critical level
+	; +1 critical level
 	inc c
-
 .CheckCritical:
 	ld a, BATTLE_VARS_MOVE_ANIM
 	call GetBattleVar
@@ -1049,11 +1002,9 @@ BattleCommand_Critical:
 	call IsInArray
 	pop bc
 	jr nc, .ScopeLens
-
-; +2 critical level
+	; +2 critical level
 	inc c
 	inc c
-
 .ScopeLens:
 	push bc
 	call GetUserItem
@@ -1061,10 +1012,8 @@ BattleCommand_Critical:
 	cp HELD_CRITICAL_UP ; Increased critical chance. Only Scope Lens has this.
 	pop bc
 	jr nz, .Tally
-
-; +1 critical level
+	; +1 critical level
 	inc c
-
 .Tally:
 	ld hl, CriticalHitChances
 	ld b, 0
@@ -1819,8 +1768,7 @@ BattleCommand_RaiseSub:
 
 BattleCommand_FailureText:
 ; If the move missed or failed, load the appropriate
-; text, and end the effects of multi-turn or multi-
-; hit moves.
+; text, and end the effects of multi-turn or multi-hit moves.
 	ld a, [wAttackMissed]
 	and a
 	ret z
@@ -2002,7 +1950,6 @@ BattleCommand_BideFailText:
 	ld a, [wAttackMissed]
 	and a
 	ret z
-
 	ld a, [wTypeModifier]
 	and EFFECTIVENESS_MASK
 	jp z, PrintDoesntAffect
@@ -2010,12 +1957,10 @@ BattleCommand_BideFailText:
 
 BattleCommand_CriticalText:
 ; Prints the message for critical hits or one-hit KOs.
-
 ; If there is no message to be printed, wait 20 frames.
 	ld a, [wCriticalHit]
 	and a
 	jr z, .wait
-
 	dec a
 	add a
 	ld hl, .texts
@@ -2026,14 +1971,11 @@ BattleCommand_CriticalText:
 	ld h, [hl]
 	ld l, a
 	call StdBattleTextbox
-
 	xor a
 	ld [wCriticalHit], a
-
 .wait
 	ld c, 20
 	jp DelayFrames
-
 .texts
 	dw CriticalHitText
 	dw OneHitKOText
@@ -2054,9 +1996,7 @@ BattleCommand_SuperEffectiveLoopText:
 	call GetBattleVarAddr
 	bit SUBSTATUS_IN_LOOP, a
 	ret nz
-
 	; fallthrough
-
 BattleCommand_SuperEffectiveText:
 	ld a, [wTypeModifier]
 	and EFFECTIVENESS_MASK
@@ -2070,28 +2010,23 @@ BattleCommand_SuperEffectiveText:
 
 BattleCommand_CheckFaint:
 ; Faint the opponent if its HP reached zero
-;  and faint the user along with it if it used Destiny Bond.
+; and faint the user along with it if it used Destiny Bond.
 ; Ends the move effect if the opponent faints.
-
 	ld hl, wEnemyMonHP
 	ldh a, [hBattleTurn]
 	and a
 	jr z, .got_hp
 	ld hl, wBattleMonHP
-
 .got_hp
 	ld a, [hli]
 	or [hl]
 	ret nz
-
 	ld a, BATTLE_VARS_SUBSTATUS5_OPP
 	call GetBattleVar
 	bit SUBSTATUS_DESTINY_BOND, a
 	jr z, .no_dbond
-
 	ld hl, TookDownWithItText
 	call StdBattleTextbox
-
 	ldh a, [hBattleTurn]
 	and a
 	ld hl, wEnemyMonMaxHP + 1
@@ -2101,7 +2036,6 @@ BattleCommand_CheckFaint:
 	ld hl, wBattleMonMaxHP + 1
 	bccoord 10, 9 ; hp bar
 	ld a, 1
-
 .got_max_hp
 	ld [wWhichHPBar], a
 	ld a, [hld]
@@ -2122,7 +2056,6 @@ BattleCommand_CheckFaint:
 	ld l, c
 	predef AnimateHPBar
 	call RefreshBattleHuds
-
 	call BattleCommand_SwitchTurn
 	xor a
 	ld [wBattleAfterAnim], a
@@ -2132,9 +2065,7 @@ BattleCommand_CheckFaint:
 	ld a, DESTINY_BOND
 	call LoadAnim
 	call BattleCommand_SwitchTurn
-
 	jr .finish
-
 .no_dbond
 	ld a, BATTLE_VARS_MOVE_EFFECT
 	call GetBattleVar
@@ -2148,26 +2079,19 @@ BattleCommand_CheckFaint:
 	jr z, .multiple_hit_raise_sub
 	cp EFFECT_BEAT_UP
 	jr nz, .finish
-
 .multiple_hit_raise_sub
 	call BattleCommand_RaiseSub
-
 .finish
 	jp EndMoveEffect
 
 BattleCommand_BuildOpponentRage:
-	jp .start
-
-.start
 	ld a, [wAttackMissed]
 	and a
 	ret nz
-
 	ld a, BATTLE_VARS_SUBSTATUS4_OPP
 	call GetBattleVar
 	bit SUBSTATUS_RAGE, a
 	ret z
-
 	ld de, wEnemyRageCounter
 	ldh a, [hBattleTurn]
 	and a
@@ -2178,7 +2102,6 @@ BattleCommand_BuildOpponentRage:
 	inc a
 	ret z
 	ld [de], a
-
 	call BattleCommand_SwitchTurn
 	ld hl, RageBuildingText
 	call StdBattleTextbox
@@ -2261,7 +2184,6 @@ BattleCommand_DamageStats:
 	and a
 	jp nz, EnemyAttackDamage
 	; fallthrough
-
 PlayerAttackDamage:
 ; Return move power d, player level e, enemy defense c and player attack b.
 	call ResetDamage
@@ -2331,9 +2253,9 @@ PlayerAttackDamage:
 	ret
 
 TruncateHL_BC:
-.loop
 ; Truncate 16-bit values hl and bc to 8-bit values b and c respectively.
 ; b = hl, c = bc
+.loop
 	ld a, h
 	or b
 	jr z, .finish
@@ -2408,8 +2330,7 @@ CheckDamageStatsCritical:
 
 ThickClubBoost:
 ; Return in hl the stat value at hl.
-; If the attacking monster is Cubone or Marowak and
-; it's holding a Thick Club, double it.
+; If the attacking monster is Cubone or Marowak and it's holding a Thick Club, double it.
 	push bc
 	push de
 	ld b, CUBONE
@@ -2422,8 +2343,7 @@ ThickClubBoost:
 
 LightBallBoost:
 ; Return in hl the stat value at hl.
-; If the attacking monster is Pikachu and it's
-; holding a Light Ball, double it.
+; If the attacking monster is Pikachu and it's holding a Light Ball, double it.
 	push bc
 	push de
 	ld b, PIKACHU
@@ -4721,7 +4641,6 @@ BattleCommand_FlinchTarget:
 	and a
 	ret nz
 	; fallthrough
-
 FlinchTarget:
 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
 	call GetBattleVarAddr

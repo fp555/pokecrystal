@@ -66,11 +66,8 @@ LoadHPBar:
 	ld de, ExpBarGFX
 	ld hl, vTiles2 tile $55
 	lb bc, BANK(ExpBarGFX), 9
-	call Get2bppViaHDMA
-	ld de, MobilePhoneTilesGFX + 7 tiles ; mobile phone icon
-	ld hl, vTiles2 tile $5e
-	lb bc, BANK(MobilePhoneTilesGFX), 2
 	jp Get2bppViaHDMA
+	; $5e-$5f are free (prev. used by mobile phone icon)
 
 StatsScreen_LoadFont:
 	call _LoadFontsBattleExtra

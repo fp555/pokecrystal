@@ -13,7 +13,6 @@ _InterpretBattleMenu::
 	ld a, [wMenuData_2DMenuItemStringsBank]
 	rst FarCall
 	call Draw2DMenu
-	farcall MobileTextBorder
 	call UpdateSprites
 	call ApplyTilemap
 	call Get2DMenuSelection
@@ -24,7 +23,6 @@ _InterpretMobileMenu::
 	ld a, [wMenuData_2DMenuItemStringsBank]
 	rst FarCall
 	call Draw2DMenu
-	farcall MobileTextBorder
 	call UpdateSprites
 	call ApplyTilemap
 	call Init2DMenuCursorPosition

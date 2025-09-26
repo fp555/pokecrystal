@@ -5199,7 +5199,6 @@ MoveInfoBox:
 	ld b, 3
 	ld c, 9
 	call Textbox
-	call MobileTextBorder
 	ld a, [wPlayerDisableCount]
 	and a
 	jr z, .not_disabled
@@ -8025,7 +8024,6 @@ InitBattleDisplay:
 	ld b, 4
 	ld c, 18
 	call Textbox
-	farcall MobileTextBorder
 	hlcoord 1, 5
 	lb bc, 3, 7
 	call ClearBox
@@ -8081,8 +8079,7 @@ InitBattleDisplay:
 	ret
 .InitBackPic:
 	call GetTrainerBackpic
-	call CopyBackpic
-	ret
+	jr CopyBackpic
 
 GetTrainerBackpic:
 ; Load the player character's backpic (6x6) into VRAM starting from vTiles2 tile $31.

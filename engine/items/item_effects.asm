@@ -796,10 +796,9 @@ MoonBallMultiplier:
 	sla b
 	jr c, .max
 	sla b
-	jr nc, .done
+	ret nc
 .max
 	ld b, $ff
-.done
 	ret
 
 LoveBallMultiplier:
@@ -1087,8 +1086,7 @@ RareCandy_StatBooster_GetParameters:
 	call GetBaseData
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMonNicknames
-	call GetNickname
-	ret
+	jp GetNickname
 
 RareCandyEffect:
 	ld b, PARTYMENUACTION_HEALING_ITEM
@@ -1168,12 +1166,11 @@ HealPowderEffect:
 	jp c, StatusHealer_ExitMenu
 	call UseStatusHealer
 	cp FALSE
-	jr nz, .not_used
+	jp nz, StatusHealer_Jumptable
 	ld c, HAPPINESS_BITTERPOWDER
 	farcall ChangeHappiness
 	call LooksBitterMessage
 	ld a, $0
-.not_used
 	jp StatusHealer_Jumptable
 
 StatusHealingEffect:
@@ -1295,12 +1292,11 @@ RevivalHerbEffect:
 	jp c, StatusHealer_ExitMenu
 	call RevivePokemon
 	cp FALSE
-	jr nz, .not_used
+	jp nz, StatusHealer_Jumptable
 	ld c, HAPPINESS_REVIVALHERB
 	farcall ChangeHappiness
 	call LooksBitterMessage
 	xor a
-.not_used
 	jp StatusHealer_Jumptable
 
 ReviveEffect:
@@ -1385,7 +1381,7 @@ BitterBerryEffect:
 	ld hl, wPlayerSubStatus3
 	bit SUBSTATUS_CONFUSED, [hl]
 	ld a, 1
-	jr z, .done
+	jp z, StatusHealer_Jumptable
 	res SUBSTATUS_CONFUSED, [hl]
 	xor a
 	ldh [hBattleTurn], a
@@ -1393,7 +1389,6 @@ BitterBerryEffect:
 	ld hl, ConfusedNoMoreText
 	call StdBattleTextbox
 	ld a, 0
-.done
 	jp StatusHealer_Jumptable
 
 RestoreHPEffect:
@@ -1406,17 +1401,16 @@ EnergypowderEffect:
 
 EnergyRootEffect:
 	ld c, HAPPINESS_ENERGYROOT
-
+	; fallthrough
 EnergypowderEnergyRootCommon:
 	push bc
 	call ItemRestoreHP
 	pop bc
 	cp 0
-	jr nz, .skip_happiness
+	jp nz, StatusHealer_Jumptable
 	farcall ChangeHappiness
 	call LooksBitterMessage
 	ld a, 0
-.skip_happiness
 	jp StatusHealer_Jumptable
 
 ItemRestoreHP:
@@ -1538,9 +1532,9 @@ StatusHealer_NoEffect:
 StatusHealer_ExitMenu:
 	xor a
 	ld [wItemEffectSucceeded], a
+	; fallthrough
 StatusHealer_ClearPalettes:
-	call ClearPalettes
-	ret
+	jp ClearPalettes
 
 IsItemUsedOnBattleMon:
 	ld a, [wBattleMode]
@@ -1573,7 +1567,7 @@ ContinueRevive:
 	ld [hl], d
 	inc hl
 	ld [hl], e
-	jp LoadCurHPIntoBuffer3
+	jp LoadCurHPIntoBuffer3 ; jr?
 
 RestoreHealth:
 	ld a, MON_HP + 1
@@ -1584,7 +1578,7 @@ RestoreHealth:
 	ld a, [hl]
 	adc d
 	ld [hl], a
-	jr c, .full_hp
+	jr c, ReviveFullHP
 	call LoadCurHPIntoBuffer3
 	ld a, MON_HP + 1
 	call GetPartyParamLocation
@@ -1598,11 +1592,8 @@ RestoreHealth:
 	dec hl
 	ld a, [de]
 	sbc [hl]
-	jr c, .finish
-.full_hp
-	call ReviveFullHP
-.finish
-	ret
+	ret c
+	jr ReviveFullHP
 
 RemoveHP:
 	ld a, MON_HP + 1
@@ -1613,13 +1604,11 @@ RemoveHP:
 	ld a, [hl]
 	sbc d
 	ld [hl], a
-	jr nc, .okay
+	jr nc, LoadCurHPIntoBuffer3
 	xor a
 	ld [hld], a
 	ld [hl], a
-.okay
-	call LoadCurHPIntoBuffer3
-	ret
+	jr LoadCurHPIntoBuffer3
 
 IsMonFainted:
 	push de
@@ -1705,29 +1694,23 @@ GetOneFifthMaxHP:
 	ret
 
 GetHealingItemAmount:
-	push hl
 	ld a, [wCurItem]
-	ld hl, HealingHPAmounts
-	ld d, a
-.next
-	ld a, [hli]
-	cp -1
-	jr z, .NotFound
-	cp d
+	push bc
+	ld b, a
+	farcall GetItemHeldEffect
+	; b now has the effect, c the param
+	ld de, MAX_STAT_VALUE
+	ld a, c
+	cp -1 ; for Full Restore and Max Potion
 	jr z, .done
-	inc hl
-	inc hl
-	jr .next
-.NotFound:
+	ld e, c
+	ld d, 0
+	and a
+	jr nz, .done
 	scf
 .done
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	pop hl
+	pop bc
 	ret
-
-INCLUDE "data/items/heal_hp.asm"
 
 Softboiled_MilkDrinkFunction:
 ; Softboiled/Milk Drink in the field
@@ -1759,7 +1742,6 @@ Softboiled_MilkDrinkFunction:
 	ld [wPartyMenuCursor], a
 	ret
 .SelectMilkDrinkRecipient:
-.loop
 	push bc
 	ld a, PARTYMENUACTION_HEALING_ITEM
 	ld [wPartyMenuActionText], a
@@ -1788,7 +1770,7 @@ Softboiled_MilkDrinkFunction:
 	ld hl, .ItemCantUseOnMonText
 	call MenuTextboxBackup
 	pop bc
-	jr .loop
+	jr .SelectMilkDrinkRecipient
 .ItemCantUseOnMonText:
 	text_far _ItemCantUseOnMonText
 	text_end
@@ -1812,7 +1794,7 @@ MaxRepelEffect:
 
 RepelEffect:
 	ld b, 100
-
+	; fallthrough
 UseRepel:
 	ld a, [wRepelEffect]
 	and a
@@ -1993,8 +1975,7 @@ GoodRodEffect:
 
 SuperRodEffect:
 	ld e, $2
-	jr UseRod
-
+	; fallthrough
 UseRod:
 	farcall FishFunction
 	ret
@@ -2069,7 +2050,7 @@ RestorePPEffect:
 	call Play_SFX_FULL_HEAL
 	ld hl, PPsIncreasedText
 	call PrintText
-
+	; fallthrough
 FinishPPRestore:
 	call ClearPalettes
 	jp UseDisposableItem
@@ -2102,7 +2083,7 @@ BattleRestorePP:
 .loop
 	ld a, [de]
 	and a
-	jr z, .done
+	ret z
 	cp [hl]
 	jr nz, .next
 	push hl
@@ -2123,7 +2104,6 @@ endr
 	inc de
 	dec b
 	jr nz, .loop
-.done
 	ret
 
 Not_PP_Up:
@@ -2161,7 +2141,7 @@ Elixer_RestorePPofAllMoves:
 
 PPRestoreItem_NoEffect:
 	call WontHaveAnyEffectMessage
-
+	; fallthrough
 PPRestoreItem_Cancel:
 	call ClearPalettes
 	xor a
@@ -2333,8 +2313,7 @@ IsntTheTimeMessage:
 
 WontHaveAnyEffectMessage:
 	ld hl, ItemWontHaveEffectText
-	jr CantUseItemMessage
-
+	; fallthrough
 CantUseItemMessage:
 ; Item couldn't be used.
 	xor a
@@ -2567,7 +2546,7 @@ GetMaxPPOfMove:
 GetMthMoveOfNthPartymon:
 	ld a, [wCurPartyMon]
 	call AddNTimes
-
+	; fallthrough
 GetMthMoveOfCurrentMon:
 	ld a, [wMenuCursorY]
 	ld c, a

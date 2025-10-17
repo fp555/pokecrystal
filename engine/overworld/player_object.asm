@@ -524,10 +524,10 @@ SurfStartStep:
 	ld a, BANK(.movement_data)
 	jp StartAutoInput
 .movement_data
-	db D_DOWN,  0, -1
-	db D_UP,    0, -1
-	db D_LEFT,  0, -1
-	db D_RIGHT, 0, -1
+	db PAD_DOWN,  0, -1
+	db PAD_UP,    0, -1
+	db PAD_LEFT,  0, -1
+	db PAD_RIGHT, 0, -1
 
 FollowNotExact::
 	push bc

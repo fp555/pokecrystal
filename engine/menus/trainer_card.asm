@@ -155,12 +155,12 @@ TrainerCard_Page2_Joypad:
 	and a
 	jr nz, .has_kanto_badges
 	ld a, [hl]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .Quit
 	ret
 .has_kanto_badges
 	ld a, [hl]
-	and D_RIGHT | A_BUTTON
+	and PAD_RIGHT | PAD_A
 	jr nz, .pressed_right_a
 	ret
 .pressed_left
@@ -207,7 +207,7 @@ TrainerCard_Page3_Joypad:
 	and PAD_LEFT
 	jr nz, .pressed_left
 	ld a, [hl]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .pressed_a
 	ret
 .pressed_left

@@ -727,51 +727,51 @@ BattleAnimOAMData:
 	dbsprite   2,  -1, 4, 4, $00, OAM_XFLIP
 
 .OAMData_d2:
-	dbsprite  -4,   0, 4, 0, $00, OBP_NUM
-	dbsprite  -3,   0, 4, 0, $01, OBP_NUM
-	dbsprite  -2,   0, 4, 0, $02, OBP_NUM
-	dbsprite  -1,   0, 4, 0, $03, OBP_NUM
-	dbsprite   0,   0, 4, 0, $04, OBP_NUM
-	dbsprite   1,   0, 4, 0, $05, OBP_NUM
-	dbsprite   2,   0, 4, 0, $06, OBP_NUM
+	dbsprite  -4,   0, 4, 0, $00, OAM_PAL1
+	dbsprite  -3,   0, 4, 0, $01, OAM_PAL1
+	dbsprite  -2,   0, 4, 0, $02, OAM_PAL1
+	dbsprite  -1,   0, 4, 0, $03, OAM_PAL1
+	dbsprite   0,   0, 4, 0, $04, OAM_PAL1
+	dbsprite   1,   0, 4, 0, $05, OAM_PAL1
+	dbsprite   2,   0, 4, 0, $06, OAM_PAL1
 
 .OAMData_d4:
-	dbsprite  -4,  -1, 4, 0, $00, OBP_NUM
-	dbsprite  -4,   0, 4, 0, $01, OBP_NUM
-	dbsprite  -3,  -1, 4, 0, $02, OBP_NUM
-	dbsprite  -3,   0, 4, 0, $03, OBP_NUM
-	dbsprite  -2,  -1, 4, 0, $04, OBP_NUM
-	dbsprite  -2,   0, 4, 0, $05, OBP_NUM
-	dbsprite  -1,  -1, 4, 0, $06, OBP_NUM
-	dbsprite  -1,   0, 4, 0, $07, OBP_NUM
-	dbsprite   0,  -1, 4, 0, $08, OBP_NUM
-	dbsprite   0,   0, 4, 0, $09, OBP_NUM
-	dbsprite   1,  -1, 4, 0, $0a, OBP_NUM
-	dbsprite   1,   0, 4, 0, $0b, OBP_NUM
-	dbsprite   2,  -1, 4, 0, $0c, OBP_NUM
-	dbsprite   2,   0, 4, 0, $0d, OBP_NUM
+	dbsprite  -4,  -1, 4, 0, $00, OAM_PAL1
+	dbsprite  -4,   0, 4, 0, $01, OAM_PAL1
+	dbsprite  -3,  -1, 4, 0, $02, OAM_PAL1
+	dbsprite  -3,   0, 4, 0, $03, OAM_PAL1
+	dbsprite  -2,  -1, 4, 0, $04, OAM_PAL1
+	dbsprite  -2,   0, 4, 0, $05, OAM_PAL1
+	dbsprite  -1,  -1, 4, 0, $06, OAM_PAL1
+	dbsprite  -1,   0, 4, 0, $07, OAM_PAL1
+	dbsprite   0,  -1, 4, 0, $08, OAM_PAL1
+	dbsprite   0,   0, 4, 0, $09, OAM_PAL1
+	dbsprite   1,  -1, 4, 0, $0a, OAM_PAL1
+	dbsprite   1,   0, 4, 0, $0b, OAM_PAL1
+	dbsprite   2,  -1, 4, 0, $0c, OAM_PAL1
+	dbsprite   2,   0, 4, 0, $0d, OAM_PAL1
 
 .OAMData_d3:
-	dbsprite  -3,   0, 0, 0, $00, $1 | OBP_NUM
-	dbsprite  -2,   0, 0, 0, $01, $1 | OBP_NUM
-	dbsprite  -1,   0, 0, 0, $02, $1 | OBP_NUM
-	dbsprite   0,   0, 0, 0, $03, $1 | OBP_NUM
-	dbsprite   1,   0, 0, 0, $04, $1 | OBP_NUM
-	dbsprite   2,   0, 0, 0, $05, $1 | OBP_NUM
+	dbsprite  -3,   0, 0, 0, $00, $1 | OAM_PAL1
+	dbsprite  -2,   0, 0, 0, $01, $1 | OAM_PAL1
+	dbsprite  -1,   0, 0, 0, $02, $1 | OAM_PAL1
+	dbsprite   0,   0, 0, 0, $03, $1 | OAM_PAL1
+	dbsprite   1,   0, 0, 0, $04, $1 | OAM_PAL1
+	dbsprite   2,   0, 0, 0, $05, $1 | OAM_PAL1
 
 .OAMData_d5:
-	dbsprite  -3,   0, 0, 0, $00, $1 | OBP_NUM
-	dbsprite  -3,   1, 0, 0, $01, $1 | OBP_NUM
-	dbsprite  -2,   0, 0, 0, $02, $1 | OBP_NUM
-	dbsprite  -2,   1, 0, 0, $03, $1 | OBP_NUM
-	dbsprite  -1,   0, 0, 0, $04, $1 | OBP_NUM
-	dbsprite  -1,   1, 0, 0, $05, $1 | OBP_NUM
-	dbsprite   0,   0, 0, 0, $06, $1 | OBP_NUM
-	dbsprite   0,   1, 0, 0, $07, $1 | OBP_NUM
-	dbsprite   1,   0, 0, 0, $08, $1 | OBP_NUM
-	dbsprite   1,   1, 0, 0, $09, $1 | OBP_NUM
-	dbsprite   2,   0, 0, 0, $0a, $1 | OBP_NUM
-	dbsprite   2,   1, 0, 0, $0b, $1 | OBP_NUM
+	dbsprite  -3,   0, 0, 0, $00, $1 | OAM_PAL1
+	dbsprite  -3,   1, 0, 0, $01, $1 | OAM_PAL1
+	dbsprite  -2,   0, 0, 0, $02, $1 | OAM_PAL1
+	dbsprite  -2,   1, 0, 0, $03, $1 | OAM_PAL1
+	dbsprite  -1,   0, 0, 0, $04, $1 | OAM_PAL1
+	dbsprite  -1,   1, 0, 0, $05, $1 | OAM_PAL1
+	dbsprite   0,   0, 0, 0, $06, $1 | OAM_PAL1
+	dbsprite   0,   1, 0, 0, $07, $1 | OAM_PAL1
+	dbsprite   1,   0, 0, 0, $08, $1 | OAM_PAL1
+	dbsprite   1,   1, 0, 0, $09, $1 | OAM_PAL1
+	dbsprite   2,   0, 0, 0, $0a, $1 | OAM_PAL1
+	dbsprite   2,   1, 0, 0, $0b, $1 | OAM_PAL1
 
 .OAMData_6e:
 	dbsprite   0,  -2, 4, 4, $00, $0

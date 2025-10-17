@@ -20,7 +20,7 @@ DoPlayerMovement::
 	and PAD_CTRL_PAD
 	ret nz
 	ld a, c
-    and B_BUTTON
+    and PAD_B
     ret nz
 	ld a, c
 	or PAD_DOWN

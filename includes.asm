@@ -70,5 +70,3 @@ INCLUDE "constants/battle_tower_constants.asm"
 if DEF(_CRYSTAL11_VC)
 INCLUDE "vc/pokecrystal11.constants.asm"
 endc
-
-INCLUDE "macros/legacy.asm"

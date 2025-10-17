@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: gbdev/rgbds
-          ref: v0.9.2
+          ref: v0.9.3
           path: rgbds
       - name: Install rgbds
         working-directory: rgbds

@@ -9,11 +9,11 @@ InitSound::
 	push af
 	ld a, BANK(_InitSound)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	call _InitSound
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	pop af
 	pop bc
 	pop de
@@ -29,11 +29,11 @@ UpdateSound::
 	push af
 	ld a, BANK(_UpdateSound)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	call _UpdateSound
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	pop af
 	pop bc
 	pop de
@@ -43,12 +43,12 @@ UpdateSound::
 _LoadMusicByte::
 ; [wCurMusicByte] = [a:de]
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ld a, [de]
 	ld [wCurMusicByte], a
 	ld a, BANK(LoadMusicByte)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ret
 
 PlayMusic::
@@ -61,7 +61,7 @@ PlayMusic::
 	push af
 	ld a, BANK(_PlayMusic) ; aka BANK(_InitSound)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ld a, e
 	and a
 	jr z, .nomusic
@@ -72,7 +72,7 @@ PlayMusic::
 .end
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	pop af
 	pop bc
 	pop de
@@ -89,7 +89,7 @@ PlayMusic2::
 	push af
 	ld a, BANK(_PlayMusic)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	push de
 	ld de, MUSIC_NONE
 	call _PlayMusic
@@ -98,7 +98,7 @@ PlayMusic2::
 	call _PlayMusic
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	pop af
 	pop bc
 	pop de
@@ -116,7 +116,7 @@ PlayCry::
 	; Cries are stuck in one bank.
 	ld a, BANK(PokemonCries)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ld hl, PokemonCries
 rept MON_CRY_LENGTH
 	add hl, de
@@ -135,11 +135,11 @@ endr
 	ld [wCryLength + 1], a
 	ld a, BANK(_PlayCry)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	call _PlayCry
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	pop af
 	pop bc
 	pop de
@@ -165,13 +165,13 @@ PlaySFX::
 	push af
 	ld a, BANK(_PlaySFX)
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 	ld a, e
 	ld [wCurSFX], a
 	call _PlaySFX
 	pop af
 	ldh [hROMBank], a
-	ld [MBC3RomBank], a
+	ld [rROMB], a
 .done
 	pop af
 	pop bc
@@ -421,11 +421,11 @@ TerminateExpBarSound::
 	xor a
 	ld [wChannel5Flags1], a
 	ld [wPitchSweep], a
-	ldh [rNR10], a
-	ldh [rNR11], a
-	ldh [rNR12], a
-	ldh [rNR13], a
-	ldh [rNR14], a
+	ldh [rAUD1SWEEP], a
+	ldh [rAUD1LEN], a
+	ldh [rAUD1ENV], a
+	ldh [rAUD1LOW], a
+	ldh [rAUD1HIGH], a
 	ret
 
 ChannelsOff::

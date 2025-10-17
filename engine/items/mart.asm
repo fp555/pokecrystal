@@ -110,7 +110,7 @@ LoadMartPointer:
 	xor a ; STANDARDMART_HOWMAYIHELPYOU
 	ld [wMartJumptableIndex], a
 	ld [wBargainShopFlags], a
-	ld [wFacingDirection], a
+	ld [wBargainShopFlags + 1], a
 	ret
 
 GetMart:
@@ -426,9 +426,9 @@ BuyMenuLoop:
 	ld [wMenuCursorPositionBackup], a
 	call SpeechTextbox
 	ld a, [wMenuJoypad]
-	cp B_BUTTON
+	cp PAD_B
 	jr z, .set_carry
-	; A_BUTTON
+	; PAD_A
 	call MartAskPurchaseQuantity
 	jr c, .cancel
 	call MartConfirmPurchase

@@ -24,20 +24,20 @@ wCurNoteDuration:: db ; used in MusicE0 and LoadNote
 wCurMusicByte:: db
 wCurChannel:: db
 
-; corresponds to rNR50
+; corresponds to rAUDVOL
 ; Channel control / ON-OFF / Volume (R/W)
-;   bit 7 - Vin->SO2 ON/OFF
-;   bit 6-4 - SO2 output level (volume) (# 0-7)
-;   bit 3 - Vin->SO1 ON/OFF
-;   bit 2-0 - SO1 output level (volume) (# 0-7)
+; bit 7 - Vin->SO2 ON/OFF
+; bit 6-4 - SO2 output level (volume) (# 0-7)
+; bit 3 - Vin->SO1 ON/OFF
+; bit 2-0 - SO1 output level (volume) (# 0-7)
 wVolume:: db
 
-; corresponds to rNR51
+; corresponds to rAUDTERM
 ; bit 4-7: ch1-4 so2 on/off
 ; bit 0-3: ch1-4 so1 on/off
 wSoundOutput:: db
 
-; corresponds to rNR10
+; corresponds to rAUD1SWEEP
 ; bit 7:   unused
 ; bit 4-6: sweep time
 ; bit 3:   sweep direction
@@ -252,15 +252,16 @@ wMobileWRAMEnd::
 SECTION "Sprites", WRAM0
 
 wShadowOAM::
-for n, NUM_SPRITE_OAM_STRUCTS ; wShadowOAMSprite00 - wShadowOAMSprite39
+; wShadowOAMSprite00 - wShadowOAMSprite39
+for n, OAM_COUNT
 wShadowOAMSprite{02d:n}:: sprite_oam_struct wShadowOAMSprite{02d:n}
 endr
 wShadowOAMEnd::
 
 SECTION "Tilemap", WRAM0
 
-wTilemap:: ; 20x18 grid of 8x8 tiles
-	ds SCREEN_WIDTH * SCREEN_HEIGHT
+; 20x18 grid of 8x8 tiles
+wTilemap:: ds SCREEN_AREA
 wTilemapEnd::
 
 ; This union spans 480 bytes.
@@ -832,7 +833,7 @@ wPrinterSendByteOffset:: dw
 wPrinterSendByteCounter:: dw
 
 ; tilemap backup?
-wPrinterTilemapBuffer:: ds SCREEN_HEIGHT * SCREEN_WIDTH
+wPrinterTilemapBuffer:: ds SCREEN_AREA
 wPrinterStatus:: db
 	ds 1
 ; High nibble is for margin before the image, low nibble is for after.
@@ -846,9 +847,7 @@ SECTION UNION "Overworld Map", WRAM0
 
 ; bill's pc data
 wBillsPCData::
-wBillsPCPokemonList::
-; (species, box number, list index) x30
-	ds 3 * 30
+wBillsPCPokemonList:: ds BOXLIST_SIZE * MONS_PER_BOX_JP
 	ds 720
 wBillsPC_ScrollPosition:: db
 wBillsPC_CursorPosition:: db
@@ -1396,7 +1395,7 @@ wAttrmap::
 ;		bit 4: pal # (non-cgb)
 ;		bit 3: vram bank (cgb only)
 ;		bit 2-0: pal # (cgb only)
-	ds SCREEN_WIDTH * SCREEN_HEIGHT
+	ds SCREEN_AREA
 wAttrmapEnd::
 
 UNION
@@ -1695,7 +1694,7 @@ wBGP:: db
 wOBP0:: db
 wOBP1:: db
 
-wNumHits:: db
+wBattleAfterAnim:: db
 
 	ds 1
 
@@ -2108,7 +2107,7 @@ wMartType:: db
 wMartPointerBank:: db
 wMartPointer:: dw
 wMartJumptableIndex:: db
-wBargainShopFlags:: db
+wBargainShopFlags:: dw
 
 NEXTU
 ; player movement data
@@ -2785,15 +2784,15 @@ wPlayerGender::
 ;	0 male
 ;	1 female
 	db
-wd473:: ds 1
-wd474:: ds 1
-wd475:: ds 1
-wd476:: ds 1
-wd477:: ds 1
-wd478:: ds 1
+; mobile profile
+wPlayerAge:: ds 1
+wPlayerPrefecture:: ds 1
+wPlayerPostalCode:: ds 4
 wCrystalDataEnd::
 
-wd479:: ds 2
+wCrystalFlags::
+; flags related to mobile profile
+	flag_array 16
 
 wGameData::
 wPlayerData::
@@ -3277,7 +3276,7 @@ SECTION "Pic Animations", WRAMX
 
 wTempTilemap::
 ; 20x18 grid of 8x8 tiles
-	ds SCREEN_WIDTH * SCREEN_HEIGHT
+	ds SCREEN_AREA
 
 ; PokeAnim data
 wPokeAnimStruct::
@@ -3340,7 +3339,7 @@ w3_d742:: battle_tower_struct w3_d742
 
 NEXTU
 	ds $be
-w3_d800:: ds BG_MAP_WIDTH * SCREEN_HEIGHT
+w3_d800:: ds TILEMAP_WIDTH * SCREEN_HEIGHT
 
 NEXTU
 	ds $be
@@ -3369,9 +3368,9 @@ ENDU
 
 	ds $1c0
 
-w3_dc00:: ds SCREEN_WIDTH * SCREEN_HEIGHT
+w3_dc00:: ds SCREEN_AREA
 UNION
-w3_dd68:: ds SCREEN_WIDTH * SCREEN_HEIGHT
+w3_dd68:: ds SCREEN_AREA
 
 	ds $11c
 
@@ -3518,8 +3517,8 @@ w5_MobileOpponentBattleLossMessage:: ds $c
 SECTION "Scratch RAM", WRAMX
 
 UNION
-wScratchTilemap:: ds BG_MAP_WIDTH * BG_MAP_HEIGHT
-wScratchAttrmap:: ds BG_MAP_WIDTH * BG_MAP_HEIGHT
+wScratchTilemap:: ds TILEMAP_AREA
+wScratchAttrmap:: ds TILEMAP_AREA
 
 NEXTU
 wDecompressScratch:: ds $80 tiles

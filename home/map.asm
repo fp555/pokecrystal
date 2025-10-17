@@ -94,7 +94,7 @@ LoadOverworldTilemap::
 	call LoadMetatiles
 	ld a, "■"
 	hlcoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	ld a, [wTilesetAttributesBank]
 	rst Bankswitch
@@ -1079,7 +1079,7 @@ ScrollMapDown::
 	ld l, a
 	ld a, [wBGMapAnchor + 1]
 	ld h, a
-	ld bc, BG_MAP_WIDTH tiles
+	ld bc, TILEMAP_WIDTH tiles
 	add hl, bc
 	; cap d at HIGH(vBGMap0)
 	ld a, h
@@ -1165,7 +1165,7 @@ UpdateBGMapRow::
 	push de
 	call .iteration
 	pop de
-	ld a, BG_MAP_WIDTH
+	ld a, TILEMAP_WIDTH
 	add e
 	ld e, a
 .iteration
@@ -1198,7 +1198,7 @@ UpdateBGMapColumn::
 	ld [hli], a
 	ld a, d
 	ld [hli], a
-	ld a, BG_MAP_WIDTH
+	ld a, TILEMAP_WIDTH
 	add e
 	ld e, a
 	jr nc, .skip
@@ -1222,10 +1222,10 @@ LoadTilesetGFX::
 	ld l, a
 	ld a, [wTilesetBank]
 	ld e, a
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, BANK(wDecompressScratch)
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, e
 	ld de, wDecompressScratch
 	call FarDecompress
@@ -1244,7 +1244,7 @@ LoadTilesetGFX::
 	pop af
 	ldh [rVBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	; These tilesets support dynamic per-mapgroup roof tiles.
 	ld a, [wMapTileset]
 	cp TILESET_JOHTO

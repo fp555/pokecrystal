@@ -1165,7 +1165,7 @@ TradeAnim_Wait80Frames:
 
 TradeAnim_BlankTilemap:
 	hlcoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	ld a, " "
 	jp ByteFill
 
@@ -1254,13 +1254,6 @@ LoadTradeBubbleGFX:
 	ret
 
 TradeAnim_WaitAnim:
-	ld hl, wFrameCounter
-	ld a, [hl]
-	and a
-	jp z, TradeAnim_AdvanceScriptPointer
-	dec [hl]
-	ret
-
 TradeAnim_WaitAnim2:
 	ld hl, wFrameCounter
 	ld a, [hl]
@@ -1270,19 +1263,11 @@ TradeAnim_WaitAnim2:
 	ret
 
 TradeGameBoyTilemap: INCBIN "gfx/trade/game_boy.tilemap" ; 6x8
-
 TradeLinkTubeTilemap: INCBIN "gfx/trade/link_cable.tilemap" ; 12x3
-
 TradeArrowRightGFX: INCBIN "gfx/trade/arrow_right.2bpp"
-
 TradeArrowLeftGFX: INCBIN "gfx/trade/arrow_left.2bpp"
-
 TradeCableGFX: INCBIN "gfx/trade/cable.2bpp"
-
 TradeBubbleGFX: INCBIN "gfx/trade/bubble.2bpp"
-
 TradeGameBoyLZ: INCBIN "gfx/trade/game_boy_cable.2bpp.lz"
-
 TradeBallGFX: INCBIN "gfx/trade/ball.2bpp"
-
 TradePoofGFX: INCBIN "gfx/trade/poof.2bpp"

@@ -115,7 +115,7 @@ InitClock:
 	xor a
 	ldh [hBGMapMode], a
 	hlcoord 0, 0
-	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
+	ld bc, SCREEN_AREA
 	xor a
 	call ByteFill
 	ld a, $1
@@ -124,14 +124,14 @@ InitClock:
 
 SetHour:
 	ldh a, [hJoyPressed]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .Confirm
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_UP
+	and PAD_UP
 	jr nz, .up
 	ld a, [hl]
-	and D_DOWN
+	and PAD_DOWN
 	jr nz, .down
 	call DelayFrame
 	and a
@@ -184,14 +184,14 @@ DisplayHourOClock:
 
 SetMinutes:
 	ldh a, [hJoyPressed]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .a_button
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_UP
+	and PAD_UP
 	jr nz, .d_up
 	ld a, [hl]
-	and D_DOWN
+	and PAD_DOWN
 	jr nz, .d_down
 	call DelayFrame
 	and a
@@ -387,17 +387,17 @@ SetDayOfWeek:
 	ret
 .GetJoypadAction:
 	ldh a, [hJoyPressed]
-	and A_BUTTON
+	and PAD_A
 	jr z, .not_A
 	scf
 	ret
 .not_A
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_UP
+	and PAD_UP
 	jr nz, .d_up
 	ld a, [hl]
-	and D_DOWN
+	and PAD_DOWN
 	jr nz, .d_down
 	call DelayFrame
 	and a

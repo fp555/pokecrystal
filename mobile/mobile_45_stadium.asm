@@ -14,10 +14,10 @@ Function11765d:
 
 Function11766b:
 	call Function117699
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	call Function1176ee
 	ld a, $5
 	call OpenSRAM
@@ -30,7 +30,7 @@ Function11766b:
 	call CopyBytes
 	call CloseSRAM
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Function117699:
@@ -126,29 +126,29 @@ Function117764:
 	ld [wcd24], a
 	ld hl, hJoyPressed
 	ld a, [hl]
-	and SELECT
+	and PAD_SELECT
 	jr nz, Function117764_select
 	ld a, [hl]
-	and START
+	and PAD_START
 	jr nz, Function117764_start
 	ld a, [hl]
-	and A_BUTTON
+	and PAD_A
 	jp nz, Function117764_a_button
 	ld a, [hl]
-	and B_BUTTON
+	and PAD_B
 	jr nz, Function117764_b_button
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_UP
+	and PAD_UP
 	jr nz, Function117764_d_up
 	ld a, [hl]
-	and D_DOWN
+	and PAD_DOWN
 	jr nz, Function117764_d_down
 	ld a, [hl]
-	and D_LEFT
+	and PAD_LEFT
 	jp nz, Function117764_d_left
 	ld a, [hl]
-	and D_RIGHT
+	and PAD_RIGHT
 	jp nz, Function117764_d_right
 	ret
 
@@ -341,13 +341,13 @@ Function1178aa:
 
 Function1178e8:
 	ldh a, [hJoyPressed]
-	cp B_BUTTON
+	cp PAD_B
 	jr z, .b_button
-	cp A_BUTTON
+	cp PAD_A
 	jr z, .a_button
-	cp D_DOWN
+	cp PAD_DOWN
 	jr z, .d_down
-	cp D_UP
+	cp PAD_UP
 	ret nz
 	ld a, [wcd4e]
 	and a
@@ -591,13 +591,13 @@ Function117b31:
 
 Function117b4f:
 	ldh a, [hJoyPressed]
-	cp B_BUTTON
+	cp PAD_B
 	jr z, .b_button
-	cp A_BUTTON
+	cp PAD_A
 	jr z, .a_button
-	cp D_DOWN
+	cp PAD_DOWN
 	jr z, .d_down
-	cp D_UP
+	cp PAD_UP
 	ret nz
 	ld a, [wcf64]
 	and a
@@ -669,10 +669,10 @@ Function117bb6:
 	ret
 
 .asm_117be7
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $3
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wcd89]
 	and $1
 	jr nz, .asm_117c16
@@ -697,19 +697,19 @@ Function117bb6:
 
 .asm_117c16
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, $d3
 	ld [wMobileErrorCodeBuffer], a
 	jr .asm_117bd0
 
 .asm_117c20
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	farcall Function172eb9
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $3
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, $7
 	call OpenSRAM
 	ld hl, w3_d002
@@ -718,7 +718,7 @@ Function117bb6:
 	call CopyBytes
 	call CloseSRAM
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	jp MobileStudium_JumptableIncrement
 
 Function117c4a:
@@ -729,10 +729,10 @@ Function117c4a:
 	farcall HDMATransferTilemapAndAttrmap_Overworld
 	ld hl, MobileStadiumSuccessText
 	call PrintText
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, wBGPals1
 	ld de, 1 palettes
 	ld c, 8
@@ -748,7 +748,7 @@ Function117c4a:
 	jr nz, .loop
 	call RotateThreePalettesRight
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, JUMPTABLE_EXIT
 	ld [wJumptableIndex], a
 	ret

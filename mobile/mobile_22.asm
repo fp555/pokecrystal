@@ -100,7 +100,7 @@ Function891b8:
 	call Mobile22_SetBGMapMode0
 	hlcoord 0, 0
 	ld a, " "
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	call DelayFrame
 	ret
@@ -125,11 +125,11 @@ Function891de:
 	call ClearPalettes
 	hlcoord 0, 0, wAttrmap
 	ld a, $7
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	hlcoord 0, 0
 	ld a, " "
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	call Function891ab
 	ret
@@ -527,7 +527,7 @@ Function89448:
 ; Clears the sprite array
 	push af
 	ld hl, wShadowOAM
-	ld d, 24 * SPRITEOAMSTRUCT_LENGTH
+	ld d, 24 * OBJ_SIZE
 	xor a
 .loop
 	ld [hli], a
@@ -578,16 +578,16 @@ Function89492:
 	ret
 
 Function8949c:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, 5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, Palette_894b3
 	ld de, wBGPals1 palette 7
 	ld bc, 1 palettes
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Palette_894b3:
@@ -617,10 +617,10 @@ Function894ca:
 
 Function894dc:
 	push bc
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, 5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ld c, d
 	ld b, 0
@@ -639,7 +639,7 @@ Function894dc:
 	call CopyBytes
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop bc
 	ret
 
@@ -725,17 +725,17 @@ Function8956f:
 	farcall GetMobileOTTrainerClass
 	ld a, c
 	ld [wTrainerClass], a
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, 5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, wd030
 	ld a, -1
 	ld [hli], a
 	ld a, " "
 	ld [hl], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wTrainerClass]
 	ld h, 0
 	ld l, a
@@ -743,10 +743,10 @@ Function8956f:
 	add hl, hl
 	ld de, TrainerPalettes
 	add hl, de
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld de, wd032
 	ld c, 4
 .loop
@@ -762,21 +762,21 @@ Function8956f:
 	ld [hli], a
 	ld [hl], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop bc
 	ret
 
 Function895c7:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, 5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, Palette_895de
 	ld de, wd030
 	ld bc, 8
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Palette_895de:
@@ -789,7 +789,7 @@ Function895f2:
 	push bc
 	xor a
 	hlcoord 0, 0, wAttrmap
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	call Function89605
 	call Function89655
@@ -1510,15 +1510,15 @@ String_89a53:
 
 Function89a57:
 	call JoyTextDelay_ForcehJoyDown ; joypad
-	bit D_UP_F, c
+	bit B_PAD_UP, c
 	jr nz, .d_up
-	bit D_DOWN_F, c
+	bit B_PAD_DOWN, c
 	jr nz, .d_down
-	bit A_BUTTON_F, c
+	bit B_PAD_A, c
 	jr nz, .a_b_button
-	bit B_BUTTON_F, c
+	bit B_PAD_B, c
 	jr nz, .a_b_button
-	bit START_F, c
+	bit B_PAD_START, c
 	jr nz, .start_button
 	scf
 	ret
@@ -1791,30 +1791,30 @@ Unknown_89bd8:
 
 Unknown_89be0:
 	db $01, $12, $4e, $01, 0
-	db $01, $19, $4e, $01, 0 | Y_FLIP
-	db $01, $12, $72, $01, 0 | X_FLIP
-	db $01, $19, $72, $01, 0 | X_FLIP | Y_FLIP
+	db $01, $19, $4e, $01, 0 | OAM_YFLIP
+	db $01, $12, $72, $01, 0 | OAM_XFLIP
+	db $01, $19, $72, $01, 0 | OAM_XFLIP | OAM_YFLIP
 	db -1 ; end
 
 Unknown_89bf5:
 	db $01, $60, $16, $01, 0
-	db $01, $62, $16, $01, 0 | Y_FLIP
-	db $01, $60, $92, $01, 0 | X_FLIP
-	db $01, $62, $92, $01, 0 | X_FLIP | Y_FLIP
+	db $01, $62, $16, $01, 0 | OAM_YFLIP
+	db $01, $60, $92, $01, 0 | OAM_XFLIP
+	db $01, $62, $92, $01, 0 | OAM_XFLIP | OAM_YFLIP
 	db -1 ; end
 
 Unknown_89c0a:
 	db $01, $78, $66, $01, 0
-	db $01, $78, $66, $01, 0 | Y_FLIP
-	db $01, $78, $92, $01, 0 | X_FLIP
-	db $01, $78, $92, $01, 0 | X_FLIP | Y_FLIP
+	db $01, $78, $66, $01, 0 | OAM_YFLIP
+	db $01, $78, $92, $01, 0 | OAM_XFLIP
+	db $01, $78, $92, $01, 0 | OAM_XFLIP | OAM_YFLIP
 	db -1 ; end
 
 Unknown_89c1f:
 	db $01, $80, $66, $01, 0
-	db $01, $80, $66, $01, 0 | Y_FLIP
-	db $01, $80, $92, $01, 0 | X_FLIP
-	db $01, $80, $92, $01, 0 | X_FLIP | Y_FLIP
+	db $01, $80, $66, $01, 0 | OAM_YFLIP
+	db $01, $80, $92, $01, 0 | OAM_XFLIP
+	db $01, $80, $92, $01, 0 | OAM_XFLIP | OAM_YFLIP
 	db -1 ; end
 
 Function89c34:
@@ -1863,33 +1863,33 @@ Function89c67:
 ; menu scrolling?
 	call JoyTextDelay_ForcehJoyDown ; joypad
 	ld b, $0
-	bit A_BUTTON_F, c
+	bit B_PAD_A, c
 	jr z, .not_a_button
 	ld b, $1
 	and a
 	ret
 
 .not_a_button
-	bit B_BUTTON_F, c
+	bit B_PAD_B, c
 	jr z, .not_b_button
 	scf
 	ret
 
 .not_b_button
 	xor a
-	bit D_UP_F, c
+	bit B_PAD_UP, c
 	jr z, .not_d_up
 	ld a, $1
 .not_d_up
-	bit D_DOWN_F, c
+	bit B_PAD_DOWN, c
 	jr z, .not_d_down
 	ld a, $2
 .not_d_down
-	bit D_LEFT_F, c
+	bit B_PAD_LEFT, c
 	jr z, .not_d_left
 	ld a, $3
 .not_d_left
-	bit D_RIGHT_F, c
+	bit B_PAD_RIGHT, c
 	jr z, .not_d_right
 	ld a, $4
 .not_d_right
@@ -1976,10 +1976,10 @@ Function89cdf:
 
 Function89d0d:
 	call Mobile22_SetBGMapMode0
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ld c, 8
 	ld de, wBGPals1
@@ -1998,7 +1998,7 @@ Function89d0d:
 	call CopyBytes
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	call SetDefaultBGPAndOBP
 	farcall PrintMail
@@ -2073,9 +2073,9 @@ Function89dab:
 	ld hl, wMenuJoypadFilter
 	and [hl]
 	ret z
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .asm_89dc7
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, .asm_89dd9
 	xor a
 	ret
@@ -2204,16 +2204,16 @@ Function89e6f:
 	jp Function89e36
 
 Function89e9a:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, Palette_89eb1
 	ld de, wBGPals1 palette 5
 	ld bc, 1 palettes
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Palette_89eb1:
@@ -2880,9 +2880,9 @@ Function8a383:
 	ld hl, wMenuJoypadFilter
 	and [hl]
 	ret z
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .asm_8a399
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, .asm_8a39e
 	xor a
 	ret
@@ -3071,7 +3071,7 @@ asm_8a529:
 	ld [hli], a
 	ld hl, wShadowOAM
 	xor a
-	ld bc, 8 * SPRITEOAMSTRUCT_LENGTH
+	ld bc, 8 * OBJ_SIZE
 	call ByteFill
 	ret
 
@@ -3164,10 +3164,10 @@ Function8a5a3:
 	ret
 
 Function8a5b6:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, Palette_8a5e5
 	ld de, wBGPals1 palette 4
 	ld bc, 3 palettes
@@ -3181,7 +3181,7 @@ Function8a5b6:
 	ld bc, 1 palettes
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Palette_8a5e5:
@@ -3213,16 +3213,16 @@ Palette_8a605:
 	RGB 31, 31, 31
 
 Function8a60d:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld hl, Palette_8a624
 	ld de, wOBPals1
 	ld bc, 1 palettes
 	call CopyBytes
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Palette_8a624:
@@ -3601,7 +3601,7 @@ Function8a930:
 .asm_8a943
 	call Function8b7bd
 	ld a, [wMenuJoypad]
-	and A_BUTTON
+	and PAD_A
 	jr nz, .asm_8a953
 	ld a, c
 	and a
@@ -3882,11 +3882,11 @@ Function8ab3b:
 
 .JoypadLoop:
 	call JoyTextDelay_ForcehJoyDown
-	bit A_BUTTON_F, c
+	bit B_PAD_A, c
 	jr nz, .a_b_button
-	bit B_BUTTON_F, c
+	bit B_PAD_B, c
 	jr nz, .a_b_button
-	bit START_F, c
+	bit B_PAD_START, c
 	jr z, .JoypadLoop
 	call PlayClickSFX
 	call Function89d0d

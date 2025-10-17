@@ -49,7 +49,7 @@ PrintDexEntry:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	call Printer_StartTransmission
 	ln a, 1, 0
@@ -121,7 +121,7 @@ PrintPCBox:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	ld hl, hVBlank
 	ld a, [hl]
@@ -190,7 +190,7 @@ PrintUnownStamp:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	ld hl, hVBlank
 	ld a, [hl]
@@ -251,7 +251,7 @@ PrintMail:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	xor a
 	ldh [hBGMapMode], a
@@ -286,7 +286,7 @@ PrintPartymon:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	xor a
 	ldh [hBGMapMode], a
@@ -339,7 +339,7 @@ _PrintDiploma:
 	push af
 	xor a
 	ldh [rIF], a
-	ld a, (1 << SERIAL) | (1 << VBLANK)
+	ld a, IE_SERIAL | IE_VBLANK
 	ldh [rIE], a
 	ld hl, hVBlank
 	ld a, [hl]
@@ -381,7 +381,7 @@ _PrintDiploma:
 
 CheckCancelPrint:
 	ldh a, [hJoyDown]
-	and B_BUTTON
+	and PAD_B
 	jr nz, .pressed_b
 	and a
 	ret
@@ -397,9 +397,9 @@ CheckCancelPrint:
 	ld [wPrinterOpcode], a
 	ld a, $88
 	ldh [rSB], a
-	ld a, (0 << rSC_ON) | (1 << rSC_CLOCK)
+	ld a, SC_INTERNAL
 	ldh [rSC], a
-	ld a, (1 << rSC_ON) | (1 << rSC_CLOCK)
+	ld a, SC_START | SC_INTERNAL
 	ldh [rSC], a
 .loop2
 	ld a, [wPrinterOpcode]
@@ -414,13 +414,13 @@ CheckCancelPrint:
 Printer_CopyTilemapToBuffer:
 	hlcoord 0, 0
 	ld de, wPrinterTilemapBuffer
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	jp CopyBytes
 
 Printer_CopyBufferToTilemap:
 	ld hl, wPrinterTilemapBuffer
 	decoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	jp CopyBytes
 
 Printer_ResetJoypadRegisters:
@@ -520,7 +520,7 @@ PrintPCBox_Page1:
 	xor a
 	ld [wWhichBoxMonToPrint], a
 	hlcoord 0, 0
-	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
+	ld bc, SCREEN_AREA
 	ld a, " "
 	call ByteFill
 	call Printer_PlaceEmptyBoxSlotString
@@ -551,7 +551,7 @@ PrintPCBox_Page1:
 
 PrintPCBox_Page2:
 	hlcoord 0, 0
-	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
+	ld bc, SCREEN_AREA
 	ld a, " "
 	call ByteFill
 	call Printer_PlaceEmptyBoxSlotString
@@ -567,7 +567,7 @@ PrintPCBox_Page2:
 
 PrintPCBox_Page3:
 	hlcoord 0, 0
-	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
+	ld bc, SCREEN_AREA
 	ld a, " "
 	call ByteFill
 	call Printer_PlaceEmptyBoxSlotString
@@ -583,7 +583,7 @@ PrintPCBox_Page3:
 
 PrintPCBox_Page4:
 	hlcoord 0, 0
-	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
+	ld bc, SCREEN_AREA
 	ld a, " "
 	call ByteFill
 	call Printer_PlaceEmptyBoxSlotString

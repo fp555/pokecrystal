@@ -2,10 +2,10 @@ Function100000:
 ; d: 1 or 2
 ; e: bank
 ; bc: addr
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, 1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	call Function100022
 	call Function1000ba
 	call Function100675
@@ -16,7 +16,7 @@ Function100000:
 	call Function100301
 	pop bc
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Function100022:
@@ -154,7 +154,7 @@ Function1000fa:
 	xor a
 	ldh [rIF], a
 	ldh a, [rIE]
-	and $1f ^ (1 << SERIAL | 1 << TIMER)
+	and IE_JOYPAD | IE_STAT | IE_VBLANK
 	ldh [rIE], a
 	xor a
 	ldh [hMobileReceive], a
@@ -301,15 +301,15 @@ Function10020b:
 	call HideSprites
 	call DelayFrame
 
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $01
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	farcall DisplayMobileError
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Function100232:
@@ -1427,16 +1427,16 @@ Function100989:
 	ret
 
 Function1009a5:
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	ld a, $03
 	call FarCopyWRAM
 	ret
 
 Function1009ae:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $03
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ld hl, w3_d800
 	decoord 0, 0, wAttrmap
@@ -1450,21 +1450,21 @@ Function1009ae:
 	inc de
 	dec c
 	jr nz, .loop_col
-	ld bc, BG_MAP_WIDTH - SCREEN_WIDTH
+	ld bc, TILEMAP_WIDTH - SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	dec b
 	jr nz, .loop_row
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Function1009d2:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $03
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ldh a, [rVBK]
 	push af
@@ -1480,13 +1480,13 @@ Function1009d2:
 	ldh [rVBK], a
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ret
 
 Function1009f3:
 	ldh a, [hJoyDown]
-	and SELECT + A_BUTTON
-	cp SELECT + A_BUTTON
+	and PAD_SELECT + PAD_A
+	cp PAD_SELECT + PAD_A
 	jr nz, .select_a
 	ld hl, wcd2a
 	set 4, [hl]
@@ -1770,13 +1770,13 @@ Mobile_MoveSelectionScreen:
 	jr c, .b_button
 	ld a, [wMenuJoypadFilter]
 	and c
-	bit D_UP_F, a
+	bit B_PAD_UP, a
 	jp nz, .d_up
-	bit D_DOWN_F, a
+	bit B_PAD_DOWN, a
 	jp nz, .d_down
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .a_button
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, .b_button
 	jr .loop
 
@@ -1882,7 +1882,7 @@ Function100c98:
 	db -1, 1 ; rows, columns
 	db $a0, $00 ; flags
 	dn 2, 0 ; cursor offsets
-	db D_UP | D_DOWN | A_BUTTON | B_BUTTON ; accepted buttons
+	db PAD_UP | PAD_DOWN | PAD_A | PAD_B ; accepted buttons
 
 Mobile_PartyMenuSelect:
 	call Function100dd8
@@ -2955,8 +2955,8 @@ asm_101416:
 Function101418:
 	call GetJoypad
 	ldh a, [hJoyDown]
-	and SELECT + A_BUTTON
-	cp SELECT + A_BUTTON
+	and PAD_SELECT + PAD_A
+	cp PAD_SELECT + PAD_A
 	jr z, .asm_101425
 	xor a
 	ret
@@ -3049,7 +3049,7 @@ Function1014a6:
 Function1014b7:
 	call GetJoypad
 	ldh a, [hJoyPressed]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	jr nz, .asm_1014c5
 	ld hl, wcd42
 	dec [hl]
@@ -3752,17 +3752,17 @@ _StartMobileBattle:
 	ret
 
 .CopyOTDetails:
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, BANK(w5_dc0d)
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ld bc, w5_dc0d
 	ld de, w5_dc11
 	farcall GetMobileOTTrainerClass
 
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 
 	ld a, c
 	ld [wOtherTrainerClass], a
@@ -5141,7 +5141,7 @@ Function1024de:
 	dec [hl]
 	jr z, .asm_1024e9
 	ldh a, [hJoyPressed]
-	and A_BUTTON | B_BUTTON
+	and PAD_A | PAD_B
 	ret z
 .asm_1024e9
 	ld a, 0
@@ -5295,11 +5295,11 @@ Function1025ff:
 	ld a, [wMenuJoypadFilter]
 	and c
 	ret z
-	bit A_BUTTON_F, c
+	bit B_PAD_A, c
 	jr nz, .a_button
-	bit D_UP_F, c
+	bit B_PAD_UP, c
 	jr nz, .d_up
-	bit D_DOWN_F, c
+	bit B_PAD_DOWN, c
 	jr nz, .d_down
 	ret
 
@@ -5355,11 +5355,11 @@ Function10266b:
 	ld a, [wMenuJoypadFilter]
 	and c
 	ret z
-	bit A_BUTTON_F, c
+	bit B_PAD_A, c
 	jr nz, .a_button
-	bit D_DOWN_F, c
+	bit B_PAD_DOWN, c
 	jr nz, .d_down
-	bit D_UP_F, c
+	bit B_PAD_UP, c
 	jr nz, .d_up
 	ret
 
@@ -5424,11 +5424,11 @@ Function1026de:
 
 Function1026f3:
 	ldh a, [hJoyPressed]
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .asm_102723
-	bit D_UP_F, a
+	bit B_PAD_UP, a
 	jr nz, .asm_102712
-	bit D_DOWN_F, a
+	bit B_PAD_DOWN, a
 	jr nz, .asm_102702
 	ret
 
@@ -5508,11 +5508,11 @@ Function102775:
 
 Function10278c:
 	ldh a, [hJoyPressed]
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, asm_1027c6
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, asm_1027e2
-	bit D_RIGHT_F, a
+	bit B_PAD_RIGHT, a
 	jr nz, .asm_10279b
 	ret
 
@@ -5533,11 +5533,11 @@ Function1027a0:
 
 Function1027b7:
 	ldh a, [hJoyPressed]
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, asm_1027d1
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, asm_1027e2
-	bit D_LEFT_F, a
+	bit B_PAD_LEFT, a
 	jr nz, Function102770
 	ret
 
@@ -5887,7 +5887,7 @@ MenuData3_102a33:
 	db 2, 1 ; rows, columns
 	db $80, $00 ; flags
 	dn 2, 0 ; cursor offset
-	db A_BUTTON ; accepted buttons
+	db PAD_A ; accepted buttons
 
 Function102a3b:
 	ld a, [wcd30]
@@ -6028,7 +6028,7 @@ MenuData_102b73:
 	db -1, 1 ; rows, columns
 	db $a0, $00 ; flags
 	dn 1, 0 ; cursor offset
-	db D_UP | D_DOWN | A_BUTTON ; accepted buttons
+	db PAD_UP | PAD_DOWN | PAD_A ; accepted buttons
 
 Function102b7b:
 	xor a
@@ -6048,7 +6048,7 @@ MenuData_102b94:
 	db 255, 1 ; rows, columns
 	db $a0, $00 ; flags
 	dn 1, 0 ; cursor offset
-	db D_UP | D_DOWN | A_BUTTON ; accepted buttons
+	db PAD_UP | PAD_DOWN | PAD_A ; accepted buttons
 
 Function102b9c:
 	ld a, [wcd4d]
@@ -6303,11 +6303,11 @@ Function102d48:
 Function102d9a:
 	ld a, " "
 	hlcoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	ld a, $07
 	hlcoord 0, 0, wAttrmap
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	ld bc, SCREEN_AREA
 	call ByteFill
 	farcall HDMATransferAttrmapAndTilemapToWRAMBank3
 	ret
@@ -6881,17 +6881,17 @@ Function10339a:
 Function1033af:
 	call GetJoypad
 	ldh a, [hJoyPressed]
-	bit D_LEFT_F, a
+	bit B_PAD_LEFT, a
 	jr nz, .left
-	bit D_RIGHT_F, a
+	bit B_PAD_RIGHT, a
 	jr nz, .right
-	bit B_BUTTON_F, a
+	bit B_PAD_B, a
 	jr nz, .b
-	bit A_BUTTON_F, a
+	bit B_PAD_A, a
 	jr nz, .a
-	bit D_UP_F, a
+	bit B_PAD_UP, a
 	jr nz, .up
-	bit D_DOWN_F, a
+	bit B_PAD_DOWN, a
 	jr nz, .down
 	ret
 

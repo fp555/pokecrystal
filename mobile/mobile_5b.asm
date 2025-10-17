@@ -136,21 +136,21 @@ Function16c943:
 	ld a, [wd003]
 	and a
 	jr nz, .asm_16c95e
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, $ff
 	ld bc, 1 palettes
 	ld hl, wBGPals1
 	call ByteFill
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 .asm_16c95e
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	ld a, $0
 .asm_16c969
@@ -224,25 +224,25 @@ Function16c943:
 	jr nz, .asm_16c969
 	farcall ApplyPals
 	call SetDefaultBGPAndOBP
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wd003]
 	cp $1f
 	jr z, .asm_16ca09
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	and a
 	ret
 .asm_16ca09
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	scf
 	ret
 
@@ -252,10 +252,10 @@ Function16ca11:
 	jr nz, .asm_16ca1d
 	farcall ApplyPals
 .asm_16ca1d
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $5
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld e, $0
 	ld a, $0
 .asm_16ca28
@@ -317,24 +317,24 @@ Function16ca11:
 	jr nz, .asm_16ca28
 	farcall ApplyPals
 	call SetDefaultBGPAndOBP
-	ldh a, [rSVBK]
+	ldh a, [rWBK]
 	push af
 	ld a, $1
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	ld a, [wd003]
 	cp $1f
 	jr z, .asm_16caae
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	and a
 	ret
 .asm_16caae
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	pop af
-	ldh [rSVBK], a
+	ldh [rWBK], a
 	scf
 	ret
 
@@ -546,7 +546,7 @@ Function16cbd1:
 	ld hl, Unknown_16cfa3
 	call AddNTimes
 	ld de, wBGPals1 palette 1 color 2
-	ld bc, PAL_COLOR_SIZE
+	ld bc, COLOR_SIZE
 	ld a, $5
 	call FarCopyWRAM
 	farcall ApplyPals

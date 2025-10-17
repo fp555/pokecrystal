@@ -1,7 +1,7 @@
 Footprints:
 ; Footprints are 2x2 tiles each, and stored contiguously
 ; Entries correspond to Pokémon species
-	table_width LEN_1BPP_TILE * 4
+	table_width TILE_1BPP_SIZE * 4
 ; 001-008
 INCBIN "gfx/footprints/bulbasaur.1bpp"
 INCBIN "gfx/footprints/ivysaur.1bpp"

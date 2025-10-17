@@ -25,7 +25,7 @@ TrainerCard:
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .quit
 	ldh a, [hJoyLast]
-	and B_BUTTON
+	and PAD_B
 	jr nz, .quit
 	call .RunJumptable
 	call DelayFrame
@@ -113,7 +113,7 @@ TrainerCard_Page1_Joypad:
 	call TrainerCard_Page1_PrintGameTime
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_RIGHT | A_BUTTON
+	and PAD_RIGHT | PAD_A
 	jr nz, .pressed_right_a
 	ret
 .pressed_right_a
@@ -149,7 +149,7 @@ TrainerCard_Page2_Joypad:
 	call TrainerCard_Page2_3_AnimateBadges
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_LEFT
+	and PAD_LEFT
 	jr nz, .pressed_left
 	ld a, [wKantoBadges]
 	and a
@@ -204,7 +204,7 @@ TrainerCard_Page3_Joypad:
 	call TrainerCard_Page2_3_AnimateBadges
 	ld hl, hJoyLast
 	ld a, [hl]
-	and D_LEFT
+	and PAD_LEFT
 	jr nz, .pressed_left
 	ld a, [hl]
 	and A_BUTTON
@@ -521,10 +521,10 @@ TrainerCard_Page2_3_OAMUpdate:
 	dbsprite  1,  1,  0,  0, $03, 0
 	db -1
 .facing2
-	dbsprite  0,  0,  0,  0, $01, 0 | X_FLIP
-	dbsprite  1,  0,  0,  0, $00, 0 | X_FLIP
-	dbsprite  0,  1,  0,  0, $03, 0 | X_FLIP
-	dbsprite  1,  1,  0,  0, $02, 0 | X_FLIP
+	dbsprite  0,  0,  0,  0, $01, 0 | OAM_XFLIP
+	dbsprite  1,  0,  0,  0, $00, 0 | OAM_XFLIP
+	dbsprite  0,  1,  0,  0, $03, 0 | OAM_XFLIP
+	dbsprite  1,  1,  0,  0, $02, 0 | OAM_XFLIP
 	db -1
 
 TrainerCard_JohtoBadgesOAM:

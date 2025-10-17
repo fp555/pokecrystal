@@ -26,6 +26,7 @@ gfx/pokemon/*/frames.asm
 # tool binaries
 *.exe
 tools/bgbw64
+tools/libresprite
 
 # precompiled python
 *.pyc

@@ -126,7 +126,7 @@ TrainerBugCatcherWade1:
 	jumpstd AskNumber2MScript
 	end
 .RegisterNumberSTD:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 .AcceptedNumberSTD:
 	jumpstd NumberAcceptedMScript

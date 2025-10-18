@@ -95,7 +95,7 @@ Route44AskNumber2M:
 	end
 
 Route44RegisteredNumberM:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 
 Route44NumberAcceptedM:

@@ -45,7 +45,7 @@ Route35AskNumber2M:
 	end
 
 Route35RegisteredNumberM:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 
 Route35NumberAcceptedM:

@@ -80,7 +80,7 @@ TrainerCooltrainermGaven3:
 	jumpstd AskNumber2MScript
 	end
 .RegisteredNumber:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
@@ -162,7 +162,7 @@ TrainerCooltrainerfBeth1:
 	jumpstd AskNumber2FScript
 	end
 .RegisteredNumber:
-	jumpstd RegisteredNumberFScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript

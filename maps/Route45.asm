@@ -79,7 +79,7 @@ Route45AskNumber2M:
 	end
 
 Route45RegisteredNumberM:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 
 Route45NumberAcceptedM:

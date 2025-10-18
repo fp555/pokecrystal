@@ -100,7 +100,7 @@ Route46AskNumber2F:
 	end
 
 Route46RegisteredNumberF:
-	jumpstd RegisteredNumberFScript
+	jumpstd RegisteredNumberScript
 	end
 
 Route46NumberAcceptedF:

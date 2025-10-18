@@ -116,7 +116,7 @@ TrainerLassDana1:
 	jumpstd AskNumber2FScript
 	end
 .RegisteredPhoneNumber:
-	jumpstd RegisteredNumberFScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript
@@ -210,7 +210,7 @@ TrainerSchoolboyChad1:
 	jumpstd AskNumber2MScript
 	end
 .RegisteredChad:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 .HaveChadsNumber:
 	jumpstd NumberAcceptedMScript

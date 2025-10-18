@@ -29,25 +29,24 @@ StdScripts::
 	add_stdscript BugContestResultsWarpScript
 	add_stdscript BugContestResultsScript
 	add_stdscript AskNumber1MScript
-	add_stdscript AskNumber2MScript
-	add_stdscript RegisteredNumberMScript
-	add_stdscript NumberAcceptedMScript
-	add_stdscript NumberDeclinedMScript
-	add_stdscript PhoneFullMScript
-	add_stdscript RematchMScript
-	add_stdscript GiftMScript
-	add_stdscript PackFullMScript
-	add_stdscript RematchGiftMScript
 	add_stdscript AskNumber1FScript
+	add_stdscript AskNumber2MScript
 	add_stdscript AskNumber2FScript
-	add_stdscript RegisteredNumberFScript
+	add_stdscript RegisteredNumberScript
+	add_stdscript NumberAcceptedMScript
 	add_stdscript NumberAcceptedFScript
+	add_stdscript NumberDeclinedMScript
 	add_stdscript NumberDeclinedFScript
+	add_stdscript PhoneFullMScript
 	add_stdscript PhoneFullFScript
+	add_stdscript RematchMScript
 	add_stdscript RematchFScript
+	add_stdscript GiftMScript
 	add_stdscript GiftFScript
+	add_stdscript PackFullMScript
 	add_stdscript PackFullFScript
-	add_stdscript RematchGiftFScript
+	add_stdscript RematchGiftMScript
+	add_stdscript RematchGiftFScript	
 	add_stdscript GymStatue1Script
 	add_stdscript GymStatue2Script
 	add_stdscript ReceiveItemScript
@@ -589,8 +588,8 @@ AskNumber2MScript:
 	farwritetext ParryAskNumber2Text
 	end
 
-RegisteredNumberMScript:
-	farwritetext RegisteredNumber1Text
+RegisteredNumberScript:
+	farwritetext RegisteredNumberText
 	playsound SFX_REGISTER_PHONE_NUMBER
 	waitsfx
 	promptbutton
@@ -1251,13 +1250,6 @@ AskNumber2FScript:
 	end
 .Erin:
 	farwritetext ErinAskNumber2Text
-	end
-
-RegisteredNumberFScript:
-	farwritetext RegisteredNumber2Text
-	playsound SFX_REGISTER_PHONE_NUMBER
-	waitsfx
-	promptbutton
 	end
 
 NumberAcceptedFScript:

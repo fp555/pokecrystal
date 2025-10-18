@@ -110,7 +110,7 @@ TrainerFisherTully:
 	jumpstd AskNumber2MScript
 	end
 .RegisteredNumber:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript

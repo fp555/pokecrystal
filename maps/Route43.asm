@@ -108,7 +108,7 @@ TrainerPokemaniacBrent:
 	jumpstd AskNumber2MScript
 	end
 .RegisteredNumber:
-	jumpstd RegisteredNumberMScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedMScript
@@ -226,7 +226,7 @@ TrainerPicnickerTiffany:
 	jumpstd AskNumber2FScript
 	end
 .RegisteredNumber:
-	jumpstd RegisteredNumberFScript
+	jumpstd RegisteredNumberScript
 	end
 .NumberAccepted:
 	jumpstd NumberAcceptedFScript

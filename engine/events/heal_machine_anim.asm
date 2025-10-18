@@ -21,11 +21,7 @@ HealMachineAnim:
 	ld [wHealMachineAnimType], a
 	ldh a, [rOBP1]
 	ld [wHealMachineTempOBP1], a
-	call .DoJumptableFunctions
-	ld a, [wHealMachineTempOBP1]
-	call DmgToCgbObjPal1
-	ret
-.DoJumptableFunctions:
+	; DoJumptableFunctions
 	xor a
 	ld [wHealMachineAnimState], a
 .jumptable_loop
@@ -45,32 +41,23 @@ HealMachineAnim:
 	add hl, de
 	ld a, [hl]
 	cp HEALMACHINESTATE_FINISH
-	jr z, .finish
+	jr z, .loop_finish
 	ld hl, .Jumptable
 	rst JumpTable
 	jr .jumptable_loop
-.finish
-	ret
+.loop_finish
+	ld a, [wHealMachineTempOBP1]
+	jp DmgToCgbObjPal1
 .Pointers:
 ; entries correspond to HEALMACHINE_* constants
 	dw .Pokecenter
 	dw .ElmsLab
 	dw .HallOfFame
-
-MACRO healmachineanimseq
-	rept _NARG
-		db HEALMACHINESTATE_\1
-		shift
-	endr
-ENDM
-
 .Pokecenter:
-	healmachineanimseq LOADGFX, PCLOADBALLS, PLAYMUSIC, FINISH
 .ElmsLab:
-	healmachineanimseq LOADGFX, PCLOADBALLS, PLAYMUSIC, FINISH
+	db HEALMACHINESTATE_LOADGFX, HEALMACHINESTATE_PCLOADBALLS, HEALMACHINESTATE_PLAYMUSIC, HEALMACHINESTATE_FINISH
 .HallOfFame:
-	healmachineanimseq LOADGFX, HOFLOADBALLS, HOFPLAYSFX, FINISH
-
+	db HEALMACHINESTATE_LOADGFX, HEALMACHINESTATE_HOFLOADBALLS, HEALMACHINESTATE_HOFPLAYSFX, HEALMACHINESTATE_FINISH
 .Jumptable:
 ; entries correspond to HEALMACHINESTATE_* constants
 	dw .LoadGFX
@@ -78,14 +65,13 @@ ENDM
 	dw .HOF_LoadBallsOntoMachine
 	dw .PlayHealMusic
 	dw .HOF_PlaySFX
-	dw .dummy_5 ; never encountered
+	dw .Finish
 .LoadGFX:
 	call .LoadPalettes
 	ld de, .HealMachineGFX
 	ld hl, vTiles0 tile $7c
 	lb bc, BANK(.HealMachineGFX), 2
-	call Request2bpp
-	ret
+	jp Request2bpp
 .PC_LoadBallsOntoMachine:
 	ld hl, wShadowOAMSprite32
 	ld de, .PC_ElmsLab_OAM
@@ -119,9 +105,8 @@ ENDM
 	call .FlashPalettes8Times
 	call WaitSFX
 	ld de, SFX_BOOT_PC
-	call PlaySFX
-	ret
-.dummy_5
+	jp PlaySFX
+.Finish
 	ret
 .PC_ElmsLab_OAM:
 	dbsprite   4,   4, 2, 0, $7c, PAL_OW_TREE | OAM_PAL1
@@ -134,7 +119,6 @@ ENDM
 	dbsprite   5,   6, 0, 0, $7d, PAL_OW_TREE | OAM_PAL1 | OAM_XFLIP
 .HealMachineGFX:
 INCBIN "gfx/overworld/heal_machine.2bpp"
-
 .HOF_OAM:
 	dbsprite  10,   7, 1, 4, $7d, PAL_OW_TREE | OAM_PAL1
 	dbsprite  10,   7, 6, 4, $7d, PAL_OW_TREE | OAM_PAL1

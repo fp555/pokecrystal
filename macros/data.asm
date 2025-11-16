@@ -25,72 +25,72 @@ DEF percent EQUS "* $ff / 100"
 ; e.g. 1 out_of 2 == 50 percent + 1 == $80
 DEF out_of EQUS "* $100 /"
 
-MACRO assert_power_of_2
+MACRO? assert_power_of_2
 	assert (\1) & ((\1) - 1) == 0, "\1 must be a power of 2"
 ENDM
 
 ; Constant data (db, dw, dl) macros
 
-MACRO dwb
+MACRO? dwb
 	dw \1
 	db \2
 ENDM
 
-MACRO dbw
+MACRO? dbw
 	db \1
 	dw \2
 ENDM
 
-MACRO dn ; nybbles
-	rept _NARG / 2
+MACRO? dn ; nybbles
+	rept? _NARG / 2
 		db ((\1) << 4) | (\2)
 		shift 2
 	endr
 ENDM
 
-MACRO dc ; "crumbs"
-	rept _NARG / 4
+MACRO? dc ; "crumbs"
+	rept? _NARG / 4
 		db ((\1) << 6) | ((\2) << 4) | ((\3) << 2) | (\4)
 		shift 4
 	endr
 ENDM
 
-MACRO bigdw ; big-endian word
-	rept _NARG
+MACRO? bigdw ; big-endian word
+	rept? _NARG
 		db HIGH(\1), LOW(\1)
 		shift
 	endr
 ENDM
 
-MACRO bigdt ; big-endian "tribyte"
-	rept _NARG
+MACRO? bigdt ; big-endian "tribyte"
+	rept? _NARG
 		db LOW((\1) >> 16), HIGH(\1), LOW(\1)
 		shift
 	endr
 ENDM
 
-MACRO bigdd ; big-endian "double word"
-	rept _NARG
+MACRO? bigdd ; big-endian "double word"
+	rept? _NARG
 		db HIGH((\1) >> 16), LOW((\1) >> 16), HIGH(\1), LOW(\1)
 		shift
 	endr
 ENDM
 
-MACRO dba ; dbw bank, address
-	rept _NARG
+MACRO? dba ; dbw bank, address
+	rept? _NARG
 		dbw BANK(\1), \1
 		shift
 	endr
 ENDM
 
-MACRO dab ; dwb address, bank
-	rept _NARG
+MACRO? dab ; dwb address, bank
+	rept? _NARG
 		dwb \1, BANK(\1)
 		shift
 	endr
 ENDM
 
-MACRO dba_pics ; front, back
+MACRO? dba_pics ; front, back
 	if _NARG == 2
 		dba \1 ; front
 		dba \2 ; back
@@ -103,7 +103,7 @@ MACRO dba_pics ; front, back
 	endc
 ENDM
 
-MACRO dname
+MACRO? dname
 	if _NARG == 2
 		def n = \2
 	else
@@ -112,11 +112,11 @@ MACRO dname
 	assert STRFIND(\1, "@") == -1, "String terminator \"@\" in name: \1"
 	assert CHARLEN(\1) <= n, "Name longer than {d:n} characters: \1"
 	db \1
-	ds n - CHARLEN(\1), "@"
+	ds n - CHARLEN(\1), '@'
 ENDM
 
-MACRO bcd
-	rept _NARG
+MACRO? bcd
+	rept? _NARG
 		dn ((\1) % 100) / 10, (\1) % 10
 		shift
 	endr

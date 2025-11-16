@@ -187,7 +187,7 @@ ScrollingMenu_ClearLeftColumn:
 	ld de, 2 * SCREEN_WIDTH
 	ld a, [wMenuData_ScrollingMenuHeight]
 .loop
-	ld [hl], " "
+	ld [hl], ' '
 	add hl, de
 	dec a
 	jr nz, .loop
@@ -328,7 +328,7 @@ ScrollingMenu_UpdateDisplay:
 	ld a, [wMenuBorderRightCoord]
 	ld c, a
 	call Coord2Tile
-	ld [hl], "▲"
+	ld [hl], '▲'
 .okay
 	call MenuBoxCoord2Tile
 	ld bc, SCREEN_WIDTH + 1
@@ -364,22 +364,21 @@ ScrollingMenu_UpdateDisplay:
 	ld a, [wMenuBorderRightCoord]
 	ld c, a
 	call Coord2Tile
-	ld [hl], "▼"
+	ld [hl], '▼'
 	ret
 .cancel
 	ld a, [wMenuDataFlags]
 	bit SCROLLINGMENU_CALL_FUNCTION1_CANCEL_F, a
 	jr nz, .call_function
 	ld de, .CancelString
-	call PlaceString
-	ret
-.CancelString
-	db "CANCEL@"
+	jp PlaceString
 .call_function
 	ld d, h
 	ld e, l
 	ld hl, wMenuData_ScrollingMenuFunction1
 	jp CallPointerAt
+.CancelString
+	db "CANCEL@"
 
 ScrollingMenu_CallFunctions1and2:
 	push hl
@@ -397,8 +396,7 @@ ScrollingMenu_CallFunctions1and2:
 	ld d, h
 	ld e, l
 	ld hl, wMenuData_ScrollingMenuFunction2
-	call CallPointerAt
-	ret
+	jp CallPointerAt
 
 ScrollingMenu_PlaceCursor:
 	ld a, [wSwitchItem]
@@ -426,7 +424,7 @@ ScrollingMenu_PlaceCursor:
 	add $0
 	ld c, a
 	call Coord2Tile
-	ld [hl], "▷"
+	ld [hl], '▷'
 	ret
 
 ScrollingMenu_CheckCallFunction3:
@@ -443,8 +441,7 @@ ScrollingMenu_CheckCallFunction3:
 	dec a
 	call ScrollingMenu_GetListItemCoordAndFunctionArgs
 	ld hl, wMenuData_ScrollingMenuFunction3
-	call CallPointerAt
-	ret
+	jp CallPointerAt
 
 ScrollingMenu_GetListItemCoordAndFunctionArgs:
 	push de

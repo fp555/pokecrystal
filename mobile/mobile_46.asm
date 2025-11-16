@@ -3414,26 +3414,26 @@ Function119b6b:
 pushc ascii
 
 .decodeBase64Character
-	cp "+"
+	cp '+'
 	jr c, .asm_119c68
 	jr z, .asm_119c80
-	cp "/"
+	cp '/'
 	jr c, .asm_119c68
 	jr z, .asm_119c84
-	cp "0"
+	cp '0'
 	jr c, .asm_119c68
-	cp "9" + 1
+	cp '9' + 1
 	jr c, .asm_119c88
-	cp "="
+	cp '='
 	jr c, .asm_119c68
 	jr z, .asm_119c8c
-	cp "A"
+	cp 'A'
 	jr c, .asm_119c68
-	cp "Z" + 1
+	cp 'Z' + 1
 	jr c, .asm_119c8f
-	cp "a"
+	cp 'a'
 	jr c, .asm_119c68
-	cp "z" + 1
+	cp 'z' + 1
 	jr c, .asm_119c93
 
 popc
@@ -3709,7 +3709,7 @@ Function119e4f:
 	ld a, [de]
 	inc de
 pushc ascii
-	cp "\n"
+	cp '\n'
 popc
 	jr z, .newline
 	cp [hl]
@@ -3734,7 +3734,7 @@ popc
 	ld [de], a
 	inc de
 pushc ascii
-	cp "\r"
+	cp '\r'
 popc
 	jr z, .finish
 	dec c
@@ -5600,17 +5600,17 @@ Function11b03d:
 	ld c, $1
 .loop
 	ld a, [hli]
-	cp "♂"
+	cp '♂'
 	jr z, .gender
-	cp "♀"
+	cp '♀'
 	jr z, .gender
-	cp "@"
+	cp '@'
 	jr z, .done
 	inc c
 	jr .loop
 .gender
 	dec hl
-	ld a, "@"
+	ld a, '@'
 	ld [hli], a
 .done
 	dec hl
@@ -6703,7 +6703,7 @@ Function11b7e5:
 	ld de, wOTTrademonOTName
 	ld bc, 5
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	ld a, [wMobileMonID]
 	ld [wOTTrademonID], a
@@ -6942,7 +6942,7 @@ AddMobileMonToParty:
 	ld h, a
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	ld hl, wPartyMonNicknames
 	ld bc, MON_NAME_LENGTH
@@ -6960,7 +6960,7 @@ AddMobileMonToParty:
 	ld h, a
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	ld hl, sPartyMail
 	ld bc, MAIL_STRUCT_LENGTH

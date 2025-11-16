@@ -131,7 +131,7 @@ GetCaughtName:
 	ret
 
 GetCaughtLevel:
-	ld a, "@"
+	ld a, '@'
 	ld hl, wSeerCaughtLevelString
 	ld bc, 4
 	call ByteFill
@@ -230,7 +230,7 @@ GetCaughtOT:
 	ld bc, NAME_LENGTH
 	call CopyBytes
 	ld de, wSeerOTGrammar
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	ret
 

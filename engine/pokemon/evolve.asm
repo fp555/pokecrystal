@@ -315,7 +315,7 @@ UpdateSpeciesNameIfNotNicknamed:
 	cp [hl]
 	inc hl
 	ret nz
-	cp "@"
+	cp '@'
 	jr nz, .loop
 	ld a, [wCurPartyMon]
 	ld bc, MON_NAME_LENGTH

@@ -84,7 +84,7 @@ Function8919e:
 .loop
 	ld a, [de]
 	inc de
-	cp "@"
+	cp '@'
 	jr nz, .loop
 	dec c
 	jr nz, .loop
@@ -99,7 +99,7 @@ Function891ab:
 Function891b8:
 	call Mobile22_SetBGMapMode0
 	hlcoord 0, 0
-	ld a, " "
+	ld a, ' '
 	ld bc, SCREEN_AREA
 	call ByteFill
 	call DelayFrame
@@ -128,7 +128,7 @@ Function891de:
 	ld bc, SCREEN_AREA
 	call ByteFill
 	hlcoord 0, 0
-	ld a, " "
+	ld a, ' '
 	ld bc, SCREEN_AREA
 	call ByteFill
 	call Function891ab
@@ -276,14 +276,14 @@ Function892b7:
 	ld e, c
 	ld hl, 0
 	add hl, bc
-	ld a, "@"
+	ld a, '@'
 	ld bc, 6
 	call ByteFill
 	ld b, d
 	ld c, e
 	ld hl, 6
 	add hl, bc
-	ld a, "@"
+	ld a, '@'
 	ld bc, 6
 	call ByteFill
 	ld b, d
@@ -358,9 +358,9 @@ Function89331:
 	ld c, NAME_LENGTH_JAPANESE - 1
 .loop
 	ld a, [hli]
-	cp "@"
+	cp '@'
 	jr z, .terminator
-	cp " "
+	cp ' '
 	jr nz, .nonspace
 	dec c
 	jr nz, .loop
@@ -390,9 +390,9 @@ _incave:
 	ld c, NAME_LENGTH_JAPANESE - 1
 .loop
 	ld a, [hli]
-	cp "@"
+	cp '@'
 	jr z, .terminator
-	cp " "
+	cp ' '
 	jr nz, .nonspace
 	dec c
 	jr nz, .loop
@@ -732,7 +732,7 @@ Function8956f:
 	ld hl, wd030
 	ld a, -1
 	ld [hli], a
-	ld a, " "
+	ld a, ' '
 	ld [hl], a
 	pop af
 	ldh [rWBK], a
@@ -974,6 +974,38 @@ Function896f5:
 	inc hl
 	inc hl
 	ld b, 2
+	; clears an area of the screen
+	; hl = address of upper left corner of the area
+	; b = height
+	; c = width
+	ld a, ' '
+	ld de, SCREEN_WIDTH
+.row_loop
+	push bc
+	push hl
+.col_loop
+	ld [hli], a
+	dec c
+	jr nz, .col_loop
+	pop hl
+	pop bc
+	add hl, de
+	dec b
+	jr nz, .row_loop
+	; alternates tiles $36 and $18 at the bottom of the area
+	dec hl
+	inc c
+	inc c
+.bottom_loop
+	ld a, $36
+	ld [hli], a
+	dec c
+	ret z
+	ld a, $18
+	ld [hli], a
+	dec c
+	jr nz, .bottom_loop
+	ret
 
 Function8971f:
 	ld a, $2c

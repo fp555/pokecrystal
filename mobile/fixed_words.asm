@@ -140,11 +140,11 @@ PrintEZChatBattleMessage:
 	inc a
 	ld [wJumptableIndex], a
 	; if we're on line 2, insert "<NEXT>"
-	ld [hl], "<NEXT>"
+	ld [hl], '<NEXT>'
 	rra
 	jr c, .got_line_terminator
 	; else, insert "<CONT>"
-	ld [hl], "<CONT>"
+	ld [hl], '<CONT>'
 .got_line_terminator
 	inc hl
 	; init the next line, holding on to the same word
@@ -156,7 +156,7 @@ PrintEZChatBattleMessage:
 	; add the space, unless we're at the start of the line
 	cp 18
 	jr z, .skip_space
-	ld [hl], " "
+	ld [hl], ' '
 	inc hl
 .skip_space
 	; deduct the length of the word
@@ -166,7 +166,7 @@ PrintEZChatBattleMessage:
 .place_string_loop
 	; load the string from de to hl
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .done
 	inc de
 	ld [hli], a
@@ -177,7 +177,7 @@ PrintEZChatBattleMessage:
 	dec a
 	jr nz, .loop
 	; we're finished, place "<DONE>"
-	ld [hl], "<DONE>"
+	ld [hl], '<DONE>'
 	; now, let's place the string from wc618 to bc
 	pop bc
 	ld hl, wc618
@@ -195,7 +195,7 @@ GetLengthOfWordAtC608:
 	ld hl, wc608
 .loop
 	ld a, [hli]
-	cp "@"
+	cp '@'
 	ret z
 	inc c
 	jr .loop
@@ -205,7 +205,7 @@ CopyMobileEZChatToC608:
 	push af
 	ld a, $1
 	ldh [rWBK], a
-	ld a, "@"
+	ld a, '@'
 	ld hl, wc608
 	ld bc, NAME_LENGTH
 	call ByteFill
@@ -339,7 +339,7 @@ Function11c254:
 	ret
 
 EZChat_ClearBottom12Rows:
-	ld a, "　"
+	ld a, '　'
 	hlcoord 0, 6
 	ld bc, (SCREEN_HEIGHT - 6) * SCREEN_WIDTH
 	call ByteFill
@@ -825,7 +825,7 @@ EZChat_PlaceCategoryNames:
 .find_next_string_loop
 	inc de
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .find_next_string_loop
 	pop bc
 	pop af

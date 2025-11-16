@@ -68,8 +68,7 @@ Function49f16:
 	ld a, MUSIC_MAIN_MENU
 	ld [wMapMusic], a
 	ld de, MUSIC_MAIN_MENU
-	call Function4a6c5
-	ret
+	jp Function4a6c5
 .next
 	ld hl, wMenuCursorY
 	ld a, [hl]
@@ -196,7 +195,7 @@ Function4a100:
 	call Function4a13b
 	call ClearBGPalettes
 	call ClearTilemap
-
+	; fallthrough
 asm_4a111:
 	pop bc
 	call LoadFrame
@@ -233,7 +232,7 @@ Function4a13b:
 	call Function4a373
 	ld c, 10
 	call DelayFrames
-
+	; fallthrough
 Function4a149:
 	hlcoord 1, 2
 	ld b, $6
@@ -271,7 +270,7 @@ Function4a195:
 	ld hl, wMenuCursorY
 	ld b, [hl]
 	push bc
-
+	; fallthrough
 asm_4a19d:
 	bit 0, a
 	jr nz, .asm_4a1a7
@@ -359,7 +358,7 @@ Strings_4a23d:
 Function4a28a:
 	hlcoord 2, 3
 	lb bc, 6, 1
-	ld a, " "
+	ld a, ' '
 	call Function4a6d8
 	call PlaceHollowCursor
 	call WaitBGMap
@@ -508,7 +507,7 @@ Function4a3aa:
 	ld a, $3
 	call Function4a6d8
 	lb bc, 1, 1
-	ld a, " "
+	ld a, ' '
 	call Function4a6d8
 	hlcoord 1, 0
 	ld a, $1
@@ -524,7 +523,7 @@ Function4a3aa:
 	ld a, $2
 	call Function4a6d8
 	lb bc, 11, 18
-	ld a, " "
+	ld a, ' '
 	call Function4a6d8
 	hlcoord 19, 0
 	lb bc, 3, 1
@@ -546,20 +545,17 @@ Function4a3aa:
 	ld a, $3
 	call Function4a6d8
 	lb bc, 1, 1
-	ld a, " "
-	call Function4a6d8
-	ret
+	ld a, ' '
+	jp Function4a6d8
 
 Function4a485:
 	ld de, MobileMenuGFX
 	ld hl, vTiles2 tile $00
 	lb bc, BANK(MobileMenuGFX), 13
-	call Get2bpp
-	ret
+	jp Get2bpp
 
 Function4a492:
-	call _CrystalCGB_MobileLayout0
-	ret
+	jp _CrystalCGB_MobileLayout0
 
 MainMenu_MobileStudium:
 	ld a, [wStartDay]
@@ -643,7 +639,7 @@ Function4a545:
 	ld hl, wMenuCursorY
 	ld b, [hl]
 	push bc
-
+	; fallthrough
 asm_4a54d:
 	bit 0, a
 	jr nz, .asm_4a557

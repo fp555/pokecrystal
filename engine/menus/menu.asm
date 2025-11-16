@@ -5,8 +5,7 @@ _2DMenu_::
 	call Draw2DMenu
 	call UpdateSprites
 	call ApplyTilemap
-	call Get2DMenuSelection
-	ret
+	jr Get2DMenuSelection
 
 _InterpretBattleMenu::
 	ld hl, CopyMenuData
@@ -15,8 +14,7 @@ _InterpretBattleMenu::
 	call Draw2DMenu
 	call UpdateSprites
 	call ApplyTilemap
-	call Get2DMenuSelection
-	ret
+	jr Get2DMenuSelection
 
 _InterpretMobileMenu::
 	ld hl, CopyMenuData
@@ -38,8 +36,7 @@ _InterpretMobileMenu::
 	ld a, [wMenuJoypadFilter]
 	and c
 	jr z, .loop
-	call Mobile_GetMenuSelection
-	ret
+	jr Mobile_GetMenuSelection
 .quit
 	ld a, [w2DMenuNumCols]
 	ld c, a
@@ -47,13 +44,6 @@ _InterpretMobileMenu::
 	call SimpleMultiply
 	ld [wMenuCursorPosition], a
 	and a
-	ret
-
-Draw2DMenu:
-	xor a
-	ldh [hBGMapMode], a
-	call MenuBox
-	call Place2DMenuItemStrings
 	ret
 
 Get2DMenuSelection:
@@ -105,6 +95,11 @@ Get2DMenuNumberOfRows:
 	and $f
 	ret
 
+Draw2DMenu:
+	xor a
+	ldh [hBGMapMode], a
+	call MenuBox
+	; fallthrough
 Place2DMenuItemStrings:
 	ld hl, wMenuData_2DMenuItemStringsAddr
 	ld e, [hl]
@@ -434,7 +429,7 @@ Move2DMenuCursor:
 	ld h, [hl]
 	ld l, a
 	ld a, [hl]
-	cp "▶"
+	cp '▶'
 	jr nz, Place2DMenuCursor
 	ld a, [wCursorOffCharacter]
 	ld [hl], a
@@ -477,10 +472,10 @@ Place2DMenuCursor:
 	ld c, a
 	add hl, bc
 	ld a, [hl]
-	cp "▶"
+	cp '▶'
 	jr z, .cursor_on
 	ld [wCursorOffCharacter], a
-	ld [hl], "▶"
+	ld [hl], '▶'
 .cursor_on
 	ld a, l
 	ld [wCursorCurrentTile], a
@@ -526,7 +521,6 @@ _PushWindow::
 	call MenuBoxCoord2Attr
 	call .copy
 	jr .done
-
 .no_backup_tiles
 	pop hl ; last-pushed register was de
 	push hl

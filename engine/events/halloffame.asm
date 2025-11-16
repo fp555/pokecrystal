@@ -217,7 +217,7 @@ AnimateHOFMonEntrance:
 	predef GetUnownLetter
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	ld de, vTiles2 tile $31
 	predef GetMonBackpic
@@ -241,7 +241,7 @@ AnimateHOFMonEntrance:
 	ld [wBoxAlignment], a
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	hlcoord 6, 5
 	call _PrepMonFrontpic
@@ -412,11 +412,11 @@ DisplayHOFMon:
 	ld de, wStringBuffer2
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [wStringBuffer2 + MON_NAME_LENGTH - 1], a
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	hlcoord 0, 0
 	lb bc, 3, SCREEN_WIDTH - 2
@@ -437,9 +437,9 @@ DisplayHOFMon:
 	cp EGG
 	jr z, .print_id_no
 	hlcoord 1, 13
-	ld a, "№"
+	ld a, '№'
 	ld [hli], a
-	ld [hl], "."
+	ld [hl], '.'
 	hlcoord 3, 13
 	ld de, wTextDecimalByte
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
@@ -450,16 +450,16 @@ DisplayHOFMon:
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender
-	ld a, " "
+	ld a, ' '
 	jr c, .got_gender
-	ld a, "♂"
+	ld a, '♂'
 	jr nz, .got_gender
-	ld a, "♀"
+	ld a, '♀'
 .got_gender
 	hlcoord 18, 13
 	ld [hli], a
 	hlcoord 8, 14
-	ld a, "/"
+	ld a, '/'
 	ld [hli], a
 	ld de, wStringBuffer2
 	call PlaceString
@@ -467,11 +467,11 @@ DisplayHOFMon:
 	call PrintLevel
 .print_id_no
 	hlcoord 7, 16
-	ld a, "<ID>"
+	ld a, '<ID>'
 	ld [hli], a
-	ld a, "№"
+	ld a, '№'
 	ld [hli], a
-	ld [hl], "/"
+	ld [hl], '/'
 	hlcoord 10, 16
 	ld de, wTempMonID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
@@ -481,7 +481,7 @@ HOF_AnimatePlayerPic:
 	call ClearBGPalettes
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	farcall GetPlayerBackpic
 	ld a, $31
@@ -505,7 +505,7 @@ HOF_AnimatePlayerPic:
 	ld [wBoxAlignment], a
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	farcall HOF_LoadTrainerFrontpic
 	xor a
@@ -532,11 +532,11 @@ HOF_AnimatePlayerPic:
 	ld de, wPlayerName
 	call PlaceString
 	hlcoord 1, 6
-	ld a, "<ID>"
+	ld a, '<ID>'
 	ld [hli], a
-	ld a, "№"
+	ld a, '№'
 	ld [hli], a
-	ld [hl], "/"
+	ld [hl], '/'
 	hlcoord 4, 6
 	ld de, wPlayerID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5

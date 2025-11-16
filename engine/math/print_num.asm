@@ -16,7 +16,7 @@ _PrintNum::
 	bit PRINTNUM_LEFTALIGN_F, b
 	jr z, .main
 .moneyflag ; 101xxxxx or 011xxxxx
-	ld a, "¥"
+	ld a, '¥'
 	ld [hli], a
 	res PRINTNUM_MONEY_F, b ; 100xxxxx or 010xxxxx
 .main
@@ -119,7 +119,7 @@ _PrintNum::
 .two
 	dec e
 	jr nz, .two_skip
-	ld a, "0"
+	ld a, '0'
 	ldh [hPrintNumBuffer + 0], a
 .two_skip
 	ld c, 0
@@ -140,7 +140,7 @@ _PrintNum::
 .money
 	call .PrintYen
 	push af
-	ld a, "0"
+	ld a, '0'
 	add c
 	ld [hl], a
 	pop af
@@ -149,11 +149,11 @@ _PrintNum::
 	dec e
 	jr nz, .money_leading_zero
 	inc hl
-	ld [hl], "."
+	ld [hl], '.'
 .money_leading_zero
 	call .AdvancePointer
 	call .PrintYen
-	ld a, "0"
+	ld a, '0'
 	add b
 	ld [hli], a
 	pop de
@@ -166,7 +166,7 @@ _PrintNum::
 	jr nz, .stop
 	bit PRINTNUM_MONEY_F, d
 	jr z, .stop
-	ld a, "¥"
+	ld a, '¥'
 	ld [hli], a
 	res PRINTNUM_MONEY_F, d
 .stop
@@ -175,7 +175,7 @@ _PrintNum::
 .PrintDigit:
 	dec e
 	jr nz, .ok
-	ld a, "0"
+	ld a, '0'
 	ldh [hPrintNumBuffer + 0], a
 .ok
 	ld c, 0
@@ -242,11 +242,11 @@ _PrintNum::
 	jr nz, .done
 	bit PRINTNUM_MONEY_F, d
 	jr z, .done
-	ld a, "¥"
+	ld a, '¥'
 	ld [hli], a
 	res PRINTNUM_MONEY_F, d
 .done
-	ld a, "0"
+	ld a, '0'
 	add c
 	ld [hl], a
 	ldh [hPrintNumBuffer + 0], a
@@ -254,13 +254,13 @@ _PrintNum::
 	dec e
 	ret nz
 	inc hl
-	ld [hl], "."
+	ld [hl], '.'
 	ret
 .PrintLeadingZero:
 ; prints a leading zero unless they are turned off in the flags
 	bit PRINTNUM_LEADINGZEROS_F, d
 	ret z
-	ld [hl], "0"
+	ld [hl], '0'
 	ret
 .AdvancePointer:
 ; increments the pointer unless leading zeroes are not being printed,

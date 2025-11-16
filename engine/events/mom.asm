@@ -27,7 +27,6 @@ BankOfMom:
 	dw .StopOrStartSavingMoney
 	dw .JustDoWhatYouCan
 	dw .AskDST
-
 .CheckIfBankInitialized:
 	ld a, [wMomSavingMoney]
 	bit MOM_ACTIVE_F, a
@@ -106,7 +105,8 @@ BankOfMom:
 	ld [wMomBankDigitCursorPosition], a
 	call LoadStandardMenuHeader
 	call Mom_SetUpDepositMenu
-	call Mom_Wait10Frames
+	ld c, 10
+	jp DelayFrames
 	call Mom_WithdrawDepositMenuJoypad
 	call CloseWindow
 	jr c, .CancelDeposit
@@ -144,12 +144,10 @@ BankOfMom:
 	jr .done_4
 .InsufficientFundsInWallet:
 	ld hl, MomInsufficientFundsInWalletText
-	call PrintText
-	ret
+	jp PrintText
 .NotEnoughRoomInBank:
 	ld hl, MomNotEnoughRoomInBankText
-	call PrintText
-	ret
+	jp PrintText
 .CancelDeposit:
 	ld a, $7
 .done_4
@@ -167,7 +165,8 @@ BankOfMom:
 	ld [wMomBankDigitCursorPosition], a
 	call LoadStandardMenuHeader
 	call Mom_SetUpWithdrawMenu
-	call Mom_Wait10Frames
+	ld c, 10
+	jp DelayFrames
 	call Mom_WithdrawDepositMenuJoypad
 	call CloseWindow
 	jr c, .CancelWithdraw
@@ -205,12 +204,10 @@ BankOfMom:
 	jr .done_5
 .InsufficientFundsInBank:
 	ld hl, MomHaventSavedThatMuchText
-	call PrintText
-	ret
+	jp PrintText
 .NotEnoughRoomInWallet:
 	ld hl, MomNotEnoughRoomInWalletText
-	call PrintText
-	ret
+	jp PrintText
 .CancelWithdraw:
 	ld a, $7
 .done_5
@@ -264,8 +261,7 @@ DSTChecks:
 	call .ClearBox
 	bccoord 1, 14
 	ld hl, .MomLostGearBookletText
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 .loop
 	call .ClearBox
 	bccoord 1, 14
@@ -283,8 +279,7 @@ DSTChecks:
 	call .ClearBox
 	bccoord 1, 14
 	ld hl, .TimesetNotDSTText
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 .SetDST:
 	ld hl, .TimesetAskDSTText
 	call PrintTextboxTextAt
@@ -297,8 +292,7 @@ DSTChecks:
 	call .ClearBox
 	bccoord 1, 14
 	ld hl, .TimesetDSTText
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 .SetClockForward:
 	ld a, [wStartHour]
 	add 1
@@ -329,8 +323,7 @@ DSTChecks:
 .ClearBox:
 	hlcoord 1, 14
 	lb bc, 3, 18
-	call ClearBox
-	ret
+	jp ClearBox
 .TimesetAskAdjustDSTText:
 	text_far _TimesetAskAdjustDSTText
 	text_end
@@ -386,13 +379,7 @@ Mom_ContinueMenuSetup:
 	lb bc, PRINTNUM_MONEY | PRINTNUM_LEADINGZEROS | 3, 6
 	call PrintNum
 	call UpdateSprites
-	call CGBOnly_CopyTilemapAtOnce
-	ret
-
-Mom_Wait10Frames:
-	ld c, 10
-	call DelayFrames
-	ret
+	jp CGBOnly_CopyTilemapAtOnce
 
 Mom_WithdrawDepositMenuJoypad:
 .loop
@@ -409,7 +396,7 @@ Mom_WithdrawDepositMenuJoypad:
 	ldh [hBGMapMode], a
 	hlcoord 12, 6
 	ld bc, 7
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	hlcoord 12, 6
 	ld de, wStringBuffer2
@@ -423,7 +410,7 @@ Mom_WithdrawDepositMenuJoypad:
 	ld c, a
 	ld b, 0
 	add hl, bc
-	ld [hl], " "
+	ld [hl], ' '
 .skip
 	call WaitBGMap
 	jr .loop

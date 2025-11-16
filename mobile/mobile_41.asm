@@ -477,12 +477,12 @@ endr
 	call .LoadMinusTenIfNegative
 	jr .done
 .create_digit
-	ld a, "0"
+	ld a, '0'
 	add c
 	ld [hl], a
 .done
 	call .Function1062ff
-	ld a, "0"
+	ld a, '0'
 	add b
 	ld [hli], a
 	pop de
@@ -796,8 +796,7 @@ Function106464::
 	ld hl, vTiles2 tile $6b
 	ld b, $0f ; no graphics at 0f:40b0; JP leftover???
 	call Get2bpp
-	call LoadFrame
-	ret
+	jp LoadFrame
 
 Function1064c3:
 	ldh a, [rWBK]
@@ -813,8 +812,7 @@ Function1064c3:
 	pop bc
 	pop af
 	ldh [rWBK], a
-	jr asm_1064ed
-
+	; fallthrough
 asm_1064ed:
 	ld de, wDecompressScratch
 	ld b, $0

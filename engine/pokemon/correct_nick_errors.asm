@@ -8,7 +8,7 @@ CorrectNickErrors::
 .checkchar
 	; end of nick?
 	ld a, [de]
-	cp "@" ; terminator
+	cp '@' ; terminator
 	jr z, .end
 	; check if this char is a text command
 	ld hl, .textcommands
@@ -29,7 +29,7 @@ CorrectNickErrors::
 	cp [hl]
 	jr nc, .loop
 	; replace it with a "?"
-	ld a, "?"
+	ld a, '?'
 	ld [de], a
 	jr .loop
 .done
@@ -41,10 +41,10 @@ CorrectNickErrors::
 	; change nick to "?@"
 	pop de
 	push de
-	ld a, "?"
+	ld a, '?'
 	ld [de], a
 	inc de
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 .end
 	; if the nick has any errors at this point it's out of our hands
@@ -53,12 +53,12 @@ CorrectNickErrors::
 	ret
 .textcommands
 ; table defining which characters are actually text commands
-; format:   ≥           <
-	db "<NULL>",   "ガ"
-	db "<PLAY_G>", "<JP_18>" + 1
-	db "<NI>",     "<NO>"    + 1
-	db "<ROUTE>",  "<GREEN>" + 1
-	db "<ENEMY>",  "<ENEMY>" + 1
-	db "<MOM>",    "<TM>"    + 1
-	db "<ROCKET>", " "
+; format: ≥         <
+	db '<NULL>',   'ガ'
+	db '<PLAY_G>', '<JP_18>' + 1
+	db '<NI>',     '<NO>'    + 1
+	db '<ROUTE>',  '<GREEN>' + 1
+	db '<ENEMY>',  '<ENEMY>' + 1
+	db '<MOM>',    '<TM>'    + 1
+	db '<ROCKET>', ' '
 	db -1 ; end

@@ -351,9 +351,9 @@ StatsScreen_InitUpperHalf:
 	ld [wTextDecimalByte], a
 	ld [wCurSpecies], a
 	hlcoord 8, 0
-	ld [hl], "№"
+	ld [hl], '№'
 	inc hl
-	ld [hl], "."
+	ld [hl], '.'
 	inc hl
 	hlcoord 10, 0
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
@@ -369,7 +369,7 @@ StatsScreen_InitUpperHalf:
 	hlcoord 18, 0
 	call .PlaceGenderChar
 	hlcoord 9, 4
-	ld a, "/"
+	ld a, '/'
 	ld [hli], a
 	ld a, [wBaseDexNo]
 	ld [wNamedObjectIndex], a
@@ -398,9 +398,9 @@ StatsScreen_InitUpperHalf:
 	farcall GetGender
 	pop hl
 	ret c
-	ld a, "♂"
+	ld a, '♂'
 	jr nz, .got_gender
-	ld a, "♀"
+	ld a, '♀'
 .got_gender
 	ld [hl], a
 	ret
@@ -422,9 +422,9 @@ StatsScreen_PlaceHorizontalDivider:
 
 StatsScreen_PlacePageSwitchArrows:
 	hlcoord 12, 6
-	ld [hl], "◀"
+	ld [hl], '◀'
 	hlcoord 19, 6
-	ld [hl], "▶"
+	ld [hl], '▶'
 	ret
 
 StatsScreen_PlaceShinyIcon:
@@ -432,7 +432,7 @@ StatsScreen_PlaceShinyIcon:
 	farcall CheckShininess
 	ret nc
 	hlcoord 19, 0
-	ld [hl], "⁂"
+	ld [hl], '⁂'
 	ret
 
 StatsScreen_LoadGFX:
@@ -499,7 +499,7 @@ LoadPinkPage:
 	and $f0
 	jr z, .NotImmuneToPkrs
 	hlcoord 8, 8
-	ld [hl], "." ; Pokérus immunity dot
+	ld [hl], '.' ; Pokérus immunity dot
 .NotImmuneToPkrs:
 	ld a, [wMonType]
 	cp BOXMON
@@ -771,18 +771,15 @@ StatsScreen_PlaceFrontpic:
 	jr .cry
 .egg
 	call .AnimateEgg
-	call SetDefaultBGPAndOBP
-	ret
+	jp SetDefaultBGPAndOBP
 .no_cry
 	call .AnimateMon
-	call SetDefaultBGPAndOBP
-	ret
+	jp SetDefaultBGPAndOBP
 .cry
 	call SetDefaultBGPAndOBP
 	call .AnimateMon
 	ld a, [wCurPartySpecies]
-	call PlayMonCry2
-	ret
+	jp PlayMonCry2
 .AnimateMon:
 	ld hl, wStatsScreenFlags
 	set STATS_SCREEN_ANIMATE_MON, [hl]
@@ -790,27 +787,22 @@ StatsScreen_PlaceFrontpic:
 	cp UNOWN
 	jr z, .unown
 	hlcoord 0, 0
-	call PrepMonFrontpic
-	ret
+	jp PrepMonFrontpic
 .unown
 	xor a
 	ld [wBoxAlignment], a
 	hlcoord 0, 0
-	call _PrepMonFrontpic
-	ret
+	jp _PrepMonFrontpic
 .AnimateEgg:
 	ld a, [wCurPartySpecies]
 	cp UNOWN
 	jr z, .unownegg
 	ld a, TRUE
 	ld [wBoxAlignment], a
-	call .get_animation
-	ret
+	jr .get_animation
 .unownegg
 	xor a
 	ld [wBoxAlignment], a
-	call .get_animation
-	ret
 .get_animation
 	ld a, [wCurPartySpecies]
 	call IsAPokemon
@@ -894,7 +886,7 @@ StatsScreen_LoadTextboxSpaceGFX:
 	ldh [rVBK], a
 	ld de, TextboxSpaceGFX
 	lb bc, BANK(TextboxSpaceGFX), 1
-	ld hl, vTiles2 tile " "
+	ld hl, vTiles2 tile ' '
 	call Get2bpp
 	pop af
 	ldh [rVBK], a
@@ -953,8 +945,7 @@ EggStatsScreen:
 	cp 6
 	ret nc
 	ld de, SFX_2_BOOPS
-	call PlaySFX
-	ret
+	jp PlaySFX
 .EggString:
 	db "EGG@"
 .FiveQMarkString:
@@ -992,8 +983,7 @@ StatsScreen_AnimateEgg:
 	jr c, .animate
 	ld e, $8
 	cp 11
-	jr c, .animate
-	ret
+	ret nc
 .animate
 	push de
 	ld a, $1

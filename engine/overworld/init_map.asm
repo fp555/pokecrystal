@@ -8,15 +8,7 @@ ReanchorBGMap_NoOAMUpdate::
 	push af
 	xor a
 	ldh [hBGMapMode], a
-	call .ReanchorBGMap
-	pop af
-	ldh [hBGMapMode], a
-	pop af
-	ldh [hOAMUpdate], a
-	ld hl, wStateFlags
-	set TEXT_STATE_F, [hl]
-	ret
-.ReanchorBGMap:
+	; ReanchorBGMap
 	xor a
 	ldh [hLCDCPointer], a
 	ldh [hBGMapMode], a
@@ -44,6 +36,12 @@ ReanchorBGMap_NoOAMUpdate::
 	ldh [hSCX], a
 	ldh [hSCY], a
 	call ApplyBGMapAnchorToObjects
+	pop af
+	ldh [hBGMapMode], a
+	pop af
+	ldh [hOAMUpdate], a
+	ld hl, wStateFlags
+	set TEXT_STATE_F, [hl]
 	ret
 .LoadBGMapAddrIntoHRAM:
 	ldh [hBGMapAddress + 1], a
@@ -56,16 +54,14 @@ LoadFonts_NoOAMUpdate::
 	push af
 	ld a, $1
 	ldh [hOAMUpdate], a
-	call .LoadGFX
-	pop af
-	ldh [hOAMUpdate], a
-	ret
-.LoadGFX:
+	; LoadGFX
 	call LoadFrame
 	ld a, $90
 	ldh [hWY], a
 	call SafeUpdateSprites
 	call LoadStandardFont
+	pop af
+	ldh [hOAMUpdate], a
 	ret
 
 HDMATransfer_FillBGMap0WithBlack:
@@ -73,7 +69,7 @@ HDMATransfer_FillBGMap0WithBlack:
 	push af
 	ld a, BANK(wDecompressScratch)
 	ldh [rWBK], a
-	ld a, "■"
+	ld a, '■'
 	ld hl, wDecompressScratch
 	ld bc, wScratchAttrmap - wDecompressScratch
 	call ByteFill

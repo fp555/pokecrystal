@@ -63,8 +63,7 @@ _DepositPKMN:
 	call BillsPC_ApplyPalettes
 	call WaitBGMap
 	call BillsPC_UpdateSelectionCursor
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .HandleJoypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -83,9 +82,8 @@ _DepositPKMN:
 	call PCMonInfo
 	ld a, $1
 	ldh [hBGMapMode], a
-	call DelayFrame
-	call DelayFrame
-	ret
+	ld c, 2
+	jp DelayFrames
 .a_button
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
@@ -111,8 +109,7 @@ _DepositPKMN:
 	call BillsPC_PlaceString
 	ld a, $1
 	ld [wMenuCursorY], a
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .Submenu:
 	ld hl, BillsPCDepositMenuHeader
 	call CopyMenuHeader
@@ -151,8 +148,7 @@ BillsPCDepositFuncDeposit:
 	ret
 .box_full
 	ld de, PCString_WhatsUp
-	call BillsPC_PlaceString
-	ret
+	jp BillsPC_PlaceString
 
 BillsPCDepositFuncStats:
 	call LoadStandardMenuHeader
@@ -162,8 +158,7 @@ BillsPCDepositFuncStats:
 	call BillsPC_GetSelectedPokemonSpecies
 	ld [wCurPartySpecies], a
 	ld a, SCGB_BILLS_PC
-	call BillsPC_ApplyPalettes
-	ret
+	jp BillsPC_ApplyPalettes
 
 BillsPCDepositFuncRelease:
 	call BillsPC_CheckMail_PreventBlackout
@@ -288,8 +283,7 @@ _WithdrawPKMN:
 	call BillsPC_ApplyPalettes
 	call WaitBGMap
 	call BillsPC_UpdateSelectionCursor
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .Joypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -308,9 +302,8 @@ _WithdrawPKMN:
 	call PCMonInfo
 	ld a, $1
 	ldh [hBGMapMode], a
-	call DelayFrame
-	call DelayFrame
-	ret
+	ld c, 2
+	jp DelayFrames
 .a_button
 	call BillsPC_GetSelectedPokemonSpecies
 	and a
@@ -336,8 +329,7 @@ _WithdrawPKMN:
 	call BillsPC_PlaceString
 	ld a, $1
 	ld [wMenuCursorY], a
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 
 BillsPC_Withdraw:
 	ld hl, .MenuHeader
@@ -376,8 +368,7 @@ BillsPC_Withdraw:
 	ret
 .FailedWithdraw:
 	ld de, PCString_WhatsUp
-	call BillsPC_PlaceString
-	ret
+	jp BillsPC_PlaceString
 .stats
 	call LoadStandardMenuHeader
 	call BillsPC_StatsScreen
@@ -386,8 +377,7 @@ BillsPC_Withdraw:
 	call BillsPC_GetSelectedPokemonSpecies
 	ld [wCurPartySpecies], a
 	ld a, SCGB_BILLS_PC
-	call BillsPC_ApplyPalettes
-	ret
+	jp BillsPC_ApplyPalettes
 .release
 	ld a, [wMenuCursorY]
 	push af
@@ -509,8 +499,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_ApplyPalettes
 	call WaitBGMap
 	call BillsPC_UpdateSelectionCursor
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .Joypad:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -530,9 +519,8 @@ _MovePKMNWithoutMail:
 	call PCMonInfo
 	ld a, $1
 	ldh [hBGMapMode], a
-	call DelayFrame
-	call DelayFrame
-	ret
+	ld c, 2
+	jp DelayFrames
 .d_pad
 	xor a
 	ld [wBillsPC_CursorPosition], a
@@ -565,8 +553,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_PlaceString
 	ld a, $1
 	ld [wMenuCursorY], a
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .MoveMonWOMailSubmenu:
 	ld hl, .MenuHeader
 	call CopyMenuHeader
@@ -610,8 +597,7 @@ _MovePKMNWithoutMail:
 	call BillsPC_GetSelectedPokemonSpecies
 	ld [wCurPartySpecies], a
 	ld a, SCGB_BILLS_PC
-	call BillsPC_ApplyPalettes
-	ret
+	jp BillsPC_ApplyPalettes
 .Cancel:
 	xor a
 	ld [wJumptableIndex], a
@@ -640,8 +626,7 @@ _MovePKMNWithoutMail:
 	call ClearSprites
 	call BillsPC_UpdateInsertCursor
 	call WaitBGMap
-	call BillsPC_IncrementJumptableIndex
-	ret
+	jp BillsPC_IncrementJumptableIndex
 .Joypad2:
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -876,8 +861,7 @@ BillsPC_PlaceString:
 	call Textbox
 	pop de
 	hlcoord 1, 16
-	call PlaceString
-	ret
+	jp PlaceString
 
 BillsPC_MoveMonWOMail_BoxNameAndArrows:
 	call BillsPC_BoxName
@@ -910,8 +894,7 @@ BillsPC_BoxName:
 	ld de, .PartyPKMN
 .print
 	hlcoord 10, 1
-	call PlaceString
-	ret
+	jp PlaceString
 .PartyPKMN:
 	db "PARTY <PK><MN>@"
 
@@ -973,9 +956,9 @@ PCMonInfo:
 	ld [wMonType], a
 	farcall GetGender
 	jr c, .skip_gender
-	ld a, "♂"
+	ld a, '♂'
 	jr nz, .printgender
-	ld a, "♀"
+	ld a, '♀'
 .printgender
 	hlcoord 5, 12
 	ld [hl], a
@@ -1045,8 +1028,7 @@ endr
 	inc de
 	ld a, [hl]
 	ld [de], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 .party
 	ld hl, wPartyMon1Level
 	ld bc, PARTYMON_STRUCT_LENGTH
@@ -1096,17 +1078,16 @@ endr
 	inc de
 	ld a, [hl]
 	ld [de], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 BillsPC_RefreshTextboxes:
 	hlcoord 8, 2
 	lb bc, 10, 10
 	call Textbox
 	hlcoord 8, 2
-	ld [hl], "└"
+	ld [hl], '└'
 	hlcoord 19, 2
-	ld [hl], "┘"
+	ld [hl], '┘'
 	ld a, [wBillsPC_ScrollPosition]
 	ld e, a
 	ld d, 0
@@ -1143,8 +1124,7 @@ endr
 	cp -1
 	jr nz, .get_nickname
 	ld de, .CancelString
-	call PlaceString
-	ret
+	jp PlaceString
 .get_nickname
 	inc de
 	ld a, [de]
@@ -1182,8 +1162,7 @@ endr
 	call CloseSRAM
 	pop hl
 	ld de, wStringBuffer1
-	call PlaceString
-	ret
+	jp PlaceString
 .boxfail
 	call CloseSRAM
 	pop hl
@@ -1205,8 +1184,7 @@ endr
 	call CopyBytes
 	pop hl
 	ld de, wStringBuffer1
-	call PlaceString
-	ret
+	jp PlaceString
 .partyfail
 	pop hl
 	jr .placeholder_string
@@ -1230,15 +1208,13 @@ endr
 	call CloseSRAM
 	pop hl
 	ld de, wStringBuffer1
-	call PlaceString
-	ret
+	jp PlaceString
 .sBoxFail
 	call CloseSRAM
 	pop hl
 .placeholder_string
 	ld de, .Placeholder
-	call PlaceString
-	ret
+	jp PlaceString
 .Placeholder:
 	db "-----@"
 
@@ -1324,8 +1300,7 @@ BillsPC_UpdateSelectionCursor:
 	ld a, [wBillsPC_NumMonsInBox]
 	and a
 	jr nz, .place_cursor
-	call ClearSprites
-	ret
+	jp ClearSprites
 .place_cursor
 	ld hl, .OAM
 	ld de, wShadowOAMSprite00
@@ -1499,21 +1474,18 @@ BillsPC_StatsScreen:
 	ld [wMonType], a
 	predef StatsScreenInit
 	call BillsPC_InitGFX
-	call MaxVolume
-	ret
+	jp MaxVolume
 
 StatsScreenDPad:
 	ld hl, hJoyPressed
 	ld a, [hl]
 	and PAD_A | PAD_B | PAD_RIGHT | PAD_LEFT
 	ld [wMenuJoypad], a
-	jr nz, .pressed_a_b_right_left
+	ret nz
 	ld a, [hl]
 	and PAD_DOWN | PAD_UP
 	ld [wMenuJoypad], a
-	jr nz, .pressed_down_up
-	jr .pressed_a_b_right_left
-.pressed_down_up
+	ret z
 	call _StatsScreenDPad
 	and a
 	jr z, .did_nothing
@@ -1526,9 +1498,7 @@ StatsScreenDPad:
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	call GetBaseData
-	call BillsPC_CopyMon
-.pressed_a_b_right_left
-	ret
+	jr BillsPC_CopyMon
 .did_nothing
 	xor a
 	ld [wMenuJoypad], a
@@ -1575,8 +1545,7 @@ BillsPC_CopyMon:
 	call AddNTimes
 	ld de, wBufferMon
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 .box
 	ld b, a
 	call GetBoxPointer
@@ -1638,7 +1607,7 @@ DepositPokemon:
 	ld h, b
 	ld de, wStringBuffer1
 	call PlaceString
-	ld a, "!"
+	ld a, '!'
 	ld [bc], a
 	ld c, 50
 	call DelayFrames
@@ -1692,7 +1661,7 @@ TryWithdrawPokemon:
 	ld h, b
 	ld de, wStringBuffer1
 	call PlaceString
-	ld a, "!"
+	ld a, '!'
 	ld [bc], a
 	ld c, 50
 	call DelayFrames
@@ -1748,10 +1717,9 @@ ReleasePKMN_ByePKMN:
 	call PlaceString
 	ld l, c
 	ld h, b
-	ld [hl], "!"
+	ld [hl], '!'
 	ld c, 50
-	call DelayFrames
-	ret
+	jp DelayFrames
 
 ; move pkmn w/o mail jumptable bits
 DEF MOVE_MON_FROM_PARTY_F EQU 0
@@ -1812,13 +1780,11 @@ MovePKMNWithoutMail_InsertMon:
 	cp [hl]
 	jr z, .same_box
 	call .CopyFromBox
-	call .CopyToBox
-	ret
+	jp .CopyToBox
 .same_box
 	call .CopyFromBox
 	call .CheckTrivialMove
-	call .CopyToBox
-	ret
+	jp .CopyToBox
 .PartyToBox:
 	call .CopyFromParty
 	ld a, $1
@@ -1826,17 +1792,14 @@ MovePKMNWithoutMail_InsertMon:
 	farcall SaveGameData
 	xor a
 	ld [wGameLogicPaused], a
-	call .CopyToBox
-	ret
+	jp .CopyToBox
 .BoxToParty:
 	call .CopyFromBox
-	call .CopyToParty
-	ret
+	jp .CopyToParty
 .PartyToParty:
 	call .CopyFromParty
 	call .CheckTrivialMove
-	call .CopyToParty
-	ret
+	jp .CopyToParty
 .CheckTrivialMove:
 	ld a, [wBillsPC_CursorPosition]
 	ld hl, wBillsPC_ScrollPosition
@@ -1954,8 +1917,7 @@ CopyMonToTemp:
 	ld a, [wCurPartyMon]
 	call AddNTimes
 	ld de, wBufferMon
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 GetBoxPointer:
 	dec b
@@ -1984,8 +1946,7 @@ BillsPC_ApplyPalettes:
 	ld a, %11100100
 	call DmgToCgbBGPals
 	ld a, %11111100
-	call DmgToCgbObjPal0
-	ret
+	jp DmgToCgbObjPal0
 
 BillsPC_Jumptable:
 	ld e, a
@@ -2014,8 +1975,7 @@ BillsPC_InitGFX:
 	call Decompress
 	ld a, 6
 	call SkipMusic
-	call EnableLCD
-	ret
+	jp EnableLCD
 
 PCSelectLZ: INCBIN "gfx/pc/pc.2bpp.lz"
 PCMailGFX:  INCBIN "gfx/pc/pc_mail.2bpp"
@@ -2054,22 +2014,18 @@ _ChangeBox:
 	call ScrollingMenu
 	ld a, [wMenuJoypad]
 	cp PAD_B
-	jr z, .done
+	jp z, CloseWindow
 	call BillsPC_PlaceWhatsUpString
 	call BillsPC_ChangeBoxSubmenu
 	jr .loop
-.done
-	call CloseWindow
-	ret
 
 BillsPC_ClearTilemap:
 	xor a
 	ldh [hBGMapMode], a
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
-	ld a, " "
-	call ByteFill
-	ret
+	ld a, ' '
+	jp ByteFill
 
 _ChangeBox_MenuHeader:
 	db MENU_BACKUP_TILES ; flags
@@ -2096,8 +2052,7 @@ endr
 	dec a
 	call GetBoxName
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 
 GetBoxName:
 	ld bc, BOX_NAME_LENGTH
@@ -2124,8 +2079,7 @@ BillsPC_PrintBoxCountAndCapacity:
 	lb bc, 1, 2
 	call PrintNum
 	ld de, .OutOf20
-	call PlaceString
-	ret
+	jp PlaceString
 .Pokemon:
 	db "#MON@"
 .OutOf20:
@@ -2188,8 +2142,7 @@ BillsPC_PrintBoxName:
 	and $f
 	call GetBoxName
 	hlcoord 11, 2
-	call PlaceString
-	ret
+	jp PlaceString
 .Current:
 	db "CURRENT@"
 
@@ -2253,8 +2206,7 @@ BillsPC_ChangeBoxSubmenu:
 	dec a
 	call GetBoxName
 	ld de, wBoxNameBuffer
-	call CopyName2
-	ret
+	jp CopyName2
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 11, 4, SCREEN_WIDTH - 1, 13
@@ -2287,8 +2239,7 @@ BillsPC_PlaceEmptyBoxString_SFX:
 	call WaitPlaySFX
 	call WaitSFX
 	ld c, 50
-	call DelayFrames
-	ret
+	jp DelayFrames
 .NoMonString:
 	db "There's no #MON.@"
 

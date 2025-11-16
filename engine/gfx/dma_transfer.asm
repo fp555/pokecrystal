@@ -348,7 +348,7 @@ _LoadHDMAParameters:
 	ret
 
 PadTilemapForHDMATransfer:
-	ld c, " "
+	ld c, ' '
 	jr PadMapForHDMATransfer
 
 PadAttrmapForHDMATransfer:

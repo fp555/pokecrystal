@@ -15,31 +15,22 @@ NPCTrade::
 	ld b, PARTYMENUACTION_GIVE_MON
 	farcall SelectTradeOrDayCareMon
 	ld a, TRADE_DIALOG_CANCEL
-	jr c, .done
+	jp c, PrintTradeText
 	ld e, NPCTRADE_GIVEMON
 	call GetTradeAttr
 	ld a, [wCurPartySpecies]
 	cp [hl]
 	ld a, TRADE_DIALOG_WRONG
-	jr nz, .done
+	jp nz, PrintTradeText
 	call CheckTradeGender
 	ld a, TRADE_DIALOG_WRONG
-	jr c, .done
+	jp c, PrintTradeText
 	ld b, SET_FLAG
 	call TradeFlagAction
 	ld hl, NPCTradeCableText
 	call PrintText
 	call DoNPCTrade
-	call .TradeAnimation
-	call GetTradeMonNames
-	ld hl, TradedForText
-	call PrintText
-	call RestartMapMusic
-	ld a, TRADE_DIALOG_COMPLETE
-.done
-	call PrintTradeText
-	ret
-.TradeAnimation:
+	; TradeAnimation
 	call DisableSpriteUpdates
 	ld a, [wJumptableIndex]
 	push af
@@ -51,8 +42,13 @@ NPCTrade::
 	ld [wTradeDialog], a
 	pop af
 	ld [wJumptableIndex], a
-	call ReturnToMapWithSpeechTextbox
-	ret
+	call ReturnToMapWithSpeechTextbox	
+	call GetTradeMonNames
+	ld hl, TradedForText
+	call PrintText
+	call RestartMapMusic
+	ld a, TRADE_DIALOG_COMPLETE
+	jp PrintTradeText
 
 CheckTradeGender:
 	xor a
@@ -251,8 +247,7 @@ GetTradeAttr:
 
 Trade_GetAttributeOfCurrentPartymon:
 	ld a, [wCurPartyMon]
-	call AddNTimes
-	ret
+	jp AddNTimes
 
 Trade_GetAttributeOfLastPartymon:
 	ld a, [wPartyCount]
@@ -272,8 +267,7 @@ GetTradeMonName:
 
 CopyTradeName:
 	ld bc, NAME_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 Trade_CopyTwoBytes:
 	ld a, [hli]
@@ -307,7 +301,7 @@ GetTradeMonNames:
 	ld hl, wStringBuffer1
 .loop
 	ld a, [hli]
-	cp "@"
+	cp '@'
 	jr nz, .loop
 	dec hl
 	push hl
@@ -318,13 +312,13 @@ GetTradeMonNames:
 	and a ; TRADE_GENDER_EITHER
 	ret z
 	cp TRADE_GENDER_MALE
-	ld a, "♂"
+	ld a, '♂'
 	jr z, .done
 	; TRADE_GENDER_FEMALE
-	ld a, "♀"
+	ld a, '♀'
 .done
 	ld [hli], a
-	ld [hl], "@"
+	ld [hl], '@'
 	ret
 
 INCLUDE "data/events/npc_trades.asm"
@@ -343,8 +337,7 @@ PrintTradeText:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call PrintText
-	ret
+	jp PrintText
 
 TradeTexts:
 ; entries correspond to TRADE_DIALOG_* × TRADE_DIALOGSET_* constants

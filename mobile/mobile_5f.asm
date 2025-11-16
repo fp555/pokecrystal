@@ -165,29 +165,29 @@ CheckStringForErrors:
 	jr z, .NextChar
 	cp FIRST_REGULAR_TEXT_CHAR
 	jr nc, .NextChar
-	cp "<NEXT>"
+	cp '<NEXT>'
 	jr z, .NextChar
-	cp "@"
+	cp '@'
 	jr z, .Done
-	cp "ガ"
+	cp 'ガ'
 	jr c, .Fail
-	cp "<PLAY_G>"
+	cp '<PLAY_G>'
 	jr c, .NextChar
-	cp "<JP_18>" + 1
+	cp '<JP_18>' + 1
 	jr c, .Fail
-	cp "<NI>"
+	cp '<NI>'
 	jr c, .NextChar
-	cp "<NO>" + 1
+	cp '<NO>' + 1
 	jr c, .Fail
-	cp "<ROUTE>"
+	cp '<ROUTE>'
 	jr c, .NextChar
-	cp "<GREEN>" + 1
+	cp '<GREEN>' + 1
 	jr c, .Fail
-	cp "<ENEMY>"
+	cp '<ENEMY>'
 	jr c, .NextChar
-	cp "<ENEMY>" + 1
+	cp '<ENEMY>' + 1
 	jr c, .Fail
-	cp "<MOM>"
+	cp '<MOM>'
 	jr c, .NextChar
 
 .Fail:
@@ -209,32 +209,32 @@ CheckStringForErrors_IgnoreTerminator:
 	inc de
 	and a
 	jr z, .next
-	cp "<DEXEND>" + 1
+	cp '<DEXEND>' + 1
 	jr nc, .next
-	cp "<NEXT>"
+	cp '<NEXT>'
 	jr z, .next
-	cp "@"
+	cp '@'
 	jr z, .next
 
-	cp "ガ"
+	cp 'ガ'
 	jr c, .end
-	cp "<PLAY_G>"
+	cp '<PLAY_G>'
 	jr c, .next
-	cp "<JP_18>" + 1
+	cp '<JP_18>' + 1
 	jr c, .end
-	cp "<NI>"
+	cp '<NI>'
 	jr c, .next
-	cp "<NO>" + 1
+	cp '<NO>' + 1
 	jr c, .end
-	cp "<ROUTE>"
+	cp '<ROUTE>'
 	jr c, .next
-	cp "<GREEN>" + 1
+	cp '<GREEN>' + 1
 	jr c, .end
-	cp "<ENEMY>"
+	cp '<ENEMY>'
 	jr c, .next
-	cp "<ENEMY>" + 1
+	cp '<ENEMY>' + 1
 	jr c, .end
-	cp "<MOM>"
+	cp '<MOM>'
 	jr c, .next
 
 .end
@@ -257,7 +257,7 @@ Function17d0f3:
 	ld de, wOTTrademonOTName
 	ld bc, NAME_LENGTH_JAPANESE - 1
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	ld a, [wMobileMonID]
 	ld [wOTTrademonID], a
@@ -326,7 +326,7 @@ Mobile_CopyDefaultNickname:
 	dname "？？？？？", NAME_LENGTH_JAPANESE - 1
 
 Mobile_CopyDefaultMail:
-	ld a, "@"
+	ld a, '@'
 	ld hl, wMobileMonMail
 	ld bc, MAIL_MSG_LENGTH + 1
 	call ByteFill
@@ -341,7 +341,7 @@ Mobile_CopyDefaultMail:
 .DefaultMessageEnd:
 
 Mobile_CopyDefaultMailAuthor:
-	ld a, "@"
+	ld a, '@'
 	ld de, wMobileMonMailAuthor
 	ld bc, NAME_LENGTH_JAPANESE - 1
 	call ByteFill
@@ -355,7 +355,7 @@ CheckStringContainsLessThanBNextCharacters:
 .loop
 	ld a, [de]
 	inc de
-	cp "<NEXT>"
+	cp '<NEXT>'
 	jr nz, .next_char
 	dec b
 	jr z, .done
@@ -3535,7 +3535,7 @@ RunMobileScript::
 _RunMobileScript:
 	ld a, [de]
 	inc de
-	cp "@"
+	cp '@'
 	jr z, .finished
 	cp $10 ; jumptable size
 	jr nc, .finished
@@ -3590,7 +3590,7 @@ Function17f081:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f09d
 	and a
 	ret
@@ -3675,7 +3675,7 @@ Function17f0f8:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f112
 	and a
 	ret
@@ -3703,7 +3703,7 @@ Function17f0f8:
 	ld c, a
 	ld b, 0
 	call CopyBytes
-	ld a, "@"
+	ld a, '@'
 	ld [de], a
 	pop hl
 	ld de, wc608
@@ -3727,7 +3727,7 @@ Function17f154:
 	ld e, l
 	ld d, h
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f165
 	and a
 	ret
@@ -3772,7 +3772,7 @@ Function17f181:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f19b
 	and a
 	ret
@@ -3826,7 +3826,7 @@ Function17f1d0:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f1ea
 	and a
 	ret
@@ -3882,7 +3882,7 @@ Function17f220:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f23a
 	and a
 	ret
@@ -3945,7 +3945,7 @@ Function17f27b:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f295
 	and a
 	ret
@@ -4253,7 +4253,7 @@ Function17f44f:
 	ld b, 0
 	add hl, bc
 	ld a, [de]
-	cp "@"
+	cp '@'
 	jr z, .asm_17f46b
 	and a
 	ret
@@ -4508,7 +4508,7 @@ Function17f5e4:
 	ld [wMusicFadeID], a
 	ld a, d
 	ld [wMusicFadeID + 1], a
-	ld a, " "
+	ld a, ' '
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
 	call ByteFill
@@ -4651,7 +4651,7 @@ Function17f6b7:
 	and $f
 
 .bcd_digit
-	add "0"
+	add '0'
 	ld [hli], a
 	ret
 

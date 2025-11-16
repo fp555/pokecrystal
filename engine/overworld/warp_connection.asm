@@ -115,7 +115,7 @@ EnterMapConnection:
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
-	jp .done
+	jr .done
 .south
 	ld a, [wSouthConnectedMapGroup]
 	ld [wMapGroup], a
@@ -221,9 +221,7 @@ LoadMapTimeOfDay:
 	farcall ReplaceTimeOfDayPals
 	farcall UpdateTimeOfDayPal
 	call LoadOverworldTilemap
-	call .ClearBGMap
-	jr .PushAttrmap
-.ClearBGMap:
+	; ClearBGMap
 	ld a, HIGH(vBGMap0)
 	ld [wBGMapAnchor + 1], a
 	xor a ; LOW(vBGMap0)
@@ -241,11 +239,11 @@ LoadMapTimeOfDay:
 	call ByteFill
 	pop af
 	ldh [rVBK], a
-	ld a, "■"
+	ld a, '■'
 	ld bc, vBGMap1 - vBGMap0
 	hlbgcoord 0, 0
-	jp ByteFill
-.PushAttrmap:
+	call ByteFill
+	; PushAttrmap
 	decoord 0, 0
 	call .copy
 	decoord 0, 0, wAttrmap

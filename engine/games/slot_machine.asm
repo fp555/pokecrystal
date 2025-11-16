@@ -108,7 +108,7 @@ _SlotMachine:
 	call DisableLCD
 	hlbgcoord 0, 0
 	ld bc, vBGMap1 - vBGMap0
-	ld a, " "
+	ld a, ' '
 	call ByteFill
 	ld b, SCGB_SLOT_MACHINE
 	call GetSGBLayout
@@ -165,8 +165,7 @@ Slots_GetPals:
 	ld a, %11100100
 	call DmgToCgbBGPals
 	lb de, %11100100, %11100100
-	call DmgToCgbObjPals
-	ret
+	jp DmgToCgbObjPals
 
 SlotsLoop:
 	ld a, [wJumptableIndex]
@@ -190,8 +189,7 @@ SlotsLoop:
 	ret nz
 	ldh a, [rBGP]
 	xor %00001100 ; alternates two palettes
-	call DmgToCgbBGPals
-	ret
+	jp DmgToCgbBGPals
 .PrintCoinsAndPayout:
 	hlcoord 5, 1
 	ld de, wCoins
@@ -261,8 +259,7 @@ SlotsAction_BetAndStart:
 	ld [wReel3ManipCounter], a
 	call WaitSFX
 	ld a, SFX_SLOT_MACHINE_START
-	call Slots_PlaySFX
-	ret
+	jp Slots_PlaySFX
 
 SlotsAction_WaitStart:
 	ld hl, wSlotsDelay
@@ -853,30 +850,27 @@ ReelAction_StopReel1:
 ; even if the current bet won't allow lining it up.
 	ld a, [wSlotBias]
 	cp SLOTS_NO_BIAS
-	jr z, .NoBias
+	jr z, Slots_StopReel
 	ld hl, REEL_MANIP_COUNTER
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .NoBias
+	jr z, Slots_StopReel
 	dec [hl]
-	call .CheckForBias
-	ret nz
-.NoBias:
-	jp Slots_StopReel ; jr?
-.CheckForBias:
+	; CheckForBias
 	call Slots_GetCurrentReelState
 	ld a, [wSlotBias]
 	ld e, a
 	ld a, [hli]
 	cp e
-	ret z
+	jr Slots_StopReel
 	ld a, [hli]
 	cp e
-	ret z
+	jr Slots_StopReel
 	ld a, [hl]
 	cp e
-	ret
+	ret nz
+	jr Slots_StopReel
 
 ReelAction_StopReel2:
 ; If no bias: don't manipulate reel.
@@ -1254,9 +1248,7 @@ Slots_CheckMatchedFirstTwoReels:
 	call .CheckBottomRow
 	call .CheckTopRow
 .one
-	call .CheckMiddleRow
-.zero
-	ret
+	jr .CheckMiddleRow
 .CheckBottomRow:
 	ld hl, wCurReelStopped
 	ld a, [wReel1Stopped]
@@ -1285,12 +1277,12 @@ Slots_CheckMatchedFirstTwoReels:
 .StoreResult:
 	ld [wSlotBuildingMatch], a
 	and a
-	jr nz, .matching_sevens
 	ld a, 1
+	jr nz, .matching_sevens
 	ld [wFirstTwoReelsMatchingSevens], a
 .matching_sevens
-	ld a, 1
 	ld [wFirstTwoReelsMatching], a
+.zero
 	ret
 
 Slots_CheckMatchedAllThreeReels:
@@ -1332,9 +1324,7 @@ Slots_CheckMatchedAllThreeReels:
 	call .CheckBottomRow
 	call .CheckTopRow
 .one
-	call .CheckMiddleRow
-.zero
-	ret
+	jr .CheckMiddleRow
 .CheckBottomRow:
 	ld hl, wCurReelStopped
 	ld a, [wReel1Stopped]
@@ -1377,6 +1367,7 @@ Slots_CheckMatchedAllThreeReels:
 	ret nz
 .StoreResult:
 	ld [wSlotMatched], a
+.zero
 	ret
 
 Slots_CopyReelState:
@@ -1693,7 +1684,7 @@ Slots_PayoutText:
 	inc a
 	ldcoord_a 3, 14
 	hlcoord 18, 17
-	ld [hl], "▼"
+	ld [hl], '▼'
 	ld hl, .SlotsLinedUpText
 rept 4
 	inc bc

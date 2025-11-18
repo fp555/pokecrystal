@@ -5,12 +5,12 @@ NPCTrade::
 	ld b, CHECK_FLAG
 	call TradeFlagAction
 	ld a, TRADE_DIALOG_AFTER
-	jr nz, .done
+	jp nz, PrintTradeText
 	ld a, TRADE_DIALOG_INTRO
 	call PrintTradeText
 	call YesNoBox
 	ld a, TRADE_DIALOG_CANCEL
-	jr c, .done
+	jp c, PrintTradeText
 	; Select givemon from party
 	ld b, PARTYMENUACTION_GIVE_MON
 	farcall SelectTradeOrDayCareMon

@@ -2,7 +2,7 @@ JoseMonsStickHasADeliciousAromaText:
 	text "Hey listen, my"
 	line "@"
 	text_ram wStringBuffer4
-	text "'s stick"
+	text "'s LEEK"
 
 	para "has this really"
 	line "delicious aroma."
@@ -21,7 +21,7 @@ JoseDefeatedMonText:
 	para "You should have"
 	line "seen FARFETCH'D"
 
-	para "wield that stick."
+	para "wield that LEEK."
 	line "Amazing stuff!"
 	done
 
@@ -104,7 +104,7 @@ JoseReminderText:
 	line "soon, it might"
 
 	para "smack me with its"
-	line "stick!"
+	line "LEEK!"
 
 	para "@"
 	text_ram wStringBuffer5

@@ -2,9 +2,9 @@
 	dw 207, 150 ; height, weight
 
 	db   "If it eats the"
-	next "plant stick it"
-	next "carries as emer-"
+	next "leek it carries"
+	next "as emergency"
 
-	page "gency rations, it"
-	next "runs off in search"
-	next "of a new stick.@"
+	page "rations, it runs"
+	next "off in search of a"
+	next "new one.@"

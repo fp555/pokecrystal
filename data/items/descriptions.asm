@@ -356,8 +356,8 @@ CarbosDesc:
 	next "one #MON.@"
 
 LuckyPunchDesc:
-	db   "Ups critical hit"
-	next "ratio of CHANSEY.@"
+	db   "Raises CHANSEY's"
+	next "crit.rate. (HOLD)@"
 
 CalciumDesc:
 	db   "Ups SPECIAL stats"
@@ -372,8 +372,8 @@ XAccuracyDesc:
 	next "until battle ends.@"
 
 MetalPowderDesc:
-	db   "Raises DEFENSE of"
-	next "DITTO. (HOLD)@"
+	db   "Raises DITTO's"
+	next "defenses. (HOLD)@"
 
 NuggetDesc:
 	db   "Made of pure gold."
@@ -631,8 +631,8 @@ PinkBowDesc:
 	next "type moves. (HOLD)@"
 
 StickDesc:
-	db   "An ordinary stick."
-	next "Sell low.@"
+	db   "Raises FARFETCH'D"
+	next "crit.rate. (HOLD)@"
 
 SmokeBallDesc:
 	db   "Escape from wild"
@@ -683,8 +683,8 @@ MiracleSeedDesc:
 	next "type moves. (HOLD)@"
 
 ThickClubDesc:
-	db   "A bone of some"
-	next "sort. Sell low.@"
+	db   "Raises CUBONE and"
+	next "MAROWAK's ATTACK.@"
 
 FocusBandDesc:
 	db   "May prevent faint-"
@@ -770,8 +770,8 @@ LeftoversDesc:
 	next "battle. (HOLD)@"
 
 MysteryBerryDesc:
-	db   "A self-restore"
-	next "for PP. (HOLD)@"
+	db   "Restores 5 PP to a"
+	next "move. (HOLD)@"
 
 DragonScaleDesc:
 	db   "A rare dragon-type"
@@ -806,8 +806,8 @@ FastBallDesc:
 	next "ing fast #MON.@"
 
 LightBallDesc:
-	db   "An odd, electrical"
-	next "orb. (HOLD)@"
+	db   "Raises PIKACHU's"
+	next "SPCL.ATK. (HOLD)@"
 
 FriendBallDesc:
 	db   "A BALL that makes"

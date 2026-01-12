@@ -105,18 +105,9 @@ UseRegisteredItem:
 .SwitchTo:
 ; entries correspond to ITEMMENU_* constants
 	dw .NoUse
-	dw .NoFunction
-	dw .NoFunction
-	dw .NoFunction
 	dw .Current
 	dw .Party
 	dw .Overworld
-.NoFunction:
-	call OpenText
-	call CantUseItem
-	call CloseText
-	and a
-	ret
 .Current:
 	call OpenText
 	call DoItemEffect

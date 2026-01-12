@@ -268,7 +268,7 @@ SetTrainerBattleLevel:
 	jr .skip_trainer
 .skip_name
 	ld a, [hli]
-	cp "@"
+	cp '@'
 	jr nz, .skip_name
 	inc hl
 	ld a, [hl]

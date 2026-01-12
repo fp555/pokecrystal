@@ -574,9 +574,9 @@ LoadPinkPage:
 	cp $7f
 	ret z
 	and CAUGHT_GENDER_MASK
-	ld a, "♂"
+	ld a, '♂'
 	jr z, .got_gender
-	ld a, "♀"
+	ld a, '♀'
 .got_gender
 	hlcoord 19, 15
 	ld [hl], a

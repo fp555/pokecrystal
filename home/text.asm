@@ -213,7 +213,7 @@ ENDM
 	dict '<PKMN>',    PlacePKMN
 	dict '<POKE>',    PlacePOKE
 	dict '<WBR>',     NextChar
-	dict '<BSP>',     " "
+	dict '<BSP>',     ' '
 	dict '<DEXEND>',  PlaceDexEnd
 	dict '<TARGET>',  PlaceMoveTargetsName
 	dict '<USER>',    PlaceMoveUsersName

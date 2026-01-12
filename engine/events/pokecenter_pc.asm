@@ -36,8 +36,7 @@ PokemonCenterPC:
 .shutdown
 	call PC_PlayShutdownSound
 	call ExitMenu
-	call CloseWindow
-	ret
+	jp CloseWindow
 .TopMenu:
 	db MENU_BACKUP_TILES | MENU_NO_CLICK_SFX ; flags
 	menu_coords 0, 0, 15, 12
@@ -172,8 +171,7 @@ PC_PlayBootSound:
 PC_PlayShutdownSound:
 	ld de, SFX_SHUT_DOWN_PC
 	call PC_WaitPlaySFX
-	call WaitSFX
-	ret
+	jp WaitSFX
 
 PC_PlayChoosePCSound:
 	ld de, SFX_CHOOSE_PC_OPTION
@@ -183,13 +181,12 @@ PC_PlaySwapItemsSound:
 	ld de, SFX_SWITCH_POKEMON
 	call PC_WaitPlaySFX
 	ld de, SFX_SWITCH_POKEMON
-
+	; fallthrough
 PC_WaitPlaySFX:
 	push de
 	call WaitSFX
 	pop de
-	call PlaySFX
-	ret
+	jp PlaySFX
 
 _PlayersHousePC:
 	call PC_PlayBootSound
@@ -219,10 +216,6 @@ _PlayersPC:
 	ld [wWhichIndexSet], a
 	ld hl, PlayersPCAskWhatDoText
 	call PC_DisplayTextWaitMenu
-	call .PlayersPC
-	call ExitMenu
-	ret
-.PlayersPC:
 	xor a
 	ld [wPCItemsCursor], a
 	ld [wPCItemsScrollPosition], a
@@ -234,12 +227,12 @@ _PlayersPC:
 	jr c, .turn_off
 	call MenuJumptable
 	jr nc, .loop
-	jr .done
+	jr .exit_menu
 .turn_off
 	xor a
-.done
+.exit_menu
 	call ExitMenu
-	ret
+	jp ExitMenu
 
 PlayersPCMenuData:
 	db MENU_BACKUP_TILES ; flags
@@ -307,10 +300,7 @@ PlayerWithdrawItemMenu:
 	farcall ClearPCItemScreen
 .loop
 	call PCItemsJoypad
-	jr c, .quit
-	call .Submenu
-	jr .loop
-.quit
+	jr nc, .Submenu
 	call CloseSubmenu
 	xor a
 	ret
@@ -323,16 +313,7 @@ PlayerWithdrawItemMenu:
 	; items without quantity are always ×1
 	ld a, 1
 	ld [wItemQuantityChange], a
-	jr .withdraw
-.askquantity
-	ld hl, .PlayersPCHowManyWithdrawText
-	call MenuTextbox
-	farcall SelectQuantityToToss
-	call ExitMenu
-	call ExitMenu
-	jr c, .done
 .withdraw
-	ld a, [wItemQuantityChange]
 	ld [wPCItemQuantityChange], a
 	ld a, [wCurItemQuantity]
 	ld [wPCItemQuantity], a
@@ -351,13 +332,20 @@ PlayerWithdrawItemMenu:
 	xor a
 	ldh [hBGMapMode], a
 	call ExitMenu
-	ret
+	jr .loop
 .PackFull:
 	ld hl, .PlayersPCNoRoomWithdrawText
 	call MenuTextboxBackup
-	ret
-.done
-	ret
+	jr .loop
+.askquantity
+	ld hl, .PlayersPCHowManyWithdrawText
+	call MenuTextbox
+	farcall SelectQuantityToToss
+	call ExitMenu
+	call ExitMenu
+	jr c, .loop
+	ld a, [wItemQuantityChange]
+	jr .withdraw
 .PlayersPCHowManyWithdrawText:
 	text_far _PlayersPCHowManyWithdrawText
 	text_end
@@ -396,8 +384,9 @@ PlayerLogOffMenu:
 	ret
 
 PlayerDepositItemMenu:
-	call .CheckItemsInBag
-	jr c, .nope
+	; CheckItemsInBag
+	farcall HasNoItems
+	jr c, .no_items
 	call DisableSpriteUpdates
 	call LoadStandardMenuHeader
 	farcall DepositSellInitPackBuffers
@@ -411,72 +400,32 @@ PlayerDepositItemMenu:
 	jr .loop
 .close
 	call CloseSubmenu
-.nope
-	xor a
-	ret
-.CheckItemsInBag:
-	farcall HasNoItems
-	ret nc
+	jr .nope
+.no_items
 	ld hl, .PlayersPCNoItemsText
 	call MenuTextboxBackup
 	scf
+.nope
+	xor a
 	ret
-.PlayersPCNoItemsText:
-	text_far _PlayersPCNoItemsText
-	text_end
 .TryDepositItem:
 	ld a, [wSpriteUpdatesEnabled]
 	push af
 	ld a, FALSE
 	ld [wSpriteUpdatesEnabled], a
-	farcall CheckItemMenu
-	ld a, [wItemAttributeValue]
-	ld hl, .dw
-	rst JumpTable
-	pop af
-	ld [wSpriteUpdatesEnabled], a
-	ret
-.dw
-; entries correspond to ITEMMENU_* constants
-	dw .tossable ; ITEMMENU_NOUSE
-	dw .no_toss
-	dw .no_toss
-	dw .no_toss
-	dw .tossable ; ITEMMENU_CURRENT
-	dw .tossable ; ITEMMENU_PARTY
-	dw .tossable ; ITEMMENU_CLOSE
-.no_toss
-	ret
-.tossable
+	; tossable
 	ld a, [wPCItemQuantityChange]
 	push af
 	ld a, [wPCItemQuantity]
 	push af
-	call .DepositItem
-	pop af
-	ld [wPCItemQuantity], a
-	pop af
-	ld [wPCItemQuantityChange], a
-	ret
-.DepositItem:
+	; DepositItem
 	farcall _CheckTossableItem
 	ld a, [wItemAttributeValue]
 	and a
 	jr z, .AskQuantity
 	ld a, 1
 	ld [wItemQuantityChange], a
-	jr .ContinueDeposit
-.AskQuantity:
-	ld hl, .PlayersPCHowManyDepositText
-	call MenuTextbox
-	farcall SelectQuantityToToss
-	push af
-	call ExitMenu
-	call ExitMenu
-	pop af
-	jr c, .DeclinedToDeposit
-.ContinueDeposit:
-	ld a, [wItemQuantityChange]
+.ContinueDeposit
 	ld [wPCItemQuantityChange], a
 	ld a, [wCurItemQuantity]
 	ld [wPCItemQuantity], a
@@ -492,14 +441,35 @@ PlayerDepositItemMenu:
 	predef PartyMonItemName
 	ld hl, .PlayersPCDepositItemsText
 	call PrintText
+.DepositItem_end
+	pop af
+	ld [wPCItemQuantity], a
+	pop af
+	ld [wPCItemQuantityChange], a
+	pop af
+	ld [wSpriteUpdatesEnabled], a
 	ret
+.AskQuantity:
+	ld hl, .PlayersPCHowManyDepositText
+	call MenuTextbox
+	farcall SelectQuantityToToss
+	push af
+	call ExitMenu
+	call ExitMenu
+	pop af
+	jr c, .DeclinedToDeposit
+	ld a, [wItemQuantityChange]
+	jr .ContinueDeposit
 .NoRoomInPC:
 	ld hl, .PlayersPCNoRoomDepositText
 	call PrintText
-	ret
+	jr .DepositItem_end
 .DeclinedToDeposit:
 	and a
-	ret
+	jr .DepositItem_end
+.PlayersPCNoItemsText:
+	text_far _PlayersPCNoItemsText
+	text_end
 .PlayersPCHowManyDepositText:
 	text_far _PlayersPCHowManyDepositText
 	text_end
@@ -594,8 +564,7 @@ PCItemsJoypad:
 
 PC_DisplayText:
 	call MenuTextbox
-	call ExitMenu
-	ret
+	jp ExitMenu
 
 PokecenterPCTurnOnText:
 	text_far _PokecenterPCTurnOnText

@@ -399,9 +399,6 @@ UseItem:
 .dw
 ; entries correspond to ITEMMENU_* constants
 	dw .Oak     ; ITEMMENU_NOUSE
-	dw .Oak
-	dw .Oak
-	dw .Oak
 	dw .Current ; ITEMMENU_CURRENT
 	dw .Party   ; ITEMMENU_PARTY
 	dw .Field   ; ITEMMENU_CLOSE
@@ -672,9 +669,6 @@ TMHMSubmenu:
 .ItemFunctionJumptable:
 ; entries correspond to ITEMMENU_* constants
 	dw .Oak         ; ITEMMENU_NOUSE
-	dw .Oak
-	dw .Oak
-	dw .Oak
 	dw .Unused      ; ITEMMENU_CURRENT
 	dw .BattleField ; ITEMMENU_PARTY
 	dw .BattleOnly  ; ITEMMENU_CLOSE

@@ -31,8 +31,7 @@ MartDialog:
 	ld [wMartType], a
 	xor a ; STANDARDMART_HOWMAYIHELPYOU
 	ld [wMartJumptableIndex], a
-	call StandardMart
-	ret
+	jp StandardMart
 
 HerbShop:
 	call FarReadMart
@@ -41,8 +40,7 @@ HerbShop:
 	call MartTextbox
 	call BuyMenu
 	ld hl, HerbalLadyComeAgainText
-	call MartTextbox
-	ret
+	jp MartTextbox
 
 BargainShop:
 	ld b, BANK(BargainShopData)
@@ -61,8 +59,7 @@ BargainShop:
 	set DAILYFLAGS1_GOLDENROD_UNDERGROUND_BARGAIN_F, [hl]
 .skip_set
 	ld hl, BargainShopComeAgainText
-	call MartTextbox
-	ret
+	jp MartTextbox
 
 Pharmacist:
 	call FarReadMart
@@ -71,8 +68,7 @@ Pharmacist:
 	call MartTextbox
 	call BuyMenu
 	ld hl, PharmacyComeAgainText
-	call MartTextbox
-	ret
+	jp MartTextbox
 
 RooftopSale:
 	ld b, BANK(RooftopSaleMart1)
@@ -90,8 +86,7 @@ RooftopSale:
 	call MartTextbox
 	call BuyMenu
 	ld hl, MartComeAgainText
-	call MartTextbox
-	ret
+	jp MartTextbox
 
 INCLUDE "data/items/rooftop_sale.asm"
 
@@ -228,13 +223,11 @@ FarReadMart:
 	ld a, [de]
 	inc de
 	cp -1
-	jr z, .done
+	ret z
 	push de
 	call GetMartItemPrice
 	pop de
 	jr .ReadMartItem
-.done
-	ret
 
 GetMartItemPrice:
 ; Return the price of item a in BCD at hl and in tiles at wStringBuffer1.
@@ -242,7 +235,7 @@ GetMartItemPrice:
 	ld [wCurItem], a
 	farcall GetItemPrice
 	pop hl
-
+	; fallthrough
 GetMartPrice:
 ; Return price de in BCD at hl and in tiles at wStringBuffer1.
 	push hl
@@ -678,29 +671,7 @@ SellMenu:
 	ld a, [wPackUsedItem]
 	and a
 	jp z, .quit
-	call .TryToSellItem
-	jr .loop
-.quit
-	call ReturnToMapWithSpeechTextbox
-	and a
-	ret
-.TryToSellItem:
-	farcall CheckItemMenu
-	ld a, [wItemAttributeValue]
-	ld hl, .dw
-	rst JumpTable
-	ret
-.dw
-	dw .try_sell
-	dw .cant_buy
-	dw .cant_buy
-	dw .cant_buy
-	dw .try_sell
-	dw .try_sell
-	dw .try_sell
-.cant_buy
-	ret
-.try_sell
+	; TryToSellItem -> try_sell
 	farcall _CheckTossableItem
 	ld a, [wItemAttributeValue]
 	and a
@@ -708,7 +679,7 @@ SellMenu:
 	ld hl, MartCantBuyText
 	call PrintText
 	and a
-	ret
+	jr .loop
 .okay_to_sell
 	ld hl, MartSellHowManyText
 	call PrintText
@@ -740,6 +711,10 @@ SellMenu:
 	call JoyWaitAorB
 .declined
 	call ExitMenu
+	and a
+	jp .loop
+.quit
+	call ReturnToMapWithSpeechTextbox
 	and a
 	ret
 

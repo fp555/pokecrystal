@@ -1,8 +1,7 @@
 SelectQuantityToToss:
 	ld hl, TossItem_MenuHeader
 	call LoadMenuHeader
-	call Toss_Sell_Loop
-	ret
+	jr Toss_Sell_Loop
 
 SelectQuantityToBuy:
 	farcall GetItemPrice
@@ -13,8 +12,7 @@ RooftopSale_SelectQuantityToBuy:
 	ld [wBuySellItemPrice + 1], a
 	ld hl, BuyItem_MenuHeader
 	call LoadMenuHeader
-	call Toss_Sell_Loop
-	ret
+	jr Toss_Sell_Loop
 
 SelectQuantityToSell:
 	farcall GetItemPrice
@@ -24,9 +22,7 @@ SelectQuantityToSell:
 	ld [wBuySellItemPrice + 1], a
 	ld hl, SellItem_MenuHeader
 	call LoadMenuHeader
-	call Toss_Sell_Loop
-	ret
-
+	; fallthrough
 Toss_Sell_Loop:
 	ld a, 1
 	ld [wItemQuantityChange], a
@@ -38,7 +34,6 @@ Toss_Sell_Loop:
 	jr nz, .nope ; pressed B
 	scf
 	ret
-
 .nope
 	and a
 	ret
@@ -59,28 +54,23 @@ BuySellToss_InterpretJoypad:
 	jr nz, .right
 	and a
 	ret
-
 .b
 	ld a, -1
 	scf
 	ret
-
 .a
 	ld a, 0
 	scf
 	ret
-
 .down
 	ld hl, wItemQuantityChange
 	dec [hl]
 	jr nz, .finish_down
 	ld a, [wItemQuantity]
 	ld [hl], a
-
 .finish_down
 	and a
 	ret
-
 .up
 	ld hl, wItemQuantityChange
 	inc [hl]
@@ -88,26 +78,21 @@ BuySellToss_InterpretJoypad:
 	cp [hl]
 	jr nc, .finish_up
 	ld [hl], 1
-
 .finish_up
 	and a
 	ret
-
 .left
 	ld a, [wItemQuantityChange]
 	sub 10
 	jr c, .load_1
 	jr z, .load_1
 	jr .finish_left
-
 .load_1
 	ld a, 1
-
 .finish_left
 	ld [wItemQuantityChange], a
 	and a
 	ret
-
 .right
 	ld a, [wItemQuantityChange]
 	add 10
@@ -116,7 +101,6 @@ BuySellToss_InterpretJoypad:
 	cp b
 	jr nc, .finish_right
 	ld b, a
-
 .finish_right
 	ld a, b
 	ld [wItemQuantityChange], a
@@ -138,8 +122,7 @@ BuySellToss_UpdateQuantityDisplay:
 	ld a, [wMenuDataPointer + 1]
 	ld d, a
 	ld a, [wMenuDataBank]
-	call FarCall_de
-	ret
+	jp FarCall_de
 
 NoPriceToDisplay:
 ; Does nothing.
@@ -147,14 +130,12 @@ NoPriceToDisplay:
 
 DisplayPurchasePrice:
 	call BuySell_MultiplyPrice
-	call BuySell_DisplaySubtotal
-	ret
+	jr BuySell_DisplaySubtotal
 
 DisplaySellingPrice:
 	call BuySell_MultiplyPrice
 	call Sell_HalvePrice
-	call BuySell_DisplaySubtotal
-	ret
+	jr BuySell_DisplaySubtotal
 
 BuySell_MultiplyPrice:
 	xor a
@@ -199,8 +180,7 @@ BuySell_DisplaySubtotal:
 	ld de, hMoneyTemp
 	lb bc, PRINTNUM_MONEY | 3, 6
 	call PrintNum
-	call WaitBGMap
-	ret
+	jp WaitBGMap
 
 TossItem_MenuHeader:
 	db MENU_BACKUP_TILES ; flags

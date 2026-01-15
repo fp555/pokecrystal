@@ -81,7 +81,11 @@ LoadPartyMenuMonIconColors:
 	ld a, d
 .ok
 	ld [hl], a ; bottom left
-	jr _FinishMenuMonIconColor
+	pop af
+	pop bc
+	pop de
+	pop hl
+	ret
 
 _ApplyMenuMonIconColor:
 	ld c, 4
@@ -91,8 +95,6 @@ _ApplyMenuMonIconColor:
 	add hl, de
 	dec c
 	jr nz, .loop
-	; fallthrough
-_FinishMenuMonIconColor:
 	pop af
 	pop bc
 	pop de
@@ -126,12 +128,6 @@ LoadMenuMonIcon:
 	push hl
 	push de
 	push bc
-	call .LoadIcon
-	pop bc
-	pop de
-	pop hl
-	ret
-.LoadIcon:
 	ld d, 0
 	ld hl, .Jumptable
 	add hl, de
@@ -139,7 +135,11 @@ LoadMenuMonIcon:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	jp hl
+	rst CallHL
+	pop bc
+	pop de
+	pop hl
+	ret
 .Jumptable:
 ; entries correspond to MONICON_* constants
 	dw PartyMenu_InitAnimatedMonIcon    ; MONICON_PARTYMENU
@@ -188,10 +188,7 @@ Mobile_InitPartyMenuBGPal71:
 
 PartyMenu_InitAnimatedMonIcon:
 	call InitPartyMenuIcon
-	call .SpawnItemIcon
-	call SetPartyMonIconAnimSpeed
-	ret
-.SpawnItemIcon:
+	; SpawnItemIcon
 	push bc
 	ldh a, [hObjectStructIndex]
 	ld hl, wPartyMon1Item
@@ -200,7 +197,7 @@ PartyMenu_InitAnimatedMonIcon:
 	pop bc
 	ld a, [hl]
 	and a
-	ret z
+	jr z, SetPartyMonIconAnimSpeed
 	push hl
 	push bc
 	ld d, a
@@ -209,14 +206,41 @@ PartyMenu_InitAnimatedMonIcon:
 	pop hl
 	jr c, .mail
 	ld a, SPRITE_ANIM_FRAMESET_PARTY_MON_WITH_ITEM
-	jr .okay
+	jr .got_frameset
 .mail
 	ld a, SPRITE_ANIM_FRAMESET_PARTY_MON_WITH_MAIL
-.okay
+.got_frameset
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
 	ld [hl], a
+	; fallthrough
+SetPartyMonIconAnimSpeed:
+	push bc
+	ldh a, [hObjectStructIndex]
+	ld b, a
+	; getspeed
+	farcall PlacePartymonHPBar
+	call GetHPPal
+	ld e, d
+	ld d, 0
+	ld hl, .speeds
+	add hl, de
+	ld b, [hl]
+	ld a, b
+	pop bc
+	ld hl, SPRITEANIMSTRUCT_DURATIONOFFSET
+	add hl, bc
+	ld [hl], a
+	rlca
+	rlca
+	ld hl, SPRITEANIMSTRUCT_VAR2
+	add hl, bc
+	ld [hl], a
 	ret
+.speeds
+	db $00 ; HP_GREEN
+	db $40 ; HP_YELLOW
+	db $80 ; HP_RED
 
 InitPartyMenuIcon:
 	call LoadPartyMenuMonIconColors
@@ -249,36 +273,6 @@ InitPartyMenuIcon:
 	add hl, bc
 	ld [hl], a
 	ret
-
-SetPartyMonIconAnimSpeed:
-	push bc
-	ldh a, [hObjectStructIndex]
-	ld b, a
-	call .getspeed
-	ld a, b
-	pop bc
-	ld hl, SPRITEANIMSTRUCT_DURATIONOFFSET
-	add hl, bc
-	ld [hl], a
-	rlca
-	rlca
-	ld hl, SPRITEANIMSTRUCT_VAR2
-	add hl, bc
-	ld [hl], a
-	ret
-.getspeed
-	farcall PlacePartymonHPBar
-	call GetHPPal
-	ld e, d
-	ld d, 0
-	ld hl, .speeds
-	add hl, de
-	ld b, [hl]
-	ret
-.speeds
-	db $00 ; HP_GREEN
-	db $40 ; HP_YELLOW
-	db $80 ; HP_RED
 
 NamingScreen_InitAnimatedMonIcon:
 	ld hl, wTempMonDVs
@@ -320,8 +314,7 @@ Trade_LoadMonIconGFX:
 	ld [wCurIcon], a
 	ld a, $62
 	ld [wCurIconTile], a
-	call GetMemIconGFX
-	ret
+	jr GetMemIconGFX
 
 GetSpeciesIcon:
 ; Load species icon into VRAM at tile a
@@ -334,8 +327,7 @@ GetSpeciesIcon:
 	ld [wCurIcon], a
 	pop de
 	ld a, e
-	call GetIconGFX
-	ret
+	jr GetIconGFX
 
 FlyFunction_GetMonIcon:
 	push de

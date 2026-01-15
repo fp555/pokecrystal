@@ -32,8 +32,7 @@ AI_SwitchOrTryItem:
 	jp nz, SwitchSometimes
 	; fallthrough
 DontSwitch:
-	call AI_TryItem
-	ret
+	jp AI_TryItem
 
 SwitchOften:
 	callfar CheckAbleToSwitch
@@ -643,6 +642,7 @@ EnemyWithdrewText:
 	text_end
 
 AI_HealStatus:
+; BUG: AI use of Full Heal or Full Restore does not cure Attack or Speed drops from burn or paralysis (see docs/bugs_and_glitches.md)
 	ld a, [wCurOTMon]
 	ld hl, wOTPartyMon1Status
 	ld bc, PARTYMON_STRUCT_LENGTH

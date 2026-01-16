@@ -22,5 +22,6 @@ SwitchSpeed:
 	ldh [rIE], a
 	ld a, JOYP_GET_NONE
 	ldh [rJOYP], a
-	stop ; rgbasm adds a nop after this instruction by default
+	stop
+	nop
 	ret

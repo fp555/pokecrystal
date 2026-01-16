@@ -1,18 +1,17 @@
 Reset::
-	di
+	; interrupts should still be enabled here
 	call InitSound
 	xor a
 	ldh [hMapAnims], a
 	call ClearPalettes
-	xor a
-	ldh [rIF], a
-	ld a, IE_VBLANK
-	ldh [rIE], a
-	ei
 	ld hl, wJoypadDisable
 	set JOYPAD_DISABLE_SGB_TRANSFER_F, [hl]
-	ld c, 32
+	ld c, 3
 	call DelayFrames
+	; return to normal speed as it is immediately after boot
+	call NormalSpeed
+	; reset the stack pointer to the default value (in HRAM)
+	ld sp, $FFFE
 	jr Init
 
 _Start::
@@ -43,9 +42,9 @@ Init::
 	ldh [rOBP0], a
 	ldh [rOBP1], a
 	ldh [rTMA], a
-	ldh [rTAC], a
+	ldh [rTAC], a ; TAC_STOP
 	ld [wBetaTitleSequenceOpeningType], a
-	ld a, %100 ; Start timer at 4096Hz
+	ld a, TAC_START | TAC_4KHZ
 	ldh [rTAC], a
 .wait
 	ldh a, [rLY]
@@ -61,6 +60,7 @@ Init::
 	ld hl, STARTOF(WRAM0)
 	ld bc, SIZEOF(WRAM0)
 	call ByteFill
+	; move the stack into WRAM
 	ld sp, wStackTop
 	; Clear HRAM
 	ldh a, [hCGB]

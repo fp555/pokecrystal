@@ -21,8 +21,7 @@ _ResetClock:
 	ld [sRTCStatusFlags], a
 	call CloseSRAM
 	ld hl, .AskResetText
-	call PrintText
-	ret
+	jp PrintText
 .AskResetText:
 	text_far _AskResetText
 	text_end

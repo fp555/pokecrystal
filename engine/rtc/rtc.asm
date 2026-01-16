@@ -7,8 +7,7 @@ StartRTC:
 	ld a, [rRTCREG]
 	res B_RAMB_RTC_DH_HALT, a
 	ld [rRTCREG], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 GetTimeOfDay::
 ; get time of day based on the current hour
@@ -65,18 +64,15 @@ SaveRTC:
 	ld [rRAMB], a
 	xor a
 	ld [sRTCStatusFlags], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 StartClock::
 	call GetClock
 	call _FixDays
 	call FixDays
-	jr nc, .skip_set
+	jp nc, StartRTC
 	call RecordRTCStatus
-.skip_set
-	call StartRTC
-	ret
+	jp StartRTC
 
 _FixDays:
 	ld hl, hRTCDayHi
@@ -88,8 +84,7 @@ _FixDays:
 	ret
 .reset_rtc
 	ld a, RTC_RESET
-	call RecordRTCStatus
-	ret
+	jp RecordRTCStatus
 
 ClockContinue:
 	call CheckRTCStatus
@@ -116,8 +111,7 @@ ClockContinue:
 	ld a, [s5_b2fa]
 	inc a
 	ld [s5_b2fa], a
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 .dont_update
 	xor a
 	ret

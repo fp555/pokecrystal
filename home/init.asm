@@ -1,18 +1,14 @@
 Reset::
-	di
+	; interrupts should still be enabled here
 	call InitSound
 	xor a
 	ldh [hMapAnims], a
 	call ClearPalettes
-	xor a
-	ldh [rIF], a
-	ld a, IE_VBLANK
-	ldh [rIE], a
-	ei
 	ld hl, wJoypadDisable
 	set JOYPAD_DISABLE_SGB_TRANSFER_F, [hl]
-	ld c, 32
+	ld c, 3
 	call DelayFrames
+	call NormalSpeed
 	jr Init
 
 _Start::

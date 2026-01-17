@@ -1790,8 +1790,8 @@ EscapeRopeEffect:
 	farcall EscapeRopeFunction
 	ld a, [wItemEffectSucceeded]
 	cp 1
-	call z, UseDisposableItem
-	ret
+	ret nz
+	jp UseDisposableItem
 
 RepelEffect:
 	ld a, [wRepelEffect]
@@ -1799,6 +1799,7 @@ RepelEffect:
 	ld hl, .RepelUsedEarlierIsStillInEffectText
 	jp nz, PrintText
 	ld a, [wCurItem]
+	ld [wRepelType], a
 	ld b, a
 	farcall GetItemHeldEffect
 	; n. of steps (param) is in c
@@ -2232,7 +2233,7 @@ OpenBox:
 	farcall SetSpecificDecorationFlag
 	ld hl, .SentTrophyHomeText
 	call PrintText
-	jp UseDisposableItem
+	jr UseDisposableItem
 .SentTrophyHomeText:
 	text_far _SentTrophyHomeText
 	text_end

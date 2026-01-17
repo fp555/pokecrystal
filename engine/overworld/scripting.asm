@@ -321,8 +321,7 @@ Script_writetext:
 	ld h, a
 	ld a, [wScriptBank]
 	ld b, a
-	call MapTextbox
-	ret
+	jp MapTextbox
 
 Script_farwritetext:
 	call GetScriptByte
@@ -755,9 +754,8 @@ Script_cry:
 	call GetScriptByte
 	pop af
 	and a
-	jr nz, .ok
+	jp nz, PlayMonCry
 	ld a, [wScriptVar]
-.ok
 	jp PlayMonCry
 
 GetScriptObject:
@@ -1117,7 +1115,7 @@ Script_catchtutorial:
 	ld [wBattleType], a
 	call BufferScreen
 	farcall CatchTutorial
-	jp Script_reloadmap
+	jr Script_reloadmap
 
 Script_reloadmapafterbattle:
 	ld hl, wBattleScriptFlags
@@ -1134,17 +1132,15 @@ Script_reloadmapafterbattle:
 	bit BATTLESCRIPT_WILD_F, d
 	jr z, .was_wild
 	farcall MomTriesToBuySomething
-	jr .done
+	jr Script_reloadmap
 .was_wild
 	ld a, [wBattleResult]
 	bit BATTLERESULT_BOX_FULL, a
-	jr z, .done
+	jr z, Script_reloadmap
 	ld b, BANK(Script_SpecialBillCall)
 	ld de, Script_SpecialBillCall
 	farcall LoadMemScript
-.done
-	jp Script_reloadmap
-
+	; fallthrough
 Script_reloadmap:
 	xor a
 	ld [wBattleScriptFlags], a
@@ -1489,7 +1485,7 @@ CopyConvertedText:
 
 Script_getitemname:
 	call GetScriptByte
-	and a ; USE_SCRIPT_VAR
+	and a ; USE_SCRIPT_VAR?
 	jr nz, .ok
 	ld a, [wScriptVar]
 .ok
@@ -1648,14 +1644,16 @@ Script_takeitem:
 	ret
 
 Script_checkitem:
-	xor a
-	ld [wScriptVar], a
 	call GetScriptByte
+	and a ; USE_SCRIPT_VAR?
+	jr nz, .itemid
+	ld a, [wScriptVar]
+.itemid
 	ld [wCurItem], a
 	ld hl, wNumItems
 	call CheckItem
-	ret nc
-	ld a, TRUE
+	sbc a ; if carry $ff, else 0
+	and 1 ; $ff becomes 1, 0 stays 0
 	ld [wScriptVar], a
 	ret
 

@@ -3099,7 +3099,7 @@ wPlayerMonSelection:: ds 3
 wdc5f:: db
 wdc60:: db
 
-	ds 44
+	ds 43
 
 wStepCount:: db
 wPoisonStepCount:: db
@@ -3115,6 +3115,7 @@ wLuckyNumberShowFlag:: db
 wLuckyIDNumber:: dw
 
 wRepelEffect:: db ; If a Repel is in use, it contains the nr of steps it's still active
+wRepelType:: db ; for automatic reuse
 wBikeStep:: dw
 wKurtApricornQuantity:: db
 

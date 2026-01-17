@@ -11,7 +11,7 @@ defaults:
 
 jobs:
   build_matrix:
-    runs-on: ubuntu-latest   
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
@@ -26,6 +26,7 @@ jobs:
     steps:
       - name: Install packages
         run: |
+            sudo apt update
             sudo apt install -y libpng-dev
       - name: Checkout rgbds
         uses: actions/checkout@v4

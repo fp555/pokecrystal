@@ -32,6 +32,7 @@ RadioTower1FLuckyNumberManScript:
 	writetext RadioTower1FLuckyNumberManAskToPlayText
 	promptbutton
 	checkflag ENGINE_LUCKY_NUMBER_SHOW
+	iftrue .skip
 	special ResetLuckyNumberShowFlag
 .skip
 	special PrintTodaysLuckyNumber

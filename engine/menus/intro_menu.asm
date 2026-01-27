@@ -257,7 +257,7 @@ InitializeNPCNames:
 InitializeWorld:
 	call ShrinkPlayer
 	farcall SpawnPlayer
-	farcall _InitializeStartDay
+	farcall InitializeStartDay
 	farcall InitializeEvents
 	ret
 
@@ -826,7 +826,6 @@ Intro_PlacePlayerSprite:
 	const TITLESCREENOPTION_MAIN_MENU
 	const TITLESCREENOPTION_DELETE_SAVE_DATA
 	const TITLESCREENOPTION_RESTART
-	const TITLESCREENOPTION_UNUSED
 	const TITLESCREENOPTION_RESET_CLOCK
 DEF NUM_TITLESCREENOPTIONS EQU const_value
 
@@ -840,7 +839,7 @@ StartTitleScreen:
 	push af
 	ld a, BANK(wLYOverrides)
 	ldh [rWBK], a
-	call .TitleScreen
+	farcall _TitleScreen
 	call DelayFrame
 .loop
 	call RunTitleScreen
@@ -865,10 +864,7 @@ StartTitleScreen:
 	call GetSGBLayout
 	call UpdateTimePals
 	ld a, [wTitleScreenSelectedOption]
-	cp NUM_TITLESCREENOPTIONS
-	jr c, .ok
-	xor a
-.ok
+	maskbits NUM_TITLESCREENOPTIONS
 	ld e, a
 	ld d, 0
 	ld hl, .dw
@@ -882,11 +878,7 @@ StartTitleScreen:
 	dw Intro_MainMenu
 	dw DeleteSaveData
 	dw IntroSequence
-	dw IntroSequence
 	dw ResetClock
-.TitleScreen:
-	farcall _TitleScreen
-	ret
 
 RunTitleScreen:
 	ld a, [wJumptableIndex]
@@ -1004,13 +996,14 @@ TitleScreenMain:
 	; Press Start or A to start the game.
 	ld a, [hl]
 	and PAD_START | PAD_A
-	jr nz, .incave
-	ret
-.incave
+	ret z
 	ld a, TITLESCREENOPTION_MAIN_MENU
 	jr .done
 .delete_save_data
 	ld a, TITLESCREENOPTION_DELETE_SAVE_DATA
+	jr .done
+.reset_clock
+	ld a, TITLESCREENOPTION_RESET_CLOCK
 .done
 	ld [wTitleScreenSelectedOption], a
 	; Return to the intro sequence.
@@ -1029,13 +1022,6 @@ TitleScreenMain:
 	ld [hl], 8 ; 1 second
 	ld hl, wTitleScreenTimer
 	inc [hl]
-	ret
-.reset_clock
-	ld a, TITLESCREENOPTION_RESET_CLOCK
-	ld [wTitleScreenSelectedOption], a
-	; Return to the intro sequence.
-	ld hl, wJumptableIndex
-	set JUMPTABLE_EXIT_F, [hl]
 	ret
 
 TitleScreenEnd:

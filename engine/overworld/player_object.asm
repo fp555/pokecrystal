@@ -51,8 +51,6 @@ SpawnPlayer:
 
 PlayerObjectTemplate:
 ; A dummy map object used to initialize the player object.
-; Shorter than the actual amount copied by two bytes.
-; Said bytes seem to be unused.
 	object_event -4, -4, SPRITE_CHRIS, SPRITEMOVEDATA_PLAYER, 15, 15, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, 0, -1
 
 CopyDECoordsToMapObject::
@@ -77,8 +75,7 @@ PlayerSpawn_ConvertCoords:
 	add 4
 	ld e, a
 	pop bc
-	call CopyDECoordsToMapObject
-	ret
+	jr CopyDECoordsToMapObject
 
 WriteObjectXY::
 	ld a, b
@@ -381,32 +378,7 @@ CopyTempObjectToObjectStruct:
 	or [hl]
 	ld [hl], a
 	ld a, [wTempObjectCopyY]
-	call .InitYCoord
-	ld a, [wTempObjectCopyX]
-	call .InitXCoord
-	ld a, [wTempObjectCopySprite]
-	ld hl, OBJECT_SPRITE
-	add hl, de
-	ld [hl], a
-	ld a, [wTempObjectCopySpriteVTile]
-	ld hl, OBJECT_SPRITE_TILE
-	add hl, de
-	ld [hl], a
-	ld hl, OBJECT_STEP_TYPE
-	add hl, de
-	ld [hl], STEP_TYPE_RESET
-	ld hl, OBJECT_FACING
-	add hl, de
-	ld [hl], STANDING
-	ld a, [wTempObjectCopyRadius]
-	call .InitRadius
-	ld a, [wTempObjectCopyRange]
-	ld hl, OBJECT_RANGE
-	add hl, de
-	ld [hl], a
-	and a
-	ret
-.InitYCoord:
+	; InitYCoord
 	ld hl, OBJECT_INIT_Y
 	add hl, de
 	ld [hl], a
@@ -422,8 +394,8 @@ CopyTempObjectToObjectStruct:
 	ld hl, OBJECT_SPRITE_Y
 	add hl, de
 	ld [hl], a
-	ret
-.InitXCoord:
+	ld a, [wTempObjectCopyX]
+	; InitXCoord
 	ld hl, OBJECT_INIT_X
 	add hl, de
 	ld [hl], a
@@ -439,8 +411,22 @@ CopyTempObjectToObjectStruct:
 	ld hl, OBJECT_SPRITE_X
 	add hl, de
 	ld [hl], a
-	ret
-.InitRadius:
+	ld a, [wTempObjectCopySprite]
+	ld hl, OBJECT_SPRITE
+	add hl, de
+	ld [hl], a
+	ld a, [wTempObjectCopySpriteVTile]
+	ld hl, OBJECT_SPRITE_TILE
+	add hl, de
+	ld [hl], a
+	ld hl, OBJECT_STEP_TYPE
+	add hl, de
+	ld [hl], STEP_TYPE_RESET
+	ld hl, OBJECT_FACING
+	add hl, de
+	ld [hl], STANDING
+	ld a, [wTempObjectCopyRadius]
+	; InitRadius
 	ld h, a
 	inc a
 	and $f
@@ -452,6 +438,11 @@ CopyTempObjectToObjectStruct:
 	ld hl, OBJECT_RADIUS
 	add hl, de
 	ld [hl], a
+	ld a, [wTempObjectCopyRange]
+	ld hl, OBJECT_RANGE
+	add hl, de
+	ld [hl], a
+	and a
 	ret
 
 TrainerWalkToPlayer:
@@ -466,12 +457,7 @@ TrainerWalkToPlayer:
 	ld b, a
 	ld c, PLAYER
 	ld d, 1
-	call .GetPathToPlayer
-	call DecrementMovementBufferCount
-.TerminateStep:
-	ld a, movement_step_end
-	jp AppendToMovementBuffer
-.GetPathToPlayer:
+	; GetPathToPlayer
 	push de
 	push bc
 	; get player object struct, load to de
@@ -508,7 +494,11 @@ TrainerWalkToPlayer:
 	ld e, [hl]
 	ld d, a
 	pop af
-	jp ComputePathToWalkToPlayer
+	call ComputePathToWalkToPlayer
+	call DecrementMovementBufferCount
+.TerminateStep:
+	ld a, movement_step_end
+	jp AppendToMovementBuffer
 
 SurfStartStep:
 	ld a, [wPlayerDirection]
@@ -701,17 +691,7 @@ GetRelativeFacing::
 	ret
 
 QueueFollowerFirstStep:
-	call .QueueFirstStep
-	jr c, .same
-	ld [wFollowMovementQueue], a
-	xor a
-	ld [wFollowerMovementQueueLength], a
-	ret
-.same
-	ld a, -1
-	ld [wFollowerMovementQueueLength], a
-	ret
-.QueueFirstStep:
+	; QueueFirstStep
 	ld a, [wObjectFollow_Leader]
 	call GetObjectStruct
 	ld hl, OBJECT_MAP_X
@@ -730,11 +710,20 @@ QueueFollowerFirstStep:
 	jr c, .left
 	and a
 	ld a, movement_step + RIGHT
+.done
+	jr c, .same
+	ld [wFollowMovementQueue], a
+	xor a
+	ld [wFollowerMovementQueueLength], a
+	ret
+.same
+	ld a, -1
+	ld [wFollowerMovementQueueLength], a
 	ret
 .left
 	and a
 	ld a, movement_step + LEFT
-	ret
+	jr .done
 .check_y
 	ld hl, OBJECT_MAP_Y
 	add hl, bc
@@ -744,11 +733,11 @@ QueueFollowerFirstStep:
 	jr c, .up
 	and a
 	ld a, movement_step + DOWN
-	ret
+	jr .done
 .up
 	and a
 	ld a, movement_step + UP
-	ret
+	jr .done
 .same_xy
 	scf
-	ret
+	jr .done

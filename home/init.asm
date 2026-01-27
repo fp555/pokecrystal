@@ -43,7 +43,6 @@ Init::
 	ldh [rOBP1], a
 	ldh [rTMA], a
 	ldh [rTAC], a ; TAC_STOP
-	ld [wBetaTitleSequenceOpeningType], a
 	ld a, TAC_START | TAC_4KHZ
 	ldh [rTAC], a
 .wait

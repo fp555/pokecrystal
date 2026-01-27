@@ -1731,11 +1731,8 @@ wDaysSince:: db
 
 SECTION "WRAM 1", WRAMX
 
-wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION
-
-wBetaTitleSequenceOpeningType::
-; This selected the title screen animation (fire/notes) in pokegold-spaceworld.
-	db
+; a $540-byte buffer that continues past this SECTION
+wGBCOnlyDecompressBuffer:: db
 
 wDefaultSpawnpoint:: db
 
@@ -3070,7 +3067,7 @@ wDailyResetTimer:: dw
 wDailyFlags1:: db
 wDailyFlags2:: db
 wSwarmFlags:: db
-wUnusedDailyFlag:: db
+	ds 1
 wTimerEventStartDay:: db
 
 wFruitTreeFlags:: flag_array NUM_FRUIT_TREES
@@ -3080,10 +3077,9 @@ wLuckyNumberDayTimer:: dw
 wSpecialPhoneCallID:: db
 	ds 3
 wBugContestStartTime:: ds 4 ; day, hour, min, sec
-wUnusedTwoDayTimerOn:: db
-wUnusedTwoDayTimer:: db
-wUnusedTwoDayTimerStartDate:: db
-	ds 4
+
+	ds 7
+
 wMobileOrCable_LastSelection:: db
 wdc41:: ds 1
 wdc42:: ds 8

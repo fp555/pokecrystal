@@ -1,18 +1,13 @@
-_InitializeStartDay:
-	call InitializeStartDay
-	ret
-
 ClearDailyTimers:
 	xor a
 	ld [wLuckyNumberDayTimer], a
-	ld [wUnusedTwoDayTimer], a
 	ld [wDailyResetTimer], a
 	ret
 
 InitCallReceiveDelay::
 	xor a
 	ld [wTimeCyclesSinceLastCall], a
-
+	; fallthrough
 NextCallReceiveDelay:
 	ld a, [wTimeCyclesSinceLastCall]
 	cp 3
@@ -57,41 +52,50 @@ CheckReceiveCallTimer:
 
 InitOneDayCountdown:
 	ld a, 1
-
-InitNDaysCountdown:
 	ld [hl], a
 	push hl
 	call UpdateTime
 	pop hl
 	inc hl
-	call CopyDayToHL
-	ret
+	jp CopyDayToHL
 
 CheckDayDependentEventHL:
 	inc hl
 	push hl
-	call CalcDaysSince
-	call GetDaysSince
+	xor a
+	call _CalcDaysSince
+	ld a, [wDaysSince]
 	pop hl
 	dec hl
-	call UpdateTimeRemaining
-	ret
+	jp UpdateTimeRemaining
 
 RestartReceiveCallDelay:
 	ld hl, wReceiveCallDelay_MinsRemaining
 	ld [hl], a
 	call UpdateTime
 	ld hl, wReceiveCallDelay_StartTime
-	call CopyDayHourMinToHL
-	ret
+	jp CopyDayHourMinToHL
 
 CheckReceiveCallDelay:
 	ld hl, wReceiveCallDelay_StartTime
-	call CalcMinsHoursDaysSince
-	call GetMinutesSinceIfLessThan60
+	inc hl
+	inc hl
+	xor a
+	call _CalcMinsHoursDaysSince
+	; GetMinutesSinceIfLessThan60
+	ld a, [wDaysSince]
+	and a
+	jr nz, .GetTimeElapsed_ExceedsUnitLimit
+	ld a, [wHoursSince]
+	and a
+	jr nz, .GetTimeElapsed_ExceedsUnitLimit
+	ld a, [wMinutesSince]
+	jr .got_minutes
+.GetTimeElapsed_ExceedsUnitLimit:
+	ld a, -1
+.got_minutes
 	ld hl, wReceiveCallDelay_MinsRemaining
-	call UpdateTimeRemaining
-	ret
+	jp UpdateTimeRemaining
 
 RestartDailyResetTimer:
 	ld hl, wDailyResetTimer
@@ -105,8 +109,7 @@ CheckDailyResetTimer::
 	ld hl, wDailyFlags1
 	ld [hli], a ; wDailyFlags1
 	ld [hli], a ; wDailyFlags2
-	ld [hli], a ; wSwarmFlags
-	ld [hl], a  ; wUnusedDailyFlag
+	ld [hl], a ; wSwarmFlags
 	ld [wLuckyNumberShowFlag], a
 	ld hl, wDailyRematchFlags
 rept 4
@@ -125,10 +128,9 @@ endr
 	and a
 	jr z, .RestartKenjiBreakCountdown
 	dec [hl]
-	jr nz, .DontRestartKenjiBreakCountdown
+	jr nz, RestartDailyResetTimer
 .RestartKenjiBreakCountdown:
 	call SampleKenjiBreakCountdown
-.DontRestartKenjiBreakCountdown:
 	jr RestartDailyResetTimer
 
 SampleKenjiBreakCountdown:
@@ -146,8 +148,7 @@ StartBugContestTimer:
 	ld [wBugContestSecsRemaining], a
 	call UpdateTime
 	ld hl, wBugContestStartTime
-	call CopyDayHourMinSecToHL
-	ret
+	jp CopyDayHourMinSecToHL
 
 CheckBugContestTimer::
 	ld hl, wBugContestStartTime
@@ -184,13 +185,13 @@ CheckBugContestTimer::
 InitializeStartDay:
 	call UpdateTime
 	ld hl, wTimerEventStartDay
-	call CopyDayToHL
-	ret
+	jp CopyDayToHL
 
 CheckPokerusTick::
 	ld hl, wTimerEventStartDay
-	call CalcDaysSince
-	call GetDaysSince
+	xor a
+	call _CalcDaysSince
+	ld a, [wDaysSince]
 	and a
 	jr z, .done ; not even a day has passed since game start
 	ld b, a
@@ -198,33 +199,6 @@ CheckPokerusTick::
 .done
 	xor a
 	ret
-
-CheckUnusedTwoDayTimer:
-	ld hl, wUnusedTwoDayTimerStartDate
-	call CalcDaysSince
-	call GetDaysSince
-	ld hl, wUnusedTwoDayTimer
-	call UpdateTimeRemaining
-	ret
-
-RestartLuckyNumberCountdown:
-	call .GetDaysUntilNextFriday
-	ld hl, wLuckyNumberDayTimer
-	jp InitNDaysCountdown
-.GetDaysUntilNextFriday:
-	call GetWeekday
-	ld c, a
-	ld a, FRIDAY
-	sub c
-	jr z, .friday_saturday
-	ret nc
-.friday_saturday
-	add 7
-	ret
-
-_CheckLuckyNumberShowFlag:
-	ld hl, wLuckyNumberDayTimer
-	jp CheckDayDependentEventHL
 
 DoMysteryGiftIfDayHasPassed:
 	ld a, BANK(sMysteryGiftTimer)
@@ -273,34 +247,6 @@ UpdateTimeRemaining:
 	scf
 	ret
 
-GetMinutesSinceIfLessThan60:
-	ld a, [wDaysSince]
-	and a
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wHoursSince]
-	and a
-	jr nz, GetTimeElapsed_ExceedsUnitLimit
-	ld a, [wMinutesSince]
-	ret
-
-GetDaysSince:
-	ld a, [wDaysSince]
-	ret
-
-GetTimeElapsed_ExceedsUnitLimit:
-	ld a, -1
-	ret
-
-CalcDaysSince:
-	xor a
-	jr _CalcDaysSince
-
-CalcMinsHoursDaysSince:
-	inc hl
-	inc hl
-	xor a
-	jr _CalcMinsHoursDaysSince
-
 CalcSecsMinsHoursDaysSince:
 	inc hl
 	inc hl
@@ -314,7 +260,7 @@ CalcSecsMinsHoursDaysSince:
 	ld [hl], c ; current seconds
 	dec hl
 	ld [wSecondsSince], a ; seconds since
-
+	; fallthrough
 _CalcMinsHoursDaysSince:
 	ldh a, [hMinutes]
 	ld c, a
@@ -325,7 +271,7 @@ _CalcMinsHoursDaysSince:
 	ld [hl], c ; current minutes
 	dec hl
 	ld [wMinutesSince], a ; minutes since
-
+	; fallthrough
 _CalcHoursDaysSince:
 	ldh a, [hHours]
 	ld c, a
@@ -336,7 +282,7 @@ _CalcHoursDaysSince:
 	ld [hl], c ; current hours
 	dec hl
 	ld [wHoursSince], a ; hours since
-
+	; fallthrough
 _CalcDaysSince:
 	ld a, [wCurDay]
 	ld c, a

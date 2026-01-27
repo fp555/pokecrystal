@@ -917,9 +917,8 @@ LuckyNumberShow13:
 	call Random
 	and a
 	ld a, LUCKY_CHANNEL
-	jr nz, .okay
+	jp nz, NextRadioLine
 	ld a, LUCKY_NUMBER_SHOW_14
-.okay
 	jp NextRadioLine
 
 LuckyNumberShow14:
@@ -1000,9 +999,8 @@ PeoplePlaces3:
 	call Random
 	cp 49 percent - 1
 	ld a, PLACES_AND_PEOPLE_4 ; People
-	jr c, .ok
+	jp c, NextRadioLine
 	ld a, PLACES_AND_PEOPLE_6 ; Places
-.ok
 	jp NextRadioLine
 
 PnP_Text1:
@@ -1075,13 +1073,12 @@ PeoplePlaces5:
 	call Random
 	cp 4 percent
 	ld a, PLACES_AND_PEOPLE
-	jr c, .ok
+	jp c, NextRadioLine
 	call Random
 	cp 49 percent - 1
 	ld a, PLACES_AND_PEOPLE_4 ; People
-	jr c, .ok
+	jp c, NextRadioLine
 	ld a, PLACES_AND_PEOPLE_6 ; Places
-.ok
 	jp NextRadioLine
 .Adjectives:
 	table_width 2
@@ -1210,13 +1207,12 @@ PeoplePlaces7:
 	call Random
 	cp 4 percent
 	ld a, PLACES_AND_PEOPLE
-	jr c, .ok
+	jp c, PrintRadioLine
 	call Random
 	cp 49 percent - 1
 	ld a, PLACES_AND_PEOPLE_4 ; People
-	jr c, .ok
+	jp c, PrintRadioLine
 	ld a, PLACES_AND_PEOPLE_6 ; Places
-.ok
 	jp PrintRadioLine
 .Adjectives:
 	table_width 2
@@ -1466,16 +1462,13 @@ GetBuenasPassword:
 	assert_table_length NUM_BUENA_FUNCTIONS
 .Mon:
 	call .GetTheIndex
-	call GetPokemonName
-	ret
+	jp GetPokemonName
 .Item:
 	call .GetTheIndex
-	call GetItemName
-	ret
+	jp GetItemName
 .Move:
 	call .GetTheIndex
-	call GetMoveName
-	ret
+	jp GetMoveName
 .GetTheIndex:
 	ld h, 0
 	ld l, c

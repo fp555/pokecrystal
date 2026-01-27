@@ -152,7 +152,6 @@ CheckIceTile::
 	ret
 
 CheckWhirlpoolTile::
-	nop
 	cp COLL_WHIRLPOOL
 	ret z
 	cp COLL_WHIRLPOOL_2C
@@ -254,21 +253,20 @@ CheckObjectTime::
 	cp e
 	jr c, .yes
 	jr z, .yes
-	jr .no
+.no
+	scf
+	ret
 .check_timeofday
 	ld a, e
 	cp [hl]
 	jr c, .no
 	ld a, [hl]
 	cp d
-	jr nc, .yes
-	jr .no
+	jr c, .no
 .yes
 	and a
 	ret
-.no
-	scf
-	ret
+
 
 UnmaskCopyMapObjectStruct::
 	ldh [hMapObjectIndex], a
@@ -309,8 +307,7 @@ ApplyDeletionToMapObject::
 
 DeleteObjectStruct::
 	call ApplyDeletionToMapObject
-	call MaskObject
-	ret
+	jp MaskObject
 
 CopyPlayerObjectTemplate::
 	push hl
@@ -321,9 +318,8 @@ CopyPlayerObjectTemplate::
 	ld [de], a
 	inc de
 	pop hl
-	ld bc, MAPOBJECT_LENGTH - 1
-	call CopyBytes
-	ret
+	ld bc, OBJECT_EVENT_SIZE ; 13
+	jp CopyBytes
 
 LoadMovementDataPointer::
 ; Load the movement data pointer for object a.
@@ -418,12 +414,7 @@ CopySpriteMovementData::
 	rst Bankswitch
 	ld a, l
 	push bc
-	call .CopyData
-	pop bc
-	pop af
-	rst Bankswitch
-	ret
-.CopyData:
+	; CopyData
 	ld hl, OBJECT_MOVEMENT_TYPE
 	add hl, de
 	ld [hl], a
@@ -465,6 +456,9 @@ endr
 	ld hl, OBJECT_PALETTE
 	add hl, de
 	ld [hl], a
+	pop bc
+	pop af
+	rst Bankswitch
 	ret
 
 _GetMovementIndex::

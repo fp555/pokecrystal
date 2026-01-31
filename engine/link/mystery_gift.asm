@@ -1604,7 +1604,7 @@ endr
 	ret
 .String_PressAToLink_BToCancel_JP:
 	db   "エーボタン<WO>おすと"
-	next "つうしん<PKMN>おこなわれるよ！"
+	next "つうしん<GA>おこなわれるよ！"
 	next "ビーボタン<WO>おすと"
 	next "つうしん<WO>ちゅうし　します"
 	db   "@"

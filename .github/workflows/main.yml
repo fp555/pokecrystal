@@ -24,12 +24,8 @@ jobs:
     outputs:
       free_space: ${{ steps.free.outputs.free_space }}
     steps:
-      - name: Install packages
-        run: |
-            sudo apt update
-            sudo apt install -y libpng-dev
       - name: Checkout rgbds
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: gbdev/rgbds
           path: rgbds
@@ -37,9 +33,12 @@ jobs:
       - name: Install rgbds
         working-directory: rgbds
         run: |
-            sudo make install
+            sudo apt update
+            sudo apt install -y bison libpng-dev pkg-config
+            sudo make -j$(nproc) install
+            rm -rf ../rgbds
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ matrix.repo }}/pokecrystal
           ref: ${{ matrix.ref }}

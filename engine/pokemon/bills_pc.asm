@@ -22,7 +22,10 @@ _DepositPKMN:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .done
-	call .RunJumptable
+	ld a, [wJumptableIndex]
+	ld hl, .Jumptable
+	call BillsPC_Jumptable
+	rst CallHL
 	call DelayFrame
 	jr .loop
 .done
@@ -34,11 +37,6 @@ _DepositPKMN:
 	pop af
 	ld [wOptions], a
 	ret
-.RunJumptable:
-	ld a, [wJumptableIndex]
-	ld hl, .Jumptable
-	call BillsPC_Jumptable
-	jp hl
 .Jumptable:
 	dw .Init
 	dw .HandleJoypad
@@ -240,7 +238,10 @@ _WithdrawPKMN:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .done
-	call .RunJumptable
+	ld a, [wJumptableIndex]
+	ld hl, .Jumptable
+	call BillsPC_Jumptable
+	rst CallHL
 	call DelayFrame
 	jr .loop
 .done
@@ -252,11 +253,6 @@ _WithdrawPKMN:
 	pop af
 	ld [wOptions], a
 	ret
-.RunJumptable:
-	ld a, [wJumptableIndex]
-	ld hl, .Jumptable
-	call BillsPC_Jumptable
-	jp hl
 .Jumptable:
 	dw .Init
 	dw .Joypad
@@ -456,7 +452,10 @@ _MovePKMNWithoutMail:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .done
-	call .RunJumptable
+	ld a, [wJumptableIndex]
+	ld hl, .Jumptable
+	call BillsPC_Jumptable
+	rst CallHL
 	call DelayFrame
 	jr .loop
 .done
@@ -468,11 +467,6 @@ _MovePKMNWithoutMail:
 	pop af
 	ld [wOptions], a
 	ret
-.RunJumptable:
-	ld a, [wJumptableIndex]
-	ld hl, .Jumptable
-	call BillsPC_Jumptable
-	jp hl
 .Jumptable:
 	dw .Init
 	dw .Joypad
@@ -687,9 +681,6 @@ BillsPC_InitRAM:
 	call ByteFill
 	xor a
 	ld [wJumptableIndex], a
-	ld [wUnusedBillsPCData], a
-	ld [wUnusedBillsPCData+1], a
-	ld [wUnusedBillsPCData+2], a
 	ld [wBillsPC_CursorPosition], a
 	ld [wBillsPC_ScrollPosition], a
 	ret
@@ -1103,28 +1094,15 @@ endr
 	push af
 	push de
 	push hl
-	call .PlaceNickname
-	pop hl
-	ld de, 2 * SCREEN_WIDTH
-	add hl, de
-	pop de
-rept BOXLIST_SIZE
-	inc de
-endr
-	pop af
-	dec a
-	jr nz, .loop
-	ret
-.CancelString:
-	db "CANCEL@"
-.PlaceNickname:
+	; PlaceNickname
 	ld a, [de]
 	and a
-	ret z
+	jp z, .done_nickname
 	cp -1
 	jr nz, .get_nickname
 	ld de, .CancelString
-	jp PlaceString
+	call PlaceString
+	jp .done_nickname
 .get_nickname
 	inc de
 	ld a, [de]
@@ -1160,9 +1138,7 @@ endr
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 	call CloseSRAM
-	pop hl
-	ld de, wStringBuffer1
-	jp PlaceString
+	jr .place_nickname
 .boxfail
 	call CloseSRAM
 	pop hl
@@ -1182,9 +1158,7 @@ endr
 	ld de, wStringBuffer1
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
-	pop hl
-	ld de, wStringBuffer1
-	jp PlaceString
+	jr .place_nickname
 .partyfail
 	pop hl
 	jr .placeholder_string
@@ -1206,15 +1180,33 @@ endr
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 	call CloseSRAM
-	pop hl
-	ld de, wStringBuffer1
-	jp PlaceString
+	jr .place_nickname
 .sBoxFail
 	call CloseSRAM
 	pop hl
 .placeholder_string
 	ld de, .Placeholder
-	jp PlaceString
+	call PlaceString
+	jr .done_nickname
+.place_nickname
+	ld de, wStringBuffer1
+	call CorrectNickErrors
+	pop hl
+	call PlaceString
+.done_nickname
+	pop hl
+	ld de, 2 * SCREEN_WIDTH
+	add hl, de
+	pop de
+rept BOXLIST_SIZE
+	inc de
+endr
+	pop af
+	dec a
+	jp nz, .loop
+	ret
+.CancelString:
+	db "CANCEL@"
 .Placeholder:
 	db "-----@"
 
@@ -1901,8 +1893,7 @@ CopyNicknameToTemp:
 	call AddNTimes
 	ld de, wBufferMonNickname
 	ld bc, MON_NAME_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 CopyOTNameToTemp:
 	ld bc, NAME_LENGTH
@@ -1910,8 +1901,7 @@ CopyOTNameToTemp:
 	call AddNTimes
 	ld de, wBufferMonOT
 	ld bc, NAME_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 CopyMonToTemp:
 	ld a, [wCurPartyMon]
@@ -2121,8 +2111,7 @@ GetBoxCount:
 	call OpenSRAM
 	ld hl, sBoxCount
 	ld a, [hl]
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 .BoxBankAddresses:
 	table_width 3
 for n, 1, NUM_BOXES + 1

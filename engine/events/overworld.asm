@@ -2,8 +2,7 @@ FieldMoveJumptableReset:
 	xor a
 	ld hl, wFieldMoveData
 	ld bc, wFieldMoveDataEnd - wFieldMoveData
-	call ByteFill
-	ret
+	jp ByteFill
 
 FieldMoveJumptable:
 	ld a, [wFieldMoveJumptableIndex]
@@ -29,8 +28,7 @@ GetPartyNickname:
 	; copy text from wStringBuffer2 to wStringBuffer3
 	ld de, wStringBuffer2
 	ld hl, wStringBuffer3
-	call CopyName2
-	ret
+	jp CopyName2
 
 CheckEngineFlag:
 ; Check engine flag de. Return carry if flag is not set
@@ -100,8 +98,7 @@ CheckPartyMove:
 
 FieldMoveFailed:
 	ld hl, .CantUseItemText
-	call MenuTextboxBackup
-	ret
+	jp MenuTextboxBackup
 .CantUseItemText:
 	text_far _CantUseItemText
 	text_end
@@ -127,9 +124,6 @@ CutFunction:
 	jr c, .nothingtocut
 	ld a, $1
 	ret
-.nohivebadge
-	ld a, JUMPTABLE_EXIT
-	ret
 .nothingtocut
 	ld a, $2
 	ret
@@ -141,6 +135,7 @@ CutFunction:
 .FailCut:
 	ld hl, CutNothingText
 	call MenuTextboxBackup
+.nohivebadge
 	ld a, JUMPTABLE_EXIT
 	ret
 
@@ -187,7 +182,7 @@ CheckMapForSomethingToCut:
 Script_CutFromMenu:
 	refreshmap
 	special UpdateTimePals
-
+	; fallthrough
 Script_Cut:
 	callasm GetPartyNickname
 	writetext UseCutText
@@ -215,8 +210,7 @@ CutDownTreeOrGrass:
 	call GetMovementPermissions
 	call UpdateSprites
 	call DelayFrame
-	call LoadStandardFont
-	ret
+	jp LoadStandardFont
 
 CheckOverworldTileArrays:
 ; Input: c contains the tile you're facing
@@ -255,11 +249,7 @@ CheckOverworldTileArrays:
 INCLUDE "data/collision/field_move_blocks.asm"
 
 FlashFunction:
-	call .CheckUseFlash
-	and JUMPTABLE_INDEX_MASK
-	ld [wFieldMoveSucceeded], a
-	ret
-.CheckUseFlash:
+	; CheckUseFlash
 	ld de, ENGINE_ZEPHYRBADGE
 	farcall CheckBadge
 	jr c, .nozephyrbadge
@@ -273,13 +263,14 @@ FlashFunction:
 .useflash
 	call UseFlash
 	ld a, JUMPTABLE_EXIT | $1
-	ret
+	jr .end
 .notadarkcave
 	call FieldMoveFailed
-	ld a, JUMPTABLE_EXIT
-	ret
 .nozephyrbadge
 	ld a, JUMPTABLE_EXIT
+.end
+	and JUMPTABLE_INDEX_MASK
+	ld [wFieldMoveSucceeded], a
 	ret
 
 UseFlash:
@@ -372,7 +363,7 @@ SurfFunction:
 
 SurfFromMenuScript:
 	special UpdateTimePals
-
+	; fallthrough
 UsedSurfScript:
 	writetext UsedSurfText ; "used SURF!"
 	waitbutton
@@ -512,7 +503,9 @@ FlyFunction:
 	call GetMapEnvironment
 	call CheckOutdoorMap
 	jr z, .outdoors
-	jr .indoors
+	; indoors
+	ld a, $2
+	ret
 .outdoors
 	xor a
 	ldh [hMapAnims], a
@@ -530,9 +523,6 @@ FlyFunction:
 	ret
 .nostormbadge
 	ld a, JUMPTABLE_EXIT | $2
-	ret
-.indoors
-	ld a, $2
 	ret
 .illegal
 	call CloseWindow
@@ -573,25 +563,24 @@ FlyFunction:
 	ret
 
 WaterfallFunction:
-	call .TryWaterfall
-	and JUMPTABLE_INDEX_MASK
-	ld [wFieldMoveSucceeded], a
-	ret
-.TryWaterfall:
+	; TryWaterfall
 	ld de, ENGINE_RISINGBADGE
 	farcall CheckBadge
 	ld a, JUMPTABLE_EXIT
-	ret c
+	jr c, .end
 	call CheckMapCanWaterfall
 	jr c, .failed
 	ld hl, Script_WaterfallFromMenu
 	call QueueScript
 	ld a, JUMPTABLE_EXIT | $1
+.end
+	and JUMPTABLE_INDEX_MASK
+	ld [wFieldMoveSucceeded], a
 	ret
 .failed
 	call FieldMoveFailed
 	ld a, JUMPTABLE_EXIT
-	ret
+	jr .end
 
 CheckMapCanWaterfall:
 	ld a, [wPlayerDirection]
@@ -610,7 +599,7 @@ CheckMapCanWaterfall:
 Script_WaterfallFromMenu:
 	refreshmap
 	special UpdateTimePals
-
+	; fallthrough
 Script_UsedWaterfall:
 	callasm GetPartyNickname
 	writetext .UseWaterfallText
@@ -685,7 +674,7 @@ EscapeRopeFunction:
 DigFunction:
 	call FieldMoveJumptableReset
 	ld a, $2
-
+	; fallthrough
 EscapeRopeOrDig:
 	ld [wEscapeRopeOrDigType], a
 .loop
@@ -863,22 +852,19 @@ TeleportFunction:
 	step_end
 
 StrengthFunction:
-	call .TryStrength
-	and JUMPTABLE_INDEX_MASK
-	ld [wFieldMoveSucceeded], a
-	ret
-.TryStrength:
+	; TryStrength
 	ld de, ENGINE_PLAINBADGE
 	call CheckBadge
 	jr c, .Failed
-	jr .UseStrength
-.Failed:
-	ld a, JUMPTABLE_EXIT
-	ret
-.UseStrength:
 	ld hl, Script_StrengthFromMenu
 	call QueueScript
 	ld a, JUMPTABLE_EXIT | $1
+	jr .end
+.Failed:
+	ld a, JUMPTABLE_EXIT
+.end
+	and JUMPTABLE_INDEX_MASK
+	ld [wFieldMoveSucceeded], a
 	ret
 
 SetStrengthFlag:
@@ -891,13 +877,12 @@ SetStrengthFlag:
 	add hl, de
 	ld a, [hl]
 	ld [wStrengthSpecies], a
-	call GetPartyNickname
-	ret
+	jp GetPartyNickname
 
 Script_StrengthFromMenu:
 	refreshmap
 	special UpdateTimePals
-
+	; fallthrough
 Script_UsedStrength:
 	callasm SetStrengthFlag
 	writetext .UseStrengthText
@@ -954,16 +939,15 @@ TryStrengthOW:
 	bit BIKEFLAGS_STRENGTH_ACTIVE_F, [hl]
 	jr z, .already_using
 	ld a, 2
-	jr .done
+.done
+	ld [wScriptVar], a
+	ret
 .nope
 	ld a, 1
 	jr .done
 .already_using
 	xor a
 	jr .done
-.done
-	ld [wScriptVar], a
-	ret
 
 TryWhirlpoolOW::
 ; Whirlpools are only found on Route 41 (Whirl Islands)
@@ -1000,14 +984,14 @@ TryWhirlpoolOW::
 	ld [wCutWhirlpoolAnimationType], a
 	ld a, BANK(Script_AskWhirlpoolOW)
 	ld hl, Script_AskWhirlpoolOW
-	jr .done
-.failed
-	ld a, BANK(Script_MightyWhirlpool)
-	ld hl, Script_MightyWhirlpool
 .done
 	call CallScript
 	scf
 	ret
+.failed
+	ld a, BANK(Script_MightyWhirlpool)
+	ld hl, Script_MightyWhirlpool
+	jr .done
 
 Script_MightyWhirlpool:
 	jumptext .MayPassWhirlpoolText
@@ -1049,8 +1033,7 @@ DisappearWhirlpool:
 	ld e, a
 	farcall PlayWhirlpoolSound
 	call BufferScreen
-	call GetMovementPermissions
-	ret
+	jp GetMovementPermissions
 
 HeadbuttFunction:
 	call TryHeadbuttFromMenu
@@ -1170,7 +1153,7 @@ GetFacingObject:
 RockSmashFromMenuScript:
 	refreshmap
 	special UpdateTimePals
-
+	; fallthrough
 RockSmashScript:
 	callasm GetPartyNickname
 	writetext UseRockSmashText
@@ -1220,14 +1203,8 @@ AskRockSmashText:
 HasRockSmash:
 	ld d, ROCK_SMASH
 	call CheckPartyMove
-	jr nc, .yes
-	; no
-	ld a, 1
-	jr .done
-.yes
-	xor a
-	jr .done
-.done
+	sbc a ; if carry $ff, else 0
+	and 1 ; $ff becomes 1, else 0
 	ld [wScriptVar], a
 	ret
 
@@ -1250,7 +1227,6 @@ FishFunction:
 	dw .FishGotSomething
 	dw .FailFish
 	dw .FishNoFish
-
 .TryFish:
 	ld a, [wPlayerState]
 	cp PLAYER_SURF
@@ -1400,8 +1376,7 @@ PutTheRodAway:
 	ld a, $1
 	ld [wPlayerAction], a
 	call UpdateSprites
-	call UpdatePlayerSprite
-	ret
+	jp UpdatePlayerSprite
 
 RodBiteText:
 	text_far _RodBiteText
@@ -1412,19 +1387,26 @@ RodNothingText:
 	text_end
 
 BikeFunction:
-	call .TryBike
-	and JUMPTABLE_INDEX_MASK
-	ld [wFieldMoveSucceeded], a
-	ret
-.TryBike:
-	call .CheckEnvironment
-	jr c, .CannotUseBike
+	; CheckEnvironment
+	call GetMapEnvironment
+	call CheckOutdoorMap
+	jr z, .ok
+	cp CAVE
+	jr z, .ok
+	cp GATE
+	jr nz, .CannotUseBike
+.ok
+	call GetPlayerTilePermission
+	and $f ; lo nybble only
+	jr nz, .CannotUseBike ; not FLOOR_TILE
 	ld a, [wPlayerState]
 	cp PLAYER_NORMAL
 	jr z, .GetOnBike
 	cp PLAYER_BIKE
 	jr z, .GetOffBike
-	jr .CannotUseBike
+.CannotUseBike
+	ld a, $0
+	jr .done
 .GetOnBike:
 	ld hl, Script_GetOnBike
 	ld de, Script_GetOnBike_Register
@@ -1441,7 +1423,7 @@ BikeFunction:
 	ld [wMapMusic], a
 	call PlayMusic
 	ld a, $1
-	ret
+	jr .done
 .GetOffBike:
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
@@ -1450,41 +1432,22 @@ BikeFunction:
 	ld de, Script_GetOffBike_Register
 	call .CheckIfRegistered
 	ld a, BANK(Script_GetOffBike)
-	jr .done
-.CantGetOffBike:
-	ld hl, Script_CantGetOffBike
-	jr .done
-.CannotUseBike:
-	ld a, $0
-	ret
-.done
+.queue_script
 	call QueueScript
 	ld a, $1
+.done
+	and JUMPTABLE_INDEX_MASK
+	ld [wFieldMoveSucceeded], a
 	ret
+.CantGetOffBike:
+	ld hl, Script_CantGetOffBike
+	jr .queue_script
 .CheckIfRegistered:
 	ld a, [wUsingItemWithSelect]
 	and a
 	ret z
 	ld h, d
 	ld l, e
-	ret
-.CheckEnvironment:
-	call GetMapEnvironment
-	call CheckOutdoorMap
-	jr z, .ok
-	cp CAVE
-	jr z, .ok
-	cp GATE
-	jr z, .ok
-	jr .nope
-.ok
-	call GetPlayerTilePermission
-	and $f ; lo nybble only
-	jr nz, .nope ; not FLOOR_TILE
-	xor a
-	ret
-.nope
-	scf
 	ret
 
 Script_GetOnBike:

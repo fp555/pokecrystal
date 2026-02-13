@@ -101,8 +101,7 @@ HandleMap:
 	call HandleMapObjects
 	call NextOverworldFrame
 	call HandleMapBackground
-	call CheckPlayerState
-	ret
+	jp CheckPlayerState
 
 MapEvents:
 	ld a, [wMapEventStatus]
@@ -117,8 +116,7 @@ MapEvents:
 	call PlayerEvents
 	call DisableEvents
 	farcall ScriptEvents
-	ret
-.no_events:
+.no_events
 	ret
 
 ResetOverworldDelay:
@@ -436,11 +434,6 @@ ObjectEventTypeArray:
 	dbw OBJECTTYPE_SCRIPT, .script
 	dbw OBJECTTYPE_ITEMBALL, .itemball
 	dbw OBJECTTYPE_TRAINER, .trainer
-	; the remaining four are dummy events
-	dbw OBJECTTYPE_3, .three
-	dbw OBJECTTYPE_4, .four
-	dbw OBJECTTYPE_5, .five
-	dbw OBJECTTYPE_6, .six
 	assert_table_length NUM_OBJECT_TYPES
 	db -1 ; end
 .script
@@ -450,8 +443,7 @@ ObjectEventTypeArray:
 	ld h, [hl]
 	ld l, a
 	call GetMapScriptsBank
-	call CallScript
-	ret
+	jp CallScript
 .itemball
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
@@ -469,18 +461,6 @@ ObjectEventTypeArray:
 	call TalkToTrainer
 	ld a, PLAYEREVENT_TALKTOTRAINER
 	scf
-	ret
-.three
-	xor a
-	ret
-.four
-	xor a
-	ret
-.five
-	xor a
-	ret
-.six
-	xor a
 	ret
 
 TryBGEvent:

@@ -1504,10 +1504,6 @@ wBattleTransitionSineWaveOffset::
 wBattleTransitionSpinQuadrant:: db
 
 NEXTU
-; bill's pc
-wUnusedBillsPCData:: ds 3
-
-NEXTU
 ; debug mon color picker
 wDebugColorRGBJumptableIndex:: db
 wDebugColorCurColor:: db

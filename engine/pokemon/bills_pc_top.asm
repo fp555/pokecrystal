@@ -1,13 +1,8 @@
 _BillsPC:
-	call .CheckCanUsePC
-	ret c
-	call .LogIn
-	call .UseBillsPC
-	jp .LogOut
-.CheckCanUsePC:
+	; CheckCanUsePC
 	ld a, [wPartyCount]
 	and a
-	ret nz
+	jr nz, .can_use_pc
 	ld hl, .PCGottaHavePokemonText
 	call MenuTextboxBackup
 	scf
@@ -15,7 +10,8 @@ _BillsPC:
 .PCGottaHavePokemonText:
 	text_far _PCGottaHavePokemonText
 	text_end
-.LogIn:
+.can_use_pc
+	; LogIn
 	xor a
 	ldh [hBGMapMode], a
 	call LoadStandardMenuHeader
@@ -29,14 +25,7 @@ _BillsPC:
 	pop af
 	ld [wOptions], a
 	call LoadFontsBattleExtra
-	ret
-.PCWhatText:
-	text_far _PCWhatText
-	text_end
-.LogOut:
-	call CloseSubmenu
-	ret
-.UseBillsPC:
+	;call .UseBillsPC
 	ld hl, .MenuHeader
 	call LoadMenuHeader
 	ld a, $1
@@ -58,7 +47,11 @@ _BillsPC:
 	jr nc, .loop
 .cancel
 	call CloseWindow
-	ret
+	; LogOut
+	jp CloseSubmenu
+.PCWhatText:
+	text_far _PCWhatText
+	text_end
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -70,6 +63,14 @@ _BillsPC:
 	dw .items
 	dw PlaceMenuStrings
 	dw .strings
+.items
+	db 5 ; # items
+	db 0 ; WITHDRAW
+	db 1 ; DEPOSIT
+	db 2 ; CHANGE BOX
+	db 3 ; MOVE PKMN
+	db 4 ; SEE YA!
+	db -1
 .strings
 	db "WITHDRAW <PK><MN>@"
 	db "DEPOSIT <PK><MN>@"
@@ -82,14 +83,6 @@ _BillsPC:
 	dw BillsPC_ChangeBoxMenu
 	dw BillsPC_MovePKMNMenu
 	dw BillsPC_SeeYa
-.items
-	db 5 ; # items
-	db 0 ; WITHDRAW
-	db 1 ; DEPOSIT
-	db 2 ; CHANGE BOX
-	db 3 ; MOVE PKMN
-	db 4 ; SEE YA!
-	db -1
 
 BillsPC_SeeYa:
 	scf
@@ -182,8 +175,7 @@ ClearPCItemScreen:
 	lb bc, 4, 18
 	call Textbox
 	call WaitBGMap2
-	call SetDefaultBGPAndOBP
-	ret
+	jp SetDefaultBGPAndOBP
 
 CopyBoxmonToTempMon:
 	ld a, [wCurPartyMon]
@@ -195,5 +187,4 @@ CopyBoxmonToTempMon:
 	ld a, BANK(sBoxMon1Species)
 	call OpenSRAM
 	call CopyBytes
-	call CloseSRAM
-	ret
+	jp CloseSRAM

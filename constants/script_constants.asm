@@ -130,7 +130,7 @@ DEF SCENE_ALWAYS EQU -1
 	const BGEVENT_IFSET
 	const BGEVENT_IFNOTSET
 	const BGEVENT_ITEM
-	const BGEVENT_COPY
+	const BGEVENT_COPY ; unused
 DEF NUM_BGEVENTS EQU const_value
 
 ; object_event types
@@ -139,10 +139,6 @@ DEF NUM_BGEVENTS EQU const_value
 	const OBJECTTYPE_SCRIPT
 	const OBJECTTYPE_ITEMBALL
 	const OBJECTTYPE_TRAINER
-	const OBJECTTYPE_3
-	const OBJECTTYPE_4
-	const OBJECTTYPE_5
-	const OBJECTTYPE_6
 DEF NUM_OBJECT_TYPES EQU const_value
 
 ; elevfloor macro values

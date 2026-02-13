@@ -6,13 +6,13 @@ BattleStart_TrainerHuds:
 	ld a, [wBattleMode]
 	dec a
 	ret z
-	jp ShowOTTrainerMonsRemaining
+	jr ShowOTTrainerMonsRemaining
 
 EnemySwitch_TrainerHud:
 	ld a, $e4
 	ldh [rOBP0], a
 	call LoadBallIconGFX
-	jp ShowOTTrainerMonsRemaining
+	jr ShowOTTrainerMonsRemaining
 
 ShowPlayerMonsRemaining:
 	call DrawPlayerPartyIconHUDBorder
@@ -95,7 +95,7 @@ StageBallTilesData:
 DrawPlayerHUDBorder:
 	ld hl, .tiles
 	ld de, wTrainerHUDTiles
-	ld bc, .tiles_end - .tiles
+	ld bc, $4 ; length of .tiles
 	call CopyBytes
 	hlcoord 18, 10
 	ld de, -1 ; start on right
@@ -105,12 +105,11 @@ DrawPlayerHUDBorder:
 	db $77 ; bottom right
 	db $6f ; bottom left
 	db $76 ; bottom side
-.tiles_end
 
 DrawPlayerPartyIconHUDBorder:
 	ld hl, .tiles
 	ld de, wTrainerHUDTiles
-	ld bc, .tiles_end - .tiles
+	ld bc, $4 ; length of .tiles
 	call CopyBytes
 	hlcoord 18, 10
 	ld de, -1 ; start on right
@@ -120,12 +119,11 @@ DrawPlayerPartyIconHUDBorder:
 	db $5c ; bottom right
 	db $6f ; bottom left
 	db $76 ; bottom side
-.tiles_end
 
 DrawEnemyHUDBorder:
 	ld hl, .tiles
 	ld de, wTrainerHUDTiles
-	ld bc, .tiles_end - .tiles
+	ld bc, $4 ; length of .tiles
 	call CopyBytes
 	hlcoord 1, 2
 	ld de, 1 ; start on left
@@ -145,7 +143,6 @@ DrawEnemyHUDBorder:
 	db $74 ; bottom left
 	db $78 ; bottom right
 	db $76 ; bottom side
-.tiles_end
 
 PlaceHUDBorderTiles:
 	ld a, [wTrainerHUDTiles + 0]
@@ -187,8 +184,7 @@ LinkBattle_TrainerHuds:
 	ld [hli], a
 	ld [hl], 13 * TILE_WIDTH
 	ld hl, wShadowOAMSprite00 + PARTY_LENGTH * OBJ_SIZE
-	jp LoadTrainerHudOAM
-
+	; fallthrough
 LoadTrainerHudOAM:
 	ld de, wBattleHUDTiles
 	ld c, PARTY_LENGTH
@@ -236,7 +232,7 @@ _ShowLinkBattleParticipants:
 	ld a, '<BOLD_V>'
 	ld [hli], a
 	ld [hl], '<BOLD_S>'
-	farcall LinkBattle_TrainerHuds ; no need to farcall
+	call LinkBattle_TrainerHuds
 	ld b, SCGB_DIPLOMA
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP

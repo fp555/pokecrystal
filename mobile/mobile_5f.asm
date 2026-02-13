@@ -3524,22 +3524,12 @@ RunMobileScript::
 	call OpenSRAM
 	inc de
 .loop
-	call _RunMobileScript
-	jr c, .finished
-	jr .loop
-
-.finished
-	call CloseSRAM
-	ret
-
-_RunMobileScript:
 	ld a, [de]
 	inc de
 	cp '@'
 	jr z, .finished
 	cp $10 ; jumptable size
 	jr nc, .finished
-	dec a
 	push de
 	ld e, a
 	ld d, 0
@@ -3549,28 +3539,27 @@ _RunMobileScript:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	jp hl
-
+	rst CallHL
+	jr nc, .loop
 .finished
-	scf
-	ret
-
+	jp CloseSRAM
 .Jumptable:
-	dw Function17f081 ; 0
-	dw Function17f0f8 ; 1
-	dw Function17f154 ; 2
-	dw Function17f181 ; 3
-	dw Function17f1d0 ; 4
-	dw Function17f220 ; 5
-	dw Function17f27b ; 6
-	dw Function17f2cb ; 7
-	dw MobileScript_PlayerName ; 8
-	dw MobileScript_Prefecture ; 9
-	dw Function17f382 ; a
-	dw Function17f3c9 ; b
-	dw Function17f3f0 ; c
-	dw Function17f41d ; d
-	dw Function17f44f ; e
+	; prevent "mobile script ACE"
+	dw Function17f44f ; 0
+	dw Function17f081 ; 1
+	dw Function17f0f8 ; 2
+	dw Function17f154 ; 3
+	dw Function17f181 ; 4
+	dw Function17f1d0 ; 5
+	dw Function17f220 ; 6
+	dw Function17f27b ; 7
+	dw Function17f2cb ; 8
+	dw MobileScript_PlayerName ; 9
+	dw MobileScript_Prefecture ; a
+	dw Function17f382 ; b
+	dw Function17f3c9 ; c
+	dw Function17f3f0 ; d
+	dw Function17f41d ; e
 	dw Function17f44f ; f
 
 Function17f081:

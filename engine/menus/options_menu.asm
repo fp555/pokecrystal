@@ -88,7 +88,6 @@ StringOptions:
 
 GetOptionPointer:
 	jumptable .Pointers, wJumptableIndex
-
 .Pointers:
 ; entries correspond to OPT_* constants
 	dw Options_TextSpeed
@@ -153,10 +152,10 @@ Options_TextSpeed:
 	dw .Mid
 	dw .Slow
 	dw .None
-.Fast: db "FAST   @"
-.Mid:  db "MID    @"
-.Slow: db "SLOW   @"
-.None: db "INSTANT@"
+.Fast: db "FAST@"
+.Mid:  db "MID @"
+.Slow: db "SLOW@"
+.None: db "MAX @"
 
 GetTextSpeed:
 ; converts TEXT_DELAY_* value in a to OPT_TEXT_SPEED_* value in c,

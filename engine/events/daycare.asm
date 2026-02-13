@@ -35,8 +35,7 @@ DayCareMan:
 	ld hl, wDayCareMan
 	set DAYCAREMAN_HAS_MON_F, [hl]
 	call DayCare_DepositPokemonText
-	call DayCare_InitBreeding
-	ret
+	jp DayCare_InitBreeding
 .AskWithdrawMon:
 	farcall GetBreedMon1LevelGrowth
 	ld hl, wBreedMon1Nickname
@@ -53,8 +52,7 @@ DayCareMan:
 	call PrintDayCareText
 .cancel
 	ld a, DAYCARETEXT_COME_AGAIN
-	call PrintDayCareText
-	ret
+	jp PrintDayCareText
 
 DayCareLady:
 	ld hl, wDayCareLady
@@ -70,8 +68,7 @@ DayCareLady:
 	ld hl, wDayCareLady
 	set DAYCARELADY_HAS_MON_F, [hl]
 	call DayCare_DepositPokemonText
-	call DayCare_InitBreeding
-	ret
+	jp DayCare_InitBreeding
 .AskWithdrawMon:
 	farcall GetBreedMon2LevelGrowth
 	ld hl, wBreedMon2Nickname
@@ -89,8 +86,7 @@ DayCareLady:
 	call PrintDayCareText
 .cancel
 	ld a, DAYCARETEXT_COME_AGAIN
-	call PrintDayCareText
-	ret
+	jp PrintDayCareText
 
 DayCareLadyIntroText:
 	bit DAYCARELADY_ACTIVE_F, [hl]
@@ -99,14 +95,12 @@ DayCareLadyIntroText:
 	inc a
 .okay
 	call PrintDayCareText
-	call YesNoBox
-	ret
+	jp YesNoBox
 
 DayCareManIntroText:
 	set DAYCAREMAN_ACTIVE_F, [hl]
 	call PrintDayCareText
-	call YesNoBox
-	ret
+	jp YesNoBox
 
 DayCareAskDepositPokemon:
 	ld a, [wPartyCount]
@@ -161,8 +155,7 @@ DayCare_DepositPokemonText:
 	ld a, [wCurPartySpecies]
 	call PlayMonCry
 	ld a, DAYCARETEXT_COME_BACK_LATER
-	call PrintDayCareText
-	ret
+	jp PrintDayCareText
 
 DayCare_AskWithdrawBreedMon:
 	ld a, [wStringBuffer2 + 1]
@@ -214,8 +207,7 @@ DayCare_GetBackMonForMoney:
 	ld a, [wCurPartySpecies]
 	call PlayMonCry
 	ld a, DAYCARETEXT_GOT_BACK
-	call PrintDayCareText
-	ret
+	jr PrintDayCareText
 
 GetPriceToRetrieveBreedmon:
 	ld a, b
@@ -223,8 +215,11 @@ GetPriceToRetrieveBreedmon:
 	ld a, d
 	ld [wStringBuffer2 + 1], a
 	ld de, wStringBuffer1
+	push de
 	ld bc, NAME_LENGTH
 	call CopyBytes
+	pop de
+	call CorrectNickErrors
 	ld hl, 0
 	ld bc, 100
 	ld a, [wStringBuffer2 + 1]
@@ -248,8 +243,7 @@ PrintDayCareText:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call PrintText
-	ret
+	jp PrintText
 .TextTable:
 ; entries correspond to DAYCARETEXT_* constants
 	dw .DayCareManIntroText ; 00
@@ -338,8 +332,7 @@ DayCareManOutside:
 	bit DAYCAREMAN_HAS_EGG_F, [hl]
 	jr nz, .AskGiveEgg
 	ld hl, .NotYetText
-	call PrintText
-	ret
+	jp PrintText
 .NotYetText:
 	text_far _NotYetText
 	text_end

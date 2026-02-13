@@ -496,9 +496,7 @@ DoneText::
 	text_end
 
 NullChar::
-	ld a, '?'
-	ld [hli], a
-	call PrintLetterDelay
+	; skip $00 char, don't touch hl
 	jp NextChar
 
 TextScroll::

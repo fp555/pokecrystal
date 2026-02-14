@@ -1,5 +1,5 @@
 	db "PARENT@" ; species name
-	dw 703, 800 ; height, weight
+	dw 22, 800 ; height, weight
 
 	db   "To avoid crushing"
 	next "the baby it"

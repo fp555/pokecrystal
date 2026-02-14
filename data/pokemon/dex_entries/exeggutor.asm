@@ -1,5 +1,5 @@
 	db "COCONUT@" ; species name
-	dw 607, 1200 ; height, weight
+	dw 20, 1200 ; height, weight
 
 	db   "Its cries are very"
 	next "noisy. This is"

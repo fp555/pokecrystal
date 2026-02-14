@@ -1,5 +1,5 @@
 	db "SCOUT@" ; species name
-	dw 207, 60 ; height, weight
+	dw 8, 60 ; height, weight
 
 	db   "When acting as a"
 	next "lookout, it warns"

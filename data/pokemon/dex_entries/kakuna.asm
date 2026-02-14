@@ -1,5 +1,5 @@
 	db "COCOON@" ; species name
-	dw 200, 100 ; height, weight
+	dw 6, 100 ; height, weight
 
 	db   "Nearly incapable"
 	next "of movement, it"

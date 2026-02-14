@@ -1,5 +1,5 @@
 	db "SEA LION@" ; species name
-	dw 307, 900 ; height, weight
+	dw 11, 900 ; height, weight
 
 	db   "The light blue fur"
 	next "that covers it"

@@ -1,5 +1,5 @@
 	db "TRANSFORM@" ; species name
-	dw 100, 40 ; height, weight
+	dw 3, 40 ; height, weight
 
 	db   "It can freely re-"
 	next "combine its own"

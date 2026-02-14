@@ -1,5 +1,5 @@
 	db "POISONMOTH@" ; species name
-	dw 411, 125 ; height, weight
+	dw 15, 125 ; height, weight
 
 	db   "The color of the"
 	next "dust-like scales"

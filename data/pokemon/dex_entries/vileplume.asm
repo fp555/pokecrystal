@@ -1,5 +1,5 @@
 	db "FLOWER@" ; species name
-	dw 311, 186 ; height, weight
+	dw 12, 186 ; height, weight
 
 	db   "By shaking its big"
 	next "petals, it scat-"

@@ -1,5 +1,5 @@
 	db "POISON PIN@" ; species name
-	dw 104, 70 ; height, weight
+	dw 4, 70 ; height, weight
 
 	db   "Small and very"
 	next "docile, it pro-"

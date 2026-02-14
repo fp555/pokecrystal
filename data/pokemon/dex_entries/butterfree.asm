@@ -1,5 +1,5 @@
 	db "BUTTERFLY@" ; species name
-	dw 307, 320 ; height, weight
+	dw 11, 320 ; height, weight
 
 	db   "It flits from"
 	next "flower to flower,"

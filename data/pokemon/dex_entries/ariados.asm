@@ -1,5 +1,5 @@
 	db "LONG LEG@" ; species name
-	dw 307, 335 ; height, weight
+	dw 11, 335 ; height, weight
 
 	db   "Rather than mak-"
 	next "ing a nest in one"

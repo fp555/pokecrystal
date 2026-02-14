@@ -2109,14 +2109,10 @@ Script_end:
 	ld [wScriptRunning], a
 	ld a, SCRIPT_OFF
 	ld [wScriptMode], a
-	ld hl, wScriptFlags
-	res UNUSED_SCRIPT_FLAG_0, [hl]
 	jp StopScript
 
 Script_endcallback:
 	call ExitScriptSubroutine
-	ld hl, wScriptFlags
-	res UNUSED_SCRIPT_FLAG_0, [hl]
 	jp StopScript
 
 ExitScriptSubroutine:
@@ -2153,8 +2149,6 @@ Script_endall:
 	ld [wScriptRunning], a
 	ld a, SCRIPT_OFF
 	ld [wScriptMode], a
-	ld hl, wScriptFlags
-	res UNUSED_SCRIPT_FLAG_0, [hl]
 	jp StopScript
 
 Script_halloffame:

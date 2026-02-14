@@ -1,5 +1,5 @@
 	db "LEAF@" ; species name
-	dw 211, 64 ; height, weight
+	dw 9, 64 ; height, weight
 
 	db   "It loves to bask"
 	next "in the sunlight."

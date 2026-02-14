@@ -1,5 +1,5 @@
 	db "FIRE HORSE@" ; species name
-	dw 303, 300 ; height, weight
+	dw 10, 300 ; height, weight
 
 	db   "At birth it can't"
 	next "run very well. It"

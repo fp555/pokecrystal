@@ -1,5 +1,5 @@
 	db "COBRA@" ; species name
-	dw 1106, 650 ; height, weight
+	dw 35, 650 ; height, weight
 
 	db   "To intimidate"
 	next "foes, it spreads"

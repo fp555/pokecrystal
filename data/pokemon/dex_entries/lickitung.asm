@@ -1,5 +1,5 @@
 	db "LICKING@" ; species name
-	dw 311, 655 ; height, weight
+	dw 12, 655 ; height, weight
 
 	db   "It has a tongue"
 	next "that is over 2m"

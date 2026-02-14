@@ -1,5 +1,5 @@
 	db "MOLE@" ; species name
-	dw 8, 8 ; height, weight
+	dw 2, 8 ; height, weight
 
 	db   "It digs under-"
 	next "ground and chews"

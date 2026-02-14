@@ -1,5 +1,5 @@
 	db "WEED@" ; species name
-	dw 108, 54 ; height, weight
+	dw 5, 54 ; height, weight
 
 	db   "During the day, it"
 	next "stays in the cold"

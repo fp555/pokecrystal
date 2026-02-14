@@ -1,5 +1,5 @@
 	db "SEA LION@" ; species name
-	dw 507, 1200 ; height, weight
+	dw 17, 1200 ; height, weight
 
 	db   "It sleeps under"
 	next "shallow ocean"

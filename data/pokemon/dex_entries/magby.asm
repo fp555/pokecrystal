@@ -1,5 +1,5 @@
 	db "LIVE COAL@" ; species name
-	dw 204, 214 ; height, weight
+	dw 7, 214 ; height, weight
 
 	db   "If it is spouting"
 	next "yellow flames, it"

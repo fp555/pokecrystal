@@ -1,5 +1,5 @@
 	db "HIBERNANT@" ; species name
-	dw 511, 1258 ; height, weight
+	dw 18, 1258 ; height, weight
 
 	db   "Although it has a"
 	next "large body, it is"

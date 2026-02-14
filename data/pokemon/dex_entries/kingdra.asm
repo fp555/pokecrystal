@@ -1,5 +1,5 @@
 	db "DRAGON@" ; species name
-	dw 511, 1520 ; height, weight
+	dw 18, 1520 ; height, weight
 
 	db   "It stores energy"
 	next "by sleeping at"

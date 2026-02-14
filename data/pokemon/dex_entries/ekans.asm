@@ -1,5 +1,5 @@
 	db "SNAKE@" ; species name
-	dw 607, 69 ; height, weight
+	dw 20, 69 ; height, weight
 
 	db   "It flutters the"
 	next "tip of its tongue"

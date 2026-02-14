@@ -1186,7 +1186,7 @@ StatusHealingEffect:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
 	jp c, StatusHealer_ExitMenu
-
+	; fallthrough
 FullyHealStatus:
 	call UseStatusHealer
 	jp StatusHealer_Jumptable
@@ -1460,18 +1460,6 @@ HealHP_SFX_GFX:
 	predef_jump AnimateHPBar
 
 UseItem_SelectMon:
-	call .SelectMon
-	ret c
-	ld a, [wCurPartySpecies]
-	cp EGG
-	jr nz, .not_egg
-	call CantUseOnEggMessage
-	scf
-	ret
-.not_egg
-	and a
-	ret
-.SelectMon:
 	ld a, b
 	ld [wPartyMenuActionText], a
 	push hl
@@ -1482,6 +1470,15 @@ UseItem_SelectMon:
 	pop bc
 	pop de
 	pop hl
+	ret c
+	ld a, [wCurPartySpecies]
+	cp EGG
+	jr nz, .not_egg
+	call CantUseOnEggMessage
+	scf
+	ret
+.not_egg
+	and a
 	ret
 
 ChooseMonToUseItemOn:
@@ -1789,7 +1786,7 @@ EscapeRopeEffect:
 	ld [wItemEffectSucceeded], a
 	farcall EscapeRopeFunction
 	ld a, [wItemEffectSucceeded]
-	cp 1
+	dec a ; cp 1
 	ret nz
 	jp UseDisposableItem
 
@@ -2219,8 +2216,7 @@ SacredAshEffect:
 	ld a, [wItemEffectSucceeded]
 	cp $1
 	ret nz
-	call UseDisposableItem
-	ret
+	jr UseDisposableItem
 
 NormalBoxEffect:
 	ld c, DECOFLAG_SILVER_TROPHY_DOLL
@@ -2489,7 +2485,6 @@ GetMaxPPOfMove:
 	ld hl, wTempMonMoves
 	dec a
 	jr z, .got_nonpartymon ; BOXMON
-	ld hl, wTempMonMoves ; Wasted cycles
 	dec a
 	jr z, .got_nonpartymon ; TEMPMON
 	ld hl, wBattleMonMoves ; WILDMON

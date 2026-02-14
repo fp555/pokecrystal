@@ -1,5 +1,5 @@
 	db "BAGWORM@" ; species name
-	dw 200, 72 ; height, weight
+	dw 6, 72 ; height, weight
 
 	db   "It spits out a"
 	next "fluid that it uses"

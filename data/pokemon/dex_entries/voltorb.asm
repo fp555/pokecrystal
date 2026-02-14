@@ -1,5 +1,5 @@
 	db "BALL@" ; species name
-	dw 108, 104 ; height, weight
+	dw 5, 104 ; height, weight
 
 	db   "During the study"
 	next "of this #MON,"

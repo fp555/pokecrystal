@@ -1,5 +1,5 @@
 	db "FAIRY@" ; species name
-	dw 200, 75 ; height, weight
+	dw 6, 75 ; height, weight
 
 	db   "Popular for its"
 	next "cuteness and"

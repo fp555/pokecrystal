@@ -1,5 +1,5 @@
 	db "TRIPLEBIRD@" ; species name
-	dw 511, 852 ; height, weight
+	dw 18, 852 ; height, weight
 
 	db   "An enemy that"
 	next "takes its eyes off"

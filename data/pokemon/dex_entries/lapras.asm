@@ -1,5 +1,5 @@
 	db "TRANSPORT@" ; species name
-	dw 802, 2200 ; height, weight
+	dw 25, 2200 ; height, weight
 
 	db   "A #MON that has"
 	next "been overhunted"

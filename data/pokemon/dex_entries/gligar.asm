@@ -1,5 +1,5 @@
 	db "FLYSCORPIO@" ; species name
-	dw 307, 648 ; height, weight
+	dw 11, 648 ; height, weight
 
 	db   "It builds its nest"
 	next "on a steep cliff."

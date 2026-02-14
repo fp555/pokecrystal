@@ -1,5 +1,5 @@
 	db "COCOON@" ; species name
-	dw 204, 99 ; height, weight
+	dw 7, 99 ; height, weight
 
 	db   "This is its pre-"
 	next "evolved form. At"

@@ -1,5 +1,5 @@
 	db "BIG HORN@" ; species name
-	dw 407, 712 ; height, weight
+	dw 14, 712 ; height, weight
 
 	db   "Those who stare at"
 	next "its antlers will"

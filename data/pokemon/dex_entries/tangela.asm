@@ -1,5 +1,5 @@
 	db "VINE@" ; species name
-	dw 303, 350 ; height, weight
+	dw 10, 350 ; height, weight
 
 	db   "During battle, it"
 	next "constantly moves"

@@ -1,5 +1,5 @@
 	db "GENETIC@" ; species name
-	dw 607, 1220 ; height, weight
+	dw 20, 1220 ; height, weight
 
 	db   "Said to rest"
 	next "quietly in an"

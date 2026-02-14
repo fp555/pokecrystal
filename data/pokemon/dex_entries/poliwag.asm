@@ -1,5 +1,5 @@
 	db "TADPOLE@" ; species name
-	dw 200, 124 ; height, weight
+	dw 6, 124 ; height, weight
 
 	db   "The swirl on its"
 	next "belly is its"

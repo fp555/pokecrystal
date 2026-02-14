@@ -1,5 +1,5 @@
 	db "WORM@" ; species name
-	dw 100, 29 ; height, weight
+	dw 3, 29 ; height, weight
 
 	db   "It crawls into"
 	next "foliage where it"

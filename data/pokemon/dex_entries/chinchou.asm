@@ -1,5 +1,5 @@
 	db "ANGLER@" ; species name
-	dw 108, 120 ; height, weight
+	dw 5, 120 ; height, weight
 
 	db   "It stores positive"
 	next "and negative"

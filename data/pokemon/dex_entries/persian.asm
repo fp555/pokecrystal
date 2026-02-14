@@ -1,5 +1,5 @@
 	db "CLASSY CAT@" ; species name
-	dw 303, 320 ; height, weight
+	dw 10, 320 ; height, weight
 
 	db   "Its lithe muscles"
 	next "allow it to walk"

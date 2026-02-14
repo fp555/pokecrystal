@@ -1,5 +1,5 @@
 	db "OWL@" ; species name
-	dw 503, 408 ; height, weight
+	dw 16, 408 ; height, weight
 
 	db   "Its extremely soft"
 	next "feathers make no"

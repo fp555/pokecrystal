@@ -1,5 +1,5 @@
 	db "TADPOLE@" ; species name
-	dw 303, 200 ; height, weight
+	dw 10, 200 ; height, weight
 
 	db   "Its two legs are"
 	next "well developed,"

@@ -1,5 +1,5 @@
 	db "JELLYFISH@" ; species name
-	dw 503, 550 ; height, weight
+	dw 16, 550 ; height, weight
 
 	db   "When its feelers"
 	next "absorb water, it"

@@ -1,5 +1,5 @@
 	db "FAIRY@" ; species name
-	dw 403, 400 ; height, weight
+	dw 13, 400 ; height, weight
 
 	db   "Said to live in"
 	next "quiet, remote"

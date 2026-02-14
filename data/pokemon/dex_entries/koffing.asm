@@ -1,5 +1,5 @@
 	db "POISON GAS@" ; species name
-	dw 200, 10 ; height, weight
+	dw 6, 10 ; height, weight
 
 	db   "Lighter-than-air"
 	next "gases in its body"

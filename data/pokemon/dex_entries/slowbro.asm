@@ -1,5 +1,5 @@
 	db "HERMITCRAB@" ; species name
-	dw 503, 785 ; height, weight
+	dw 16, 785 ; height, weight
 
 	db   "The attached"
 	next "SHELLDER won't let"

@@ -1,5 +1,5 @@
 	db "SEED@" ; species name
-	dw 303, 130 ; height, weight
+	dw 10, 130 ; height, weight
 
 	db   "The bulb on its"
 	next "back grows as it"

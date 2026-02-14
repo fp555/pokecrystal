@@ -1,5 +1,5 @@
 	db "DUCK@" ; species name
-	dw 207, 196 ; height, weight
+	dw 8, 196 ; height, weight
 
 	db   "It has psychic"
 	next "powers, but its"

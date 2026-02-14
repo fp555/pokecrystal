@@ -1,5 +1,5 @@
 	db "SWINE@" ; species name
-	dw 307, 558 ; height, weight
+	dw 11, 558 ; height, weight
 
 	db   "Although its legs"
 	next "are short, its"

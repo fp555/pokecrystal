@@ -1,5 +1,5 @@
 	db "PUPPY@" ; species name
-	dw 204, 190 ; height, weight
+	dw 7, 190 ; height, weight
 
 	db   "It controls a big"
 	next "territory. If it"

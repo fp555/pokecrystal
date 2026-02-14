@@ -1,5 +1,5 @@
 	db "POISON GAS@" ; species name
-	dw 311, 95 ; height, weight
+	dw 12, 95 ; height, weight
 
 	db   "When it inhales"
 	next "poisonous gases"

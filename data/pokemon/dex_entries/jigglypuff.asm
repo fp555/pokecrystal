@@ -1,5 +1,5 @@
 	db "BALLOON@" ; species name
-	dw 108, 55 ; height, weight
+	dw 5, 55 ; height, weight
 
 	db   "It rolls its cute"
 	next "eyes as it sings a"

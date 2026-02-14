@@ -1,5 +1,5 @@
 	db "MOUSE@" ; species name
-	dw 207, 300 ; height, weight
+	dw 8, 300 ; height, weight
 
 	db   "If its electric"
 	next "pouches run empty,"

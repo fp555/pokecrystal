@@ -1,5 +1,5 @@
 	db "DRAGON@" ; species name
-	dw 104, 80 ; height, weight
+	dw 4, 80 ; height, weight
 
 	db   "When they're in a"
 	next "safe location,"

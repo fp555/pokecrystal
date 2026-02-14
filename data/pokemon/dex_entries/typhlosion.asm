@@ -1,5 +1,5 @@
 	db "VOLCANO@" ; species name
-	dw 507, 795 ; height, weight
+	dw 17, 795 ; height, weight
 
 	db   "When it is ready"
 	next "to battle, the"

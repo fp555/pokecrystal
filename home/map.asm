@@ -906,11 +906,9 @@ ExecuteCallbackScript::
 	farcall CallCallback
 	ld a, [wScriptMode]
 	push af
-	ld hl, wScriptFlags
-	ld a, [hl]
-	push af
-	set UNUSED_SCRIPT_FLAG_1, [hl]
+	ld a, [wScriptFlags]
 	farcall EnableScriptMode
+	push af
 	farcall ScriptEvents
 	pop af
 	ld [wScriptFlags], a

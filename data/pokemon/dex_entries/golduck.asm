@@ -1,5 +1,5 @@
 	db "DUCK@" ; species name
-	dw 507, 766 ; height, weight
+	dw 17, 766 ; height, weight
 
 	db   "It swims grace-"
 	next "fully along on the"

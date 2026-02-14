@@ -1,5 +1,5 @@
 	db "PSI@" ; species name
-	dw 211, 195 ; height, weight
+	dw 9, 195 ; height, weight
 
 	db   "It senses incoming"
 	next "attacks and can"

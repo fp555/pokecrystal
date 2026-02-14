@@ -1,5 +1,5 @@
 	db "BIG JAW@" ; species name
-	dw 707, 888 ; height, weight
+	dw 23, 888 ; height, weight
 
 	db   "Although it has a"
 	next "massive body, its"

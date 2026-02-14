@@ -1,5 +1,5 @@
 	db "SHELLFISH@" ; species name
-	dw 108, 115 ; height, weight
+	dw 5, 115 ; height, weight
 
 	db   "Three hundred"
 	next "million years ago,"

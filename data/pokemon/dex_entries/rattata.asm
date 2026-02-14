@@ -1,5 +1,5 @@
 	db "RAT@" ; species name
-	dw 100, 35 ; height, weight
+	dw 3, 35 ; height, weight
 
 	db   "This #MON's"
 	next "impressive vita-"

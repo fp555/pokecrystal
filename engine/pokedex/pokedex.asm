@@ -1068,9 +1068,9 @@ Pokedex_DrawDexEntryScreenBG:
 	call Pokedex_PlaceString
 	jp Pokedex_PlaceFrontpicTopLeftCorner
 .Height:
-	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
+	db "HT ?.?", $5e, -1 ; $5e is the 'm' tile
 .Weight:
-	db "WT   ???kg", -1
+	db "WT   ?.?", $5f, -1 ; $5f is the 'kg' tile
 .MenuItems:
 	db $3b, " PAGE AREA CRY PRNT", -1
 

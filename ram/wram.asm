@@ -2693,20 +2693,23 @@ wBattleAction:: db
 
 wLinkBattleSentAction:: db
 wMapStatus:: db
+
+; 0: map events on
+; 1: map events off
 wMapEventStatus:: db
 
-wScriptFlags::
 ; bit 2: running script
 ; bit 3: run deferred script
-	db
+wScriptFlags:: db
+
 	ds 1
-wEnabledPlayerEvents::
+
 ; bit 0: count steps
 ; bit 1: coord events
 ; bit 2: warps and connections
 ; bit 4: wild encounters
 ; bit 5: unknown
-	db
+wEnabledPlayerEvents:: db
 
 wScriptMode:: db
 wScriptRunning:: db
@@ -2715,30 +2718,34 @@ wScriptPos:: dw
 
 wScriptStackSize:: db
 wScriptStack:: ds 3 * 5
+
 	ds 1
+
 wScriptDelay:: db
 
 wDeferredScriptBank::
-wScriptTextBank::
-	db
-wDeferredScriptAddr::
-wScriptTextAddr::
-	dw
-	ds 1
-wWildEncounterCooldown:: db
+wScriptTextBank:: db
 
+wDeferredScriptAddr::
+wScriptTextAddr:: dw
+
+	ds 1
+
+wWildEncounterCooldown:: db
 wXYComparePointer:: dw
+
 	ds 4
 
 wBattleScriptFlags:: db
+
 	ds 1
-wPlayerSpriteSetupFlags::
+
 ; bit 7: if set, cancel wPlayerAction
 ; bit 6: RefreshMapSprites doesn't reload player sprite
 ; bit 5: if set, set facing according to bits 0-1
 ; bit 2: female player has been transformed into male
 ; bits 0-1: direction facing
-	db
+wPlayerSpriteSetupFlags:: db
 
 wMapReentryScriptQueueFlag:: db
 wMapReentryScriptBank:: db
@@ -2762,20 +2769,18 @@ wMapStatusEnd::
 	ds 2
 
 wCrystalData::
-wPlayerGender::
-; bit 0:
 ;	0 male
 ;	1 female
-	db
+wPlayerGender:: db
+
 ; mobile profile
 wPlayerAge:: ds 1
 wPlayerPrefecture:: ds 1
 wPlayerPostalCode:: ds 4
 wCrystalDataEnd::
 
-wCrystalFlags::
 ; flags related to mobile profile
-	flag_array 16
+wCrystalFlags:: flag_array 16
 
 wGameData::
 wPlayerData::

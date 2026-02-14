@@ -1,5 +1,5 @@
 	db "SCUFFLE@" ; species name
-	dw 204, 210 ; height, weight
+	dw 7, 210 ; height, weight
 
 	db   "To brush up on its"
 	next "fighting skills,"

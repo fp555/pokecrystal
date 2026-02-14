@@ -1,5 +1,5 @@
 	db "WILD BULL@" ; species name
-	dw 407, 884 ; height, weight
+	dw 14, 884 ; height, weight
 
 	db   "These violent"
 	next "#MON fight with"

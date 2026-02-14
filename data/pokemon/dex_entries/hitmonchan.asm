@@ -1,5 +1,5 @@
 	db "PUNCHING@" ; species name
-	dw 407, 502 ; height, weight
+	dw 14, 502 ; height, weight
 
 	db   "To increase the"
 	next "strength of all"

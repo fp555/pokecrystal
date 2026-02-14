@@ -1,5 +1,5 @@
 	db "ARMOR@" ; species name
-	dw 607, 2020 ; height, weight
+	dw 20, 2020 ; height, weight
 
 	db   "In just one of its"
 	next "mighty hands, it"

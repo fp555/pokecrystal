@@ -1,5 +1,5 @@
 	db "IRON SNAKE@" ; species name
-	dw 3002, 4000 ; height, weight
+	dw 92, 4000 ; height, weight
 
 	db   "The many small"
 	next "metal particles"

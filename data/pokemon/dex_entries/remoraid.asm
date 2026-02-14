@@ -1,5 +1,5 @@
 	db "JET@" ; species name
-	dw 200, 120 ; height, weight
+	dw 6, 120 ; height, weight
 
 	db   "To escape from an"
 	next "attacker, it may"

@@ -1,5 +1,5 @@
 	db "FIRE HORSE@" ; species name
-	dw 507, 950 ; height, weight
+	dw 17, 950 ; height, weight
 
 	db   "It just loves to"
 	next "gallop. The faster"

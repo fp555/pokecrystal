@@ -1,5 +1,5 @@
 	db "TINYTURTLE@" ; species name
-	dw 108, 90 ; height, weight
+	dw 5, 90 ; height, weight
 
 	db   "When it feels"
 	next "threatened, it"

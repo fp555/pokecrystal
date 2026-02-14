@@ -1,5 +1,5 @@
 	db "FAIRY@" ; species name
-	dw 200, 78 ; height, weight
+	dw 6, 78 ; height, weight
 
 	db   "In truth, it is a"
 	next "cowardly #MON."

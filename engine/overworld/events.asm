@@ -105,18 +105,11 @@ HandleMap:
 
 MapEvents:
 	ld a, [wMapEventStatus]
-	ld hl, .Jumptable
-	rst JumpTable
-	ret
-.Jumptable:
-	; entries correspond to MAPEVENTS_* constants
-	dw .events
-	dw .no_events
-.events:
+	and a
+	ret nz ; map events off
 	call PlayerEvents
 	call DisableEvents
 	farcall ScriptEvents
-.no_events
 	ret
 
 ResetOverworldDelay:
@@ -133,8 +126,8 @@ NextOverworldFrame:
 
 HandleMapTimeAndJoypad:
 	ld a, [wMapEventStatus]
-	cp MAPEVENTS_OFF
-	ret z
+	and a
+	ret nz ; map events off
 	call UpdateTime
 	call GetJoypad
 	jp TimeOfDayPals
@@ -160,11 +153,11 @@ CheckPlayerState:
 	jr nz, .noevents
 	call EnableEvents
 .events
-	ld a, MAPEVENTS_ON
+	xor a ; map events on
 	ld [wMapEventStatus], a
 	ret
 .noevents
-	ld a, MAPEVENTS_OFF
+	ld a, $1 ; map events off
 	ld [wMapEventStatus], a
 	ret
 
@@ -730,6 +723,9 @@ DoRepelStep:
 	dec a
 	ld [wRepelEffect], a
 	ret nz
+	ld a, [wRepelType]
+	and a
+	ret z ; error check
 	ld a, BANK(RepelWoreOffScript)
 	ld hl, RepelWoreOffScript
 	call CallScript

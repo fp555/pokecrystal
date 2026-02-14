@@ -1,5 +1,5 @@
 	db "PIG MONKEY@" ; species name
-	dw 108, 280 ; height, weight
+	dw 5, 280 ; height, weight
 
 	db   "It lives in groups"
 	next "in the treetops."

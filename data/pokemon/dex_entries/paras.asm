@@ -1,5 +1,5 @@
 	db "MUSHROOM@" ; species name
-	dw 100, 54 ; height, weight
+	dw 3, 54 ; height, weight
 
 	db   "Grows by sucking"
 	next "nutrients from"

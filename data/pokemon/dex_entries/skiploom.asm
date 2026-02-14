@@ -1,5 +1,5 @@
 	db "COTTONWEED@" ; species name
-	dw 200, 10 ; height, weight
+	dw 6, 10 ; height, weight
 
 	db   "As soon as it"
 	next "rains, it closes"

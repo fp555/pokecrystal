@@ -1,5 +1,5 @@
 	db "SEED@" ; species name
-	dw 100, 18 ; height, weight
+	dw 3, 18 ; height, weight
 
 	db   "It lives by drin-"
 	next "king only dewdrops"

@@ -1,5 +1,5 @@
 	db "HAPPINESS@" ; species name
-	dw 411, 468 ; height, weight
+	dw 15, 468 ; height, weight
 
 	db   "Biting into one"
 	next "of the delicious"

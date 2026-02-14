@@ -87,9 +87,9 @@ DisplayDexEntry:
 	push de
 	; Print dex number
 	hlcoord 2, 8
-	ld a, $5c ; No
+	ld a, $5c ; 'No'
 	ld [hli], a
-	ld a, $5d ; .
+	ld a, $5d ; '.'
 	ld [hli], a
 	ld de, wTempSpecies
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
@@ -119,16 +119,13 @@ DisplayDexEntry:
 	jr z, .skip_height
 	push hl
 	push de
-	; Print the height, with two of the four digits in front of the decimal point
+	; Print the height, with 1 of the 2 digits in front of the decimal point
 	ld hl, sp+0
 	ld d, h
 	ld e, l
 	hlcoord 12, 7
-	lb bc, 2, (2 << 4) | 4
+	lb bc, 2, (1 << 4) | 2
 	call PrintNum
-	; Replace the decimal point with a ft symbol
-	hlcoord 14, 7
-	ld [hl], $5e
 	pop af
 	pop hl
 .skip_height
@@ -144,7 +141,7 @@ DisplayDexEntry:
 	or d
 	jr z, .skip_weight
 	push de
-	; Print the weight, with three of the four digits in front of the decimal point
+	; Print the weight, with 3 of the 4 digits in front of the decimal point
 	ld hl, sp+0
 	ld d, h
 	ld e, l

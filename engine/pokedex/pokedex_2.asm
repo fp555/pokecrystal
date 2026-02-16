@@ -123,7 +123,7 @@ DisplayDexEntry:
 	ld hl, sp+0
 	ld d, h
 	ld e, l
-	hlcoord 12, 7
+	hlcoord 14, 7
 	lb bc, 2, (1 << 4) | 2
 	call PrintNum
 	pop af

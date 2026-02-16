@@ -189,15 +189,12 @@ CheckStringForErrors:
 	jr c, .Fail
 	cp '<MOM>'
 	jr c, .NextChar
-
 .Fail:
 	scf
 	ret
-
 .NextChar:
 	dec c
 	jr nz, .loop
-
 .Done:
 	and a
 	ret
@@ -215,7 +212,6 @@ CheckStringForErrors_IgnoreTerminator:
 	jr z, .next
 	cp '@'
 	jr z, .next
-
 	cp 'ガ'
 	jr c, .end
 	cp '<PLAY_G>'
@@ -236,11 +232,9 @@ CheckStringForErrors_IgnoreTerminator:
 	jr c, .end
 	cp '<MOM>'
 	jr c, .next
-
 .end
 	scf
 	ret
-
 .next
 	dec c
 	jr nz, .loop
@@ -276,13 +270,6 @@ Function17d0f3:
 	call FadeToMenu
 	farcall Function10804d
 	farcall Function17d1f1
-	ld a, $1
-	ld [wForceEvolution], a
-	ld a, LINK_TRADECENTER
-	ld [wLinkMode], a
-	farcall EvolvePokemon
-	xor a
-	ld [wLinkMode], a
 	farcall SaveAfterLinkTrade
 	ld a, BANK(s5_a800)
 	call OpenSRAM
@@ -299,18 +286,15 @@ Function17d0f3:
 	jr z, .asm_17d180
 	ld a, $1
 	ld [de], a
-
 .asm_17d180
 	call CloseSubmenu
-	call RestartMapMusic
-	ret
+	jp RestartMapMusic
 
 Mobile_CopyDefaultOTName:
 	ld hl, Mobile5F_PlayersName
 	ld de, wMobileMonOT
 	ld bc, NAME_LENGTH_JAPANESE - 1
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 Mobile5F_PlayersName:
 	dname "クりス", NAME_LENGTH_JAPANESE - 1
@@ -319,9 +303,7 @@ Mobile_CopyDefaultNickname:
 	ld hl, .DefaultNickname
 	ld de, wMobileMonNick
 	ld bc, NAME_LENGTH_JAPANESE - 1
-	call CopyBytes
-	ret
-
+	jp CopyBytes
 .DefaultNickname:
 	dname "？？？？？", NAME_LENGTH_JAPANESE - 1
 
@@ -333,9 +315,7 @@ Mobile_CopyDefaultMail:
 	ld hl, .DefaultMessage
 	ld de, wMobileMonMail
 	ld bc, .DefaultMessageEnd - .DefaultMessage
-	call CopyBytes
-	ret
-
+	jp CopyBytes
 .DefaultMessage:
 	db "こんにちは@"
 .DefaultMessageEnd:
@@ -348,8 +328,7 @@ Mobile_CopyDefaultMailAuthor:
 	ld hl, Mobile5F_PlayersName
 	ld de, wMobileMonMailAuthor
 	ld bc, NAME_LENGTH_JAPANESE - 1
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 CheckStringContainsLessThanBNextCharacters:
 .loop
@@ -359,13 +338,11 @@ CheckStringContainsLessThanBNextCharacters:
 	jr nz, .next_char
 	dec b
 	jr z, .done
-
 .next_char
 	dec c
 	jr nz, .loop
 	and a
 	ret
-
 .done
 	scf
 	ret
@@ -374,11 +351,9 @@ Function17d1f1:
 	ld a, [wCurPartySpecies]
 	dec a
 	call SetSeenAndCaughtMon
-
 	ld a, [wCurPartySpecies]
 	cp UNOWN
-	jr nz, .asm_17d223
-
+	ret nz
 	ld hl, wPartyMon1DVs
 	ld a, [wPartyCount]
 	dec a
@@ -388,12 +363,9 @@ Function17d1f1:
 	callfar UpdateUnownDex
 	ld a, [wFirstUnownSeen]
 	and a
-	jr nz, .asm_17d223
-
+	ret nz
 	ld a, [wUnownLetter]
 	ld [wFirstUnownSeen], a
-
-.asm_17d223
 	ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -413,17 +385,14 @@ Menu_ChallengeExplanationCancel:
 	ld [wScriptVar], a
 	ld hl, MenuHeader_17d26a ; Japanese Menu, where you can choose 'News' as an option
 	jr .Load_Interpret
-
 .English:
 	ld a, $4
 	ld [wScriptVar], a
 	ld hl, MenuHeader_ChallengeExplanationCancel ; English Menu
-
 .Load_Interpret:
 	call LoadMenuHeader
 	call Function17d246
-	call CloseWindow
-	ret
+	jp CloseWindow
 
 Function17d246:
 	call VerticalMenu
@@ -437,14 +406,11 @@ Function17d246:
 	jr c, .UsewMenuCursorY
 	dec a
 	jr .LoadToScriptVar
-
 .UsewMenuCursorY:
 	ld a, [wMenuCursorY]
-
 .LoadToScriptVar:
 	ld [wScriptVar], a
 	ret
-
 .Exit:
 	ld a, $4
 	ld [wScriptVar], a
@@ -500,7 +466,6 @@ Function17d2ce:
 	ld a, $1
 	ld [wScriptVar], a
 	ret
-
 .asm_17d2e2
 	call Function17d314
 	ret c
@@ -522,8 +487,7 @@ Function17d2ce:
 	ld [wMusicFadeID + 1], a
 	call PlayMusic
 	call ReturnToMapFromSubmenu
-	call CloseSubmenu
-	ret
+	jp CloseSubmenu
 
 Function17d314:
 	ld a, BANK(s5_b1b1)
@@ -562,7 +526,6 @@ Function17d314:
 	call CloseSRAM
 	and a
 	ret
-
 .asm_17d354
 	call CloseSRAM
 	ld a, $5
@@ -625,15 +588,14 @@ Function17d370:
 	ld de, w4_d000
 	ld bc, $1000
 	call CopyBytes
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 Function17d3f6:
 	call ClearBGPalettes
 	call ClearSprites
 	call ClearScreen
 	farcall HDMATransferTilemapAndAttrmap_Overworld
-
+	; fallthrough
 Function17d405:
 	call DisableLCD
 	ld hl, vTiles0 tile $ee
@@ -679,7 +641,6 @@ Function17d45a:
 	call Function17d474
 	farcall HDMATransferTilemapAndAttrmap_Overworld
 	jr .asm_17d45a
-
 .asm_17d46f
 	xor a
 	ld [wScriptVar], a
@@ -714,7 +675,6 @@ Function17d48d:
 	cp $7f
 	jr z, .asm_17d4b0
 	add $80
-
 .asm_17d4b0
 	ld [de], a
 	inc de
@@ -746,7 +706,6 @@ Function17d48d:
 	ld [wMapMusic], a
 	ld d, $0
 	call PlayMusic2
-
 .asm_17d4e0
 	ld a, [hli]
 	ld de, wc608
@@ -764,14 +723,12 @@ Function17d48d:
 	jr nz, .asm_17d4ed
 	pop af
 	jr .asm_17d4fc
-
 .asm_17d4f6
 	push af
 	ld a, e
 	add $8
 	ld e, a
 	pop af
-
 .asm_17d4fc
 	dec c
 	jr nz, .asm_17d4e6
@@ -806,7 +763,6 @@ Function17d48d:
 	pop af
 	dec a
 	jr nz, .asm_17d508
-
 .asm_17d539
 	ld a, [hli]
 .asm_17d53a
@@ -852,7 +808,6 @@ Function17d48d:
 	and a
 	jr z, .asm_17d58a
 	call Function17d6a1
-
 .asm_17d58a
 	ld a, l
 	ld [wcd49], a
@@ -882,7 +837,7 @@ Function17d48d:
 Function17d5be:
 	call SetDefaultBGPAndOBP
 	call Function17e438
-
+	; fallthrough
 Function17d5c4:
 	ldh a, [hJoyPressed]
 	and a
@@ -896,7 +851,6 @@ Function17d5c4:
 	inc c
 	inc c
 	jr .loop
-
 .got_button
 	add hl, bc
 	ld a, [hli]
@@ -1003,7 +957,6 @@ Function17d60b:
 	pop de
 	pop bc
 	jr .asm_17d63b
-
 .asm_17d684
 	call CloseSRAM
 	ld a, $5
@@ -1015,8 +968,7 @@ Function17d60b:
 	ld a, [$b1b2]
 	ld b, a
 	call CopyBytes
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 Function17d6a1:
 	push hl
@@ -1078,7 +1030,7 @@ Function17d6fd:
 	ld a, [hl]
 	cp $ff
 	jr z, asm_17d721
-
+	; fallthrough
 Function17d711:
 .crash_loop
 	cp $31

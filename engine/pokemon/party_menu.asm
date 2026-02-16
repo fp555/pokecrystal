@@ -8,8 +8,7 @@ SelectMonFromParty:
 	call SetDefaultBGPAndOBP
 	call DelayFrame
 	call PartyMenuSelect
-	call ReturnToMapWithSpeechTextbox
-	ret
+	jp ReturnToMapWithSpeechTextbox
 
 SelectTradeOrDayCareMon:
 	ld a, b
@@ -23,16 +22,14 @@ SelectTradeOrDayCareMon:
 	call SetDefaultBGPAndOBP
 	call DelayFrame
 	call PartyMenuSelect
-	call ReturnToMapWithSpeechTextbox
-	ret
+	jp ReturnToMapWithSpeechTextbox
 
 InitPartyMenuLayout:
 	call LoadPartyMenuGFX
 	call InitPartyMenuWithCancel
 	call InitPartyMenuGFX
 	call WritePartyMenuTilemap
-	call PlacePartyMenuText
-	ret
+	jp PlacePartyMenuText
 
 LoadPartyMenuGFX:
 	call LoadFontsBattleExtra
@@ -104,8 +101,7 @@ PlacePartyNicknames:
 	dec hl
 	dec hl
 	ld de, .CancelString
-	call PlaceString
-	ret
+	jp PlaceString
 .CancelString:
 	db "CANCEL@"
 
@@ -148,8 +144,7 @@ PlacePartyHPBar:
 	dec c
 	jr nz, .loop
 	ld b, SCGB_PARTY_MENU
-	call GetSGBLayout
-	ret
+	jp GetSGBLayout
 
 PlacePartymonHPBar:
 	ld a, b
@@ -358,7 +353,49 @@ PlacePartyMonEvoStoneCompatibility:
 	ld hl, EvosAttacksPointers
 	add hl, de
 	add hl, de
-	call .DetermineCompatibility
+	; DetermineCompatibility
+	ld de, wStringBuffer1
+	ld a, BANK(EvosAttacksPointers)
+	ld bc, 2
+	call FarCopyBytes
+	ld hl, wStringBuffer1
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+.loop2
+	ld a, BANK("Evolutions and Attacks")
+	call GetFarByte
+	and a ; no more evolutions?
+	jr z, .nope
+	cp EVOLVE_ITEM ; skip everything else
+	jr nz, .skip_evo
+	inc hl
+	ld a, BANK("Evolutions and Attacks")
+	call GetFarByte
+	ld b, a
+	ld a, [wCurItem]
+	cp b
+	jr nz, .skip2
+	ld de, .string_able
+	jr .done
+.skip_evo
+	cp NUM_EVOLUTION_TYPES + 1 ; error handling
+	jr nc, .nope
+	cp EVOLVE_HAPPINESS
+	jr z, .skip2
+	cp EVOLVE_LEVEL
+	jr z, .skip3
+	; EVOLVE_STAT or EVOLVE_HELD
+	inc hl
+.skip3
+	inc hl
+.skip2
+	inc hl
+	inc hl
+	jr .loop2
+.nope
+	ld de, .string_not_able
+.done
 	pop hl
 	call PlaceString
 .next
@@ -368,45 +405,7 @@ PlacePartyMonEvoStoneCompatibility:
 	pop bc
 	inc b
 	dec c
-	jr nz, .loop
-	ret
-.DetermineCompatibility:
-	ld de, wStringBuffer1
-	ld a, BANK(EvosAttacksPointers)
-	ld bc, 2
-	call FarCopyBytes
-	ld hl, wStringBuffer1
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld de, wStringBuffer1
-	ld a, BANK("Evolutions and Attacks")
-	ld bc, STRING_BUFFER_LENGTH
-	call FarCopyBytes
-	ld hl, wStringBuffer1
-.loop2
-	ld a, [hli]
-	and a
-	jr z, .nope
-	cp EVOLVE_STAT
-	jr nz, .not_four_bytes
-	inc hl
-.not_four_bytes
-	inc hl
-	inc hl
-	cp EVOLVE_ITEM
-	jr nz, .loop2
-	dec hl
-	dec hl
-	ld a, [wCurItem]
-	cp [hl]
-	inc hl
-	inc hl
-	jr nz, .loop2
-	ld de, .string_able
-	ret
-.nope
-	ld de, .string_not_able
+	jp nz, .loop
 	ret
 .string_able
 	db "ABLE@"

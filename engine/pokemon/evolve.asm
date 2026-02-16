@@ -1,4 +1,8 @@
 EvolvePokemon:
+	; do not evolve in link mode
+	ld a, [wLinkMode]
+	and a
+	ret nz
 	ld hl, wEvolvableFlags
 	xor a
 	ld [hl], a
@@ -35,7 +39,7 @@ EvolveAfterBattle_MasterLoop:
 	call EvoFlagAction
 	ld a, c
 	and a
-	jp z, EvolveAfterBattle_MasterLoop
+	jr z, EvolveAfterBattle_MasterLoop
 	ld a, [wEvolutionOldSpecies]
 	dec a
 	ld b, 0
@@ -53,127 +57,19 @@ EvolveAfterBattle_MasterLoop:
 	pop hl
 .loop
 	ld a, [hli]
-	and a
+	and a ; no more evolutions?
 	jr z, EvolveAfterBattle_MasterLoop
-	ld b, a
-	cp EVOLVE_TRADE
-	jr z, .trade
-	ld a, [wLinkMode]
-	and a
-	jp nz, .dont_evolve_2
-	ld a, b
-	cp EVOLVE_ITEM
-	jp z, .item
-	ld a, [wForceEvolution]
-	and a
-	jp nz, .dont_evolve_2
-	ld a, b
-	cp EVOLVE_LEVEL
-	jp z, .level
-	cp EVOLVE_HAPPINESS
-	jr z, .happiness
-	cp EVOLVE_HELD
-	jp z, .held
-	; EVOLVE_STAT
-	ld a, [wTempMonLevel]
-	cp [hl]
-	jp c, .dont_evolve_1
-	call IsMonHoldingEverstone
-	jp z, .dont_evolve_1
+	cp NUM_EVOLUTION_TYPES
+	jr c, EvolveAfterBattle_MasterLoop
+	dec a ; EVOLVE_* constants start from 1
 	push hl
-	ld de, wTempMonAttack
-	ld hl, wTempMonDefense
-	ld c, 2
-	call CompareBytes
-	ld a, ATK_EQ_DEF
-	jr z, .got_tyrogue_evo
-	ld a, ATK_LT_DEF
-	jr c, .got_tyrogue_evo
-	ld a, ATK_GT_DEF
-.got_tyrogue_evo
-	pop hl
-	inc hl
-	cp [hl]
-	jp nz, .dont_evolve_2
-	inc hl
-	jp .proceed
-.happiness
-	ld a, [wTempMonHappiness]
-	cp HAPPINESS_TO_EVOLVE
-	jp c, .dont_evolve_2
-	call IsMonHoldingEverstone
-	jp z, .dont_evolve_2
-	ld a, [hli]
-	cp TR_ANYTIME
-	jr z, .proceed
-	cp TR_MORNDAY
-	jr z, .happiness_daylight
-	; TR_NITE
-	ld a, [wTimeOfDay]
-	cp NITE_F
-	jp nz, .dont_evolve_3
-	jr .proceed
-.happiness_daylight
-	ld a, [wTimeOfDay]
-	cp NITE_F
-	jp z, .dont_evolve_3
-	jr .proceed
-.trade
-	ld a, [wLinkMode]
-	and a
-	jp z, .dont_evolve_2
-	call IsMonHoldingEverstone
-	jp z, .dont_evolve_2
-	ld a, [hli]
-	ld b, a
-	inc a
-	jr z, .proceed
-	ld a, [wLinkMode]
-	cp LINK_TIMECAPSULE
-	jp z, .dont_evolve_3
-	ld a, [wTempMonItem]
-	cp b
-	jp nz, .dont_evolve_3
-	xor a
-	ld [wTempMonItem], a
-	jr .proceed
-.item
-	ld a, [hli]
-	ld b, a
-	ld a, [wCurItem]
-	cp b
-	jp nz, .dont_evolve_3
-	ld a, [wForceEvolution]
-	and a
-	jp z, .dont_evolve_3
-	ld a, [wLinkMode]
-	and a
-	jp nz, .dont_evolve_3
-	jr .proceed
-.held
-	push hl
-	ld a, [wCurPartyMon]
-	ld hl, wPartyMon1Item
-	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
-	ld a, [hl]
-	ld b, a
-	pop hl
-	ld a, [hli]
-	cp b
-	jp nz, .dont_evolve_2
-.level
-	ld a, [hli]
-	ld b, a
-	ld a, [wTempMonLevel]
-	cp b
-	jp c, .dont_evolve_3
-	call IsMonHoldingEverstone
-	jp z, .dont_evolve_3
-.proceed
+	ld hl, .evolve_jumptable
+	rst JumpTable
+	jr c, .loop
+	; proceed
 	ld a, [wTempMonLevel]
 	ld [wCurPartyLevel], a
-	ld a, $1
+	ld a, TRUE
 	ld [wMonTriedToEvolve], a
 	push hl
 	ld a, [hl]
@@ -277,26 +173,117 @@ EvolveAfterBattle_MasterLoop:
 	ld l, e
 	ld h, d
 	jp EvolveAfterBattle_MasterLoop
-.dont_evolve_1
-	inc hl
-.dont_evolve_2
-	inc hl
-.dont_evolve_3
-	inc hl
-	jp .loop
 .ReturnToMap:
 	pop de
 	pop bc
 	pop hl
-	ld a, [wLinkMode]
-	and a
-	ret nz
 	ld a, [wBattleMode]
 	and a
 	ret nz
 	ld a, [wMonTriedToEvolve]
 	and a
 	call nz, RestartMapMusic
+	ret
+.evolve_jumptable: ; mirror EVOLVE_* constants
+	dw .EvolveByLevel
+	dw .EvolveUseItem
+	dw .EvolveByHappiness
+	dw .EvolveByStat
+	dw .EvolveHeldItem
+.EvolveByLevel:
+	pop hl
+	ld a, [wForceEvolution]
+	and a
+	jp nz, .dont_evolve_2
+	ld a, [hli]
+	ld b, a
+	ld a, [wTempMonLevel]
+	cp b
+	jp c, .dont_evolve
+	call IsMonHoldingEverstone
+	jr z, .dont_evolve
+	and a
+	ret ; evolve
+.EvolveUseItem:
+	pop hl
+	ld a, [hli]
+	ld b, a
+	ld a, [wCurItem]
+	cp b
+	jr nz, .dont_evolve
+	ld a, [wForceEvolution]
+	and a
+	jr z, .dont_evolve
+	ret ; evolve
+.EvolveByHappiness:
+	pop hl
+	ld a, [wForceEvolution]
+	and a
+	jr nz, .dont_evolve
+	ld a, [wTempMonHappiness]
+	cp HAPPINESS_TO_EVOLVE
+	jr c, .dont_evolve
+	call IsMonHoldingEverstone
+	jr z, .dont_evolve
+	and a
+	ret ; evolve
+.EvolveByStat:
+	pop hl
+	ld a, [wTempMonLevel]
+	cp [hl]
+	jr c, .dont_evolve_3
+	call IsMonHoldingEverstone
+	jr z, .dont_evolve_3
+	push hl
+	ld de, wTempMonAttack
+	ld hl, wTempMonDefense
+	ld c, 2
+	call CompareBytes
+	ld a, ATK_EQ_DEF
+	jr z, .got_tyrogue_evo
+	ld a, ATK_LT_DEF
+	jr c, .got_tyrogue_evo
+	ld a, ATK_GT_DEF
+.got_tyrogue_evo
+	pop hl
+	inc hl
+	cp [hl]
+	jp nz, .dont_evolve_2
+	inc hl
+	ret ; evolve
+.EvolveHeldItem:
+	pop hl
+	ld a, [wForceEvolution]
+	and a
+	jr nz, .dont_evolve_3
+	ld a, [wCurPartyMon]
+	push hl
+	ld hl, wPartyMon1Item
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call AddNTimes
+	ld a, [hl]
+	ld b, a
+	pop hl
+	ld a, [hli]
+	cp b
+	jr nz, .dont_evolve_2
+.level
+	ld a, [hli]
+	ld b, a
+	ld a, [wTempMonLevel]
+	cp b
+	jr c, .dont_evolve
+	call IsMonHoldingEverstone
+	jr z, .dont_evolve
+	and a
+	ret ; evolve
+.dont_evolve_3
+	inc hl
+.dont_evolve_2
+	inc hl
+.dont_evolve
+	inc hl
+	scf
 	ret
 
 UpdateSpeciesNameIfNotNicknamed:

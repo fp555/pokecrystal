@@ -151,19 +151,14 @@ DEF HOF_LENGTH EQU 1 + HOF_MON_LENGTH * PARTY_LENGTH + 1 ; $62
 DEF NUM_HOF_TEAMS EQU 30
 
 ; evolution types (used in data/pokemon/evos_attacks.asm)
+; EvolveAfterBattle_MasterLoop.evolve_jumptable constants (engine/pokemon/evolve.asm)
 	const_def 1
 	const EVOLVE_LEVEL
 	const EVOLVE_ITEM
-	const EVOLVE_TRADE ; unused
 	const EVOLVE_HAPPINESS
 	const EVOLVE_STAT
 	const EVOLVE_HELD
-
-; EVOLVE_HAPPINESS triggers
-	const_def 1
-	const TR_ANYTIME
-	const TR_MORNDAY
-	const TR_NITE
+DEF NUM_EVOLUTION_TYPES EQU const_value - 1
 
 ; EVOLVE_STAT triggers
 	const_def 1

@@ -6498,13 +6498,6 @@ Function11b7e5:
 	call FadeToMenu
 	farcall MobileTradeAnimation_ReceiveGetmonFromGTS
 	farcall Function17d1f1
-	ld a, $1
-	ld [wForceEvolution], a
-	ld a, LINK_TRADECENTER
-	ld [wLinkMode], a
-	farcall EvolvePokemon
-	xor a
-	ld [wLinkMode], a
 	farcall SaveAfterLinkTrade
 	ld a, BANK(s5_a800)
 	call OpenSRAM

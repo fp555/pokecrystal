@@ -499,8 +499,7 @@ LinkTimeout:
 	call ClearScreen
 	ld b, SCGB_DIPLOMA
 	call GetSGBLayout
-	call WaitBGMap2
-	ret
+	jp WaitBGMap2
 .LinkTimeoutText:
 	text_far _LinkTimeoutText
 	text_end
@@ -1133,7 +1132,7 @@ Link_FindFirstNonControlCharacter_AllowZero:
 
 InitTradeMenuDisplay:
 	call ClearScreen
-	call LoadTradeScreenBorderGFX
+	farcall LoadTradeScreenBorderGFX
 	farcall InitTradeSpeciesList
 	xor a
 	ld hl, wOtherPlayerLinkMode
@@ -1168,7 +1167,7 @@ LinkTrade_OTPartyMenu:
 	ld [w2DMenuFlags1], a
 	xor a
 	ld [w2DMenuFlags2], a
-
+	; fallthrough
 LinkTradeOTPartymonMenuLoop:
 	farcall LinkTradeMenu
 	ld a, d
@@ -1228,7 +1227,7 @@ LinkTrade_PlayerPartyMenu:
 	xor a
 	ld [w2DMenuFlags2], a
 	call WaitBGMap2
-
+	; fallthrough
 LinkTradePartymonMenuLoop:
 	farcall LinkTradeMenu
 	ld a, d
@@ -1797,31 +1796,10 @@ LinkTrade:
 	ld a, [wPartyCount]
 	dec a
 	ld [wCurPartyMon], a
-	callfar EvolvePokemon
 	call ClearScreen
-	call LoadTradeScreenBorderGFX
+	farcall LoadTradeScreenBorderGFX
 	call SetTradeRoomBGPals
 	farcall Link_WaitBGMap
-	; Check if either of the Pokémon sent was a Mew or Celebi, and send a different
-	; byte depending on that. Presumably this would've been some prevention against
-	; illicit trade machines, but it doesn't seem like a very effective one.
-	; Removing this code breaks link compatibility with the vanilla gen2 games, but
-	; has otherwise no consequence.
-	ld b, 1
-	pop af
-	ld c, a
-	cp MEW
-	jr z, .send_checkbyte
-	ld a, [wCurPartySpecies]
-	cp MEW
-	jr z, .send_checkbyte
-	ld b, 2
-	ld a, c
-	cp CELEBI
-	jr z, .send_checkbyte
-	ld a, [wCurPartySpecies]
-	cp CELEBI
-	jr z, .send_checkbyte
 	; Send the byte in a loop until the desired byte has been received.
 	ld b, 0
 .send_checkbyte
@@ -1887,14 +1865,9 @@ LinkTextboxAtHL:
 	farcall LinkTextbox
 	ret
 
-LoadTradeScreenBorderGFX:
-	farcall _LoadTradeScreenBorderGFX
-	ret
-
 SetTradeRoomBGPals:
-	farcall LoadTradeRoomBGPals ; just a nested farcall; so wasteful
-	call SetDefaultBGPAndOBP
-	ret
+	farcall LoadTradeRoomBGPals
+	jp SetDefaultBGPAndOBP
 
 INCLUDE "engine/movie/trade_animation.asm"
 

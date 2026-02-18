@@ -1,19 +1,17 @@
 LinkCommsBorderGFX:
 INCBIN "gfx/trade/border_tiles.2bpp"
 
-__LoadTradeScreenBorderGFX:
+LoadTradeScreenBorderGFX:
 	ld de, LinkCommsBorderGFX
 	ld hl, vTiles2
 	lb bc, BANK(LinkCommsBorderGFX), 70
-	call Get2bpp
-	ret
+	jp Get2bpp
 
 LoadMobileTradeBorderTilemap:
 	ld hl, MobileTradeBorderTilemap
 	decoord 0, 0
 	ld bc, SCREEN_AREA
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 MobileTradeBorderTilemap:
 INCBIN "gfx/trade/border_mobile.tilemap"
@@ -24,7 +22,7 @@ INCBIN "gfx/trade/border_cable_top.tilemap"
 CableTradeBorderBottomTilemap:
 INCBIN "gfx/trade/border_cable_bottom.tilemap"
 
-_LinkTextbox:
+LinkTextbox:
 	ld h, d
 	ld l, e
 	push bc
@@ -91,31 +89,21 @@ _LinkTextbox:
 	ret
 
 InitTradeSpeciesList:
-	call _LoadTradeScreenBorderGFX
+	call LoadTradeScreenBorderGFX
 	call LoadCableTradeBorderTilemap
 	farcall InitMG_Mobile_LinkTradePalMap
 	farcall PlaceTradePartnerNamesAndParty
 	hlcoord 10, 17
 	ld de, .CancelString
-	call PlaceString
-	ret
+	jp PlaceString
 .CancelString:
 	db "CANCEL@"
-
-_LoadTradeScreenBorderGFX:
-	call __LoadTradeScreenBorderGFX
-	ret
 
 LinkComms_LoadPleaseWaitTextboxBorderGFX:
 	ld de, LinkCommsBorderGFX + $30 tiles
 	ld hl, vTiles2 tile $76
 	lb bc, BANK(LinkCommsBorderGFX), 8
-	call Get2bpp
-	ret
-
-LoadTradeRoomBGPals:
-	farcall _LoadTradeRoomBGPals
-	ret
+	jp Get2bpp
 
 LoadCableTradeBorderTilemap:
 	call LoadMobileTradeBorderTilemap
@@ -126,21 +114,11 @@ LoadCableTradeBorderTilemap:
 	ld hl, CableTradeBorderBottomTilemap
 	decoord 0, 16
 	ld bc, 2 * SCREEN_WIDTH
-	call CopyBytes
-	ret
-
-LinkTextbox:
-	call _LinkTextbox
-	ret
+	jp CopyBytes
 
 PlaceWaitingTextAndSyncAndExchangeNybble:
 	call LoadStandardMenuHeader
-	call .PlaceWaitingText
-	farcall WaitLinkTransfer
-	call Call_ExitMenu
-	call WaitBGMap2
-	ret
-.PlaceWaitingText:
+	; PlaceWaitingText
 	hlcoord 4, 10
 	ld b, 1
 	ld c, 10
@@ -151,14 +129,15 @@ PlaceWaitingTextAndSyncAndExchangeNybble:
 	call WaitBGMap
 	call WaitBGMap2
 	ld c, 50
-	jp DelayFrames
+	call DelayFrames
+	farcall WaitLinkTransfer
+	call Call_ExitMenu
+	jp WaitBGMap2
 .Waiting:
 	db "WAITING..!@"
 
 LinkTradeMenu:
 	call .MenuAction
-	call .GetJoypad
-	ret
 .GetJoypad:
 	push bc
 	push af
@@ -187,19 +166,18 @@ LinkTradeMenu:
 	call .UpdateCursor
 	call .UpdateBGMapAndOAM
 	call .loop2
-	jr nc, .done
+	ret nc
 	farcall _2DMenuInterpretJoypad
-	jr c, .done
+	ret c
 	ld a, [w2DMenuFlags1]
 	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, a
-	jr nz, .done
+	ret nz
 	call .GetJoypad
 	ld b, a
 	ld a, [wMenuJoypadFilter]
 	and b
-	jr z, .loop
-.done
-	ret
+	ret nz
+	jr .loop
 .UpdateBGMapAndOAM:
 	ldh a, [hOAMUpdate]
 	push af

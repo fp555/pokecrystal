@@ -1114,12 +1114,11 @@ _OakRating04::
 	done
 
 _OakRating05::
-	text "You're trying--I"
-	line "can see that."
-
-	para "Your #DEX is"
+	text "Your #DEX is"
 	line "coming together."
-	done
+	
+	para "I can see you're"
+	done "serious about it."
 
 _OakRating06::
 	text "To evolve, some"
@@ -1176,7 +1175,7 @@ _OakRating13::
 	line "more #MON than"
 
 	para "the last #DEX"
-	line "research project."
+	line "research project!"
 	done
 
 _OakRating14::
@@ -1230,12 +1229,16 @@ _OakPCText4::
 	line "OAK's PC closed."
 	done
 
-_MemoryGameYeahText::
-	text " , yeah!"
+_MemoryGameMatchedText::
+	text " matched!"
 	done
 
 _MemoryGameDarnText::
 	text "Darn…"
+	done
+
+_MemoryGameGameOverText::
+	text "Game over!"
 	done
 
 _StartMenuContestEndText::

@@ -111,14 +111,6 @@ TVText:
 	text "It's a TV."
 	done
 
-HomepageText:
-	text "#MON JOURNAL"
-	line "HOME PAGE…"
-
-	para "It hasn't been"
-	line "updated…"
-	done
-
 TrashCanText:
 	text "There's nothing in"
 	line "here…"
@@ -260,6 +252,29 @@ CoinVendor_CoinCaseFullText:
 CoinVendor_CancelText:
 	text "No coins for you?"
 	line "Come again!"
+	done
+
+MemoryGame_WelcomeText:
+	text "Welcome!"
+	
+	para "Want me to explain"
+	line "how to play the"
+	cont "MEMORY GAME?"
+	done
+	
+MemoryGame_ComeAgainText:
+	text "Please come again"
+	line "to play our games."
+	done
+
+MemoryGame_ExplanationText:
+	text "This minigame is"
+	line "playable but still"
+	cont "in development."
+	
+	para "It will be comple-"
+	line "ted in a future"
+	cont "release."
 	done
 
 BugContestPrizeNoRoomText:

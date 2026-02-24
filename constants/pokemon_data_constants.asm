@@ -31,20 +31,18 @@ DEF BASE_TMHM        rb (NUM_TM_HM_TUTOR + 7) / 8
 DEF BASE_DATA_SIZE EQU _RS
 
 ; gender ratio constants
-DEF GENDER_F0      EQU   0 percent
-DEF GENDER_F12_5   EQU  12 percent + 1
-DEF GENDER_F25     EQU  25 percent
-DEF GENDER_F50     EQU  50 percent
-DEF GENDER_F75     EQU  75 percent
-DEF GENDER_F100    EQU 100 percent - 1
-DEF GENDER_UNKNOWN EQU -1
+	const_def
+	const GENDER_UNKNOWN ; genderless
+	const GENDER_F100 ; always female
+	const GENDER_F0 ; always male
+	const GENDER_F50 ; 1:1 f/m ratio
 
 ; wBaseGrowthRate values
 ; GrowthRates indexes (see data/growth_rates.asm)
 	const_def
 	const GROWTH_MEDIUM_FAST
-	const GROWTH_SLIGHTLY_FAST
-	const GROWTH_SLIGHTLY_SLOW
+	const GROWTH_SLIGHTLY_FAST ; unused
+	const GROWTH_SLIGHTLY_SLOW ; unused
 	const GROWTH_MEDIUM_SLOW
 	const GROWTH_FAST
 	const GROWTH_SLOW

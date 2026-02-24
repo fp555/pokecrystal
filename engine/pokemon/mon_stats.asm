@@ -113,55 +113,59 @@ GetGender:
 ; Return the gender of a given monster (wCurPartyMon/wCurOTMon/wCurWildMon).
 ; When calling this function, a should be set to an appropriate wMonType value.
 ; return values:
-; a = 1: f = nc|nz; male
-; a = 0: f = nc|z;  female
-;        f = c:  genderless
-; This is determined by comparing the Attack and Speed DVs
-; with the species' gender ratio.
-	; Figure out what type of monster struct we're looking at.
-	; 0: PartyMon
+; a = 1, f = nc|nz: male
+; a = 0, f = z: female
+; a =-1, f = c: genderless
+; This is determined by summing each individual DV and looking at the LSB.
 	ld hl, wPartyMon1DVs
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld a, [wMonType]
-	and a
+	and a ; 0: PartyMon
 	jr z, .PartyMon
-	; 1: OTPartyMon
 	ld hl, wOTPartyMon1DVs
-	dec a
+	dec a ; 1: OTPartyMon
 	jr z, .PartyMon
-	; 2: sBoxMon
 	ld hl, sBoxMon1DVs
 	ld bc, BOXMON_STRUCT_LENGTH
-	dec a
+	dec a ; 2: sBoxMon
 	jr z, .sBoxMon
-	; 3: Unknown
 	ld hl, wTempMonDVs
-	dec a
+	dec a ; 3: Unknown
 	jr z, .DVs
-	; else: WildMon
+	; must be WildMon
 	ld hl, wEnemyMonDVs
 	jr .DVs
-.PartyMon:
+.PartyMon
 .sBoxMon
 	ld a, [wCurPartyMon]
 	call AddNTimes
 .DVs:
-; sBoxMon data is read directly from SRAM.
+	; sBoxMon data is read directly from SRAM.
 	ld a, [wMonType]
 	cp BOXMON
 	ld a, BANK(sBox)
 	call z, OpenSRAM
+	; Defense DV
+	ld a, [hl]
+	and $f
+	ld b, a
 	; Attack DV
 	ld a, [hli]
-	and $f0
+	swap a
+	and $f
+	add b
+	ld b, a
+	; Special DV
+	ld a, [hl]
+	and $f
+	add b
 	ld b, a
 	; Speed DV
 	ld a, [hl]
-	and $f0
 	swap a
-	; Put our DVs together.
-	or b
-	ld b, a
+	and $f
+	add b
+	ld b, a ; b = [0..60]
 	; Close SRAM if we were dealing with a sBoxMon.
 	ld a, [wMonType]
 	cp BOXMON
@@ -176,25 +180,13 @@ GetGender:
 	pop bc
 	ld a, BANK(BaseData)
 	call GetFarByte
-	; The higher the ratio, the more likely the monster is to be female.
-	cp GENDER_UNKNOWN
-	jr z, .Genderless
-	and a ; GENDER_F0?
-	jr z, .Male
-	cp GENDER_F100
-	jr z, .Female
-	; Values below the ratio are male, and vice versa.
-	cp b
-	jr c, .Male
-.Female:
-	xor a
+	cp GENDER_F50
+	jr c, .dont_compare
+	ld a, b
+	and 1 ; even: female, odd: male
 	ret
-.Male:
-	ld a, 1
-	and a
-	ret
-.Genderless:
-	scf
+.dont_compare
+	sub 1 ; always m/f or genderless
 	ret
 
 ListMovePP:

@@ -11,26 +11,26 @@ OddEggProbabilities:
 ; entries correspond to OddEggs (below)
 	table_width 2
 	; Pichu
-	odd_egg_prob 8
-	odd_egg_prob 1
-	; Cleffa
-	odd_egg_prob 16
-	odd_egg_prob 3
-	; Igglybuff
-	odd_egg_prob 16
-	odd_egg_prob 3
-	; Smoochum
 	odd_egg_prob 14
 	odd_egg_prob 2
+	; Cleffa
+	odd_egg_prob 12
+	odd_egg_prob 2
+	; Igglybuff
+	odd_egg_prob 12
+	odd_egg_prob 2
+	; Smoochum
+	odd_egg_prob 12
+	odd_egg_prob 2
 	; Magby
-	odd_egg_prob 10
+	odd_egg_prob 12
 	odd_egg_prob 2
 	; Elekid
 	odd_egg_prob 12
 	odd_egg_prob 2
 	; Tyrogue
-	odd_egg_prob 10
-	odd_egg_prob 1
+	odd_egg_prob 12
+	odd_egg_prob 2
 	assert_table_length NUM_ODD_EGGS
 	assert odd_egg_prob_total == 100, "OddEggProbabilities sum to {d:odd_egg_prob_total}%, not 100%!"
 
@@ -81,8 +81,8 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 17 ; Max HP
-	bigdw 9 ; Atk
+	bigdw 18 ; Max HP
+	bigdw 10 ; Atk
 	bigdw 7 ; Def
 	bigdw 12 ; Spd
 	bigdw 9 ; SAtk
@@ -133,9 +133,9 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 20 ; Max HP
-	bigdw 7 ; Atk
-	bigdw 8 ; Def
+	bigdw 21 ; Max HP
+	bigdw 8 ; Atk
+	bigdw 9 ; Def
 	bigdw 7 ; Spd
 	bigdw 10 ; SAtk
 	bigdw 11 ; SDef
@@ -185,8 +185,8 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 24 ; Max HP
-	bigdw 8 ; Atk
+	bigdw 25 ; Max HP
+	bigdw 9 ; Atk
 	bigdw 7 ; Def
 	bigdw 7 ; Spd
 	bigdw 10 ; SAtk
@@ -237,8 +237,8 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 19 ; Max HP
-	bigdw 8 ; Atk
+	bigdw 20 ; Max HP
+	bigdw 9 ; Atk
 	bigdw 7 ; Def
 	bigdw 12 ; Spd
 	bigdw 14 ; SAtk
@@ -289,9 +289,9 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 19 ; Max HP
-	bigdw 12 ; Atk
-	bigdw 9 ; Def
+	bigdw 20 ; Max HP
+	bigdw 13 ; Atk
+	bigdw 10 ; Def
 	bigdw 14 ; Spd
 	bigdw 13 ; SAtk
 	bigdw 11 ; SDef
@@ -341,9 +341,9 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 19 ; Max HP
-	bigdw 11 ; Atk
-	bigdw 9 ; Def
+	bigdw 20 ; Max HP
+	bigdw 12 ; Atk
+	bigdw 10 ; Def
 	bigdw 15 ; Spd
 	bigdw 12 ; SAtk
 	bigdw 11 ; SDef
@@ -393,8 +393,8 @@ OddEggs:
 	db 5 ; Level
 	db 0, 0 ; Status
 	bigdw 0 ; HP
-	bigdw 18 ; Max HP
-	bigdw 8 ; Atk
+	bigdw 19 ; Max HP
+	bigdw 9 ; Atk
 	bigdw 9 ; Def
 	bigdw 9 ; Spd
 	bigdw 9 ; SAtk

@@ -35,8 +35,10 @@ DEF NUM_ENVIRONMENTS EQU const_value - 1
 	const PALETTE_DAY
 	const PALETTE_NITE
 	const PALETTE_MORN
-	const PALETTE_DARK
+	const PALETTE_EVN
 DEF NUM_MAP_PALETTES EQU const_value
+DEF IN_DARKNESS_F EQU 3
+DEF IN_DARKNESS EQU 1 << IN_DARKNESS_F ; masked with a PALETTE_* constant
 
 ; FishGroups indexes (see data/wild/fish.asm)
 	const_def
@@ -65,7 +67,8 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	shift_const NORTH
 
 ; SpawnPoints indexes (see data/maps/spawn_points.asm)
-	const_def
+	const_def -1
+	const SPAWN_N_A
 	const SPAWN_HOME
 	const SPAWN_DEBUG
 	; kanto
@@ -98,11 +101,8 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	const SPAWN_FAST_SHIP
 DEF NUM_SPAWNS EQU const_value
 
-DEF SPAWN_N_A EQU -1
-
 ; Flypoints indexes (see data/maps/flypoints.asm)
 	const_def
-; johto
 DEF JOHTO_FLYPOINT EQU const_value
 	const FLY_NEW_BARK
 	const FLY_CHERRYGROVE
@@ -116,7 +116,6 @@ DEF JOHTO_FLYPOINT EQU const_value
 	const FLY_LAKE_OF_RAGE
 	const FLY_BLACKTHORN
 	const FLY_MT_SILVER
-; kanto
 DEF KANTO_FLYPOINT EQU const_value
 	const FLY_PALLET
 	const FLY_VIRIDIAN

@@ -714,7 +714,7 @@ Phone_CheckIfUnseenRare_Female:
 	farsjump PhoneScript_HangUpText_Female
 
 PhoneScriptRareWildMon:
-	special RandomUnseenWildMon
+	special UnseenRareWildMon
 	end
 
 PhoneScript_BugCatchingContest:

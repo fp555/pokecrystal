@@ -88,8 +88,7 @@ MG_Mobile_Layout_CreatePalBoxes:
 	ld a, $7
 	jp ByteFill
 
-Palette_MysteryGiftMobile:
-INCLUDE "gfx/mystery_gift/mg_mobile.pal"
+Palette_MysteryGiftMobile: INCLUDE "gfx/mystery_gift/mg_mobile.pal"
 
 LoadOW_BGPal7::
 	ld hl, Palette_TextBG7
@@ -98,8 +97,7 @@ LoadOW_BGPal7::
 	ld a, BANK(wBGPals1)
 	jp FarCopyWRAM
 
-Palette_TextBG7:
-INCLUDE "gfx/font/bg_text.pal"
+Palette_TextBG7: INCLUDE "gfx/font/bg_text.pal"
 
 Function49420::
 	ld hl, MansionPalette1 palette 8
@@ -137,8 +135,6 @@ _CrystalCGB_MobileLayout1:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-.TextPalette:
-INCLUDE "gfx/mystery_gift/mobile_text.pal"
 .Function49480:
 	hlcoord 0, 0, wAttrmap
 	lb bc, 4, SCREEN_WIDTH
@@ -161,8 +157,34 @@ INCLUDE "gfx/mystery_gift/mobile_text.pal"
 	hlcoord 19, 1, wAttrmap
 	ld [hl], a
 	ret
+.TextPalette:
+INCLUDE "gfx/mystery_gift/mobile_text.pal"
 
-INCLUDE "engine/tilesets/tileset_palettes.asm"
+MansionPalette1: INCLUDE "gfx/tilesets/mansion_1.pal"
+
+MansionPalette2: INCLUDE "gfx/tilesets/mansion_2.pal"
+
+LoadMansionPalette:
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1
+	ld hl, MansionPalette1
+	ld bc, 8 palettes
+	call FarCopyWRAM
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1 palette PAL_BG_YELLOW
+	ld hl, MansionPalette2
+	ld bc, 1 palettes
+	call FarCopyWRAM
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1 palette PAL_BG_WATER
+	ld hl, MansionPalette1 palette 6
+	ld bc, 1 palettes
+	call FarCopyWRAM
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1 palette PAL_BG_ROOF
+	ld hl, MansionPalette1 palette 8
+	ld bc, 1 palettes
+	jp FarCopyWRAM
 
 _CrystalCGB_NameCard:
 	ld hl, .BGPalette
@@ -253,5 +275,4 @@ LoadTradeRoomBGPals:
 	farcall ApplyPals
 	ret
 
-TradeRoomPalette:
-INCLUDE "gfx/trade/border.pal"
+TradeRoomPalette: INCLUDE "gfx/trade/border.pal"

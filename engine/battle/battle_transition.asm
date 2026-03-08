@@ -5,11 +5,37 @@ DEF BATTLETRANSITION_NO_CAVE          EQU $10
 DEF BATTLETRANSITION_NO_CAVE_STRONGER EQU $18
 DEF BATTLETRANSITION_FINISH           EQU $20
 
-DEF BATTLETRANSITION_SQUARE EQU '8' ; $fe
-DEF BATTLETRANSITION_BLACK  EQU '9' ; $ff
+DEF BATTLETRANSITION_SQUARE EQU $fe
+DEF BATTLETRANSITION_BLACK  EQU $ff
 
 DoBattleTransition:
-	call .InitGFX
+	; InitGFX
+	ld a, [wLinkMode]
+	cp LINK_MOBILE
+	jr z, .mobile
+	farcall ReanchorBGMap_NoOAMUpdate
+	call UpdateSprites
+	call DelayFrame
+	; NonMobile_LoadPokeballTiles
+	call LoadTrainerBattlePokeballTiles
+	hlbgcoord 0, 0
+	call ConvertTrainerBattlePokeballTilesTo2bpp
+	call CGBOnly_CopyTilemapAtOnce
+	jr .resume
+.mobile
+	call LoadTrainerBattlePokeballTiles
+.resume
+	ld a, SCREEN_HEIGHT_PX
+	ldh [hWY], a
+	call DelayFrame
+	xor a
+	ldh [hBGMapMode], a
+	ld hl, wJumptableIndex
+	xor a
+	ld [hli], a
+	ld [hli], a
+	ld [hl], a
+	call WipeLYOverrides
 	ldh a, [rBGP]
 	ld [wBGP], a
 	ldh a, [rOBP0]
@@ -49,43 +75,10 @@ DoBattleTransition:
 	ldh [hLYOverrideStart], a
 	ldh [hLYOverrideEnd], a
 	ldh [hSCY], a
-	ld a, $1 ; unnecessary bankswitch?
-	ldh [rWBK], a
 	pop af
 	vc_hook Stop_reducing_battle_transition_flashing
 	ldh [hVBlank], a
-	call DelayFrame
-	ret
-.InitGFX:
-	ld a, [wLinkMode]
-	cp LINK_MOBILE
-	jr z, .mobile
-	farcall ReanchorBGMap_NoOAMUpdate
-	call UpdateSprites
-	call DelayFrame
-	call .NonMobile_LoadPokeballTiles
-	call CGBOnly_CopyTilemapAtOnce
-	jr .resume
-.mobile
-	call LoadTrainerBattlePokeballTiles
-.resume
-	ld a, SCREEN_HEIGHT_PX
-	ldh [hWY], a
-	call DelayFrame
-	xor a
-	ldh [hBGMapMode], a
-	ld hl, wJumptableIndex
-	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	call WipeLYOverrides
-	ret
-.NonMobile_LoadPokeballTiles:
-	call LoadTrainerBattlePokeballTiles
-	hlbgcoord 0, 0
-	call ConvertTrainerBattlePokeballTilesTo2bpp
-	ret
+	jp DelayFrame
 
 LoadTrainerBattlePokeballTiles:
 ; Load the tiles used in the Pokeball Graphic that fills the screen
@@ -177,7 +170,8 @@ BattleTransitionJumptable:
 	dw StartTrainerBattle_SpeckleToBlack ; 1f
 	; BATTLETRANSITION_FINISH
 	dw StartTrainerBattle_Finish ; 20
-	; transition animations
+
+; transition animations
 	const_def
 	const TRANS_CAVE
 	const TRANS_CAVE_STRONGER
@@ -257,11 +251,7 @@ StartTrainerBattle_SetUpBGMap:
 	ret
 
 StartTrainerBattle_Flash:
-	call .DoFlashAnimation
-	ret nc
-	call StartTrainerBattle_NextScene
-	ret
-.DoFlashAnimation:
+	; DoFlashAnimation
 	ld a, [wTimeOfDayPalset]
 	cp DARKNESS_PALSET
 	jr z, .done
@@ -283,8 +273,7 @@ StartTrainerBattle_Flash:
 .done
 	xor a
 	ld [wBattleTransitionCounter], a
-	scf
-	ret
+	jr StartTrainerBattle_NextScene 
 .pals:
 	dc 3, 3, 2, 1
 	dc 3, 3, 3, 2
@@ -321,13 +310,7 @@ StartTrainerBattle_SineWave:
 	ld a, [wBattleTransitionCounter]
 	cp $60
 	jr nc, .end
-	call .DoSineWave
-	ret
-.end
-	ld a, BATTLETRANSITION_FINISH
-	ld [wJumptableIndex], a
-	ret
-.DoSineWave:
+	; DoSineWave
 	ld hl, wBattleTransitionSineWaveOffset
 	ld a, [hl]
 	inc [hl]
@@ -342,7 +325,7 @@ StartTrainerBattle_SineWave:
 	push af
 	push de
 	ld a, e
-	call Sine ; bank 0
+	call Sine
 	ld [bc], a
 	inc bc
 	pop de
@@ -352,6 +335,10 @@ StartTrainerBattle_SineWave:
 	pop af
 	dec a
 	jr nz, .loop
+	ret
+.end
+	ld a, BATTLETRANSITION_FINISH
+	ld [wJumptableIndex], a
 	ret
 
 StartTrainerBattle_SetUpForSpinOutro:
@@ -397,7 +384,8 @@ endr
 	ld a, BATTLETRANSITION_FINISH
 	ld [wJumptableIndex], a
 	ret
-	; quadrants
+
+; quadrants
 	const_def
 	const UPPER_LEFT
 	const UPPER_RIGHT
@@ -621,9 +609,8 @@ StartTrainerBattle_LoadTransitionGraphics:
 	jr .nextscene
 .cgb
 	ld hl, .pals
-	ld a, [wTimeOfDayPal]
-	maskbits NUM_DAYTIMES
-	cp DARKNESS_F
+	ld a, [wTimeOfDayPalset]
+	cp DARKNESS_PALSET
 	jr nz, .not_dark
 	ld hl, .darkpals
 .not_dark

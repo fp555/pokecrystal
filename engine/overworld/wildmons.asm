@@ -5,13 +5,14 @@ LoadWildMonData:
 	xor a
 	ld [hli], a
 	ld [hli], a
+	ld [hli], a
 	ld [hl], a
 	jr .done_copy
 .copy
 	inc hl
 	inc hl
 	ld de, wMornEncounterRate
-	ld bc, 3
+	ld bc, 4
 	call CopyBytes
 .done_copy
 	call _WaterWildmonLookup
@@ -38,28 +39,54 @@ FindNest:
 	call .FindGrass
 	ld hl, JohtoWaterWildMons
 	call .FindWater
-	call .RoamMon1
-	call .RoamMon2
+	; RoamMon1
+	ld a, [wRoamMon1Species]
+	ld b, a
+	ld a, [wNamedObjectIndex]
+	cp b
+	jr nz, .RoamMon2
+	ld a, [wRoamMon1MapGroup]
+	ld b, a
+	ld a, [wRoamMon1MapNumber]
+	ld c, a
+	call .AppendNest
+	jr nc, .RoamMon2
+	ld [de], a
+	inc de
+.RoamMon2
+	ld a, [wRoamMon2Species]
+	ld b, a
+	ld a, [wNamedObjectIndex]
+	cp b
+	ret nz
+	ld a, [wRoamMon2MapGroup]
+	ld b, a
+	ld a, [wRoamMon2MapNumber]
+	ld c, a
+	call .AppendNest
+	ret nc
+	ld [de], a
+	inc de
 	ret
 .kanto
 	decoord 0, 0
 	ld hl, KantoGrassWildMons
 	call .FindGrass
 	ld hl, KantoWaterWildMons
-	jp .FindWater
+	jr .FindWater
 .FindGrass:
 	ld a, [hl]
-	cp -1
+	inc a ; -1?
 	ret z
 	push hl
 	ld a, [hli]
 	ld b, a
 	ld a, [hli]
 	ld c, a
+rept 4
 	inc hl
-	inc hl
-	inc hl
-	ld a, NUM_GRASSMON * 3
+endr
+	ld a, NUM_GRASSMON * 2
 	call .SearchMapForMon
 	jr nc, .next_grass
 	ld [de], a
@@ -105,7 +132,6 @@ FindNest:
 	ret
 .found
 	pop af
-	jp .AppendNest
 .AppendNest:
 	push de
 	call GetWorldMapLocation
@@ -128,40 +154,14 @@ FindNest:
 	pop de
 	and a
 	ret
-.RoamMon1:
-	ld a, [wRoamMon1Species]
-	ld b, a
-	ld a, [wNamedObjectIndex]
-	cp b
-	ret nz
-	ld a, [wRoamMon1MapGroup]
-	ld b, a
-	ld a, [wRoamMon1MapNumber]
-	ld c, a
-	call .AppendNest
-	ret nc
-	ld [de], a
-	inc de
-	ret
-.RoamMon2:
-	ld a, [wRoamMon2Species]
-	ld b, a
-	ld a, [wNamedObjectIndex]
-	cp b
-	ret nz
-	ld a, [wRoamMon2MapGroup]
-	ld b, a
-	ld a, [wRoamMon2MapNumber]
-	ld c, a
-	call .AppendNest
-	ret nc
-	ld [de], a
-	inc de
-	ret
 
 TryWildEncounter::
 ; Try to trigger a wild encounter.
-	call .EncounterRate
+	call GetMapEncounterRate
+	call ApplyMusicEffectOnEncounterRate
+	call ApplyCleanseTagEffectOnEncounterRate
+	call Random
+	cp b
 	jr nc, .no_battle
 	call ChooseWildEncounter
 	jr nz, .no_battle
@@ -175,13 +175,6 @@ TryWildEncounter::
 	ld [wBattleType], a
 	ld a, 1
 	and a
-	ret
-.EncounterRate:
-	call GetMapEncounterRate
-	call ApplyMusicEffectOnEncounterRate
-	call ApplyCleanseTagEffectOnEncounterRate
-	call Random
-	cp b
 	ret
 
 GetMapEncounterRate:
@@ -238,13 +231,16 @@ ChooseWildEncounter:
 	jp c, .startwildbattle
 	inc hl
 	inc hl
-	inc hl
+	inc hl ; skip first encounter rate
 	call CheckOnWater
 	ld de, WaterMonProbTable
 	jr z, .watermon
+	; skip remaining encounter rates
+	inc hl
 	inc hl
 	inc hl
 	ld a, [wTimeOfDay]
+	srl a ; morn/day: 0, nite/evn: 1
 	ld bc, NUM_GRASSMON * 2
 	call AddNTimes
 	ld de, GrassMonProbTable
@@ -329,9 +325,8 @@ CheckRepelEffect::
 	add hl, bc
 	jr .loop
 .ok
-; to PartyMonLevel
 rept 4
-	dec hl
+	dec hl ; to PartyMonLevel
 endr
 	ld a, [wCurPartyLevel]
 	cp [hl]
@@ -345,7 +340,7 @@ endr
 LoadWildMonDataPointer:
 	call CheckOnWater
 	jr z, _WaterWildmonLookup
-
+	; fallthrough
 _GrassWildmonLookup:
 	ld hl, SwarmGrassWildMons
 	ld bc, GRASS_WILDDATA_LENGTH
@@ -407,7 +402,7 @@ LookUpWildmonsForMapDE:
 .loop
 	push hl
 	ld a, [hl]
-	inc a
+	inc a ; -1?
 	jr z, .nope
 	ld a, d
 	cp [hl]
@@ -420,12 +415,10 @@ LookUpWildmonsForMapDE:
 	pop hl
 	add hl, bc
 	jr .loop
-
 .nope
 	pop hl
 	and a
 	ret
-
 .yup
 	pop hl
 	scf
@@ -530,7 +523,7 @@ UpdateRoamMons:
 .SkipEntei:
 	ld a, [wRoamMon3MapGroup]
 	cp GROUP_N_A
-	jr z, .Finished
+	jp z, _BackUpMapIndices
 	ld b, a
 	ld a, [wRoamMon3MapNumber]
 	ld c, a
@@ -539,7 +532,6 @@ UpdateRoamMons:
 	ld [wRoamMon3MapGroup], a
 	ld a, c
 	ld [wRoamMon3MapNumber], a
-.Finished:
 	jp _BackUpMapIndices
 .Update:
 	ld hl, RoamMaps
@@ -620,38 +612,35 @@ JumpRoamMons:
 .SkipEntei:
 	ld a, [wRoamMon3MapGroup]
 	cp GROUP_N_A
-	jr z, .Finished
+	jr z, _BackUpMapIndices
 	call JumpRoamMon
 	ld a, b
 	ld [wRoamMon3MapGroup], a
 	ld a, c
 	ld [wRoamMon3MapNumber], a
-.Finished:
-	jp _BackUpMapIndices
+	jr _BackUpMapIndices
 
 JumpRoamMon:
 .loop
 	ld hl, RoamMaps
-.innerloop1
-	; 0-15 are all valid indexes into RoamMaps,
-	; so this retry loop is unnecessary
-	; since NUM_ROAMMON_MAPS happens to be 16
 	call Random
+	; 0-15 are all valid indexes into RoamMaps
 	maskbits NUM_ROAMMON_MAPS
-	cp NUM_ROAMMON_MAPS
-	jr nc, .innerloop1
 	inc a
 	ld b, a
-.innerloop2 ; Loop to get hl to the address of the chosen roam map.
+.innerloop2
+	; Loop to get hl to the address of the chosen roam map.
 	dec b
 	jr z, .ok
-.innerloop3 ; Loop to skip the current roam map, which is terminated by a 0.
+.innerloop3
+	; Loop to skip the current roam map, which is terminated by a 0.
 	ld a, [hli]
 	and a
 	jr nz, .innerloop3
 	jr .innerloop2
 .ok
-; Check to see if the selected map is the one the player is currently in.  If so, try again.
+	; Check if the selected map is the one the player is currently in. 
+	; If so, try again.
 	ld a, [wMapGroup]
 	cp [hl]
 	jr nz, .done
@@ -691,51 +680,29 @@ ValidateTempWildMonSpecies:
 	scf
 	ret
 
-RandomUnseenWildMon:
-; Finds a rare wild Pokemon in the route of the trainer calling, then checks if it's been Seen already.
-; The trainer will then tell you about the Pokemon if you haven't seen it.
+UnseenRareWildMon:
+; Checks if you have already seen the rarest wild Pokemon in the route of the trainer calling.
+; The trainer will then tell you about that Pokemon if you haven't.
 	farcall GetCallerLocation
+	call IsMapInJohto
+	ld hl, JohtoGrassWildMons
 	ld d, b
 	ld e, c
-	ld hl, JohtoGrassWildMons
 	ld bc, GRASS_WILDDATA_LENGTH
-	call LookUpWildmonsForMapDE
-	jr c, .GetGrassmon
+	and a ; JOHTO_REGION?
+	jr z, .got_region
 	ld hl, KantoGrassWildMons
+.got_region
 	call LookUpWildmonsForMapDE
 	jr nc, .done
-.GetGrassmon:
+	; GetGrassmon
+	ld bc, 6 + 4 * 2 + 1 ; location of the 5th wild slot species
+	add hl, bc
 	ld a, [wTimeOfDay]
+	srl a ; morn/day: 0, nite/evn: 1
 	ld bc, NUM_GRASSMON * 2
 	call AddNTimes
-	push hl
-	ld bc, 5 + 4 * 2 ; Location of the level of the 5th wild Pokemon in that map
-	add hl, bc
-.randloop1
-	call Random
-	and %11
-	jr z, .randloop1
-	dec a
-	ld c, a
-	ld b, 0
-	add hl, bc
-	add hl, bc
-	; We now have the pointer to one of the last (rarest) three wild Pokemon found in that area.
-	inc hl
 	ld c, [hl] ; Contains the species index of this rare Pokemon
-	pop hl
-	ld de, 5 + 0 * 2
-	add hl, de
-	inc hl ; Species index of the most common Pokemon on that route
-	ld b, 4
-.loop2
-	ld a, [hli]
-	cp c ; Compare this most common Pokemon with the rare one stored in c.
-	jr z, .done
-	inc hl
-	dec b
-	jr nz, .loop2
-	; This Pokemon truly is rare.
 	push bc
 	dec c
 	ld a, c
@@ -763,33 +730,29 @@ RandomUnseenWildMon:
 
 RandomPhoneWildMon:
 	farcall GetCallerLocation
+	call IsMapInJohto
+	ld hl, JohtoGrassWildMons
 	ld d, b
 	ld e, c
-	ld hl, JohtoGrassWildMons
 	ld bc, GRASS_WILDDATA_LENGTH
-	call LookUpWildmonsForMapDE
-	jr c, .ok
+	and a ; JOHTO_REGION?
+	jr z, .got_region
 	ld hl, KantoGrassWildMons
+.got_region
 	call LookUpWildmonsForMapDE
-.ok
-	ld bc, 5 + 0 * 2
+	ld bc, 6 + 0 * 2 + 1 ; location of the 1st wild slot species
 	add hl, bc
 	ld a, [wTimeOfDay]
-	inc a
+	srl a ; morn/day: 0, nite/evn: 1
 	ld bc, NUM_GRASSMON * 2
-.loop
-	dec a
-	jr z, .done
-	add hl, bc
-	jr .loop
-.done
+	call AddNTimes
+	; randomly selects one of the first 4 wild slots
 	call Random
 	and %11
 	ld c, a
 	ld b, 0
 	add hl, bc
 	add hl, bc
-	inc hl
 	ld a, [hl]
 	ld [wNamedObjectIndex], a
 	call GetPokemonName

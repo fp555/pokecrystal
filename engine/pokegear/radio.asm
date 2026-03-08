@@ -215,25 +215,19 @@ OaksPKMNTalk4:
 	add hl, de
 	jr .loop
 .done
-	; Point hl to the list of morning Pokémon., skipping percentages
-rept 4
+rept 5 ; Point hl to the list of morning Pokémon, skipping percentages
 	inc hl
 endr
-	; Generate a number, either 0, 1, or 2, to choose a time of day.
-.loop2
+	; Generate either 0 (morn/day) or 1 (nite/evn).
 	call Random
-	maskbits NUM_DAYTIMES
-	cp DARKNESS_F
-	jr z, .loop2
+	and 1
 	ld bc, 2 * NUM_GRASSMON
 	call AddNTimes
 .loop3
-	; Choose one of the middle three Pokemon.
+	; Choose a Pokemon
 	call Random
 	maskbits NUM_GRASSMON
-	cp 2
-	jr c, .loop3
-	cp 5
+	cp NUM_GRASSMON
 	jr nc, .loop3
 	ld e, a
 	ld d, 0
@@ -414,11 +408,10 @@ OaksPKMNTalk9:
 	dec a
 	ld [wOaksPKMNTalkSegmentCounter], a
 	ld a, OAKS_POKEMON_TALK_4
-	jr nz, .ok
+	jp nz, NextRadioLine
 	ld a, 5
 	ld [wOaksPKMNTalkSegmentCounter], a
 	ld a, OAKS_POKEMON_TALK_10
-.ok
 	jp NextRadioLine
 .Adjectives:
 	table_width 2
@@ -687,8 +680,7 @@ CopyDexEntry:
 	call CopyRadioTextToRAM
 	pop hl
 	pop af
-	call CopyDexEntryPart2
-	ret
+	jr CopyDexEntryPart2
 
 CopyDexEntryPart1:
 	ld de, wPokedexShowPointerBank
@@ -1326,17 +1318,7 @@ RocketRadioText10:
 	text_end
 
 PokeFluteRadio:
-	call StartRadioStation
-	ld a, 1
-	ld [wNumRadioLinesPrinted], a
-	ret
-
 UnownRadio:
-	call StartRadioStation
-	ld a, 1
-	ld [wNumRadioLinesPrinted], a
-	ret
-
 EvolutionRadio:
 	call StartRadioStation
 	ld a, 1
@@ -1346,7 +1328,7 @@ EvolutionRadio:
 BuenasPassword1:
 	; Determine if we need to be here
 	call BuenasPasswordCheckTime
-	jp nc, .PlayPassword
+	jr nc, .PlayPassword
 	ld a, [wNumRadioLinesPrinted]
 	and a
 	jp z, BuenasPassword20
@@ -1405,7 +1387,7 @@ BuenasPassword4:
 	; and the low nybble contains the actual password.
 	add e
 	ld [wBuenasPassword], a
-	; Set the flag so that we don't generate a new password this week.
+	; Set the flag so that we don't generate a new password today.
 	ld hl, wDailyFlags2
 	set DAILYFLAGS2_BUENAS_PASSWORD_F, [hl]
 .AlreadyGotIt:

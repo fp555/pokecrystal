@@ -144,16 +144,16 @@ Route29FisherScript:
 Route29CooltrainerMScript:
 	faceplayer
 	opentext
-	checktime DAY
+	checktime DAY | MORN
 	iftrue .day_morn
-	checktime NITE
-	iftrue .nite
+	checktime EVN | NITE
+	iftrue .evn_nite
 .day_morn
 	writetext Route29CooltrainerMText_WaitingForNight
 	waitbutton
 	closetext
 	end
-.nite
+.evn_nite
 	writetext Route29CooltrainerMText_WaitingForMorning
 	waitbutton
 	closetext
@@ -322,16 +322,16 @@ Route29CooltrainerMText_WaitingForNight:
 	text "I'm waiting for"
 	line "#MON that"
 
-	para "appear only at"
-	line "night."
+	para "appear only when"
+	line "the sun is down."
 	done
 
 Route29CooltrainerMText_WaitingForMorning:
 	text "I'm waiting for"
 	line "#MON that"
 
-	para "appear only in the"
-	line "morning."
+	para "appear only when"
+	line "the sun is up."
 	done
 
 MeetTuscanyText:

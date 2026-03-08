@@ -186,15 +186,20 @@ _OakTimeMinutesQuestionMarkText::
 	text "?"
 	done
 
+_OakTimeToGetUpText::
+	text "!"
+	line "Time to get up!"
+	done
+
 _OakTimeOversleptText::
 	text "!"
 	line "I overslept!"
 	done
 
-_OakTimeYikesText::
+_OakTimeNappedText::
 	text "!"
-	line "Yikes! I over-"
-	cont "slept!"
+	line "I napped for too"
+	cont "long!"
 	done
 
 _OakTimeSoDarkText::

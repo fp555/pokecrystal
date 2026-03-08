@@ -235,7 +235,7 @@ Buena:
 	turnobject RADIOTOWER2F_BUENA, RIGHT
 	end
 .TooEarly:
-	writetext RadioTower2FBuenaTuneInAfterSixText
+	writetext RadioTower2FBuenaTuneInAfter22Text
 	waitbutton
 	closetext
 	checkcellnum PHONE_BUENA
@@ -583,12 +583,12 @@ RadioTower2FBuenaCardIsFullText:
 	line "fabulous prize!"
 	done
 
-RadioTower2FBuenaTuneInAfterSixText:
+RadioTower2FBuenaTuneInAfter22Text:
 	text "BUENA: Tune in to"
 	line "PASSWORD every"
 
-	para "night from six to"
-	line "midnight!"
+	para "night from 10 PM"
+	line "to midnight!"
 
 	para "Tune in, then drop"
 	line "in for a visit!"

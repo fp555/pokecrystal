@@ -6,14 +6,12 @@ CheckTime::
 	inc hl
 	ld c, [hl]
 	ret c
-
 	xor a
 	ld c, a
 	ret
-
 .TimeOfDayTable:
 	db MORN_F, MORN
 	db DAY_F,  DAY
-	db NITE_F, NITE
+	db EVN_F,  EVN
 	db NITE_F, NITE
 	db -1

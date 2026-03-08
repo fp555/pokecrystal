@@ -28,16 +28,13 @@ PokeSeer:
 	call IsAPokemon
 	ret c
 	call ReadCaughtData
-	call SeerAction
-	ret
+	jr SeerAction
 .cancel
 	ld a, SEER_CANCEL
-	call PrintSeerText
-	ret
+	jp PrintSeerText
 .egg
 	ld a, SEER_EGG
-	call PrintSeerText
-	ret
+	jp PrintSeerText
 
 SeerAction:
 	ld a, [wSeerAction]
@@ -57,8 +54,7 @@ SeerAction0:
 	call PrintSeerText
 	ld a, SEER_TIME_LEVEL
 	call PrintSeerText
-	call SeerAdvice
-	ret
+	jp SeerAdvice
 
 SeerAction1:
 	call GetCaughtOT
@@ -66,24 +62,17 @@ SeerAction1:
 	call PrintSeerText
 	ld a, SEER_TIME_LEVEL
 	call PrintSeerText
-	call SeerAdvice
-	ret
+	jp SeerAdvice
 
 SeerAction2:
-	ld a, SEER_CANT_TELL
-	call PrintSeerText
-	ret
-
 SeerAction3:
 	ld a, SEER_CANT_TELL
-	call PrintSeerText
-	ret
+	jp PrintSeerText
 
 SeerAction4:
 	ld a, SEER_LEVEL_ONLY
 	call PrintSeerText
-	call SeerAdvice
-	ret
+	jp SeerAdvice
 
 ReadCaughtData:
 	ld a, MON_CAUGHTDATA
@@ -103,7 +92,7 @@ ReadCaughtData:
 	jr nz, .traded
 	inc hl
 	ld a, [wPlayerID + 1]
-	; cp [hl]
+	cp [hl]
 	jr nz, .traded
 	ld a, SEERACTION_MET
 	ld [wSeerAction], a
@@ -127,8 +116,7 @@ GetCaughtName:
 	call AddNTimes
 	ld de, wSeerNickname
 	ld bc, MON_NAME_LENGTH
-	call CopyBytes
-	ret
+	jp CopyBytes
 
 GetCaughtLevel:
 	ld a, '@'
@@ -148,24 +136,22 @@ GetCaughtLevel:
 	ld hl, wSeerCaughtLevelString
 	ld de, wSeerCaughtLevel
 	lb bc, PRINTNUM_LEFTALIGN | 1, 3
-	call PrintNum
-	ret
+	jp PrintNum
 .unknown
 	ld de, wSeerCaughtLevelString
 	ld hl, .unknown_level
 	ld bc, 4
-	call CopyBytes
-	ret
+	jp CopyBytes
 .unknown_level
 	db "???@"
 
 GetCaughtTime:
 	ld a, [wSeerCaughtData]
 	and CAUGHT_TIME_MASK
-	jr z, .none
 	rlca
 	rlca
 	dec a
+	maskbits NUM_DAYTIMES
 	ld hl, .times
 	call GetNthString
 	ld d, h
@@ -174,22 +160,11 @@ GetCaughtTime:
 	call CopyName2
 	and a
 	ret
-.none
-	ld de, wSeerTimeOfDay
-	call UnknownCaughtData
-	ret
 .times
 	db "Morning@"
 	db "Day@"
 	db "Night@"
-
-UnknownCaughtData:
-	ld hl, .unknown
-	ld bc, NAME_LENGTH
-	call CopyBytes
-	ret
-.unknown
-	db "Unknown@"
+	db "Evening@"
 
 GetCaughtLocation:
 	ld a, [wSeerCaughtGender]
@@ -209,7 +184,9 @@ GetCaughtLocation:
 	ret
 .Unknown:
 	ld de, wSeerCaughtLocation
-	jp UnknownCaughtData
+	ld hl, .unknown_string
+	ld bc, NAME_LENGTH
+	jp CopyBytes
 .event
 	ld a, SEERACTION_LEVEL_ONLY
 	ld [wSeerAction], a
@@ -220,6 +197,8 @@ GetCaughtLocation:
 	ld [wSeerAction], a
 	scf
 	ret
+.unknown_string
+	db "Unknown@"
 
 GetCaughtOT:
 	ld a, [wCurPartyMon]
@@ -243,8 +222,7 @@ PrintSeerText:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call PrintText
-	ret
+	jp PrintText
 
 SeerTexts:
 	dw SeerSeeAllText
@@ -309,8 +287,7 @@ SeerAdvice:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call PrintText
-	ret
+	jp PrintText
 
 SeerAdviceTexts:
 ; level, text

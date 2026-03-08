@@ -61,29 +61,29 @@ KantoWaterWildMons:
 	def_water_wildmons ROUTE_19
 	db 6 percent ; encounter rate
 	db 27, TENTACOOL
-	db 27, KRABBY
-	db 27, STARYU
+	db 27, MANTINE
+	db 27, LANTURN
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_20
 	db 6 percent ; encounter rate
-	db 27, TENTACOOL
 	db 30, TENTACRUEL
-	db 30, STARYU
+	db 30, LANTURN
+	db 30, MANTINE
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_21
 	db 6 percent ; encounter rate
 	db 25, TENTACOOL
-	db 25, TENTACOOL
+	db 25, CHINCHOU
 	db 25, STARYU
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_22
 	db 2 percent ; encounter rate
 	db 4, POLIWAG
-	db 4, POLIWAG
-	db 4, POLIWAG
+	db 4, WOOPER
+	db 4, MAGIKARP
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_24
@@ -116,7 +116,7 @@ KantoWaterWildMons:
 
 	def_water_wildmons ROUTE_28
 	db 2 percent ; encounter rate
-	db 40, POLIWHIRL
+	db 40, POLITOED
 	db 40, OCTILLERY
 	db 40, DRAGONAIR
 	end_water_wildmons
@@ -124,15 +124,15 @@ KantoWaterWildMons:
 	def_water_wildmons PALLET_TOWN
 	db 6 percent ; encounter rate
 	db 20, TENTACOOL
-	db 20, TENTACOOL
 	db 20, STARYU
+	db 20, SHELLDER
 	end_water_wildmons
 
 	def_water_wildmons VIRIDIAN_CITY
 	db 2 percent ; encounter rate
 	db 3, POLIWAG
 	db 3, GOLDEEN
-	db 3, POLIWAG
+	db 3, MAGIKARP
 	end_water_wildmons
 
 	def_water_wildmons CERULEAN_CITY
@@ -158,16 +158,16 @@ KantoWaterWildMons:
 
 	def_water_wildmons FUCHSIA_CITY
 	db 2 percent ; encounter rate
-	db 17, MAGIKARP
-	db 17, MAGIKARP
-	db 20, GYARADOS
+	db 17, WOOPER
+	db 17, POLIWAG
+	db 17, GRIMER
 	end_water_wildmons
 
 	def_water_wildmons CINNABAR_ISLAND
 	db 6 percent ; encounter rate
 	db 27, TENTACOOL
-	db 27, TENTACOOL
-	db 28, STARYU
+	db 27, SHELLDER
+	db 27, CORSOLA
 	end_water_wildmons
 
 	db -1 ; end

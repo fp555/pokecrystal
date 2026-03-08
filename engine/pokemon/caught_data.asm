@@ -53,7 +53,6 @@ CheckPartyFullAfterContest:
 	ld [wMonType], a
 	ld de, wMonOrItemNameBuffer
 	callfar InitNickname
-
 .Party_SkipNickname:
 	ld a, [wPartyCount]
 	dec a
@@ -84,7 +83,6 @@ CheckPartyFullAfterContest:
 	and a ; BUGCONTEST_CAUGHT_MON
 	ld [wScriptVar], a
 	ret
-
 .TryAddToBox:
 	ld a, BANK(sBoxCount)
 	call OpenSRAM
@@ -115,7 +113,6 @@ CheckPartyFullAfterContest:
 	ld de, wMonOrItemNameBuffer
 	callfar InitNickname
 	ld hl, wMonOrItemNameBuffer
-
 .Box_SkipNickname:
 	ld a, BANK(sBoxMonNicknames)
 	call OpenSRAM
@@ -123,7 +120,6 @@ CheckPartyFullAfterContest:
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 	call CloseSRAM
-
 .BoxFull:
 	ld a, BANK(sBoxMon1Level)
 	call OpenSRAM
@@ -145,7 +141,6 @@ CheckPartyFullAfterContest:
 	ld a, BUGCONTEST_BOXED_MON
 	ld [wScriptVar], a
 	ret
-
 .DidntCatchAnything:
 	ld a, BUGCONTEST_NO_CATCH
 	ld [wScriptVar], a
@@ -165,11 +160,13 @@ SetCaughtData:
 	dec a
 	ld hl, wPartyMon1CaughtLevel
 	call GetPartyLocation
+	; fallthrough
 SetBoxmonOrEggmonCaughtData:
 	ld a, [wTimeOfDay]
 	inc a
 	rrca
 	rrca
+	and CAUGHT_TIME_MASK
 	ld b, a
 	ld a, [wCurPartyLevel]
 	or b
@@ -183,12 +180,10 @@ SetBoxmonOrEggmonCaughtData:
 	ld a, b
 	cp GROUP_POKECENTER_2F
 	jr nz, .NotPokecenter2F
-
 	ld a, [wBackupMapGroup]
 	ld b, a
 	ld a, [wBackupMapNumber]
 	ld c, a
-
 .NotPokecenter2F:
 	call GetWorldMapLocation
 	ld b, a
@@ -203,8 +198,7 @@ SetBoxMonCaughtData:
 	call OpenSRAM
 	ld hl, sBoxMon1CaughtLevel
 	call SetBoxmonOrEggmonCaughtData
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 SetGiftBoxMonCaughtData:
 	push bc
@@ -213,8 +207,7 @@ SetGiftBoxMonCaughtData:
 	ld hl, sBoxMon1CaughtLevel
 	pop bc
 	call SetGiftMonCaughtData
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 SetGiftPartyMonCaughtData:
 	ld a, [wPartyCount]
@@ -223,6 +216,7 @@ SetGiftPartyMonCaughtData:
 	push bc
 	call GetPartyLocation
 	pop bc
+	; fallthrough
 SetGiftMonCaughtData:
 	xor a
 	ld [hli], a

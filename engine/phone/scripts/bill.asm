@@ -1,22 +1,10 @@
 BillPhoneCalleeScript:
 	checktime DAY
 	iftrue .daygreet
-	checktime NITE
+	checktime EVN | NITE
 	iftrue .nitegreet
 	farwritetext BillPhoneMornGreetingText
 	promptbutton
-	sjump .main
-
-.daygreet
-	farwritetext BillPhoneDayGreetingText
-	promptbutton
-	sjump .main
-
-.nitegreet
-	farwritetext BillPhoneNiteGreetingText
-	promptbutton
-	sjump .main
-
 .main
 	farwritetext BillPhoneGenericText
 	promptbutton
@@ -26,11 +14,17 @@ BillPhoneCalleeScript:
 	ifless PARTY_LENGTH, .nearlyfull
 	farwritetext BillPhoneNotFullText
 	end
-
+.daygreet
+	farwritetext BillPhoneDayGreetingText
+	promptbutton
+	sjump .main
+.nitegreet
+	farwritetext BillPhoneNiteGreetingText
+	promptbutton
+	sjump .main
 .nearlyfull
 	farwritetext BillPhoneNearlyFullText
 	end
-
 .full
 	farwritetext BillPhoneFullText
 	end

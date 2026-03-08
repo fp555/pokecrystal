@@ -230,11 +230,6 @@ CheckObjectTime::
 .timeofday_always
 	and a
 	ret
-.TimesOfDay:
-; entries correspond to TimeOfDay values
-	db MORN
-	db DAY
-	db NITE
 .check_hour
 	ld hl, MAPOBJECT_HOUR_1
 	add hl, bc
@@ -266,7 +261,12 @@ CheckObjectTime::
 .yes
 	and a
 	ret
-
+.TimesOfDay:
+; entries correspond to TimeOfDay values
+	db MORN
+	db DAY
+	db NITE
+	db EVN
 
 UnmaskCopyMapObjectStruct::
 	ldh [hMapObjectIndex], a
@@ -286,23 +286,22 @@ ApplyDeletionToMapObject::
 	ret z ; already hidden
 	ld [hl], -1
 	push af
-	call .CheckStopFollow
-	pop af
-	call GetObjectStruct
-	farcall DeleteMapObject
-	ret
-.CheckStopFollow:
+	; CheckStopFollow
 	ld hl, wObjectFollow_Leader
 	cp [hl]
 	jr z, .ok
 	ld hl, wObjectFollow_Follower
 	cp [hl]
-	ret nz
+	jr nz, .continue
 .ok
 	farcall StopFollow
 	ld a, -1
 	ld [wObjectFollow_Leader], a
 	ld [wObjectFollow_Follower], a
+.continue
+	pop af
+	call GetObjectStruct
+	farcall DeleteMapObject
 	ret
 
 DeleteObjectStruct::

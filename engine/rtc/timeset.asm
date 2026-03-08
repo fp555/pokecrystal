@@ -1,5 +1,5 @@
-DEF TIMESET_UP_ARROW   EQU '♂' ; $ef
-DEF TIMESET_DOWN_ARROW EQU '♀' ; $f5
+DEF TIMESET_UP_ARROW   EQU $ef
+DEF TIMESET_DOWN_ARROW EQU $f5
 
 InitClock:
 ; Ask the player to set the time.
@@ -303,24 +303,32 @@ OakText_ResponseToSetTime:
 	ld a, [wInitHourBuffer]
 	cp MORN_HOUR
 	jr c, .nite
-	cp DAY_HOUR + 1
+	cp DAY_HOUR
 	jr c, .morn
-	cp NITE_HOUR
+	cp EVN_HOUR
 	jr c, .day
+	cp NITE_HOUR
+	jr c, .evn
 .nite
 	ld hl, .OakTimeSoDarkText
 	ret
 .morn
-	ld hl, .OakTimeOversleptText
+	ld hl, .OakTimeToGetUpText
 	ret
 .day
-	ld hl, .OakTimeYikesText
+	ld hl, .OakTimeOversleptText
 	ret
+.evn
+	ld hl, .OakTimeNappedText
+	ret
+.OakTimeToGetUpText:
+	text_far _OakTimeToGetUpText
+	text_end
 .OakTimeOversleptText:
 	text_far _OakTimeOversleptText
 	text_end
-.OakTimeYikesText:
-	text_far _OakTimeYikesText
+.OakTimeNappedText:
+	text_far _OakTimeNappedText
 	text_end
 .OakTimeSoDarkText:
 	text_far _OakTimeSoDarkText
@@ -537,7 +545,7 @@ PrintHour:
 	call AdjustHourForAMorPM
 	ld [wTextDecimalByte], a
 	ld de, wTextDecimalByte
-	jp PrintTwoDigitNumberLeftAlign ; jr?
+	jp PrintTwoDigitNumberLeftAlign
 
 GetTimeOfDayString:
 	ld a, c
@@ -545,8 +553,10 @@ GetTimeOfDayString:
 	jr c, .nite
 	cp DAY_HOUR
 	jr c, .morn
-	cp NITE_HOUR
+	cp EVN_HOUR
 	jr c, .day
+	cp NITE_HOUR
+	jr c, .evn
 .nite
 	ld de, .nite_string
 	ret
@@ -556,9 +566,13 @@ GetTimeOfDayString:
 .day
 	ld de, .day_string
 	ret
+.evn
+	ld de, .evn_string
+	ret
 .nite_string: db "NITE@"
 .morn_string: db "MORN@"
 .day_string:  db "DAY@"
+.evn_string:  db "EVN@"
 
 AdjustHourForAMorPM:
 ; Convert the hour stored in c (0-23) to a 1-12 value

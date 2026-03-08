@@ -34,8 +34,7 @@ InitPartyMenuPalettes:
 	ld hl, PalPacket_PartyMenu + 1
 	call CopyFourPalettes
 	call InitPartyMenuOBPals
-	call WipeAttrmap
-	ret
+	jp WipeAttrmap
 
 SGB_ApplyPartyMenuHPPals:
 ; SGB layout for SCGB_PARTY_MENU_HP_BARS
@@ -81,7 +80,7 @@ LoadMonPaletteAsNthBGPal:
 	inc hl
 	inc hl
 	inc hl
-
+	; fallthrough
 LoadNthMiddleBGPal:
 	push hl
 	ld hl, wBGPals1
@@ -96,8 +95,7 @@ LoadNthMiddleBGPal:
 	ld e, l
 	ld d, h
 	pop hl
-	call LoadPalette_White_Col1_Col2_Black
-	ret
+	jp LoadPalette_White_Col1_Col2_Black
 
 ApplyMonOrTrainerPals:
 	ld a, e
@@ -114,18 +112,32 @@ ApplyMonOrTrainerPals:
 	call LoadPalette_White_Col1_Col2_Black
 	call WipeAttrmap
 	call ApplyAttrmap
-	call ApplyPals
-	ret
+	jp ApplyPals
 
 ApplyHPBarPals:
 	ld a, [wWhichHPBar]
-	and a
+	and a ; 0?
 	jr z, .Enemy
-	cp $1
+	dec a ; 1?
 	jr z, .Player
-	cp $2
-	jr z, .PartyMenu
-	ret
+	dec a ; 2?
+	ret nz
+	; PartyMenu
+	ld e, c
+	inc e
+	hlcoord 11, 1, wAttrmap
+	ld bc, 2 * SCREEN_WIDTH
+	ld a, [wCurPartyMon]
+.loop
+	and a
+	jr z, .done
+	add hl, bc
+	dec a
+	jr .loop
+.done
+	lb bc, 2, 8
+	ld a, e
+	jp FillBoxWithByte
 .Enemy:
 	ld de, wBGPals2 palette PAL_BATTLE_BG_ENEMY_HP color 1
 	jr .okay
@@ -143,23 +155,6 @@ ApplyHPBarPals:
 	call FarCopyWRAM
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
-	ret
-.PartyMenu:
-	ld e, c
-	inc e
-	hlcoord 11, 1, wAttrmap
-	ld bc, 2 * SCREEN_WIDTH
-	ld a, [wCurPartyMon]
-.loop
-	and a
-	jr z, .done
-	add hl, bc
-	dec a
-	jr .loop
-.done
-	lb bc, 2, 8
-	ld a, e
-	call FillBoxWithByte
 	ret
 
 LoadStatsScreenPals:
@@ -198,8 +193,7 @@ LoadMailPalettes:
 	call FarCopyWRAM
 	call ApplyPals
 	call WipeAttrmap
-	call ApplyAttrmap
-	ret
+	jp ApplyAttrmap
 .MailPals:
 INCLUDE "gfx/mail/mail.pal"
 
@@ -312,16 +306,14 @@ WipeAttrmap:
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_AREA
 	xor a
-	call ByteFill
-	ret
+	jp ByteFill
 
 ApplyPals:
 	ld hl, wBGPals1
 	ld de, wBGPals2
 	ld bc, 16 palettes
 	ld a, BANK(wGBCPalettes)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 ApplyAttrmap:
 	ldh a, [rLCDC]
@@ -388,16 +380,14 @@ CGB_ApplyPartyMenuHPPals:
 .done
 	lb bc, 2, 8
 	ld a, e
-	call FillBoxWithByte
-	ret
+	jp FillBoxWithByte
 
 InitPartyMenuOBPals:
 	ld hl, PartyMenuOBPals
 	ld de, wOBPals1
 	ld bc, 8 palettes
 	ld a, BANK(wOBPals1)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 GetBattlemonBackpicPalettePointer:
 	push de
@@ -438,7 +428,7 @@ GetFrontpicPalettePointer:
 	and a
 	jp nz, GetMonNormalOrShinyPalettePointer
 	ld a, [wTrainerClass]
-
+	; fallthrough
 GetTrainerPalettePointer:
 	ld l, a
 	ld h, 0
@@ -458,8 +448,7 @@ GetMonPalettePointer:
 	add hl, bc
 	ret
 
-BattleObjectPals:
-INCLUDE "gfx/battle_anims/battle_anims.pal"
+BattleObjectPals: INCLUDE "gfx/battle_anims/battle_anims.pal"
 
 GetMonNormalOrShinyPalettePointer:
 	push bc
@@ -479,12 +468,6 @@ PushSGBPals:
 	push af
 	set JOYPAD_DISABLE_SGB_TRANSFER_F, a
 	ld [wJoypadDisable], a
-	call _PushSGBPals
-	pop af
-	ld [wJoypadDisable], a
-	ret
-
-_PushSGBPals:
 	ld a, [hl]
 	and $7
 	ret z
@@ -521,7 +504,9 @@ _PushSGBPals:
 	call SGBDelayCycles
 	pop bc
 	dec b
-	jr nz, .loop
+	jr nz, .loop	
+	pop af
+	ld [wJoypadDisable], a
 	ret
 
 InitCGBPals::
@@ -597,16 +582,18 @@ PredefPals: ; unused?
 INCLUDE "gfx/sgb/predef.pal"
 	assert_table_length NUM_PREDEF_PALS
 
-HPBarPals:
-INCLUDE "gfx/battle/hp_bar.pal"
+HPBarPals: INCLUDE "gfx/battle/hp_bar.pal"
 
-ExpBarPalette:
-INCLUDE "gfx/battle/exp_bar.pal"
+ExpBarPalette: INCLUDE "gfx/battle/exp_bar.pal"
+
 INCLUDE "data/pokemon/palettes.asm"
+
 INCLUDE "data/trainers/palettes.asm"
 
+INCLUDE "engine/tilesets/tileset_palettes.asm"
+
 LoadMapPals:
-	farcall LoadSpecialMapPalette
+	call LoadSpecialMapPalette
 	jr c, .got_pals
 	; Which palette group is based on whether we're outside or inside
 	ld a, [wEnvironment]
@@ -674,6 +661,7 @@ LoadMapPals:
 	ld bc, 8 palettes
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
+	call LoadSpecialNPCPalette
 	ld a, [wEnvironment]
 	cp TOWN
 	jr z, .outside
@@ -681,20 +669,24 @@ LoadMapPals:
 	ret nz
 .outside
 	ld a, [wMapGroup]
-	ld l, a
-	ld h, 0
-	add hl, hl
-	add hl, hl
-	add hl, hl
-	ld de, RoofPals
+	add a
+	add a
+	ld e, a
+	ld d, 0
+	ld hl, RoofPals
+	add hl, de
+	add hl, de
 	add hl, de
 	ld a, [wTimeOfDayPal]
 	maskbits NUM_DAYTIMES
 	cp NITE_F
+	ld de, 4
+	jr z, .nite
 	jr c, .morn_day
-rept 4
-	inc hl
-endr
+	; evening
+	add hl, de
+.nite
+	add hl, de
 .morn_day
 	ld de, wBGPals1 palette PAL_BG_ROOF color 1
 	ld bc, 4
@@ -759,51 +751,38 @@ endr
 	ld de, wOBPals1 palette PAL_OW_ROCK + 2
 	ld bc, 1 palettes - 2
 	ld a, BANK(wOBPals1)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 INCLUDE "data/maps/environment_colors.asm"
 
-PartyMenuBGMobilePalette:
-INCLUDE "gfx/stats/party_menu_bg_mobile.pal"
+PartyMenuBGMobilePalette: INCLUDE "gfx/stats/party_menu_bg_mobile.pal"
 
-PartyMenuBGPalette:
-INCLUDE "gfx/stats/party_menu_bg.pal"
+PartyMenuBGPalette: INCLUDE "gfx/stats/party_menu_bg.pal"
 
-TilesetBGPalette:
-INCLUDE "gfx/tilesets/bg_tiles.pal"
+TilesetBGPalette: INCLUDE "gfx/tilesets/bg_tiles.pal"
 
-MapObjectPals::
-INCLUDE "gfx/overworld/npc_sprites.pal"
+MapObjectPals:: INCLUDE "gfx/overworld/npc_sprites.pal"
 
 RoofPals:
-	table_width COLOR_SIZE * 2 * 2
+	table_width COLOR_SIZE * 3 * 2
 INCLUDE "gfx/tilesets/roofs.pal"
 	assert_table_length NUM_MAP_GROUPS + 1
 
-DiplomaPalettes:
-INCLUDE "gfx/diploma/diploma.pal"
+DiplomaPalettes: INCLUDE "gfx/diploma/diploma.pal"
 
-PartyMenuOBPals:
-INCLUDE "gfx/stats/party_menu_ob.pal"
+PartyMenuOBPals: INCLUDE "gfx/stats/party_menu_ob.pal"
 
-UnusedGSTitleBGPals:
-INCLUDE "gfx/title/unused_gs_bg.pal"
+UnusedGSTitleBGPals: INCLUDE "gfx/title/unused_gs_bg.pal"
 
-UnusedGSTitleOBPals:
-INCLUDE "gfx/title/unused_gs_fg.pal"
+UnusedGSTitleOBPals: INCLUDE "gfx/title/unused_gs_fg.pal"
 
-MalePokegearPals:
-INCLUDE "gfx/pokegear/pokegear.pal"
+MalePokegearPals: INCLUDE "gfx/pokegear/pokegear.pal"
 
-FemalePokegearPals:
-INCLUDE "gfx/pokegear/pokegear_f.pal"
+FemalePokegearPals: INCLUDE "gfx/pokegear/pokegear_f.pal"
 
-BetaPokerPals:
-INCLUDE "gfx/beta_poker/beta_poker.pal"
+BetaPokerPals: INCLUDE "gfx/beta_poker/beta_poker.pal"
 
-SlotMachinePals:
-INCLUDE "gfx/slots/slots.pal"
+SlotMachinePals: INCLUDE "gfx/slots/slots.pal"
 
 SetFirstOBJPalette::
 ; Input: e must contain the offset of the selected palette from PartyMenuOBPals

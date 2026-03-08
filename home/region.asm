@@ -4,6 +4,9 @@ IsInJohto::
 	ld b, a
 	ld a, [wMapNumber]
 	ld c, a
+	; fallthrough
+IsMapInJohto::
+; input: b = map group, c = map id
 	call GetWorldMapLocation
 	cp LANDMARK_FAST_SHIP
 	jr z, .Johto

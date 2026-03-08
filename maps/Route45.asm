@@ -47,7 +47,7 @@ TrainerBlackbeltKenji:
 	ifnotequal 1, Route45NumberAcceptedM
 	checktime MORN
 	iftrue .Morning
-	checktime NITE
+	checktime EVN | NITE
 	iftrue .Night
 	checkevent EVENT_KENJI_ON_BREAK
 	iffalse Route45NumberAcceptedM
@@ -236,21 +236,10 @@ TrainerCooltrainerfKelly:
 	end
 
 TrainerCamperQuentin:
-	faceplayer
+	trainer CAMPER, QUENTIN, EVENT_BEAT_CAMPER_QUENTIN, CamperQuentinSeenText, CamperQuentinBeatenText, 0, .Script
+.Script:
+	endifjustbattled
 	opentext
-	checkevent EVENT_BEAT_CAMPER_QUENTIN
-	iftrue .Defeated
-	writetext CamperQuentinSeenText
-	waitbutton
-	closetext
-	winlosstext CamperQuentinBeatenText, 0
-	loadtrainer CAMPER, QUENTIN
-	startbattle
-	reloadmapafterbattle
-	setevent EVENT_BEAT_CAMPER_QUENTIN
-	closetext
-	end
-.Defeated:
 	writetext CamperQuentinAfterBattleText
 	waitbutton
 	closetext
@@ -462,18 +451,13 @@ CooltrainerfKellyAfterBattleText:
 	cont "to harm #MON."
 	done
 
-Route45DummyText:
+CamperQuentinSeenText:
 	text "I'm really, really"
 	line "tough!"
 
 	para "Is there anywhere"
 	line "I can prove how"
 	cont "tough I really am?"
-	done
-
-CamperQuentinSeenText:
-	text "I'm really, really"
-	line "tough!"
 	done
 
 CamperQuentinBeatenText:

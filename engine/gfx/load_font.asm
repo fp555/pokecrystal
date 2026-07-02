@@ -1,8 +1,5 @@
 INCLUDE "gfx/font.asm"
 
-EnableHDMAForGraphics:
-	db FALSE
-
 _LoadStandardFont::
 	ld de, Font
 	ld hl, vTiles1

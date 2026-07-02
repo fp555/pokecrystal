@@ -149,7 +149,7 @@ FadeOutMapMusic:
 	jp SkipMusic
 
 ApplyMapPalettes:
-	farcall _UpdateTimePals
+	farcall UpdateTimePals
 	ret
 
 FadeMapMusicAndPalettes:

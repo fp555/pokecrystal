@@ -6,12 +6,11 @@ _ReturnToBattle_UseBall:
 	jr z, .gettutorialbackpic
 	farcall GetBattleMonBackpic
 	jr .continue
-
 .gettutorialbackpic
 	farcall GetTrainerBackpic
 .continue
 	farcall GetEnemyMonFrontpic
-	farcall _LoadBattleFontsHPBar
+	farcall LoadBattleFontsHPBar
 	call GetMemSGBLayout
 	call CloseWindow
 	call LoadStandardMenuHeader

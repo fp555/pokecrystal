@@ -8,7 +8,6 @@ SECTION "Home", ROM0
 INCLUDE "home/init.asm"
 INCLUDE "home/vblank.asm"
 INCLUDE "home/delay.asm"
-INCLUDE "home/time_palettes.asm"
 INCLUDE "home/fade.asm"
 INCLUDE "home/lcd.asm"
 INCLUDE "home/time.asm"

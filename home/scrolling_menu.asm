@@ -2,25 +2,23 @@ ScrollingMenu::
 	call CopyMenuData
 	ldh a, [hROMBank]
 	push af
-
 	ld a, BANK(_ScrollingMenu) ; aka BANK(_InitScrollingMenu)
 	rst Bankswitch
-
 	call _InitScrollingMenu
-	call .UpdatePalettes
-	call _ScrollingMenu
-
-	pop af
-	rst Bankswitch
-
-	ld a, [wMenuJoypad]
-	ret
-
-.UpdatePalettes:
+	; UpdatePalettes
 	ld hl, wStateFlags
 	bit SPRITE_UPDATES_DISABLED_F, [hl]
-	jp nz, UpdateTimePals
-	jp SetDefaultBGPAndOBP
+	jr nz, .set
+	call SetDefaultBGPAndOBP
+	jr .cont
+.set
+	farcall UpdateTimePals
+.cont
+	call _ScrollingMenu
+	pop af
+	rst Bankswitch
+	ld a, [wMenuJoypad]
+	ret
 
 InitScrollingMenu::
 	ld a, [wMenuBorderTopCoord]

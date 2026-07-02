@@ -2478,7 +2478,7 @@ ForcePlayerMonChoice:
 .enemy_fainted_mobile_error
 	call ClearSprites
 	call ClearBGPalettes
-	call _LoadHPBar
+	farcall LoadHPBar
 	call ExitMenu
 	call LoadTilemapToTempTilemap
 	call WaitBGMap
@@ -2498,7 +2498,7 @@ ForcePlayerMonChoice:
 	call ResetPlayerStatLevels
 	call ClearPalettes
 	call DelayFrame
-	call _LoadHPBar
+	farcall LoadHPBar
 	call CloseWindow
 	call GetMemSGBLayout
 	call SetDefaultBGPAndOBP
@@ -3190,7 +3190,7 @@ OfferSwitch:
 	ld [wCurBattleMon], a
 	call ClearPalettes
 	call DelayFrame
-	call _LoadHPBar
+	farcall LoadHPBar
 	pop af
 	ld [wCurPartyMon], a
 	xor a
@@ -3201,7 +3201,7 @@ OfferSwitch:
 .canceled_switch
 	call ClearPalettes
 	call DelayFrame
-	call _LoadHPBar
+	farcall LoadHPBar
 .said_no
 	pop af
 	ld [wCurPartyMon], a
@@ -4543,7 +4543,7 @@ BattleMenu_Pack:
 	; didn't use item
 	call ClearPalettes
 	call DelayFrame
-	call _LoadBattleFontsHPBar
+	farcall LoadBattleFontsHPBar
 	call GetBattleMonBackpic
 	call GetEnemyMonFrontpic
 	call ExitMenu
@@ -4578,7 +4578,7 @@ BattleMenu_Pack:
 .ball
 	xor a
 	ldh [hBGMapMode], a
-	call _LoadBattleFontsHPBar
+	farcall LoadBattleFontsHPBar
 	call ClearSprites
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
@@ -4655,7 +4655,7 @@ BattleMenuPKMN_Loop:
 	call ClearSprites
 	call ClearPalettes
 	call DelayFrame
-	call _LoadHPBar
+	farcall LoadHPBar
 	call CloseWindow
 	call LoadTilemapToTempTilemap
 	call GetMemSGBLayout
@@ -4720,7 +4720,7 @@ TryPlayerSwitch:
 	call ClearPalettes
 	call DelayFrame
 	call ClearSprites
-	call _LoadHPBar
+	farcall LoadHPBar
 	call CloseWindow
 	call GetMemSGBLayout
 	call SetDefaultBGPAndOBP
@@ -6084,14 +6084,6 @@ ApplyStatLevelMultiplier:
 StatLevelMultipliers_Applied:
 INCLUDE "data/battle/stat_multipliers.asm"
 
-_LoadBattleFontsHPBar:
-	callfar LoadBattleFontsHPBar
-	ret
-
-_LoadHPBar:
-	callfar LoadHPBar
-	ret
-
 EmptyBattleTextbox:
 	ld hl, .empty
 	jp BattleTextbox
@@ -7197,7 +7189,7 @@ BattleIntro:
 	ldh [hMapAnims], a
 	farcall PlayBattleMusic
 	farcall ShowLinkBattleParticipants
-	farcall FindFirstAliveMonAndStartBattle
+	farcall StartBattleTransition
 	call DisableSpriteUpdates
 	farcall ClearBattleRAM
 	call InitEnemy
@@ -7934,7 +7926,7 @@ InitBattleDisplay:
 	lb bc, 3, 7
 	call ClearBox
 	call LoadStandardFont
-	call _LoadBattleFontsHPBar
+	farcall LoadBattleFontsHPBar
 	; BlankBGMap
 	ldh a, [rWBK]
 	push af

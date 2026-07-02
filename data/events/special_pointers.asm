@@ -62,7 +62,7 @@ SpecialsPointers::
 	add_special FadeInFromBlack
 	add_special ReloadSpritesNoPalettes ; bank 0
 	add_special ClearBGPalettes ; bank 0
-	add_special UpdateTimePals ; bank 0
+	add_special UpdateTimePals
 	add_special ClearTilemap ; bank 0; unused as special
 	add_special UpdateSprites ; bank 0
 	add_special UpdatePlayerSprite ; bank 0

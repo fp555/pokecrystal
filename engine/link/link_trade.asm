@@ -27,7 +27,34 @@ LinkTextbox:
 	ld l, e
 	push bc
 	push hl
-	call .PlaceBorder
+	; PlaceBorder
+	ld a, $30
+	ld [hli], a
+	inc a
+	call .PlaceRow
+	inc a
+	ld [hl], a
+	pop hl
+	push hl
+	ld de, SCREEN_WIDTH
+	add hl, de
+.loop
+	push hl
+	ld a, $33
+	ld [hli], a
+	ld a, ' '
+	call .PlaceRow
+	ld [hl], $34
+	pop hl
+	ld de, SCREEN_WIDTH
+	add hl, de
+	dec b
+	jr nz, .loop
+	ld a, $35
+	ld [hli], a
+	ld a, $36
+	call .PlaceRow
+	ld [hl], $37
 	pop hl
 	pop bc
 	ld de, wAttrmap - wTilemap
@@ -50,35 +77,6 @@ LinkTextbox:
 	pop bc
 	dec b
 	jr nz, .row
-	ret
-.PlaceBorder
-	push hl
-	ld a, $30
-	ld [hli], a
-	inc a
-	call .PlaceRow
-	inc a
-	ld [hl], a
-	pop hl
-	ld de, SCREEN_WIDTH
-	add hl, de
-.loop
-	push hl
-	ld a, $33
-	ld [hli], a
-	ld a, ' '
-	call .PlaceRow
-	ld [hl], $34
-	pop hl
-	ld de, SCREEN_WIDTH
-	add hl, de
-	dec b
-	jr nz, .loop
-	ld a, $35
-	ld [hli], a
-	ld a, $36
-	call .PlaceRow
-	ld [hl], $37
 	ret
 .PlaceRow
 	ld d, c
@@ -137,7 +135,53 @@ PlaceWaitingTextAndSyncAndExchangeNybble:
 	db "WAITING..!@"
 
 LinkTradeMenu:
-	call .MenuAction
+	; MenuAction
+	ld hl, w2DMenuFlags2
+	res _2DMENU_EXITING_F, [hl]
+	ldh a, [hBGMapMode]
+	push af
+.loop
+	call .UpdateCursor
+	; UpdateBGMapAndOAM
+	ldh a, [hOAMUpdate]
+	push af
+	ld a, $1
+	ldh [hOAMUpdate], a
+	call WaitBGMap
+	pop af
+	ldh [hOAMUpdate], a
+	xor a
+	ldh [hBGMapMode], a
+.loop2
+	farcall UpdateTimeAndPals
+	; TryAnims
+	ld a, [w2DMenuFlags1]
+	bit _2DMENU_ENABLE_SPRITE_ANIMS_F, a
+	jr z, .skip_anims
+	farcall PlaySpriteAnimationsAndDelayFrame
+.skip_anims
+	call JoyTextDelay
+	call .GetJoypad
+	and a
+	jr nz, .done2
+	ld a, [w2DMenuFlags1]
+	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, a
+	jr z, .loop2
+	jr .done
+.done2	
+	farcall _2DMenuInterpretJoypad
+	jr c, .done
+	ld a, [w2DMenuFlags1]
+	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, a
+	jr nz, .done
+	call .GetJoypad
+	ld b, a
+	ld a, [wMenuJoypadFilter]
+	and b
+	jr z, .loop
+.done
+	pop af
+	ldh [hBGMapMode], a
 .GetJoypad:
 	push bc
 	push af
@@ -152,51 +196,6 @@ LinkTradeMenu:
 	ld a, b
 	pop bc
 	ld d, a
-	ret
-.MenuAction:
-	ld hl, w2DMenuFlags2
-	res _2DMENU_EXITING_F, [hl]
-	ldh a, [hBGMapMode]
-	push af
-	call .loop
-	pop af
-	ldh [hBGMapMode], a
-	ret
-.loop
-	call .UpdateCursor
-	call .UpdateBGMapAndOAM
-	call .loop2
-	ret nc
-	farcall _2DMenuInterpretJoypad
-	ret c
-	ld a, [w2DMenuFlags1]
-	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, a
-	ret nz
-	call .GetJoypad
-	ld b, a
-	ld a, [wMenuJoypadFilter]
-	and b
-	ret nz
-	jr .loop
-.UpdateBGMapAndOAM:
-	ldh a, [hOAMUpdate]
-	push af
-	ld a, $1
-	ldh [hOAMUpdate], a
-	call WaitBGMap
-	pop af
-	ldh [hOAMUpdate], a
-	xor a
-	ldh [hBGMapMode], a
-	ret
-.loop2
-	call UpdateTimeAndPals
-	call .TryAnims
-	ret c
-	ld a, [w2DMenuFlags1]
-	bit _2DMENU_DISABLE_JOYPAD_FILTER_F, a
-	jr z, .loop2
-	and a
 	ret
 .UpdateCursor:
 	ld hl, wCursorCurrentTile
@@ -269,16 +268,4 @@ LinkTradeMenu:
 	ld [wCursorCurrentTile], a
 	ld a, h
 	ld [wCursorCurrentTile + 1], a
-	ret
-.TryAnims:
-	ld a, [w2DMenuFlags1]
-	bit _2DMENU_ENABLE_SPRITE_ANIMS_F, a
-	jr z, .skip_anims
-	farcall PlaySpriteAnimationsAndDelayFrame
-.skip_anims
-	call JoyTextDelay
-	call .GetJoypad
-	and a
-	ret z
-	scf
 	ret

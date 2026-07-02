@@ -9,7 +9,33 @@ DEF BATTLETRANSITION_SQUARE EQU '8' ; $fe
 DEF BATTLETRANSITION_BLACK  EQU '9' ; $ff
 
 DoBattleTransition:
-	call .InitGFX
+	; InitGFX
+	ld a, [wLinkMode]
+	cp LINK_MOBILE
+	jr z, .mobile
+	farcall ReanchorBGMap_NoOAMUpdate
+	call UpdateSprites
+	call DelayFrame
+	; NonMobile_LoadBattleTransitionTiles
+	call LoadBattleTransitionGFX
+	hlbgcoord 0, 0
+	call InitBattleTransitionBGMap
+	call CGBOnly_CopyTilemapAtOnce
+	jr .resume
+.mobile
+	call LoadBattleTransitionGFX
+.resume
+	ld a, SCREEN_HEIGHT_PX
+	ldh [hWY], a
+	call DelayFrame
+	xor a
+	ldh [hBGMapMode], a
+	ld hl, wJumptableIndex
+	xor a
+	ld [hli], a
+	ld [hli], a
+	ld [hl], a
+	call WipeLYOverrides
 	ldh a, [rBGP]
 	ld [wBGP], a
 	ldh a, [rOBP0]
@@ -49,40 +75,10 @@ DoBattleTransition:
 	ldh [hLYOverrideStart], a
 	ldh [hLYOverrideEnd], a
 	ldh [hSCY], a
-	ld a, $1 ; unnecessary bankswitch?
-	ldh [rWBK], a
 	pop af
 	vc_hook Stop_reducing_battle_transition_flashing
 	ldh [hVBlank], a
 	jp DelayFrame
-.InitGFX:
-	ld a, [wLinkMode]
-	cp LINK_MOBILE
-	jr z, .mobile
-	farcall ReanchorBGMap_NoOAMUpdate
-	call UpdateSprites
-	call DelayFrame
-	call .NonMobile_LoadBattleTransitionTiles
-	call CGBOnly_CopyTilemapAtOnce
-	jr .resume
-.mobile
-	call LoadBattleTransitionGFX
-.resume
-	ld a, SCREEN_HEIGHT_PX
-	ldh [hWY], a
-	call DelayFrame
-	xor a
-	ldh [hBGMapMode], a
-	ld hl, wJumptableIndex
-	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	jp WipeLYOverrides
-.NonMobile_LoadBattleTransitionTiles:
-	call LoadBattleTransitionGFX
-	hlbgcoord 0, 0
-	jr InitBattleTransitionBGMap
 
 LoadBattleTransitionGFX:
 ; Load the tiles used in the Pokeball Graphic that fills the screen
@@ -240,6 +236,10 @@ StartTrainerBattle_Finish:
 	call ClearSprites
 	ld a, JUMPTABLE_EXIT
 	ld [wJumptableIndex], a
+	; StartTrainerBattle_SetUpForWavyOutro/SetUpForSpinOutro/SetUpForRandomScatterOutro
+	; switched WRAM bank to BANK(wLYOverrides), we need to restore bank 1
+	ld a, 1
+	ldh [rWBK], a
 	ret
 
 StartTrainerBattle_NextScene:
@@ -255,11 +255,7 @@ StartTrainerBattle_SetUpBGMap:
 	ret
 
 StartTrainerBattle_Flash:
-	call .DoFlashAnimation
-	ret nc
-	call StartTrainerBattle_NextScene
-	ret
-.DoFlashAnimation:
+	; DoFlashAnimation
 	ld a, [wTimeOfDayPalset]
 	cp DARKNESS_PALSET
 	jr z, .done
@@ -275,14 +271,11 @@ StartTrainerBattle_Flash:
 	cp %00000001
 	jr z, .done
 	ld [wBGP], a
-	call DmgToCgbBGPals
-	and a
-	ret
+	jp DmgToCgbBGPals
 .done
 	xor a
 	ld [wBattleTransitionCounter], a
-	scf
-	ret
+	jr StartTrainerBattle_NextScene
 .pals:
 	dc 3, 3, 2, 1
 	dc 3, 3, 3, 2
@@ -319,13 +312,7 @@ StartTrainerBattle_SineWave:
 	ld a, [wBattleTransitionCounter]
 	cp $60
 	jr nc, .end
-	call .DoSineWave
-	ret
-.end
-	ld a, BATTLETRANSITION_FINISH
-	ld [wJumptableIndex], a
-	ret
-.DoSineWave:
+	; DoSineWave
 	ld hl, wBattleTransitionSineWaveOffset
 	ld a, [hl]
 	inc [hl]
@@ -350,6 +337,10 @@ StartTrainerBattle_SineWave:
 	pop af
 	dec a
 	jr nz, .loop
+	ret
+.end
+	ld a, BATTLETRANSITION_FINISH
+	ld [wJumptableIndex], a
 	ret
 
 StartTrainerBattle_SetUpForSpinOutro:
@@ -395,7 +386,8 @@ endr
 	ld a, BATTLETRANSITION_FINISH
 	ld [wJumptableIndex], a
 	ret
-	; quadrants
+
+; quadrants
 	const_def
 	const UPPER_LEFT
 	const UPPER_RIGHT
@@ -512,7 +504,32 @@ StartTrainerBattle_SpeckleToBlack:
 	ld c, $c
 .loop
 	push bc
-	jr .y_loop
+	; BlackOutRandomTile
+.y_loop
+	call Random
+	maskbits SCREEN_HEIGHT
+	cp SCREEN_HEIGHT
+	jr nc, .y_loop
+	ld b, a
+.x_loop
+	call Random
+	maskbits SCREEN_WIDTH
+	cp SCREEN_WIDTH
+	jr nc, .x_loop
+	ld c, a
+	hlcoord 0, -1
+	ld de, SCREEN_WIDTH
+	inc b
+.row_loop
+	add hl, de
+	dec b
+	jr nz, .row_loop
+	add hl, bc
+	; If the tile has already been blacked out, sample a new tile
+	ld a, [hl]
+	cp BATTLETRANSITION_BLACK
+	jr z, .y_loop
+	ld [hl], BATTLETRANSITION_BLACK
 	pop bc
 	dec c
 	jr nz, .loop
@@ -527,31 +544,6 @@ StartTrainerBattle_SpeckleToBlack:
 	ldh [hBGMapMode], a
 	ld a, BATTLETRANSITION_FINISH
 	ld [wJumptableIndex], a
-	ret
-.y_loop
-	call Random
-	cp SCREEN_HEIGHT
-	jr nc, .y_loop
-	ld b, a
-.x_loop
-	call Random
-	cp SCREEN_WIDTH
-	jr nc, .x_loop
-	ld c, a
-	hlcoord 0, -1
-	ld de, SCREEN_WIDTH
-	inc b
-.row_loop
-	add hl, de
-	dec b
-	jr nz, .row_loop
-	add hl, bc
-	; If the tile has already been blacked out,
-	; sample a new tile
-	ld a, [hl]
-	cp BATTLETRANSITION_BLACK
-	jr z, .y_loop
-	ld [hl], BATTLETRANSITION_BLACK
 	ret
 
 StartTrainerBattle_LoadTransitionGraphics:
@@ -629,7 +621,19 @@ StartTrainerBattle_LoadTransitionGraphics:
 	push af
 	ld a, BANK(wBGPals1)
 	ldh [rWBK], a
-	call .copypals
+	; copypals
+	ld de, wBGPals1 palette PAL_BG_TEXT
+	call .copy
+	ld de, wBGPals2 palette PAL_BG_TEXT
+	call .copy
+	ld de, wOBPals1 palette PAL_OW_TREE
+	call .copy
+	ld de, wOBPals2 palette PAL_OW_TREE
+	call .copy
+	ld de, wOBPals1 palette PAL_OW_ROCK
+	call .copy
+	ld de, wOBPals2 palette PAL_OW_ROCK
+	call .copy
 	push hl
 	ld de, wBGPals1 palette PAL_BG_TEXT
 	ld bc, 1 palettes
@@ -646,28 +650,14 @@ StartTrainerBattle_LoadTransitionGraphics:
 	call CGBOnly_CopyTilemapAtOnce
 .nextscene
 	jp StartTrainerBattle_NextScene
-.copypals
-	ld de, wBGPals1 palette PAL_BG_TEXT
-	call .copy
-	ld de, wBGPals2 palette PAL_BG_TEXT
-	call .copy
-	ld de, wOBPals1 palette PAL_OW_TREE
-	call .copy
-	ld de, wOBPals2 palette PAL_OW_TREE
-	call .copy
-	ld de, wOBPals1 palette PAL_OW_ROCK
-	call .copy
-	ld de, wOBPals2 palette PAL_OW_ROCK
 .copy
 	push hl
 	ld bc, 1 palettes
 	call CopyBytes
 	pop hl
 	ret
-.pals:
-INCLUDE "gfx/overworld/trainer_battle.pal"
-.darkpals:
-INCLUDE "gfx/overworld/trainer_battle_dark.pal"
+.pals: INCLUDE "gfx/overworld/trainer_battle.pal"
+.darkpals: INCLUDE "gfx/overworld/trainer_battle_dark.pal"
 .loadtransitiongfx:
 	; use Rocket transition for specific trainer classes
 	ld de, TeamRocketTransition
@@ -770,7 +760,21 @@ StartTrainerBattle_ZoomToBlack:
 	ld h, a
 	xor a
 	ldh [hBGMapMode], a
-	call .Copy
+	; Copy
+	ld a, BATTLETRANSITION_BLACK
+.row
+	push bc
+	push hl
+.col
+	ld [hli], a
+	dec c
+	jr nz, .col
+	pop hl
+	ld bc, SCREEN_WIDTH
+	add hl, bc
+	pop bc
+	dec b
+	jr nz, .row
 	call WaitBGMap
 	jr .loop
 .done
@@ -793,19 +797,3 @@ ENDM
 	zoombox 18, 16,  1, 1
 	zoombox 20, 18,  0, 0
 	db -1
-.Copy:
-	ld a, BATTLETRANSITION_BLACK
-.row
-	push bc
-	push hl
-.col
-	ld [hli], a
-	dec c
-	jr nz, .col
-	pop hl
-	ld bc, SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	dec b
-	jr nz, .row
-	ret

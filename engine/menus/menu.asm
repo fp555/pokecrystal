@@ -288,7 +288,7 @@ MenuJoypadLoop:
 
 Do2DMenuRTCJoypad:
 .loopRTC
-	call UpdateTimeAndPals
+	farcall UpdateTimeAndPals
 	call Menu_WasButtonPressed
 	ret c
 	ld a, [w2DMenuFlags1]

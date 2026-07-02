@@ -1275,11 +1275,10 @@ GruntMGroup:
 	db 19, RATICATE
 	db -1 ; end
 
-	; GRUNTM (30)
+	; GRUNTM (29)
 	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 25, GOLBAT
-	db 25, GOLBAT
-	db 30, ARBOK
+	db  9, RATTATA
+	db  9, RATTATA
 	db -1 ; end
 
 	; GRUNTM (31)

@@ -273,17 +273,13 @@ GetDestinationWarpNumber::
 	ret
 .found_warp
 	pop hl
-	call .IncreaseHLTwice
-	ret nc ; never encountered
+	; IncreaseHLTwice
+	inc hl
+	inc hl
 	ld a, [wCurMapWarpEventCount]
 	inc a
 	sub c
 	ld c, a
-	scf
-	ret
-.IncreaseHLTwice:
-	inc hl
-	inc hl
 	scf
 	ret
 
@@ -1745,7 +1741,7 @@ ReturnToMapWithSpeechTextbox::
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	farcall LoadOW_BGPal7
-	call UpdateTimePals
+	farcall UpdateTimePals
 	call DelayFrame
 	ld a, $1
 	ldh [hMapAnims], a

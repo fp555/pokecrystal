@@ -130,7 +130,8 @@ HandleMapTimeAndJoypad:
 	ret nz ; map events off
 	call UpdateTime
 	call GetJoypad
-	jp TimeOfDayPals
+	farcall TimeOfDayPals
+	ret
 
 HandleMapObjects:
 	farcall HandleNPCStep

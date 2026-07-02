@@ -4428,7 +4428,7 @@ DisplayMobileError:
 
 Function17f5c3:
 	call Function17f5e4
-	farcall FinishExitMenu
+	call FinishExitMenu
 	ld a, $1
 	ld [wc303], a
 	ret

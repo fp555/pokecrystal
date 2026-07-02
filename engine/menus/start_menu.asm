@@ -32,11 +32,11 @@ StartMenu::
 	call HDMATransferTilemapAndAttrmap_Menu
 	farcall LoadFonts_NoOAMUpdate
 	call .DrawBugContestStatus
-	call UpdateTimePals
+	farcall UpdateTimePals
 	jr .Select
 .Reopen:
 	call UpdateSprites
-	call UpdateTimePals
+	farcall UpdateTimePals
 	call .SetUpMenuItems
 	ld a, [wBattleMenuCursorPosition]
 	ld [wMenuCursorPosition], a
@@ -80,7 +80,7 @@ StartMenu::
 	call ExitMenu
 .ReturnEnd2:
 	call CloseText
-	call UpdateTimePals
+	farcall UpdateTimePals
 	ret
 .GetInput:
 	; Return carry on exit, and no-carry on selection.
@@ -136,8 +136,7 @@ StartMenu::
 	call DrawVariableLengthMenuBox
 	call .DrawBugContestStatus
 	call UpdateSprites
-	call FinishExitMenu
-	ret
+	jp FinishExitMenu
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 10, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
@@ -219,8 +218,7 @@ StartMenu::
 	ld d, [hl]
 	ld e, a
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 .MenuDesc:
 	push de
 	ld a, [wMenuSelection]
@@ -234,8 +232,7 @@ endr
 	ld d, [hl]
 	ld e, a
 	pop hl
-	call PlaceString
-	ret
+	jp PlaceString
 .none
 	pop de
 	ret

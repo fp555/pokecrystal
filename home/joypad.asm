@@ -227,7 +227,7 @@ JoyWaitAorB::
 	ldh a, [hJoyPressed]
 	and PAD_A | PAD_B
 	ret nz
-	call UpdateTimeAndPals
+	farcall UpdateTimeAndPals
 	jr .loop
 
 WaitButton::
@@ -336,7 +336,7 @@ PromptButton::
 	ldh a, [hJoyPressed]
 	and PAD_A | PAD_B
 	jr nz, .received_input
-	call UpdateTimeAndPals
+	farcall UpdateTimeAndPals
 	ld a, $1
 	ldh [hBGMapMode], a
 	call DelayFrame

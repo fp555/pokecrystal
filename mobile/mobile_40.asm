@@ -2876,22 +2876,18 @@ Function10138b:
 	ld c, 0
 	jr c, .asm_101396
 	inc c
-
 .asm_101396
 	sla c
 	ld a, [wcd2f]
 	and a
 	jr z, .asm_10139f
 	inc c
-
 .asm_10139f
 	sla c
 	ld a, [wcd21]
 	cp $01
-	jr z, .asm_1013a9
+	ret z
 	inc c
-
-.asm_1013a9
 	ret
 
 Function1013aa:
@@ -2900,23 +2896,20 @@ Function1013aa:
 	call ReloadTilesetAndPalettes
 	farcall Function106464
 	call UpdateSprites
-	call FinishExitMenu
-	ret
+	jp FinishExitMenu
 
 Function1013c0:
 	farcall BlankScreen
 	farcall Stubbed_Function106462
 	farcall Function106464
-	call FinishExitMenu
-	ret
+	jp FinishExitMenu
 
 Function1013d6:
 	farcall HDMATransferAttrmapAndTilemapToWRAMBank3
 	ret
 
 Function1013dd:
-	call CGBOnly_CopyTilemapAtOnce
-	ret
+	jp CGBOnly_CopyTilemapAtOnce
 
 Function1013f5:
 	ld a, [hli]

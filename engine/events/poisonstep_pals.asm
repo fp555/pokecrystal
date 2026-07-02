@@ -18,5 +18,5 @@ LoadPoisonBGPals:
 	ldh [hCGBPalUpdate], a
 	ld c, 4
 	call DelayFrames
-	farcall _UpdateTimePals
+	farcall UpdateTimePals
 	ret

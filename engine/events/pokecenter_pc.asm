@@ -222,7 +222,7 @@ _PlayersPC:
 	ld hl, PlayersPCMenuData
 	call LoadMenuHeader
 .loop
-	call UpdateTimePals
+	farcall UpdateTimePals
 	call DoNthMenu
 	jr c, .turn_off
 	call MenuJumptable

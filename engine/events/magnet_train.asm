@@ -145,8 +145,7 @@ MagnetTrain_LoadGFX_PlayMusic:
 	ld [hli], a ; wMagnetTrainPosition
 	ld [hli], a ; wMagnetTrainWaitCounter
 	ld de, MUSIC_MAGNET_TRAIN
-	call PlayMusic2
-	ret
+	jp PlayMusic2
 
 DrawMagnetTrain:
 	hlbgcoord 0, 0
@@ -337,8 +336,7 @@ MagnetTrain_Jumptable:
 	ld a, JUMPTABLE_EXIT
 	ld [wJumptableIndex], a
 	ld de, SFX_TRAIN_ARRIVED
-	call PlaySFX
-	ret
+	jp PlaySFX
 
 MagnetTrain_Jumptable_FirstRunThrough:
 	farcall PlaySpriteAnimations
@@ -361,7 +359,7 @@ MagnetTrain_Jumptable_FirstRunThrough:
 	ld [wEnvironment], a
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
-	call UpdateTimePals
+	farcall UpdateTimePals
 	ldh a, [rBGP]
 	ld [wBGP], a
 	ldh a, [rOBP0]

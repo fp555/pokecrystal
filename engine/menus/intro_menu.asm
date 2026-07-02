@@ -862,18 +862,12 @@ StartTitleScreen:
 	ldh [hWY], a
 	ld b, SCGB_DIPLOMA
 	call GetSGBLayout
-	call UpdateTimePals
+	farcall UpdateTimePals
 	ld a, [wTitleScreenSelectedOption]
 	maskbits NUM_TITLESCREENOPTIONS
-	ld e, a
-	ld d, 0
 	ld hl, .dw
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	rst JumpTable
+	ret
 .dw
 	dw Intro_MainMenu
 	dw DeleteSaveData

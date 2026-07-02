@@ -424,11 +424,9 @@ GetMapConnections::
 	call GetMapConnection
 .no_west
 	bit EAST_F, b
-	jr z, .no_east
+	ret z ; no_east
 	ld de, wEastMapConnection
-	call GetMapConnection
-.no_east
-	ret
+	jp GetMapConnection
 
 GetMapConnection::
 ; Load map connection struct at hl into de.
@@ -1757,7 +1755,7 @@ ReturnToMapWithSpeechTextbox::
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	farcall LoadOW_BGPal7
-	call UpdateTimePals
+	farcall UpdateTimePals
 	call DelayFrame
 	ld a, $1
 	ldh [hMapAnims], a

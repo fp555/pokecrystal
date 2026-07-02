@@ -6,7 +6,18 @@ UpdateTimeOfDayPal::
 	ld [wTimeOfDayPal], a
 	ret
 
-_TimeOfDayPals::
+UpdateTimeAndPals::
+; update time and time-sensitive palettes
+	ld a, [wSpriteUpdatesEnabled]
+	and a ; cp FALSE
+	ret z
+	call UpdateTime
+	; obj update on?
+	ld a, [wStateFlags]
+	bit SPRITE_UPDATES_DISABLED_F, a ; obj update
+	ret z
+	; fallthrough
+TimeOfDayPals::
 ; return carry if pals are changed
 	ld hl, wTimeOfDayPalFlags
 	bit FORCED_PALSET_F, [hl] ; forced pals?
@@ -71,7 +82,7 @@ _TimeOfDayPals::
 	ld a, d
 	ldh [rWBK], a
 	; update palettes
-	call _UpdateTimePals
+	call UpdateTimePals
 	call DelayFrame
 	; successful change
 	scf
@@ -81,7 +92,7 @@ _TimeOfDayPals::
 	and a
 	ret
 
-_UpdateTimePals::
+UpdateTimePals::
 	ld c, $9 ; normal
 	call GetTimePalFade
 	jp DmgToCgbTimePals

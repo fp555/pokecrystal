@@ -190,7 +190,7 @@ LinkTradeMenu:
 	ldh [hBGMapMode], a
 	ret
 .loop2
-	call UpdateTimeAndPals
+	farcall UpdateTimeAndPals
 	call .TryAnims
 	ret c
 	ld a, [w2DMenuFlags1]

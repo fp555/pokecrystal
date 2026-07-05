@@ -235,17 +235,6 @@ BattleText_EnemyIsAboutToUseWillPlayerChangeMon:
 	line "change #MON?"
 	done
 
-BattleText_PluralEnemiesAreAboutToUseWillPlayerChangeMon:
-	text "<ENEMY>"
-	line "are about to use"
-	cont "@"
-	text_ram wEnemyMonNickname
-	text "."
-
-	para "Will <PLAYER>"
-	line "change #MON?"
-	done
-
 BattleText_EnemySentOut:
 	text "<ENEMY>"
 	line "sent out"
@@ -254,8 +243,8 @@ BattleText_EnemySentOut:
 	text "!"
 	done
 
-BattleText_TheresNoWillToBattle:
-	text "There's no will to"
+BattleText_TooTiredToBattle:
+	text "It's too tired to"
 	line "battle!"
 	prompt
 

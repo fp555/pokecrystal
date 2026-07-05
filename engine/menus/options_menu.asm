@@ -2,13 +2,12 @@
 	const_def
 	const OPT_TEXT_SPEED    ; 0
 	const OPT_BATTLE_SCENE  ; 1
-	const OPT_BATTLE_STYLE  ; 2
-	const OPT_SOUND         ; 3
-	const OPT_PRINT         ; 4
-	const OPT_MENU_ACCOUNT  ; 5
-	const OPT_FRAME         ; 6
-	const OPT_CANCEL        ; 7
-DEF NUM_OPTIONS EQU const_value ; 8
+	const OPT_SOUND         ; 2
+	const OPT_PRINT         ; 3
+	const OPT_MENU_ACCOUNT  ; 4
+	const OPT_FRAME         ; 5
+	const OPT_CANCEL        ; 6
+DEF NUM_OPTIONS EQU const_value ; 7
 
 _Option:
 	call ClearJoypad
@@ -74,8 +73,6 @@ StringOptions:
 	db "        :<LF>"
 	db "BATTLE SCENE<LF>"
 	db "        :<LF>"
-	db "BATTLE STYLE<LF>"
-	db "        :<LF>"
 	db "SOUND<LF>"
 	db "        :<LF>"
 	db "PRINT<LF>"
@@ -92,7 +89,6 @@ GetOptionPointer:
 ; entries correspond to OPT_* constants
 	dw Options_TextSpeed
 	dw Options_BattleScene
-	dw Options_BattleStyle
 	dw Options_Sound
 	dw Options_Print
 	dw Options_MenuAccount
@@ -217,38 +213,6 @@ Options_BattleScene:
 	ret
 .On:  db "ON @"
 .Off: db "OFF@"
-
-Options_BattleStyle:
-	ld hl, wOptions
-	ldh a, [hJoyPressed]
-	bit B_PAD_LEFT, a
-	jr nz, .LeftPressed
-	bit B_PAD_RIGHT, a
-	jr z, .NonePressed
-	bit BATTLE_SHIFT, [hl]
-	jr nz, .ToggleShift
-	jr .ToggleSet
-.LeftPressed:
-	bit BATTLE_SHIFT, [hl]
-	jr z, .ToggleSet
-	jr .ToggleShift
-.NonePressed:
-	bit BATTLE_SHIFT, [hl]
-	jr nz, .ToggleSet
-.ToggleShift:
-	res BATTLE_SHIFT, [hl]
-	ld de, .Shift
-	jr .Display
-.ToggleSet:
-	set BATTLE_SHIFT, [hl]
-	ld de, .Set
-.Display:
-	hlcoord 11, 7
-	call PlaceString
-	and a
-	ret
-.Shift: db "SHIFT@"
-.Set:   db "SET  @"
 
 Options_Sound:
 	ld hl, wOptions

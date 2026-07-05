@@ -12,10 +12,6 @@ Function1700ba:
 
 Function170114:
 	call InitBattleTowerChallengeRAM
-	call .Function170121
-	farcall Function11805f
-	ret
-.Function170121:
 	ld a, BANK(s5_a948)
 	call OpenSRAM
 	ld hl, s5_a948
@@ -23,7 +19,9 @@ Function170114:
 	ld bc, 246
 	call CopyBytes
 	call CloseSRAM
-	jp Function170c8b
+	call Function170c8b
+	farcall Function11805f
+	ret
 
 InitBattleTowerChallengeRAM:
 	xor a
@@ -51,10 +49,6 @@ BattleTowerBattle:
 	dw .SkipBattleTowerTrainer
 
 RunBattleTowerTrainer:
-	ld a, [wOptions]
-	push af
-	ld hl, wOptions
-	set BATTLE_SHIFT, [hl] ; SET MODE
 	ld a, [wInBattleTowerBattle]
 	push af
 	or 1 << IN_BATTLE_TOWER_BATTLE_F
@@ -84,8 +78,6 @@ RunBattleTowerTrainer:
 .lost
 	pop af
 	ld [wInBattleTowerBattle], a
-	pop af
-	ld [wOptions], a
 	ld a, TRUE
 	ld [wBattleTowerBattleEnded], a
 	ret

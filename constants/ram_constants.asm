@@ -42,7 +42,7 @@ DEF TEXT_DELAY_MASK EQU %111
 	const_def 4
 	const NO_TEXT_SCROLL ; 4
 	const STEREO         ; 5
-	const BATTLE_SHIFT   ; 6
+	const_skip ; used to be BATTLE_SHIFT
 	const BATTLE_SCENE   ; 7
 
 DEF TEXT_DELAY_NONE EQU 0

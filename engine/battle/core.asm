@@ -1842,13 +1842,11 @@ DoubleSwitch:
 	lb bc, 4, 10
 	call ClearBox
 	call PlayerPartyMonEntrance
-	ld a, $1
 	call EnemyPartyMonEntrance
 	jr .done
 .player_1
 	ld a, [wCurPartyMon]
 	push af
-	ld a, $1
 	call EnemyPartyMonEntrance
 	call ClearSprites
 	call LoadTilemapToTempTilemap
@@ -2070,26 +2068,21 @@ HandleEnemySwitch:
 	ld hl, wBattleMonHP
 	ld a, [hli]
 	or [hl]
-	ld a, $0
 	jr nz, EnemyPartyMonEntrance
 	inc a
 	ret
 
 EnemyPartyMonEntrance:
-	push af
+; vanilla logic was:
+; - forced set mode if a=1
+; - check set/switch mode if a=0
+; now it's always set mode
 	xor a
 	ld [wEnemySwitchMonIndex], a
 	call NewEnemyMonStatus
 	call ResetEnemyStatLevels
 	call BreakAttraction
-	pop af
-	and a
-	jr nz, .set
 	call EnemySwitch
-	jr .done_switch
-.set
-	call EnemySwitch_SetMode
-.done_switch
 	call ResetBattleParticipants
 	call SetEnemyTurn
 	call SpikesDamage
@@ -2822,34 +2815,7 @@ ForceEnemySwitch:
 	jp ResetBattleParticipants
 
 EnemySwitch:
-	call CheckWhetherToAskSwitch
-	jr nc, EnemySwitch_SetMode
-	; Shift Mode
-	call ResetEnemyBattleVars
-	call CheckWhetherSwitchmonIsPredetermined
-	jr c, .skip
-	call FindMonInOTPartyToSwitchIntoBattle
-.skip
-	; 'b' contains the PartyNr of the mon the AI will switch to
-	call LoadEnemyMonToSwitchTo
-	call OfferSwitch
-	push af
-	call ClearEnemyMonBox
-	call ShowBattleTextEnemySentOut
-	call ShowSetEnemyMonAndSendOutAnimation
-	pop af
-	ret c
-	; If we're here, then we're switching too
-	xor a
-	ld [wBattleParticipantsNotFainted], a
-	ld [wBattleParticipantsIncludingFainted], a
-	ld [wBattlePlayerAction], a
-	inc a
-	ld [wEnemyIsSwitching], a
-	call LoadTilemapToTempTilemap
-	jp PlayerSwitch
-
-EnemySwitch_SetMode:
+; always Set Mode
 	call ResetEnemyBattleVars
 	call CheckWhetherSwitchmonIsPredetermined
 	jr c, .skip
@@ -2872,16 +2838,16 @@ CheckWhetherSwitchmonIsPredetermined:
 	ld a, [wBattleAction]
 	sub BATTLEACTION_SWITCH1
 	ld b, a
-	jr .return_carry
+.return_carry
+	scf
+	ret
 .not_linked
 	ld a, [wEnemySwitchMonIndex]
 	and a
 	jr z, .check_wBattleHasJustStarted
 	dec a
 	ld b, a
-.return_carry
-	scf
-	ret
+	jr .return_carry
 .check_wBattleHasJustStarted
 	ld a, [wBattleHasJustStarted]
 	and a
@@ -3134,76 +3100,6 @@ LoadEnemyMonToSwitchTo:
 	ld [wEnemyHPAtTimeOfPlayerSwitch + 1], a
 	ret
 
-CheckWhetherToAskSwitch:
-	ld a, [wBattleHasJustStarted]
-	dec a
-	jr z, .return_nc
-	ld a, [wPartyCount]
-	dec a
-	jr z, .return_nc
-	ld a, [wLinkMode]
-	and a
-	jr nz, .return_nc
-	ld a, [wOptions]
-	bit BATTLE_SHIFT, a
-	jr nz, .return_nc
-	ld a, [wCurPartyMon]
-	push af
-	ld a, [wCurBattleMon]
-	ld [wCurPartyMon], a
-	farcall CheckCurPartyMonFainted
-	pop bc
-	ld a, b
-	ld [wCurPartyMon], a
-	jr c, .return_nc
-	scf
-	ret
-.return_nc
-	and a
-	ret
-
-OfferSwitch:
-	ld a, [wCurPartyMon]
-	push af
-	callfar Battle_GetTrainerName
-	ld hl, BattleText_PluralEnemiesAreAboutToUseWillPlayerChangeMon
-	call IsPluralTrainer
-	jr z, .got_switch_phrase
-	ld hl, BattleText_EnemyIsAboutToUseWillPlayerChangeMon
-.got_switch_phrase:
-	call StdBattleTextbox
-	lb bc, 1, 7
-	call PlaceYesNoBox
-	ld a, [wMenuCursorY]
-	dec a
-	jr nz, .said_no
-	call SetUpBattlePartyMenu
-	call PickSwitchMonInBattle
-	jr c, .canceled_switch
-	ld a, [wCurBattleMon]
-	ld [wLastPlayerMon], a
-	ld a, [wCurPartyMon]
-	ld [wCurBattleMon], a
-	call ClearPalettes
-	call DelayFrame
-	call _LoadHPBar
-	pop af
-	ld [wCurPartyMon], a
-	xor a
-	ld [wCurEnemyMove], a
-	ld [wCurPlayerMove], a
-	and a
-	ret
-.canceled_switch
-	call ClearPalettes
-	call DelayFrame
-	call _LoadHPBar
-.said_no
-	pop af
-	ld [wCurPartyMon], a
-	scf
-	ret
-
 ClearEnemyMonBox:
 	xor a
 	ldh [hBGMapMode], a
@@ -3333,7 +3229,7 @@ CheckIfCurPartyMonIsFitToFight:
 	cp EGG
 	ld hl, BattleText_AnEGGCantBattle
 	jr z, .print_textbox
-	ld hl, BattleText_TheresNoWillToBattle
+	ld hl, BattleText_TooTiredToBattle
 .print_textbox
 	call StdBattleTextbox
 .finish_fail

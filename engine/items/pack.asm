@@ -72,7 +72,6 @@ Pack:
 	ld a, TM_HM_POCKET
 	ld [wCurPocket], a
 	call ClearPocketList
-	call DrawPocketName
 	xor a
 	ldh [hBGMapMode], a
 	call WaitBGMap_DrawPackGFX
@@ -589,7 +588,6 @@ BattlePack:
 	ld a, TM_HM_POCKET
 	ld [wCurPocket], a
 	call ClearPocketList
-	call DrawPocketName
 	xor a
 	ldh [hBGMapMode], a
 	call WaitBGMap_DrawPackGFX
@@ -714,7 +712,7 @@ TMHMSubmenu:
 InitPackBuffers:
 	; ensure a valid starting pocket
 	ld a, [wLastPocket]
-	cp NUM_POCKETS + 1
+	cp NUM_POCKETS
 	jr c, .valid_pocket
 	xor a
 .valid_pocket
@@ -850,7 +848,6 @@ InitBerryPocket:
 InitPocket:
 	ld [wCurPocket], a
 	call ClearPocketList
-	call DrawPocketName
 	jp WaitBGMap_DrawPackGFX
 
 DepositSellTutorial_InterpretJoypad:
@@ -1060,38 +1057,36 @@ WaitBGMap_DrawPackGFX:
 	; fallthrough
 DrawPackGFX:
 	ld a, [wCurPocket]
-	cp NUM_POCKETS + 1
+	cp NUM_POCKETS
 	jr c, .valid_pocket
 	xor a
 .valid_pocket
-	ld e, a
-	ld d, 0
+	push af
+	ld hl, PackGFX
+	ld b, BANK(PackGFX)
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	jr z, .male_dude
+	jr z, .got_pack
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
-	jr nz, .female
-.male_dude
-	ld hl, PackGFXPointers
+	jr z, .got_pack
+	ld hl, PackFGFX
+	ld b, BANK(PackFGFX)
+.got_pack
+	pop af
+	ld de, 15 tiles
+	and a
+	jr z, .got_tiles
+.loop
 	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld e, a
-	ld d, [hl]
-	ld hl, vTiles2 tile $50
-	lb bc, BANK(PackGFX), 15
+	dec a
+	jr nz, .loop
+.got_tiles
+	ld d, h
+	ld e, l
+	ld hl, vTiles2 tile $20
+	ld c, 15
 	jp Request2bpp
-.female
-	farcall DrawKrisPackGFX
-	ret
-
-PackGFXPointers:
-	dw PackGFX + (15 tiles) * 1 ; ITEM_POCKET
-	dw PackGFX + (15 tiles) * 3 ; BALL_POCKET
-	dw PackGFX + (15 tiles) * 0 ; KEY_ITEM_POCKET
-	dw PackGFX + (15 tiles) * 2 ; TM_HM_POCKET
-	dw PackGFX + (15 tiles) * 4 ; BERRY_POCKET
 
 Pack_InterpretJoypad:
 	ld hl, wMenuJoypad
@@ -1175,30 +1170,20 @@ Pack_InitGFX:
 	call ClearTilemap
 	call ClearSprites
 	call DisableLCD
-	ld hl, PackMenuGFX
+	ld hl, PackUIGFX
 	ld de, vTiles2
-	ld bc, $60 tiles
-	ld a, BANK(PackMenuGFX)
-	call FarCopyBytes
+	ld bc, $20 tiles
+	call CopyBytes
 	; Background (blue if male, pink if female)
 	hlcoord 0, 1
 	ld bc, 11 * SCREEN_WIDTH
-	ld a, $24
+	xor a ; tile 0
 	call ByteFill
 	; This is where the items themselves will be listed.
 	hlcoord 5, 1
 	lb bc, 11, 15
 	call ClearBox
-	; ◀▶ POCKET       ▼▲ ITEMS
-	hlcoord 0, 0
-	ld a, $28
-	ld c, SCREEN_WIDTH
-.loop
-	ld [hli], a
-	inc a
-	dec c
-	jr nz, .loop
-	call DrawPocketName
+	call PlacePackTopBar
 	call PlacePackGFX
 	; Place the textbox for displaying the item description
 	hlcoord 0, SCREEN_HEIGHT - 4 - 2
@@ -1207,9 +1192,32 @@ Pack_InitGFX:
 	call EnableLCD
 	jp DrawPackGFX
 
+PlacePackTopBar:
+	; ◂▸ POCKET
+	hlcoord 0, 0
+	ld a, $1 ; starting tile
+	ld c, $6 ; num. of tiles
+	call .loop
+	; ▼▲ ITEMS
+	ld a, $7 ; starting tile
+	ld c, $6 ; num. of tiles
+.loop:
+	ld [hli], a
+	inc a
+	dec c
+	jr nz, .loop
+	; add 4 black tiles
+	ld a, $c
+	ld c, $4
+.loop2
+	ld [hli], a
+	dec c
+	jr nz, .loop2
+	ret
+
 PlacePackGFX:
 	hlcoord 0, 3
-	ld a, $50
+	ld a, $20
 	ld de, SCREEN_WIDTH - 5
 	ld b, 3
 .row
@@ -1222,40 +1230,31 @@ PlacePackGFX:
 	add hl, de
 	dec b
 	jr nz, .row
-	ret
-
-DrawPocketName:
+	; place name tiles
 	ld a, [wCurPocket]
-	; * 15
+	; * 5
 	ld d, a
-	swap a
-	sub d
+	add a
+	add a
+	add d
 	ld d, 0
 	ld e, a
 	ld hl, .tilemap
 	add hl, de
 	ld d, h
 	ld e, l
-	hlcoord 0, 7
-	ld c, 3
-.row
-	ld b, 5
-.col
+	hlcoord 0, 6
+	ld c, 5
+.loop
 	ld a, [de]
 	inc de
 	ld [hli], a
-	dec b
-	jr nz, .col
-	ld a, c
-	ld c, SCREEN_WIDTH - 5
-	add hl, bc
-	ld c, a
 	dec c
-	jr nz, .row
+	jr nz, .loop
 	ret
-.tilemap: ; 5x15
-; the 5x3 pieces correspond to *_POCKET constants
-INCBIN "gfx/pack/pack_menu.tilemap"
+.tilemap ; 5x5
+; the 5x1 pieces correspond to *_POCKET constants
+INCBIN "gfx/pack/pack_names.tilemap"
 
 Pack_GetItemName:
 	ld a, [wCurItem]
@@ -1423,8 +1422,11 @@ PackEmptyText:
 	text_far _PackEmptyText
 	text_end
 
-PackMenuGFX:
-INCBIN "gfx/pack/pack_menu.2bpp"
+PackUIGFX:
+INCBIN "gfx/pack/pack_ui.2bpp"
 
 PackGFX:
 INCBIN "gfx/pack/pack.2bpp"
+
+PackFGFX:
+INCBIN "gfx/pack/pack_f.2bpp"

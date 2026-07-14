@@ -49,7 +49,7 @@ Route5_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event 17, 17, BGEVENT_READ, Route5UndergroundPathSign
+	bg_event 15, 15, BGEVENT_READ, Route5UndergroundPathSign
 	bg_event 10, 11, BGEVENT_READ, HouseForSaleSign
 
 	def_object_events

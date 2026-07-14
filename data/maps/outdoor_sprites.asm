@@ -102,6 +102,8 @@ FuchsiaGroupSprites: ; Route13, Route14, Route15, Route18, FuchsiaCity
 	db 0 ; end
 
 IndigoGroupSprites: ; Route23
+SilverGroupSprites: ; Route28, SilverCaveOutside
+CableClubGroupSprites: ; (no outdoor maps)
 	; 0 of max 9 walking sprites
 	db 0 ; end
 
@@ -120,10 +122,6 @@ CherrygroveGroupSprites: ; Route30, Route31, CherrygroveCity
 	; max 9 of 9 walking sprites
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-	db 0 ; end
-
-SilverGroupSprites: ; Route28, SilverCaveOutside
-	; 0 of max 9 walking sprites
 	db 0 ; end
 
 ; Route37 and EcruteakCity are connected
@@ -262,8 +260,4 @@ FastShipGroupSprites: ; OlivinePort, VermilionPort, MountMoonSquare, TinTowerRoo
 	; 6 of max 9 walking sprites
 	db SPRITE_HO_OH
 	db SPRITE_ROCK
-	db 0 ; end
-
-CableClubGroupSprites: ; (no outdoor maps)
-	; 0 of max 9 walking sprites
 	db 0 ; end

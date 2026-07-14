@@ -99,7 +99,7 @@ Route6_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event 19,  5, BGEVENT_READ, Route6UndergroundPathSign
+	bg_event 15,  3, BGEVENT_READ, Route6UndergroundPathSign
 
 	def_object_events
 	object_event 17,  4, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 2, Route6PokefanMScript, EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH

@@ -810,19 +810,17 @@ _CGB_PokedexSearchOption:
 
 _CGB_PackPals:
 ; pack pals
+	ld hl, .ChrisPackPals
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	jr z, .tutorial_male
+	jr z, .got_gender
 	ld a, [wPlayerGender]
 	bit PLAYERGENDER_FEMALE_F, a
-	jr z, .tutorial_male
+	jr z, .got_gender
 	ld hl, .KrisPackPals
-	jr .got_gender
-.tutorial_male
-	ld hl, .ChrisPackPals
 .got_gender
 	ld de, wBGPals1
-	ld bc, 8 palettes ; 6 palettes?
+	ld bc, 6 palettes
 	ld a, BANK(wBGPals1)
 	call FarCopyWRAM
 	call WipeAttrmap
@@ -838,12 +836,8 @@ _CGB_PackPals:
 	lb bc, 9, 1
 	ld a, $3
 	call FillBoxWithByte
-	hlcoord 0, 7, wAttrmap
-	lb bc, 3, 5
-	ld a, $4
-	call FillBoxWithByte
 	hlcoord 0, 3, wAttrmap
-	lb bc, 3, 5
+	lb bc, 4, 5
 	ld a, $5
 	call FillBoxWithByte
 	call ApplyAttrmap

@@ -5,6 +5,8 @@ on:
     tags: [ v* ]
   workflow_dispatch:
 
+run-name: Build and Release ${{ github.ref_name }}
+
 defaults:
   run:
     shell: bash
@@ -12,61 +14,84 @@ defaults:
 jobs:
   build_matrix:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/gbdev/rgbds:v1.0.1
     strategy:
       fail-fast: true
       matrix:
-        repo: [pret, fp555]
         include:
           - repo: pret
             ref: master
           - repo: fp555
             ref: ${{ github.ref_name }}
     outputs:
-      free_space: ${{ steps.free.outputs.free_space }}
+      pret_id: ${{ steps.artifact_pret.outputs.artifact-id }}
+      fp555_id: ${{ steps.artifact_fp555.outputs.artifact-id }}
     steps:
-      - name: Checkout rgbds
-        uses: actions/checkout@v6
-        with:
-          repository: gbdev/rgbds
-          path: rgbds
-          ref: v1.0.1
-      - name: Install rgbds
-        working-directory: rgbds
-        run: |
-            sudo apt update
-            sudo apt install -y bison libpng-dev pkg-config
-            sudo make -j$(nproc) install
-            rm -rf ../rgbds
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ${{ matrix.repo }}/pokecrystal
           ref: ${{ matrix.ref }}
       - name: Make ROM
+        id: make
         run: |
-            make -j$(nproc)
+          echo "::group::Make"
+          make -j$(nproc)
+          echo "::endgroup::"
+          sha1sum pokecrystal.gbc | tee >(echo "hash_${{ matrix.repo }}=$(grep -o '^[^ ]*')" >> $GITHUB_OUTPUT)
       - name: Check SHA1
+        if: matrix.repo == 'pret'
+        env:
+          BASEROM_SHA: f4cd194bdee0d04ca4eac29e09b8e4e9d818c133
         run: |
-            sha1sum pokecrystal.gbc
+            if [[ ${{ steps.make.outputs.hash_pret }} != $BASEROM_SHA ]]; then
+            echo "::warning::SHA1 mismatch for ${{ matrix.repo }}/pokecrystal.gbc: expected $BASEROM_SHA, got ${{ steps.make.outputs.hash_pret }}"
+            else
+            echo "${{ matrix.repo }}/pokecrystal.gbc: SHA1 OK"
+            fi
       - name: ROM free space
-        id: free
         if: matrix.repo == 'fp555'
         run: |
-            awk -f .github/workflows/free_space.awk BANK=all pokecrystal.map
-            echo "free_space=$(awk -f .github/workflows/free_space.awk pokecrystal.map)" >> $GITHUB_OUTPUT
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+          echo "# Job Summary for ${{ matrix.ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "Built ROM with SHA1: ${{ steps.make.outputs.hash_fp555 }}" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python3 .github/free_space.py pokecrystal.map BANK=all | tee >(tail -n 1 >> "$GITHUB_STEP_SUMMARY")
+      - name: Upload ROM
+        id: artifact_pret
+        if: matrix.repo == 'pret'
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.repo }}
           path: pokecrystal.gbc
+          if-no-files-found: error
+      - name: Upload ROM
+        id: artifact_fp555
+        if: matrix.repo == 'fp555'
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.repo }}
+          path: pokecrystal.gbc
+          if-no-files-found: error
+      - name: Upload debug files
+        if: matrix.repo == 'fp555'
+        uses: actions/upload-artifact@v6
+        with:
+          name: debug_${{ matrix.ref }}
+          path: |
+            pokecrystal.map
+            pokecrystal.sym
           if-no-files-found: error
     
   patch_release:
     runs-on: ubuntu-latest
     needs: build_matrix
     steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v5
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.build_matrix.outputs.pret_id }},${{ needs.build_matrix.outputs.fp555_id }}
       - name: Download Flips
         uses: robinraju/release-downloader@v1
         with:
@@ -76,8 +101,8 @@ jobs:
           extract: true
       - name: Create BPS patch
         run: |
-            chmod +x flips
-            ./flips --create --bps pret/pokecrystal.gbc fp555/pokecrystal.gbc patch_${{ github.ref_name }}.bps
+          chmod +x flips
+          ./flips --create --bps pret/pokecrystal.gbc fp555/pokecrystal.gbc patch_${{ github.ref_name }}.bps
       - name: Create release draft
         if: github.ref_type == 'tag'
         uses: ncipollo/release-action@v1
@@ -87,15 +112,16 @@ jobs:
           prerelease: true
           artifacts: '*.bps'
           artifactErrorsFailBuild: true
-          body: ${{ needs.build_matrix.outputs.free_space }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: patch
           path: '*.bps'
           if-no-files-found: error
       - name: Remove GBC artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
-          name: '!patch'
+          name: |
+            fp555
+            pret
           failOnError: false

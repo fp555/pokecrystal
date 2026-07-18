@@ -9,15 +9,14 @@ BankOfMom:
 	ld a, [wJumptableIndex]
 	bit JUMPTABLE_EXIT_F, a
 	jr nz, .done
-	call .RunJumptable
+	ld hl, .jumptable
+	rst JumpTable
 	jr .loop
 .done
 	pop af
 	ldh [hInMenu], a
 	ret
-.RunJumptable:
-	jumptable .dw, wJumptableIndex
-.dw
+.jumptable
 	dw .CheckIfBankInitialized
 	dw .InitializeBank
 	dw .IsThisAboutYourMoney
@@ -73,11 +72,11 @@ BankOfMom:
 	call CloseWindow
 	jr c, .cancel
 	ld a, [wMenuCursorY]
-	cp $1
+	dec a ; 1
 	jr z, .withdraw
-	cp $2
+	dec a ; 2
 	jr z, .deposit
-	cp $3
+	dec a ; 3
 	jr z, .stopsaving
 .cancel
 	ld a, $7
@@ -106,7 +105,7 @@ BankOfMom:
 	call LoadStandardMenuHeader
 	call Mom_SetUpDepositMenu
 	ld c, 10
-	jp DelayFrames
+	call DelayFrames
 	call Mom_WithdrawDepositMenuJoypad
 	call CloseWindow
 	jr c, .CancelDeposit
@@ -166,7 +165,7 @@ BankOfMom:
 	call LoadStandardMenuHeader
 	call Mom_SetUpWithdrawMenu
 	ld c, 10
-	jp DelayFrames
+	call DelayFrames
 	call Mom_WithdrawDepositMenuJoypad
 	call CloseWindow
 	jr c, .CancelWithdraw
@@ -243,14 +242,10 @@ DSTChecks:
 ; check the time; avoid changing DST if doing so would change the current day
 	ld a, [wDST]
 	bit DST_F, a
-	ldh a, [hHours]
 	jr z, .NotDST
+	ldh a, [hHours]
 	and a ; within one hour of 00:00?
-	jr z, .LostBooklet
-	jr .loop
-.NotDST:
-	cp 23 ; within one hour of 23:00?
-	jr nz, .loop
+	jr nz, .continue
 .LostBooklet:
 	call .ClearBox
 	bccoord 1, 14
@@ -262,7 +257,10 @@ DSTChecks:
 	bccoord 1, 14
 	ld hl, .MomLostGearBookletText
 	jp PrintTextboxTextAt
-.loop
+.NotDST:
+	cp 23 ; within one hour of 23:00?
+	jr z, .LostBooklet
+.continue
 	call .ClearBox
 	bccoord 1, 14
 	ld a, [wDST]
@@ -275,38 +273,7 @@ DSTChecks:
 	ld a, [wDST]
 	res DST_F, a
 	ld [wDST], a
-	call .SetClockBack
-	call .ClearBox
-	bccoord 1, 14
-	ld hl, .TimesetNotDSTText
-	jp PrintTextboxTextAt
-.SetDST:
-	ld hl, .TimesetAskDSTText
-	call PrintTextboxTextAt
-	call YesNoBox
-	ret c
-	ld a, [wDST]
-	set DST_F, a
-	ld [wDST], a
-	call .SetClockForward
-	call .ClearBox
-	bccoord 1, 14
-	ld hl, .TimesetDSTText
-	jp PrintTextboxTextAt
-.SetClockForward:
-	ld a, [wStartHour]
-	add 1
-	sub 24
-	jr nc, .DontLoopHourForward
-	add 24
-.DontLoopHourForward:
-	ld [wStartHour], a
-	ccf
-	ld a, [wStartDay]
-	adc 0
-	ld [wStartDay], a
-	ret
-.SetClockBack:
+	; SetClockBack
 	ld a, [wStartHour]
 	sub 1
 	jr nc, .DontLoopHourBack
@@ -319,7 +286,34 @@ DSTChecks:
 	add 7
 .DontLoopDayBack:
 	ld [wStartDay], a
-	ret
+	call .ClearBox
+	bccoord 1, 14
+	ld hl, .TimesetNotDSTText
+	jp PrintTextboxTextAt
+.SetDST:
+	ld hl, .TimesetAskDSTText
+	call PrintTextboxTextAt
+	call YesNoBox
+	ret c
+	ld a, [wDST]
+	set DST_F, a
+	ld [wDST], a
+	; SetClockForward
+	ld a, [wStartHour]
+	add 1
+	sub 24
+	jr nc, .DontLoopHourForward
+	add 24
+.DontLoopHourForward:
+	ld [wStartHour], a
+	ccf
+	ld a, [wStartDay]
+	adc 0
+	ld [wStartDay], a
+	call .ClearBox
+	bccoord 1, 14
+	ld hl, .TimesetDSTText
+	jp PrintTextboxTextAt
 .ClearBox:
 	hlcoord 1, 14
 	lb bc, 3, 18

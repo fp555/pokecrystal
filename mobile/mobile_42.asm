@@ -154,7 +154,7 @@ Function1080b7:
 	ld a, $1
 	ldh [rVBK], a
 	ld hl, MobileTradeGFX
-	ld de, vTiles2
+	ld de, vTiles5
 	call Decompress
 	ld a, $0
 	ldh [rVBK], a
@@ -239,7 +239,7 @@ Function108157:
 MobileTradeAnim_ClearTiles:
 	ld a, $1
 	ldh [rVBK], a
-	ld hl, vTiles0
+	ld hl, vTiles3
 	ld bc, 3 * $80 tiles
 	xor a
 	call ByteFill
@@ -253,7 +253,7 @@ MobileTradeAnim_ClearTiles:
 MobileTradeAnim_ClearBGMap:
 	ld a, $1
 	ldh [rVBK], a
-	hlbgcoord 0, 0
+	hlbgcoord 0, 0 ; vBGMap2
 	ld bc, 2 * TILEMAP_AREA
 	ld a, $0
 	call ByteFill
@@ -784,7 +784,7 @@ MobileTradeAnim_10:
 	ld a, $1
 	ldh [rVBK], a
 	ld hl, MobileTradeGFX
-	ld de, vTiles2
+	ld de, vTiles5
 	call Decompress
 	ld a, $0
 	ldh [rVBK], a
@@ -826,7 +826,7 @@ MobileTradeAnim_11:
 	ld a, $1
 	ldh [rVBK], a
 	ld hl, MobileTradeGFX
-	ld de, vTiles2
+	ld de, vTiles5
 	call Decompress
 	ld a, $0
 	ldh [rVBK], a
@@ -1280,7 +1280,7 @@ Function108ad4:
 .asm_108adf
 	ld a, $1
 	ldh [rVBK], a
-	ld hl, vTiles2 tile $4a
+	ld hl, vTiles5 tile $4a
 	lb bc, BANK(MobileCable1GFX), 16 ; aka BANK(MobileCable2GFX)
 	call Get2bppViaHDMA
 	call DelayFrame
@@ -1513,10 +1513,10 @@ Function108c80:
 	ld a, $1
 	ldh [rVBK], a
 	ld hl, MobileTradeAttrmapLZ
-	debgcoord 0, 0
+	debgcoord 0, 0 ; vBGMap2
 	call Decompress
 	ld hl, MobileTradeAttrmapLZ
-	debgcoord 0, 0, vBGMap1
+	debgcoord 0, 0, vBGMap3
 	call Decompress
 	ld a, $0
 	ldh [rVBK], a

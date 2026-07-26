@@ -54,8 +54,7 @@ DoBattleTransition:
 	pop af
 	vc_hook Stop_reducing_battle_transition_flashing
 	ldh [hVBlank], a
-	call DelayFrame
-	ret
+	jp DelayFrame
 .InitGFX:
 	ld a, [wLinkMode]
 	cp LINK_MOBILE
@@ -63,11 +62,11 @@ DoBattleTransition:
 	farcall ReanchorBGMap_NoOAMUpdate
 	call UpdateSprites
 	call DelayFrame
-	call .NonMobile_LoadPokeballTiles
+	call .NonMobile_LoadBattleTransitionTiles
 	call CGBOnly_CopyTilemapAtOnce
 	jr .resume
 .mobile
-	call LoadTrainerBattlePokeballTiles
+	call LoadBattleTransitionGFX
 .resume
 	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
@@ -79,61 +78,60 @@ DoBattleTransition:
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-	call WipeLYOverrides
-	ret
-.NonMobile_LoadPokeballTiles:
-	call LoadTrainerBattlePokeballTiles
+	jp WipeLYOverrides
+.NonMobile_LoadBattleTransitionTiles:
+	call LoadBattleTransitionGFX
 	hlbgcoord 0, 0
-	call ConvertTrainerBattlePokeballTilesTo2bpp
-	ret
+	jr InitBattleTransitionBGMap
 
-LoadTrainerBattlePokeballTiles:
+LoadBattleTransitionGFX:
 ; Load the tiles used in the Pokeball Graphic that fills the screen
 ; at the start of every Trainer battle.
-	ld de, TrainerBattlePokeballTiles
+	ld de, BattleTransitionTiles
 	ld hl, vTiles0 tile BATTLETRANSITION_SQUARE
-	ld b, BANK(TrainerBattlePokeballTiles)
+	ld b, BANK(BattleTransitionTiles)
 	ld c, 2
 	call Request2bpp
 	ldh a, [rVBK]
 	push af
 	ld a, $1
 	ldh [rVBK], a
-	ld de, TrainerBattlePokeballTiles
+	ld de, BattleTransitionTiles
 	ld hl, vTiles3 tile BATTLETRANSITION_SQUARE
-	ld b, BANK(TrainerBattlePokeballTiles)
+	ld b, BANK(BattleTransitionTiles)
 	ld c, 2
 	call Request2bpp
 	pop af
 	ldh [rVBK], a
 	ret
 
-ConvertTrainerBattlePokeballTilesTo2bpp:
+InitBattleTransitionBGMap:
 	ldh a, [rWBK]
 	push af
 	ld a, BANK(wDecompressScratch)
 	ldh [rWBK], a
 	push hl
 	ld hl, wDecompressScratch
-	ld bc, $28 tiles
+	ld bc, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 12)
 .loop
-	ld [hl], -1
+	ld [hl], BATTLETRANSITION_BLACK
 	inc hl
 	dec bc
 	ld a, c
 	or b
 	jr nz, .loop
+	; fill visible area of BGMap0 with BATTLETRANSITION_BLACK
 	pop hl
 	ld de, wDecompressScratch
 	ld b, BANK(@)
-	ld c, $28
+	ld c, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 12) / TILE_SIZE
 	call Request2bpp
 	pop af
 	ldh [rWBK], a
 	ret
 
-TrainerBattlePokeballTiles:
-INCBIN "gfx/overworld/trainer_battle_pokeball_tiles.2bpp"
+BattleTransitionTiles:
+INCBIN "gfx/overworld/battle_transition_tiles.2bpp"
 
 BattleTransitionJumptable:
 	jumptable .Jumptable, wJumptableIndex

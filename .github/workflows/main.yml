@@ -15,7 +15,7 @@ jobs:
   build_matrix:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/gbdev/rgbds:v1.0.1
+      image: ghcr.io/gbdev/rgbds:v1.0.2
     strategy:
       fail-fast: true
       matrix:

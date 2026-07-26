@@ -218,7 +218,7 @@ CopyLastCoordsToCoords:
 UpdateTallGrassFlags:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	bit OVERHEAD_F, [hl]
+	bit IN_GRASS_F, [hl]
 	jr z, .ok
 	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
@@ -244,12 +244,12 @@ SetTallGrassFlags:
 .set
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	set OVERHEAD_F, [hl]
+	set IN_GRASS_F, [hl]
 	ret
 .reset
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	ret
 
 EndSpriteMovement:
@@ -1098,7 +1098,7 @@ StepFunction_NPCJump:
 	call GetNextTile
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	call ObjectStep_IncAnonJumptableIndex
 	ret
 
@@ -1137,7 +1137,7 @@ StepFunction_PlayerJump:
 	call CopyCoordsTileToLastCoordsTile
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	ld hl, wPlayerStepFlags
 	set PLAYERSTEP_STOP_F, [hl]
 	set PLAYERSTEP_MIDAIR_F, [hl]
@@ -1203,7 +1203,7 @@ StepFunction_TeleportFrom:
 	ld [hl], 16
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	call ObjectStep_IncAnonJumptableIndex
 .DoSpinRise:
 	ld hl, OBJECT_ACTION
@@ -2783,17 +2783,17 @@ InitSprites:
 	and ~(1 << 7)
 	ldh [hCurSpriteTile], a
 	xor a
-	bit 7, [hl] ; tiles $80+ are in VRAM bank 0
+	bit 7, [hl] ; tiles $80+ are in VRAM bank 1
 	jr nz, .not_vram1
 	or OAM_BANK1
 .not_vram1
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	ld e, [hl]
-	bit OBJ_FLAGS2_7_F, e
-	jr z, .not_priority
+	bit UNDER_TILES_F, e
+	jr z, .not_under_tiles
 	or OAM_PRIO
-.not_priority
+.not_under_tiles
 	bit USE_OBP1_F, e
 	jr z, .not_obp_num
 	or OAM_PAL1
@@ -2806,10 +2806,10 @@ InitSprites:
 	or d
 	ld d, a
 	xor a
-	bit OVERHEAD_F, e
-	jr z, .not_overhead
+	bit IN_GRASS_F, e
+	jr z, .not_in_grass
 	or OAM_PRIO
-.not_overhead
+.not_in_grass
 	ldh [hCurSpriteOAMFlags], a
 	ld hl, OBJECT_SPRITE_X
 	add hl, bc
@@ -2911,16 +2911,10 @@ InitSprites:
 	ld b, [hl]
 	ret
 .Addresses:
+	table_width 2
 	dw wPlayerStruct
-	dw wObject1Struct
-	dw wObject2Struct
-	dw wObject3Struct
-	dw wObject4Struct
-	dw wObject5Struct
-	dw wObject6Struct
-	dw wObject7Struct
-	dw wObject8Struct
-	dw wObject9Struct
-	dw wObject10Struct
-	dw wObject11Struct
-	dw wObject12Struct
+; wObjectStruct1 - wObjectStruct12
+for n, 1, NUM_OBJECT_STRUCTS
+	dw wObject{d:n}Struct
+endr
+	assert_table_length NUM_OBJECT_STRUCTS

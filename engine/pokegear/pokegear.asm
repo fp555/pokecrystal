@@ -387,7 +387,7 @@ Pokegear_FinishTilemap:
 	ld [hli], a
 	inc a
 	ld [hld], a
-	ld bc, $14
+	ld bc, SCREEN_WIDTH
 	add hl, bc
 	add $f
 	ld [hli], a
@@ -500,7 +500,8 @@ PokegearMap_CheckRegion:
 .johto
 	ld a, POKEGEARSTATE_JOHTOMAPINIT
 	jr .done
-	ret
+
+	ret ; unreferenced
 
 .kanto
 	ld a, POKEGEARSTATE_KANTOMAPINIT
@@ -1194,7 +1195,7 @@ PokegearPhoneContactSubmenu:
 	jr nz, .clear_column
 	pop hl
 	ld a, [wPokegearPhoneSubmenuCursor]
-	ld bc, SCREEN_WIDTH  * 2
+	ld bc, SCREEN_WIDTH * 2
 	call AddNTimes
 	ld [hl], '▶'
 	pop de

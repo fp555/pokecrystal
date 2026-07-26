@@ -104,6 +104,7 @@ AI_Redundant:
 	bit SUBSTATUS_CANT_RUN, a
 	ret
 .Nightmare:
+; BUG: AI does not discourage Nightmare if the player has any status condition (see docs/bugs_and_glitches.md)
 	ld a, [wBattleMonStatus]
 	and a
 	jr z, .Redundant

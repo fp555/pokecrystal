@@ -234,8 +234,8 @@ LoadMapTimeOfDay:
 	ld a, $1
 	ldh [rVBK], a
 	xor a
-	ld bc, vBGMap1 - vBGMap0
-	hlbgcoord 0, 0
+	ld bc, vBGMap3 - vBGMap2
+	hlbgcoord 0, 0 ; vBGMap2
 	call ByteFill
 	pop af
 	ldh [rVBK], a
@@ -250,7 +250,7 @@ LoadMapTimeOfDay:
 	ld a, $1
 	ldh [rVBK], a
 .copy
-	hlbgcoord 0, 0
+	hlbgcoord 0, 0 ; vBGMap2
 	ld c, SCREEN_WIDTH
 	ld b, SCREEN_HEIGHT
 .row

@@ -1567,7 +1567,7 @@ HandleWeather:
 .ended
 	ld hl, .WeatherEndedMessages
 	call .PrintWeatherMessage
-	xor a
+	xor a ; WEATHER_NONE
 	ld [wBattleWeather], a
 	ret
 .PrintWeatherMessage:
@@ -1582,15 +1582,19 @@ HandleWeather:
 	ld l, a
 	jp StdBattleTextbox
 .WeatherMessages:
-	; entries correspond to WEATHER_* constants
+; entries correspond to WEATHER_* constants
+	table_width 2
 	dw BattleText_RainContinuesToFall
 	dw BattleText_TheSunlightIsStrong
 	dw BattleText_TheSandstormRages
+	assert_table_length NUM_WEATHERS
 .WeatherEndedMessages:
-	; entries correspond to WEATHER_* constants
+; entries correspond to WEATHER_* constants
+	table_width 2
 	dw BattleText_TheRainStopped
 	dw BattleText_TheSunlightFaded
 	dw BattleText_TheSandstormSubsided
+	assert_table_length NUM_WEATHERS
 
 SubtractHPFromTarget:
 	call SubtractHP
@@ -2750,7 +2754,7 @@ MonFaintedAnimation:
 	pop bc
 	dec b
 	jr nz, .InnerLoop
-	ld bc, 20
+	ld bc, SCREEN_WIDTH
 	add hl, bc
 	ld de, .Spaces
 	call PlaceString
@@ -7573,7 +7577,7 @@ ReadAndPrintLinkBattleRecord:
 	pop hl
 	call PlaceString
 	pop hl
-	ld de, 26
+	ld de, SCREEN_WIDTH + 6
 	add hl, de
 	push hl
 	ld de, wLinkBattleRecordWins

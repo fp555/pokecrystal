@@ -5024,7 +5024,6 @@ BattleCommand_Confuse:
 	and a
 	jr nz, BattleCommand_Confuse_CheckSnore_Swagger_ConfuseHit
 	; fallthrough
-
 BattleCommand_FinishConfusingTarget:
 	ld bc, wEnemyConfuseCount
 	ldh a, [hBattleTurn]
@@ -5362,7 +5361,6 @@ TryPrintButItFailed:
 	and a
 	ret nz
 	; fallthrough
-
 PrintButItFailed:
 	ld hl, ButItFailedText
 	jp StdBattleTextbox
@@ -5490,8 +5488,8 @@ INCLUDE "engine/battle/move_effects/perish_song.asm"
 INCLUDE "engine/battle/move_effects/sandstorm.asm"
 INCLUDE "engine/battle/move_effects/rollout.asm"
 
-BattleCommand_Unused5D:
-; effect0x5d
+BattleCommand_Dummy_Swagger:
+; Dummied out from pokegold-spaceworld.
 	ret
 
 INCLUDE "engine/battle/move_effects/fury_cutter.asm"

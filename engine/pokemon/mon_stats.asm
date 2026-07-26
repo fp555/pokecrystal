@@ -123,25 +123,22 @@ GetGender:
 	ld hl, wPartyMon1DVs
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld a, [wMonType]
-	and a
+	and a ; 0: PartyMon
 	jr z, .PartyMon
-	; 1: OTPartyMon
 	ld hl, wOTPartyMon1DVs
-	dec a
+	dec a ; 1: OTPartyMon
 	jr z, .PartyMon
-	; 2: sBoxMon
 	ld hl, sBoxMon1DVs
 	ld bc, BOXMON_STRUCT_LENGTH
-	dec a
+	dec a ; 2: sBoxMon
 	jr z, .sBoxMon
-	; 3: Unknown
 	ld hl, wTempMonDVs
-	dec a
+	dec a ; 3: Unknown
 	jr z, .DVs
-	; else: WildMon
+	; must be WildMon
 	ld hl, wEnemyMonDVs
 	jr .DVs
-.PartyMon:
+.PartyMon
 .sBoxMon
 	ld a, [wCurPartyMon]
 	call AddNTimes

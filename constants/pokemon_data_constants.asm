@@ -43,8 +43,8 @@ DEF GENDER_UNKNOWN EQU -1
 ; GrowthRates indexes (see data/growth_rates.asm)
 	const_def
 	const GROWTH_MEDIUM_FAST
-	const GROWTH_SLIGHTLY_FAST
-	const GROWTH_SLIGHTLY_SLOW
+	const GROWTH_SLIGHTLY_FAST ; unused
+	const GROWTH_SLIGHTLY_SLOW ; unused
 	const GROWTH_MEDIUM_SLOW
 	const GROWTH_FAST
 	const GROWTH_SLOW

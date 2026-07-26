@@ -115,8 +115,7 @@ StatsScreen_WaitAnim:
 	jr nz, .try_anim
 	bit STATS_SCREEN_ANIMATE_MON, [hl]
 	jr nz, .finish
-	call DelayFrame
-	ret
+	jp DelayFrame
 .try_anim
 	farcall SetUpPokeAnim
 	jr nc, .finish
@@ -193,7 +192,7 @@ MonStatsJoypad:
 	call StatsScreen_GetJoypad
 	jr nc, .next
 	ld h, 0
-	jp StatsScreen_SetJumptableIndex ; jr?
+	jp StatsScreen_SetJumptableIndex
 .next
 	and PAD_CTRL_PAD | PAD_A | PAD_B
 	jp StatsScreen_JoypadAction

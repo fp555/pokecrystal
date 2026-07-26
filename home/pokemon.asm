@@ -105,7 +105,7 @@ PlayStereoCry2::
 	ld a, 1
 	ld [wStereoPanningMask], a
 	pop af
-	jp _PlayMonCry
+	jr _PlayMonCry
 
 PlayMonCry::
 	call PlayMonCry2
@@ -118,8 +118,7 @@ PlayMonCry2::
 	ld [wStereoPanningMask], a
 	ld [wCryTracks], a
 	pop af
-	jp _PlayMonCry
-
+	; fallthrough
 _PlayMonCry::
 	push hl
 	push de
@@ -213,6 +212,10 @@ GetBaseData::
 	ld a, BANK(BaseData)
 	rst Bankswitch
 	; Egg doesn't have BaseData
+	; we only need sprite dimensions
+	ld b, $55 ; 5x5
+	ld hl, wBasePicSize
+	ld [hl], b
 	ld a, [wCurSpecies]
 	cp EGG
 	jr z, .end

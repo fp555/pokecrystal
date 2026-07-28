@@ -68,7 +68,6 @@ BluesHouseSignText:
 	done
 
 PalletTown_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  5,  5, REDS_HOUSE_1F, 1

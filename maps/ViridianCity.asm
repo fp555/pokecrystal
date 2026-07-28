@@ -214,7 +214,6 @@ TrainerHouseSignText:
 	done
 
 ViridianCity_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 32,  7, VIRIDIAN_GYM, 1

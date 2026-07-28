@@ -35,7 +35,6 @@ ViridianMartCooltrainerMText:
 	done
 
 ViridianMart_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  2,  7, VIRIDIAN_CITY, 4

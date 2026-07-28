@@ -131,7 +131,6 @@ KarenScript_KarenDefeatText:
 	done
 
 KarensRoom_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  4, 17, BRUNOS_ROOM, 3

@@ -28,7 +28,6 @@ SilverCavePokecenter1FGrannyText:
 	done
 
 SilverCavePokecenter1F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  3,  7, SILVER_CAVE_OUTSIDE, 1

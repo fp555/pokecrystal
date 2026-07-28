@@ -326,7 +326,6 @@ Route39TrainerTipsText:
 	done
 
 Route39_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  1,  3, ROUTE_39_BARN, 1

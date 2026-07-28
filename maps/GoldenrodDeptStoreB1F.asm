@@ -106,7 +106,6 @@ GoldenrodDeptStoreB1FMachokeText:
 	done
 
 GoldenrodDeptStoreB1F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 17,  2, GOLDENROD_UNDERGROUND_WAREHOUSE, 3

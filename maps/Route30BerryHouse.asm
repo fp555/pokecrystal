@@ -46,7 +46,6 @@ Route30BerrySpeechHouseCheckTreesText:
 	done
 
 Route30BerryHouse_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  2,  7, ROUTE_30, 1

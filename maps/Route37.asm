@@ -232,7 +232,6 @@ Route37SignText:
 	done
 
 Route37_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 

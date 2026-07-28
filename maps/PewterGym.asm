@@ -207,7 +207,6 @@ PewterGymGuideWinText:
 	done
 
 PewterGym_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  4, 13, PEWTER_CITY, 2

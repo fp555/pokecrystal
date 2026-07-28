@@ -304,7 +304,6 @@ BlackbeltLungAfterText:
 	done
 
 CianwoodGym_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  4, 17, CIANWOOD_CITY, 2

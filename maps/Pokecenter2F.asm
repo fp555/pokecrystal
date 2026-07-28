@@ -962,7 +962,6 @@ Text_BrokeStadiumRules:
 	done
 
 Pokecenter2F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  0,  7, POKECENTER_2F, -1

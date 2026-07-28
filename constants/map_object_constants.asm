@@ -211,12 +211,9 @@ DEF NUM_SPRITEMOVEFN EQU const_value
 	const STEP_TYPE_ROCK_SMASH       ; 11
 	const STEP_TYPE_RETURN_DIG       ; 12
 	const STEP_TYPE_TRACKING_OBJECT  ; 13
-	const STEP_TYPE_14               ; 14
-	const STEP_TYPE_SCREENSHAKE      ; 15
-	const STEP_TYPE_16               ; 16
-	const STEP_TYPE_17               ; 17
-	const STEP_TYPE_DELETE           ; 18
-	const STEP_TYPE_SKYFALL_TOP      ; 19
+	const STEP_TYPE_SCREENSHAKE      ; 14
+	const STEP_TYPE_DELETE           ; 15
+	const STEP_TYPE_SKYFALL_TOP      ; 16
 DEF NUM_STEP_TYPES EQU const_value
 
 ; ObjectActionPairPointers indexes (see engine/overworld/map_object_action.asm)

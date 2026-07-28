@@ -190,7 +190,6 @@ FarmerFText_SnoreSpeech:
 	done
 
 Route39Farmhouse_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  2,  7, ROUTE_39, 2

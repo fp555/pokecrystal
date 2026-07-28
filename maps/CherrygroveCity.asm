@@ -492,7 +492,6 @@ GuideGentsHouseSignText:
 	done
 
 CherrygroveCity_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 23,  3, CHERRYGROVE_MART, 2

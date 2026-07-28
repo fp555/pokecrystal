@@ -40,7 +40,8 @@ GetCurrentMapSceneID::
 	ret
 
 GetMapSceneID::
-; Searches the scene_var table for the map group and number loaded in bc, and returns the wram pointer in de.
+; Searches the scene_var table for the map group and number loaded in bc
+; and returns the wram pointer in de.
 ; If the map is not in the scene_var table, returns carry.
 	push bc
 	ldh a, [hROMBank]
@@ -371,8 +372,6 @@ ReadMapEvents::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	inc hl
-	inc hl
 	call ReadWarpEvents
 	call ReadCoordEvents
 	call ReadBGEvents
@@ -387,7 +386,7 @@ ReadMapScripts::
 	ld h, [hl]
 	ld l, a
 	call ReadMapSceneScripts
-	jp ReadMapCallbacks ; jr?
+	jp ReadMapCallbacks
 
 CopyMapAttributes::
 	ld de, wMapAttributes
@@ -424,12 +423,9 @@ GetMapConnections::
 	call GetMapConnection
 .no_west
 	bit EAST_F, b
-	jr z, .no_east
+	ret z ; no_east
 	ld de, wEastMapConnection
-	call GetMapConnection
-.no_east
-	ret
-
+	; fallthrough
 GetMapConnection::
 ; Load map connection struct at hl into de.
 	ld c, wSouthMapConnection - wNorthMapConnection
@@ -595,9 +591,7 @@ GetWarpDestCoords::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-rept 3 ; get to the warp coords
-	inc hl
-endr
+	inc hl ; get to the warp coords
 	ld a, [wWarpNumber]
 	dec a
 	ld c, a
@@ -612,17 +606,15 @@ endr
 	ld a, [hli]
 	cp -1
 	jr nz, .skip
-	call .backup
-.skip
-	farcall GetMapScreenCoords
-	ret
-.backup
+	; backup
 	ld a, [wPrevWarp]
 	ld [wBackupWarpNumber], a
 	ld a, [wPrevMapGroup]
 	ld [wBackupMapGroup], a
 	ld a, [wPrevMapNumber]
 	ld [wBackupMapNumber], a
+.skip
+	farcall GetMapScreenCoords
 	ret
 
 LoadBlockData::
@@ -829,10 +821,6 @@ FillEastConnectionStrip::
 .okay
 	dec b
 	jr nz, .loop
-	ret
-
-LoadMapStatus::
-	ld [wMapStatus], a
 	ret
 
 CallScript::

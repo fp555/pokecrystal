@@ -76,7 +76,6 @@ Route18SignText:
 	done
 
 Route18_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  2,  6, ROUTE_17_ROUTE_18_GATE, 3

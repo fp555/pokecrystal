@@ -150,7 +150,6 @@ SeafoamGymGuideWinText2:
 	done
 
 SeafoamGym_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  5,  5, ROUTE_20, 1

@@ -22,7 +22,6 @@ MtSilverSignText:
 	done
 
 SilverCaveOutside_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 23, 19, SILVER_CAVE_POKECENTER_1F, 1

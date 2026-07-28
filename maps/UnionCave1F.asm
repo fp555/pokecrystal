@@ -186,7 +186,6 @@ FirebreatherRayAfterBattleText:
 	done
 
 UnionCave1F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  5, 19, UNION_CAVE_B1F, 3

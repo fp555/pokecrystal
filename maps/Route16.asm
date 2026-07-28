@@ -27,7 +27,6 @@ CyclingRoadSignText:
 	done
 
 Route16_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  3,  1, ROUTE_16_FUCHSIA_SPEECH_HOUSE, 1

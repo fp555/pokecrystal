@@ -131,7 +131,6 @@ Route3MtMoonSquareSignText:
 	done
 
 Route3_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 52,  1, MOUNT_MOON, 1

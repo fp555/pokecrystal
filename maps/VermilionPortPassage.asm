@@ -17,7 +17,6 @@ VermilionPortPassageTeacherText:
 	done
 
 VermilionPortPassage_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 15,  0, VERMILION_CITY, 8

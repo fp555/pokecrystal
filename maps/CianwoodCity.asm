@@ -364,7 +364,6 @@ CianwoodPokeSeerSignText:
 	done
 
 CianwoodCity_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 17, 41, MANIAS_HOUSE, 1

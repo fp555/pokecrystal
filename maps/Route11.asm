@@ -144,7 +144,6 @@ Route11SignText:
 	done
 
 Route11_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 

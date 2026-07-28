@@ -123,7 +123,6 @@ NoLitteringSignText:
 	done
 
 FuchsiaCity_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  5, 13, FUCHSIA_MART, 2

@@ -83,7 +83,6 @@ FuchsiaPokecenter1FJanineImpersonatorText2:
 	done
 
 FuchsiaPokecenter1F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  3,  7, FUCHSIA_CITY, 5

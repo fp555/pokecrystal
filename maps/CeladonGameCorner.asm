@@ -274,7 +274,6 @@ CeladonGameCornerSodaCanText:
 	done
 
 CeladonGameCorner_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 14, 13, CELADON_CITY, 6

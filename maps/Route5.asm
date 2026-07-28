@@ -38,7 +38,6 @@ HouseForSaleSignText:
 	done
 
 Route5_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event 17, 15, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, 1

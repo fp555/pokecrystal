@@ -15,14 +15,13 @@ InitMapNameSign::
 	jr nz, .not_gate
 	ld a, [wMapNumber]
 	cp MAP_ROUTE_35_NATIONAL_PARK_GATE
-	jr z, .gate
+	jr nz, .not_gate
 	cp MAP_ROUTE_36_NATIONAL_PARK_GATE
-	jr z, .gate
+	jr nz, .not_gate
 	call GetMapEnvironment
 	cp GATE
 	jr nz, .not_gate
-	ret
-.gate
+	; gate
 	ld a, -1
 	ld [wCurLandmark], a
 .not_gate
@@ -35,9 +34,9 @@ InitMapNameSign::
 	ld c, a
 	ld a, [wPrevLandmark]
 	cp c
+	jr z, .dont_do_map_sign
 	ld a, [wCurLandmark]
 	ld [wPrevLandmark], a
-	jr z, .dont_do_map_sign
 	; These landmarks do not get pop-up signs
 	cp LANDMARK_SPECIAL
 	jr z, .dont_do_map_sign
@@ -60,6 +59,8 @@ InitMapNameSign::
 	farcall HDMATransfer_OnlyTopFourRows
 	ret
 .dont_do_map_sign
+	ld a, [wCurLandmark]
+	ld [wPrevLandmark], a
 	ld a, $90
 	ldh [rWY], a
 	ldh [hWY], a
@@ -81,7 +82,6 @@ PlaceMapNameSign::
 	call PlaceMapNameCenterAlign
 	farcall HDMATransfer_OnlyTopFourRows
 .already_initialized
-	ld a, $80
 	ld a, $70
 	ldh [rWY], a
 	ldh [hWY], a
@@ -99,25 +99,13 @@ InitMapNameFrame:
 	ld b, 2
 	ld c, 18
 	call InitMapSignAttrmap
-	call PlaceMapNameFrame
-	ret
+	jp PlaceMapNameFrame
 
 PlaceMapNameCenterAlign:
 	ld a, [wCurLandmark]
 	ld e, a
 	farcall GetLandmarkName
-	call .GetNameLength
-	ld a, SCREEN_WIDTH
-	sub c
-	srl a
-	ld b, 0
-	ld c, a
-	hlcoord 0, 2
-	add hl, bc
-	ld de, wStringBuffer1
-	call PlaceString
-	ret
-.GetNameLength:
+	; GetNameLength
 	ld c, 0
 	push hl
 	ld hl, wStringBuffer1
@@ -131,7 +119,15 @@ PlaceMapNameCenterAlign:
 	jr .loop
 .stop
 	pop hl
-	ret
+	ld a, SCREEN_WIDTH
+	sub c
+	srl a
+	ld b, 0
+	ld c, a
+	hlcoord 0, 2
+	add hl, bc
+	ld de, wStringBuffer1
+	jp PlaceString
 
 InitMapSignAttrmap:
 	ld de, wAttrmap - wTilemap

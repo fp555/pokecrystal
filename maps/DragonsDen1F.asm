@@ -9,7 +9,6 @@ UnsetClairScene:
 	endcallback
 
 DragonsDen1F_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  3,  5, BLACKTHORN_CITY, 8

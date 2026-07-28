@@ -41,7 +41,6 @@ FightingDojoSign2Text:
 	done
 
 FightingDojo_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  4, 11, SAFFRON_CITY, 1

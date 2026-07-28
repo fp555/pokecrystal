@@ -365,7 +365,6 @@ Route26SignText:
 	done
 
 Route26_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  7,  5, VICTORY_ROAD_GATE, 3

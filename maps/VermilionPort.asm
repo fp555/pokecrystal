@@ -297,7 +297,6 @@ VermilionPortSuperNerdText:
 	done
 
 VermilionPort_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  9,  5, VERMILION_PORT_PASSAGE, 5

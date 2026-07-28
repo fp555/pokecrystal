@@ -303,7 +303,6 @@ Route40SignText:
 	done
 
 Route40_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  9,  5, ROUTE_40_BATTLE_TOWER_GATE, 1

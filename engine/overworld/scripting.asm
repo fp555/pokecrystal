@@ -1147,7 +1147,7 @@ Script_reloadmap:
 	ld a, MAPSETUP_RELOADMAP
 	ldh [hMapEntryMethod], a
 	ld a, MAPSTATUS_ENTER
-	call LoadMapStatus
+	ld [wMapStatus], a
 	jp StopScript
 
 Script_scall:
@@ -1954,7 +1954,7 @@ Script_warp:
 	ld a, MAPSETUP_WARP
 	ldh [hMapEntryMethod], a
 	ld a, MAPSTATUS_ENTER
-	call LoadMapStatus
+	ld [wMapStatus], a
 	jp StopScript
 .not_ok
 	call GetScriptByte
@@ -1965,7 +1965,7 @@ Script_warp:
 	ld a, MAPSETUP_BADWARP
 	ldh [hMapEntryMethod], a
 	ld a, MAPSTATUS_ENTER
-	call LoadMapStatus
+	ld [wMapStatus], a
 	jp StopScript
 
 Script_warpmod:
@@ -2042,7 +2042,7 @@ Script_newloadmap:
 	call GetScriptByte
 	ldh [hMapEntryMethod], a
 	ld a, MAPSTATUS_ENTER
-	call LoadMapStatus
+	ld [wMapStatus], a
 	jp StopScript
 
 Script_reloadend:
@@ -2165,7 +2165,7 @@ Script_credits:
 ReturnFromCredits:
 	call Script_endall
 	ld a, MAPSTATUS_DONE
-	call LoadMapStatus
+	ld [wMapStatus], a
 	jp StopScript
 
 Script_wait:

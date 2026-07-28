@@ -159,7 +159,6 @@ MountMoonRivalTextLoss:
 	done
 
 MountMoon_MapEvents:
-	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  3,  3, ROUTE_3, 1

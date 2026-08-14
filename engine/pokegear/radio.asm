@@ -412,11 +412,10 @@ OaksPKMNTalk9:
 	dec a
 	ld [wOaksPKMNTalkSegmentCounter], a
 	ld a, OAKS_POKEMON_TALK_4
-	jr nz, .ok
+	jp nz, NextRadioLine
 	ld a, 5
 	ld [wOaksPKMNTalkSegmentCounter], a
 	ld a, OAKS_POKEMON_TALK_10
-.ok
 	jp NextRadioLine
 .Adjectives:
 	table_width 2

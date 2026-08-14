@@ -86,7 +86,6 @@ BurnedTowerRivalBattleScript:
 	startbattle
 	dontrestartmapmusic
 	reloadmapafterbattle
-	sjump .returnfrombattle
 .returnfrombattle
 	playmusic MUSIC_RIVAL_AFTER
 	opentext
@@ -221,9 +220,8 @@ BurnedTowerRival_AfterText2:
 	done
 
 BurnedTower1FEusineIntroText:
-	text "EUSINE: My name's"
-	line "EUSINE."
-
+	text "My name is EUSINE."
+	
 	para "I'm on the trail"
 	line "of a #MON named"
 	cont "SUICUNE."
@@ -244,25 +242,25 @@ BurnedTower1FEusineIntroText:
 	done
 
 BurnedTower1FEusineText:
-	text "EUSINE: I heard"
-	line "that SUICUNE is in"
+	text "I heard that"
+	line "SUICUNE is in this"
 
-	para "this BURNED TOWER,"
-	line "so I came to look."
+	para "BURNED TOWER, so"
+	line "I came to look."
 
 	para "But where exactly"
 	line "could it be?"
 	done
 
 BurnedTower1FMortyText:
-	text "MORTY: ECRUTEAK's"
-	line "GYM LEADER has to"
+	text "As the ECRUTEAK's"
+	line "GYM LEADER, I have"
 
-	para "study what are"
+	para "to study what are"
 	line "said to be the"
 
-	para "legendary #MON"
-	line "--SUICUNE, ENTEI"
+	para "legendary #MON:"
+	line "SUICUNE, ENTEI"
 	cont "and RAIKOU."
 
 	para "EUSINE is here, so"

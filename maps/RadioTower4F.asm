@@ -127,17 +127,15 @@ RadioTower4FDJMaryText_ClearedRockets:
 RadioTower4FDJMaryText_GivePinkBow:
 	text "MARY: It's just"
 	line "right for #MON"
-
-	para "that know normal-"
-	line "type moves."
+	cont "that know normal-"
+	cont "type moves."
 	done
 
 RadioTower4FDJMaryText_After:
 	text "MARY: Please tune"
 	line "into me on PROF."
-
-	para "OAK'S #MON TALK"
-	line "show."
+	cont "OAK'S #MON TALK"
+	cont "show."
 	done
 
 RadioTowerMeowthText:
@@ -191,10 +189,9 @@ GruntF4SeenText:
 	line "#MON are cute?"
 
 	para "I'll think my"
-	line "#MON are cute--"
-
-	para "after they beat"
-	line "yours!"
+	line "#MON are cute…"
+	cont "after they beat"
+	cont "yours!"
 	done
 
 GruntF4BeatenText:

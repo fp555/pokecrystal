@@ -126,7 +126,7 @@ KarenScript_KarenDefeatText:
 	line "You understand"
 	cont "what's important."
 
-	para "Go on--the CHAM-"
+	para "Go on, the CHAM-"
 	line "PION is waiting."
 	done
 

@@ -65,7 +65,8 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	shift_const NORTH
 
 ; SpawnPoints indexes (see data/maps/spawn_points.asm)
-	const_def
+	const_def -1
+	const SPAWN_N_A
 	const SPAWN_HOME
 	const SPAWN_DEBUG
 	; kanto
@@ -97,8 +98,6 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	const SPAWN_MT_SILVER
 	const SPAWN_FAST_SHIP
 DEF NUM_SPAWNS EQU const_value
-
-DEF SPAWN_N_A EQU -1
 
 ; Flypoints indexes (see data/maps/flypoints.asm)
 	const_def

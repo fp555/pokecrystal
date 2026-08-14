@@ -217,12 +217,12 @@ _YourFriendIsNotReadyText::
 	prompt
 
 _MysteryGiftFiveADayText::
-	text "Sorry--only five"
+	text "Sorry, only five"
 	line "GIFTS a day."
 	prompt
 
 _MysteryGiftOneADayText::
-	text "Sorry. One GIFT"
+	text "Sorry, one GIFT"
 	line "a day per person."
 	prompt
 

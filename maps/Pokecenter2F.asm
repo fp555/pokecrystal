@@ -51,20 +51,10 @@ Pokecenter2F_AppearMysteryGiftDeliveryGuy:
 	end
 
 Script_TradeCenterClosed:
-	faceplayer
-	opentext
-	writetext Text_TradeRoomClosed
-	waitbutton
-	closetext
-	end
+	jumptextfaceplayer Text_TradeRoomClosed
 
 Script_BattleRoomClosed:
-	faceplayer
-	opentext
-	writetext Text_BattleRoomClosed
-	waitbutton
-	closetext
-	end
+	jumptextfaceplayer Text_BattleRoomClosed
 
 LinkReceptionistScript_Trade:
 	checkevent EVENT_GAVE_MYSTERY_EGG_TO_ELM
@@ -267,12 +257,7 @@ LinkReceptionistScript_Battle:
 	end
 
 Script_TimeCapsuleClosed:
-	faceplayer
-	opentext
-	writetext Text_TimeCapsuleClosed
-	waitbutton
-	closetext
-	end
+	jumptextfaceplayer Text_TimeCapsuleClosed
 
 LinkReceptionistScript_TimeCapsule:
 	checkevent EVENT_MET_BILL
@@ -852,24 +837,24 @@ Text_PleaseComeIn:
 	done
 
 Text_RejectNewMon:
-	text "Sorry--@"
+	text "You can't bring a"
+	line "@"
 	text_ram wStringBuffer1
-	text_start
-	line "can't be taken."
+	text "."
 	prompt
 
 Text_RejectMonWithNewMove:
-	text "You can't take the"
+	text "You can't bring a"
 	line "@"
 	text_ram wStringBuffer1
-	text " with a"
+	text " with"
 	cont "@"
 	text_ram wStringBuffer2
 	text "."
 	prompt
 
 Text_RejectMonWithMail:
-	text "You can't take the"
+	text "You can't bring a"
 	line "@"
 	text_ram wStringBuffer1
 	text " that"
@@ -877,19 +862,19 @@ Text_RejectMonWithMail:
 	prompt
 
 Text_TimeCapsuleClosed:
-	text "I'm sorry--the"
+	text "I'm sorry… the"
 	line "TIME CAPSULE is"
 	cont "being adjusted."
 	done
 
 Text_TradeRoomClosed:
-	text "I'm sorry--the"
+	text "I'm sorry… the"
 	line "TRADE MACHINE is"
 	cont "being adjusted."
 	done
 
 Text_BattleRoomClosed:
-	text "I'm sorry--the"
+	text "I'm sorry… the"
 	line "BATTLE MACHINE is"
 	cont "being adjusted."
 	done
@@ -898,8 +883,8 @@ Text_MysteryGiftDeliveryGuy_Intro:
 	text "Hello! You're"
 	line "<PLAYER>, right?"
 
-	para "I have some-"
-	line "thing for you."
+	para "I have something"
+	line "for you."
 	done
 
 Text_MysteryGiftDeliveryGuy_HereYouGo:
@@ -917,9 +902,8 @@ Text_MysteryGiftDeliveryGuy_NoRoom:
 
 	para "Stop in at any"
 	line "#MON CENTER"
-
-	para "across the country"
-	line "to pick it up."
+	cont "across the country"
+	cont "to pick it up."
 	done
 
 Text_MysteryGiftDeliveryGuy_SaidNo:
@@ -946,9 +930,8 @@ Text_BrokeStadiumRules:
 
 	para "For STADIUM rules,"
 	line "please bring six"
-
-	para "different #MON,"
-	line "excluding EGGS."
+	cont "different #MON,"
+	cont "excluding EGGS."
 
 	para "The six #MON"
 	line "must be different."

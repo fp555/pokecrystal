@@ -164,8 +164,8 @@ RuinsOfAlphOutsideScientistText:
 
 SuperNerdStanSeenText:
 	text "What do you want?"
-	line "I'm studying--"
-	cont "don't disturb me!"
+	line "I'm studying."
+	cont "Don't disturb me!"
 	done
 
 SuperNerdStanBeatenText:

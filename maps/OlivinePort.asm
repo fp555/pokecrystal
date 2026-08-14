@@ -102,29 +102,24 @@ OlivinePortWalkUpToShipScript:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	applymovement PLAYER, OlivinePortApproachFastShipFirstTimeMovement
 	sjump OlivinePortSailorAtGangwayScript
-
 .NoTicket:
 	writetext OlivinePortNoTicketText
 	waitbutton
 	closetext
 	applymovement PLAYER, OlivinePortCannotEnterFastShipMovement
 	end
-
 .NextShipMonday:
 	writetext OlivinePortMondayShipText
 	waitbutton
 	closetext
 	applymovement PLAYER, OlivinePortCannotEnterFastShipMovement
 	end
-
 .NextShipFriday:
 	writetext OlivinePortFridayShipText
 	waitbutton
 	closetext
 	applymovement PLAYER, OlivinePortCannotEnterFastShipMovement
-	end
-
-.skip:
+.skip
 	end
 
 OlivinePortNotRidingScript:
@@ -169,23 +164,19 @@ OlivinePortSailorAfterHOFScript:
 	ifequal RIGHT, .Right
 	applymovement PLAYER, OlivinePortApproachFastShipAfterHOFMovement
 	sjump OlivinePortSailorAtGangwayScript
-
 .Right:
 	applymovement PLAYER, OlivinePortApproachFastShipAfterHOFRightMovement
 	sjump OlivinePortSailorAtGangwayScript
-
 .NoTicket:
 	writetext OlivinePortNoTicketText
 	waitbutton
 	closetext
 	end
-
 .NextShipMonday:
 	writetext OlivinePortMondayShipText
 	waitbutton
 	closetext
 	end
-
 .NextShipFriday:
 	writetext OlivinePortFridayShipText
 	waitbutton

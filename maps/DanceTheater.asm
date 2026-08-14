@@ -81,7 +81,14 @@ DanceTheaterSurfGuy:
 	iffalse .KimonoGirlsUndefeated
 	checkevent EVENT_BEAT_KIMONO_GIRL_MIKI
 	iffalse .KimonoGirlsUndefeated
-	sjump .GetSurf
+	writetext SurfGuyLikeADanceText
+	promptbutton
+	verbosegiveitem HM_SURF
+	setevent EVENT_GOT_HM03_SURF
+	writetext SurfGuySurfExplanationText
+	waitbutton
+	closetext
+	end
 .KimonoGirlsUndefeated:
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .PlayerIsFemale
@@ -91,15 +98,6 @@ DanceTheaterSurfGuy:
 	end
 .PlayerIsFemale:
 	writetext SurfGuyLassieGiftText
-	waitbutton
-	closetext
-	end
-.GetSurf:
-	writetext SurfGuyLikeADanceText
-	promptbutton
-	verbosegiveitem HM_SURF
-	setevent EVENT_GOT_HM03_SURF
-	writetext SurfGuySurfExplanationText
 	waitbutton
 	closetext
 	end
@@ -267,8 +265,8 @@ SurfGuyLikeADanceText:
 	line "treat to see!"
 
 	para "I want you to have"
-	line "this. Don't worry"
-	cont "--take it!"
+	line "this. Don't worry,"
+	cont "take it!"
 	done
 
 SurfGuySurfExplanationText:

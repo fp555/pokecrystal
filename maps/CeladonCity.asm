@@ -195,9 +195,11 @@ CeladonCityMansionSignText:
 	done
 
 CeladonCityGameCornerSignText:
-	text "The Playground for"
-	line "Everybody--CELADON"
-	cont "GAME CORNER"
+	text "CELADON GAME"
+	line "CORNER"
+	
+	para "The Playground for"
+	line "Everybody"
 	done
 
 CeladonCityTrainerTipsText:

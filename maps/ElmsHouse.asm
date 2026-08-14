@@ -20,10 +20,10 @@ ElmsHouseBookshelf:
 	jumpstd DifficultBookshelfScript
 
 ElmsWifeText:
-	text "Hi, <PLAY_G>! My"
+	text "Hi, <PLAYER>! My"
 	line "husband's always"
 
-	para "so busy--I hope"
+	para "so busy… I hope"
 	line "he's OK."
 
 	para "When he's caught"
@@ -45,10 +45,8 @@ ElmsSonText:
 
 ElmsHousePCText:
 	text "#MON. Where do"
-	line "they come from? "
-
-	para "Where are they"
-	line "going?"
+	line "they come from?"
+	cont "Why are they here?"
 
 	para "Why has no one"
 	line "ever witnessed a"
@@ -63,8 +61,8 @@ ElmsHousePCText:
 	para "…"
 
 	para "It's a part of"
-	line "PROF.ELM's re-"
-	cont "search papers."
+	line "PROF.ELM's"
+	cont "research papers."
 	done
 
 ElmsHouse_MapEvents:

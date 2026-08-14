@@ -166,7 +166,7 @@ VioletPokecenter1FGentlemanText:
 	cont "#MON."
 
 	para "But justice pre-"
-	line "vailed--a young"
+	line "vailed: a young"
 	cont "kid broke 'em up."
 	done
 

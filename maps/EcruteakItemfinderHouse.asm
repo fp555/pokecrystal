@@ -24,7 +24,6 @@ EcruteakItemfinderGuy:
 	waitbutton
 	closetext
 	end
-
 .no:
 	writetext EcruteakItemfinderToEachHisOwnText
 	waitbutton
@@ -38,14 +37,12 @@ EcruteakHistoryBook:
 	iftrue .ReadBook
 	closetext
 	end
-
 .ReadBook:
 	writetext EcruteakTwoTowersText
 	yesorno
 	iftrue .KeepReading
 	closetext
 	end
-
 .KeepReading:
 	writetext EcruteakThreeMonText
 	waitbutton
@@ -98,7 +95,7 @@ ItemfinderExplanationText:
 	para "so you'll have to"
 	line "look yourself."
 
-	para "Oh yeah--I heard"
+	para "Oh yeah, I heard"
 	line "there are items"
 
 	para "in ECRUTEAK's"

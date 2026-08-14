@@ -228,12 +228,10 @@ endr
 	ld bc, 2 * NUM_GRASSMON
 	call AddNTimes
 .loop3
-	; Choose one of the middle three Pokemon.
+	; Choose a Pokemon.
 	call Random
 	maskbits NUM_GRASSMON
-	cp 2
-	jr c, .loop3
-	cp 5
+	cp NUM_GRASSMON
 	jr nc, .loop3
 	ld e, a
 	ld d, 0
@@ -687,8 +685,7 @@ CopyDexEntry:
 	call CopyRadioTextToRAM
 	pop hl
 	pop af
-	call CopyDexEntryPart2
-	ret
+	jr CopyDexEntryPart2
 
 CopyDexEntryPart1:
 	ld de, wPokedexShowPointerBank
@@ -1326,17 +1323,7 @@ RocketRadioText10:
 	text_end
 
 PokeFluteRadio:
-	call StartRadioStation
-	ld a, 1
-	ld [wNumRadioLinesPrinted], a
-	ret
-
 UnownRadio:
-	call StartRadioStation
-	ld a, 1
-	ld [wNumRadioLinesPrinted], a
-	ret
-
 EvolutionRadio:
 	call StartRadioStation
 	ld a, 1
@@ -1346,7 +1333,7 @@ EvolutionRadio:
 BuenasPassword1:
 	; Determine if we need to be here
 	call BuenasPasswordCheckTime
-	jp nc, .PlayPassword
+	jr nc, .PlayPassword
 	ld a, [wNumRadioLinesPrinted]
 	and a
 	jp z, BuenasPassword20
@@ -1405,7 +1392,7 @@ BuenasPassword4:
 	; and the low nybble contains the actual password.
 	add e
 	ld [wBuenasPassword], a
-	; Set the flag so that we don't generate a new password this week.
+	; Set the flag so that we don't generate a new password today.
 	ld hl, wDailyFlags2
 	set DAILYFLAGS2_BUENAS_PASSWORD_F, [hl]
 .AlreadyGotIt:
@@ -1447,7 +1434,9 @@ GetBuenasPassword:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	pop de ; de now contains the pointer to the value of this week's password, in Blue Card Points.
+	pop de
+	; de now contains the pointer to the value
+	; of this week's password, in Blue Card Points.
 	rst CallHL
 	pop hl
 	ld c, [hl]

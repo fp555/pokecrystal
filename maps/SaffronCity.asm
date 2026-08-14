@@ -27,7 +27,6 @@ SaffronCityLass1Script:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext SaffronCityLass1Text_ReturnedMachinePart
 	waitbutton
@@ -43,7 +42,6 @@ SaffronCityPokefanMScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext SaffronCityPokefanMText_ReturnedMachinePart
 	waitbutton
@@ -65,7 +63,6 @@ SaffronCityFisherScript:
 	waitbutton
 	closetext
 	end
-
 .ReturnedMachinePart:
 	writetext SaffronCityFisherText_ReturnedMachinePart
 	waitbutton
@@ -125,7 +122,7 @@ SaffronCityLass1Text_ReturnedMachinePart:
 
 	para "She said she lost"
 	line "her favorite #"
-	cont "DOLL--CLEFAIRY."
+	cont "DOLL."
 	done
 
 SaffronCityPokefanMText:
@@ -174,23 +171,23 @@ SaffronCityCooltrainerFText:
 	done
 
 SaffronCityFisherText:
-	text "Chew… Chew…"
+	text "Munch… Munch…"
 
 	para "I hear there's big"
 	line "trouble brewing at"
 	cont "the POWER PLANT."
 
-	para "Chew… Chew…"
+	para "Munch… Munch…"
 	done
 
 SaffronCityFisherText_ReturnedMachinePart:
-	text "Chew… Chew…"
+	text "Munch… Munch…"
 
 	para "I hear there was"
 	line "big trouble at the"
 	cont "POWER PLANT."
 
-	para "Chew… Chew…"
+	para "Munch… Munch…"
 	line "Haaah, I'm full!"
 	done
 

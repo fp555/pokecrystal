@@ -60,7 +60,6 @@ EcruteakGymMortyScript:
 	waitbutton
 	closetext
 	end
-
 .GotShadowBall:
 	writetext MortyFightDoneText
 	waitbutton
@@ -72,10 +71,8 @@ EcruteakGymActivateRockets:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
-
 .GoldenrodRockets:
 	jumpstd GoldenrodRocketsScript
-
 .RadioTowerRockets:
 	jumpstd RadioTowerRocketsScript
 
@@ -97,7 +94,6 @@ EcruteakGymClosed:
 
 TrainerSageJeffrey:
 	trainer SAGE, JEFFREY, EVENT_BEAT_SAGE_JEFFREY, SageJeffreySeenText, SageJeffreyBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -108,7 +104,6 @@ TrainerSageJeffrey:
 
 TrainerSagePing:
 	trainer SAGE, PING, EVENT_BEAT_SAGE_PING, SagePingSeenText, SagePingBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -119,7 +114,6 @@ TrainerSagePing:
 
 TrainerMediumMartha:
 	trainer MEDIUM, MARTHA, EVENT_BEAT_MEDIUM_MARTHA, MediumMarthaSeenText, MediumMarthaBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -130,7 +124,6 @@ TrainerMediumMartha:
 
 TrainerMediumGrace:
 	trainer MEDIUM, GRACE, EVENT_BEAT_MEDIUM_GRACE, MediumGraceSeenText, MediumGraceBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -148,7 +141,6 @@ EcruteakGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .EcruteakGymGuideWinScript:
 	writetext EcruteakGymGuideWinText
 	waitbutton
@@ -327,7 +319,7 @@ MediumMarthaBeatenText:
 
 MediumMarthaAfterBattleText:
 	text "The one who wants"
-	line "to win most--will!"
+	line "to win most… will!"
 	done
 
 MediumGraceSeenText:

@@ -29,7 +29,6 @@ ViridianGymBlueScript:
 	waitbutton
 	closetext
 	end
-
 .FightDone:
 	writetext LeaderBlueEpilogueText
 	waitbutton
@@ -45,7 +44,6 @@ ViridianGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .ViridianGymGuideWinScript:
 	writetext ViridianGymGuideWinText
 	waitbutton
@@ -56,7 +54,6 @@ ViridianGymStatue:
 	checkflag ENGINE_EARTHBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
-
 .Beaten:
 	gettrainername STRING_BUFFER_4, BLUE, BLUE1
 	jumpstd GymStatue2Script
@@ -103,8 +100,8 @@ LeaderBlueWinText:
 	para "…"
 
 	para "Tch, all right…"
-	line "Here, take this--"
-	cont "it's EARTHBADGE."
+	line "Here, take this."
+	cont "It's EARTHBADGE."
 	done
 
 Text_ReceivedEarthBadge:

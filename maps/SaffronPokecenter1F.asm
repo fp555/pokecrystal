@@ -16,7 +16,6 @@ SaffronPokecenter1FTeacherScript:
 	special CheckMobileAdapterStatusSpecial
 	iftrue .mobile
 	jumptextfaceplayer SaffronPokecenter1FTeacherText
-
 .mobile
 	jumptextfaceplayer SaffronPokecenter1FTeacherMobileText
 
@@ -29,7 +28,6 @@ SaffronPokecenter1FFisherScript:
 	waitbutton
 	closetext
 	end
-
 .SolvedKantoPowerCrisis:
 	writetext SaffronPokecenter1FFisherReturnedMachinePartText
 	waitbutton
@@ -102,8 +100,8 @@ SaffronPokecenter1FYoungsterText:
 	text "SILPH CO.'s HEAD"
 	line "OFFICE and the"
 
-	para "MAGNET TRAIN STA-"
-	line "TION--they're the"
+	para "MAGNET TRAIN"
+	line "STATION are the"
 
 	para "places to see in"
 	line "SAFFRON."

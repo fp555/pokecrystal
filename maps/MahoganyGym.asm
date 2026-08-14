@@ -30,7 +30,6 @@ MahoganyGymPryceScript:
 	playsound SFX_GET_BADGE
 	waitsfx
 	setflag ENGINE_GLACIERBADGE
-	readvar VAR_BADGES
 	scall MahoganyGymActivateRockets
 .FightDone:
 	checkevent EVENT_GOT_TM16_ICY_WIND
@@ -58,6 +57,7 @@ MahoganyGym_NoRoomForIcyWind:
 	end
 
 MahoganyGymActivateRockets:
+	readvar VAR_BADGES
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end
@@ -142,9 +142,8 @@ MahoganyGymStatue:
 PryceText_Intro:
 	text "#MON have many"
 	line "experiences in"
-
-	para "their lives, just "
-	line "like we do. "
+	cont "their lives, just "
+	cont "like we do. "
 
 	para "I, too, have seen"
 	line "and suffered much"
@@ -156,18 +155,16 @@ PryceText_Intro:
 
 	para "I have been with"
 	line "#MON since"
-
-	para "before you were"
-	line "born."
+	cont "before you were"
+	cont "born."
 
 	para "I do not lose"
 	line "easily."
 
-	para "I, PRYCE--the"
-	line "winter trainer--"
-
-	para "shall demonstrate"
-	line "my power!"
+	para "I, PRYCE, the"
+	line "winter trainer…"
+	cont "shall demonstrate"
+	cont "my power!"
 	done
 
 PryceText_Impressed:
@@ -247,7 +244,7 @@ BoarderBradSeenText:
 	para "It's fun, isn't"
 	line "it?"
 
-	para "But hey--we're"
+	para "But hey, we're"
 	line "not playing games"
 	cont "here!"
 	done
@@ -348,9 +345,8 @@ MahoganyGymGuideWinText:
 
 	para "That was a hot"
 	line "battle that"
-
-	para "bridged the gen-"
-	line "eration gap!"
+	cont "bridged the"
+	cont "generation gap!"
 	done
 
 MahoganyGym_MapEvents:

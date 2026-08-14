@@ -29,7 +29,6 @@ CherrygroveCityFlypointCallback:
 
 CherrygroveCityGuideGent:
 	faceplayer
-	showemote EMOTE_SHOCK, CHERRYGROVECITY_GRAMPS, 15
 	opentext
 	writetext GuideGentIntroText
 	waitbutton
@@ -68,7 +67,7 @@ CherrygroveCityGuideGent:
 	writetext GuideGentGiftText
 	promptbutton
 	getstring STRING_BUFFER_4, .mapcardname
-	scall .JumpstdReceiveItem
+	callstd ReceiveItemScript
 	setflag ENGINE_MAP_CARD
 	writetext GotMapCardText
 	promptbutton
@@ -84,9 +83,6 @@ CherrygroveCityGuideGent:
 	clearevent EVENT_GUIDE_GENT_VISIBLE_IN_CHERRYGROVE
 	setscene SCENE_CHERRYGROVECITY_NOOP
 	waitsfx
-	end
-.JumpstdReceiveItem:
-	jumpstd ReceiveItemScript
 	end
 .mapcardname
 	db "MAP CARD@"
@@ -155,13 +151,6 @@ CherrygroveRivalSceneNorth:
 CherrygroveTeacherScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_MAP_CARD
-	iftrue .HaveMapCard
-	writetext CherrygroveTeacherText_NoMapCard
-	waitbutton
-	closetext
-	end
-.HaveMapCard:
 	writetext CherrygroveTeacherText_HaveMapCard
 	waitbutton
 	closetext
@@ -315,9 +304,9 @@ GuideGentIntroText:
 	line "one is a rookie"
 	cont "at some point!"
 
-	para "Follow me, so I"
-	line "can teach you a"
-	cont "few things."
+	para "Follow me, I'm"
+	line "going to teach you"
+	cont "a few things."
 	done
 
 GuideGentPokecenterText:
@@ -420,24 +409,14 @@ CherrygroveRivalText_AfterBattle:
 	text "Remember it well!"
 
 	para "I'm going to be"
-	line "the world's great-"
-	cont "est #MON"
+	line "the world's"
+	cont "greatest #MON"
 	cont "trainer!"
 	done
 
 RivalCherrygroveLossText:
 	text "Humph. That was a"
 	line "waste of time."
-	done
-
-CherrygroveTeacherText_NoMapCard:
-	text "Did you talk to"
-	line "the old man by the"
-	cont "#MON CENTER?"
-
-	para "He'll put a MAP of"
-	line "JOHTO on your"
-	cont "#GEAR."
 	done
 
 CherrygroveTeacherText_HaveMapCard:

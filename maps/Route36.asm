@@ -59,7 +59,7 @@ SudowoodoScript:
 	yesorno
 	iffalse DidntUseSquirtbottleScript
 	closetext
-
+	; fallthrough
 WateredWeirdTreeScript:: ; export (for when you use Squirtbottle from pack)
 	opentext
 	writetext UsedSquirtbottleText
@@ -566,7 +566,7 @@ Route36TrainerTips1Text:
 	text "TRAINER TIPS"
 
 	para "#MON stats"
-	line "vary--even within"
+	line "vary, even within"
 	cont "the same species."
 
 	para "Their stats may be"

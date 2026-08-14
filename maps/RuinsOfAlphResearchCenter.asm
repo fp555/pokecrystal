@@ -229,7 +229,7 @@ RuinsOfAlphResearchCenterScientist1Text:
 
 	para "But it's not known"
 	line "why they were"
-	cont "built--or by whom."
+	cont "built, or by whom."
 	done
 
 RuinsOfAlphResearchCenterScientist1Text_GotUnownDex:
@@ -271,9 +271,9 @@ RuinsOfAlphResearchCenterScientist2Text:
 	line "RUINS."
 
 	para "They must be the"
-	line "keys for unravel-"
-	cont "ing the mystery"
-	cont "of the RUINS."
+	line "key for unraveling"
+	cont "the mystery of the"
+	cont "RUINS."
 	done
 
 RuinsOfAlphResearchCenterScientist2Text_UnownAppeared:

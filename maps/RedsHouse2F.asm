@@ -13,8 +13,8 @@ RedsHouse2FN64Text:
 	text "<PLAYER> played the"
 	line "N64."
 
-	para "Better get going--"
-	line "no time to lose!"
+	para "Better get going."
+	line "No time to lose!"
 	done
 
 RedsHouse2FPCText:

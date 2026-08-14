@@ -88,7 +88,6 @@ RedGyarados:
 	waitsfx
 	itemnotify
 	closetext
-	setscene 0 ; Lake of Rage does not have a scene variable
 	appear LAKEOFRAGE_LANCE
 	end
 
@@ -101,7 +100,6 @@ LakeOfRageGrampsScript:
 	waitbutton
 	closetext
 	end
-
 .ClearedRocketHideout:
 	writetext LakeOfRageGrampsText_ClearedRocketHideout
 	waitbutton
@@ -245,19 +243,18 @@ LakeOfRageLanceIntroText:
 	line "I'm LANCE, a"
 	cont "trainer like you."
 
-	para "I heard some ru-"
-	line "mors, so I came to"
-	cont "investigate…"
+	para "I heard some"
+	line "rumors, so I came"
+	cont "to investigate…"
 
 	para "I saw the way you"
 	line "battled earlier,"
-	cont "<PLAY_G>."
+	cont "<PLAYER>."
 
 	para "I can tell that"
 	line "you're a trainer"
-
-	para "with considerable"
-	line "skill."
+	cont "with considerable"
+	cont "skill."
 
 	para "If you don't mind,"
 	line "could you help me"
@@ -265,22 +262,20 @@ LakeOfRageLanceIntroText:
 	done
 
 LakeOfRageLanceRadioSignalText:
-	text "LANCE: Excellent!"
+	text "Excellent!"
 
 	para "It seems that the"
 	line "LAKE's MAGIKARP"
-
-	para "are being forced"
-	line "to evolve."
+	cont "are being forced"
+	cont "to evolve."
 
 	para "A mysterious radio"
 	line "broadcast coming"
-
-	para "from MAHOGANY is"
-	line "the cause."
+	cont "from MAHOGANY is"
+	cont "the cause."
 
 	para "I'll be waiting"
-	line "for you, <PLAY_G>."
+	line "for you, <PLAYER>."
 	done
 
 LakeOfRageLanceRefusedText:
@@ -410,7 +405,7 @@ CooltrainerfLoisSeenText:
 	para "Oh, darn. I came"
 	line "here for nothing?"
 
-	para "I know--let's"
+	para "I know! Let's"
 	line "battle!"
 	done
 

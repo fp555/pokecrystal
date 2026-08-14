@@ -23,7 +23,8 @@ Oak:
 	readvar VAR_BADGES
 	ifequal NUM_BADGES, .OpenMtSilver
 	ifequal NUM_JOHTO_BADGES, .Complain
-	sjump .AhGood
+	writetext OakYesKantoBadgesText
+	promptbutton
 .CheckPokedex:
 	writetext OakLabDexCheckText
 	waitbutton
@@ -39,10 +40,6 @@ Oak:
 	sjump .CheckPokedex
 .Complain:
 	writetext OakNoKantoBadgesText
-	promptbutton
-	sjump .CheckPokedex
-.AhGood:
-	writetext OakYesKantoBadgesText
 	promptbutton
 	sjump .CheckPokedex
 
@@ -71,17 +68,15 @@ OaksLabPC:
 	jumptext OaksLabPCText
 
 OakWelcomeKantoText:
-	text "OAK: Ah, <PLAY_G>!"
+	text "Ah, <PLAYER>!"
 	line "It's good of you"
-
-	para "to come all this"
-	line "way to KANTO."
+	cont "to come all this"
+	cont "way to KANTO."
 
 	para "What do you think"
 	line "of the trainers"
-
-	para "out here?"
-	line "Pretty tough, huh?"
+	cont "out here? Pretty"
+	line "tough, huh?"
 	done
 
 OakLabDexCheckText:
@@ -98,7 +93,7 @@ OakLabGoodbyeText:
 	done
 
 OakOpenMtSilverText:
-	text "OAK: Wow! That's"
+	text "Wow! That's"
 	line "excellent!"
 
 	para "You collected the"
@@ -109,7 +104,7 @@ OakOpenMtSilverText:
 	line "assessment of you."
 
 	para "Tell you what,"
-	line "<PLAY_G>. I'll make"
+	line "<PLAYER>. I'll make"
 
 	para "arrangements so"
 	line "that you can go to"
@@ -117,37 +112,33 @@ OakOpenMtSilverText:
 
 	para "MT.SILVER is a big"
 	line "mountain that is"
-
-	para "home to many wild"
-	line "#MON."
+	cont "home to many wild"
+	cont "#MON."
 
 	para "It's too dangerous"
 	line "for your average"
+	cont "trainer, so it's"
+	cont "off limits."
 
-	para "trainer, so it's"
-	line "off limits. But"
-
-	para "we can make an"
+	para "But we can make an"
 	line "exception in your"
-	cont "case, <PLAY_G>."
+	cont "case, <PLAYER>."
 
 	para "Go up to INDIGO"
 	line "PLATEAU. You can"
-
-	para "reach MT.SILVER"
-	line "from there."
+	cont "reach MT.SILVER"
+	cont "from there."
 	done
 
 OakNoKantoBadgesText:
-	text "OAK: Hmm? You're"
-	line "not collecting"
-	cont "KANTO GYM BADGES?"
+	text "Hmm? You're not"
+	line "collecting KANTO"
+	cont "GYM BADGES?"
 
 	para "The GYM LEADERS in"
 	line "KANTO are as tough"
-
-	para "as any you battled"
-	line "in JOHTO."
+	cont "as any you battled"
+	cont "in JOHTO."
 
 	para "I recommend that"
 	line "you challenge"
@@ -155,15 +146,14 @@ OakNoKantoBadgesText:
 	done
 
 OakYesKantoBadgesText:
-	text "OAK: Ah, you're"
-	line "collecting KANTO"
-	cont "GYM BADGES."
+	text "Ah, you're collec-"
+	line "ting KANTO GYM"
+	cont "BADGES."
 
 	para "I imagine that"
 	line "it's hard, but the"
-
-	para "experience is sure"
-	line "to help you."
+	cont "experience is sure"
+	cont "to help you."
 
 	para "Come see me when"
 	line "you get them all."
@@ -172,17 +162,16 @@ OakYesKantoBadgesText:
 	line "for you."
 
 	para "Keep trying hard,"
-	line "<PLAY_G>!"
+	line "<PLAYER>!"
 	done
 
 OaksAssistant1Text:
 	text "The PROF's #MON"
 	line "TALK radio program"
+	cont "isn't aired here"
+	cont "in KANTO."
 
-	para "isn't aired here"
-	line "in KANTO."
-
-	para "It's a shame--I'd"
+	para "It's a shame… I'd"
 	line "like to hear it."
 	done
 
@@ -198,9 +187,8 @@ OaksAssistant2Text:
 OaksAssistant3Text:
 	text "Don't tell anyone,"
 	line "but PROF.OAK'S"
-
-	para "#MON TALK isn't"
-	line "a live broadcast."
+	cont "#MON TALK isn't"
+	cont "a live broadcast."
 	done
 
 OaksLabPoster1Text:
@@ -235,10 +223,9 @@ OaksLabPCText:
 	line "away."
 
 	para "I heard rumors"
-	line "that <PLAY_G> is"
-
-	para "getting quite a"
-	line "reputation."
+	line "that <PLAYER> is"
+	cont "getting quite a"
+	cont "reputation."
 
 	para "I'm delighted to"
 	line "hear that."

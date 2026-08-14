@@ -51,7 +51,7 @@ GiveSuperRodText:
 	line "I thought!"
 
 	para "Here, fishing fan!"
-	line "Take this--it's a"
+	line "Take this. It's a"
 	cont "SUPER ROD."
 	done
 
@@ -60,11 +60,10 @@ GaveSuperRodText:
 	line "fishing wherever"
 	cont "there is water."
 
-	para "Remember--you can"
+	para "Remember: you can"
 	line "catch different"
-
-	para "#MON using"
-	line "different RODS."
+	cont "#MON using"
+	cont "different RODS."
 	done
 
 DontWantSuperRodText:

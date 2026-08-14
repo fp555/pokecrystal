@@ -17,9 +17,8 @@ _OakText7::
 
 	para "A world of dreams"
 	line "and adventures"
-
-	para "with #MON"
-	line "awaits! Let's go!"
+	cont "with #MON"
+	cont "awaits! Let's go!"
 
 	para "I'll be seeing you"
 	line "later!"
@@ -82,9 +81,8 @@ _LinkAskTradeForText::
 _MobileBattleMustPickThreeMonText::
 	text "To enter a mobile"
 	line "battle, you must"
-
-	para "pick a team of"
-	line "three #MON."
+	cont "pick a team of"
+	cont "three #MON."
 
 	para "Is that OK?"
 	done
@@ -515,7 +513,7 @@ _BargainShopIntroText::
 	para "I sell rare items"
 	line "that nobody else"
 
-	para "carries--but only"
+	para "carries, but only"
 	line "one of each item."
 	done
 
@@ -800,7 +798,7 @@ _MobileCardFolderAskDeleteText::
 	line "PASSCODE will also"
 	cont "be deleted."
 
-	para "Beware--a deleted"
+	para "Beware: a deleted"
 	line "CARD FOLDER can't"
 	cont "be restored."
 

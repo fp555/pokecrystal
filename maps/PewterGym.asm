@@ -31,7 +31,6 @@ PewterGymBrockScript:
 	waitbutton
 	closetext
 	end
-
 .FightDone:
 	writetext BrockFightDoneText
 	waitbutton
@@ -40,7 +39,6 @@ PewterGymBrockScript:
 
 TrainerCamperJerry:
 	trainer CAMPER, JERRY, EVENT_BEAT_CAMPER_JERRY, CamperJerrySeenText, CamperJerryBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
 	opentext
@@ -58,7 +56,6 @@ PewterGymGuideScript:
 	waitbutton
 	closetext
 	end
-
 .PewterGymGuideWinScript:
 	writetext PewterGymGuideWinText
 	waitbutton
@@ -74,11 +71,10 @@ PewterGymStatue:
 	jumpstd GymStatue2Script
 
 BrockIntroText:
-	text "BROCK: Wow, it's"
-	line "not often that we"
-
-	para "get a challenger"
-	line "from JOHTO."
+	text "Wow, it's not"
+	line "often that we get"
+	cont "a challenger from"
+	cont "JOHTO."
 
 	para "I'm BROCK, the"
 	line "PEWTER GYM LEADER."
@@ -86,28 +82,27 @@ BrockIntroText:
 	para "I'm an expert on"
 	line "rock-type #MON."
 
-	para "My #MON are im-"
-	line "pervious to most"
-
-	para "physical attacks."
-	line "You'll have a hard"
-
-	para "time inflicting"
-	line "any damage."
+	para "My #MON are"
+	line "impervious to most"
+	cont "physical attacks."
+	
+	para "You'll have a hard"
+	line "time inflicting"
+	cont "any damage."
 
 	para "Come on!"
 	done
 
 BrockWinLossText:
-	text "BROCK: Your #-"
-	line "MON's powerful at-"
-	cont "tacks overcame my"
-	cont "rock-hard defense…"
+	text "Your #MON's"
+	line "powerful attacks"
+	cont "overcame my rock-"
+	cont "hard defense…"
 
 	para "You're stronger"
 	line "than I expected…"
 
-	para "Go ahead--take"
+	para "Go ahead, take"
 	line "this BADGE."
 	done
 
@@ -117,31 +112,27 @@ ReceivedBoulderBadgeText:
 	done
 
 BrockBoulderBadgeText:
-	text "BROCK: <PLAY_G>,"
-	line "thanks. I enjoyed"
-
-	para "battling you, even"
-	line "though I am a bit"
-	cont "upset."
+	text "<PLAYER>, thanks."
+	line "I enjoyed battling"
+	cont "you, even though"
+	cont "I am a bit upset."
 
 	para "That BOULDERBADGE"
 	line "will make your"
-
-	para "#MON even more"
-	line "powerful."
+	cont "#MON even more"
+	cont "powerful."
 	done
 
 BrockFightDoneText:
-	text "BROCK: The world"
-	line "is huge. There are"
-
-	para "still many strong"
-	line "trainers like you."
+	text "The world is huge."
+	line "There are still"
+	cont "many strong"
+	cont "trainers like you."
 
 	para "Just wait and see."
-	line "I'm going to be-"
-	cont "come a lot strong-"
-	cont "er too."
+	line "I'm going to"
+	cont "become a lot"
+	cont "stronger too."
 	done
 
 CamperJerrySeenText:
@@ -153,10 +144,9 @@ CamperJerrySeenText:
 	line "high DEFENSE."
 
 	para "Battles could end"
-	line "up going a long"
-
-	para "time. Are you"
-	line "ready for this?"
+	line "up going for a"
+	cont "long time. Are you"
+	cont "ready for this?"
 	done
 
 CamperJerryBeatenText:
@@ -167,43 +157,38 @@ CamperJerryBeatenText:
 CamperJerryAfterBattleText:
 	text "Hey, you! Trainer"
 	line "from JOHTO! BROCK"
+	cont "is tough."
 
-	para "is tough. He'll"
-	line "punish you if you"
-
-	para "don't take him"
-	line "seriously."
+	para "He'll punish you"
+	line "if you don't take"
+	cont "him seriously."
 	done
 
 PewterGymGuideText:
 	text "Yo! CHAMP in"
 	line "making! You're"
-
-	para "really rocking."
-	line "Are you battling"
-
-	para "the GYM LEADERS of"
-	line "KANTO?"
+	cont "really rocking."
+	
+	para "Are you battling"
+	line "the GYM LEADERS of"
+	cont "KANTO?"
 
 	para "They're strong and"
 	line "dedicated people,"
-
-	para "just like JOHTO's"
-	line "GYM LEADERS."
+	cont "just like JOHTO's"
+	cont "GYM LEADERS."
 	done
 
 PewterGymGuideWinText:
 	text "Yo! CHAMP in"
 	line "making! That GYM"
-
-	para "didn't give you"
-	line "much trouble."
+	cont "didn't give you"
+	cont "much trouble."
 
 	para "The way you took"
 	line "charge was really"
-
-	para "inspiring. I mean"
-	line "that seriously."
+	cont "inspiring. I mean"
+	cont "that seriously."
 	done
 
 PewterGym_MapEvents:

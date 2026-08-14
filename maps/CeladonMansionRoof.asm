@@ -13,7 +13,7 @@ CeladonMansionRoofGraffiti:
 	jumptext CeladonMansionRoofGraffitiText
 
 CeladonMansionRoofFisherText:
-	text "High places--I do"
+	text "High places… I do"
 	line "love them so!"
 
 	para "I'd say the only"

@@ -103,7 +103,7 @@ KogaScript_KogaBeforeText:
 	para "#MON is not"
 	line "merely about brute"
 
-	para "force--you shall"
+	para "force. You shall"
 	line "see soon enough!"
 	done
 

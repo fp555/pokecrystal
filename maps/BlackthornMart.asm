@@ -27,7 +27,7 @@ BlackthornMartCooltrainerMText:
 	para "fully restores a"
 	line "fainted #MON."
 
-	para "Beware--it won't"
+	para "Beware: it won't"
 	line "restore PP, the"
 
 	para "POWER POINTS"

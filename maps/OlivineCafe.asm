@@ -79,8 +79,8 @@ OlivineCafeSailorText:
 OlivineCafe_MapEvents:
 
 	def_warp_events
-	warp_event  2,  7, OLIVINE_CITY, 7
-	warp_event  3,  7, OLIVINE_CITY, 7
+	warp_event  2,  7, OLIVINE_CITY, 6
+	warp_event  3,  7, OLIVINE_CITY, 6
 
 	def_coord_events
 

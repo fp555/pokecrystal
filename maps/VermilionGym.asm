@@ -98,8 +98,8 @@ VermilionGymStatue:
 	jumpstd GymStatue2Script
 
 LtSurgeIntroText:
-	text "SURGE: Hey, you"
-	line "little tyke!"
+	text "Hey, you little"
+	line "tyke!"
 
 	para "I have to hand it"
 	line "to you. It may not"
@@ -121,8 +121,8 @@ LtSurgeIntroText:
 	done
 
 LtSurgeWinLossText:
-	text "SURGE: Arrrgh!"
-	line "You are strong!"
+	text "Arrrgh! You are"
+	line "strong!"
 
 	para "OK, kid. You get"
 	line "THUNDERBADGE!"
@@ -142,8 +142,8 @@ LtSurgeThunderBadgeText:
 	done
 
 LtSurgeFightDoneText:
-	text "SURGE: Hey, kid!"
-	line "Still slugging and"
+	text "Hey, kid! Still"
+	line "slugging and"
 	cont "chugging away?"
 
 	para "My #MON and I"
@@ -207,8 +207,8 @@ JugglerHortonBeatenText:
 	done
 
 JugglerHortonAfterBattleText:
-	text "Don't get too com-"
-	line "fortable about"
+	text "Don't get too"
+	line "comfortable about"
 
 	para "beating me…"
 	line "LT.SURGE is tough."
@@ -227,8 +227,8 @@ VermilionGymGuideText:
 	para "traps set all over"
 	line "the GYM."
 
-	para "But--he-heh--the"
-	line "traps aren't"
+	para "But, looks like"
+	line "the traps aren't"
 	cont "active right now."
 
 	para "You'll have no"

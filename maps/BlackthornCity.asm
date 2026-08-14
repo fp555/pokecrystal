@@ -25,7 +25,6 @@ BlackthornCitySantosCallback:
 	ifequal SATURDAY, .SantosAppears
 	disappear BLACKTHORNCITY_SANTOS
 	endcallback
-
 .SantosAppears:
 	appear BLACKTHORNCITY_SANTOS
 	endcallback
@@ -41,13 +40,11 @@ BlackthornSuperNerdScript:
 	waitbutton
 	closetext
 	end
-
 .ClearedRadioTower:
 	writetext Text_ClairIsIn
 	waitbutton
 	closetext
 	end
-
 .BeatClair:
 	writetext Text_ClairIsBeaten
 	waitbutton
@@ -69,7 +66,6 @@ BlackthornBlackBeltScript:
 	waitbutton
 	closetext
 	end
-
 .ClearedRadioTower:
 	writetext BlackBeltText_VoicesInMyHead
 	waitbutton
@@ -107,14 +103,12 @@ SantosScript:
 	waitbutton
 	closetext
 	end
-
 .Saturday:
 	writetext SantosSaturdayText
 	waitbutton
 .Done:
 	closetext
 	end
-
 .NotSaturday:
 	writetext SantosNotSaturdayText
 	waitbutton
@@ -184,18 +178,14 @@ Text_ClairIsBeaten:
 BlackthornGrampsRefusesEntryText:
 	text "No. Only chosen"
 	line "trainers may train"
-
-	para "here."
-	line "Please leave."
+	cont "here."
+	
+	para "Please leave."
 	done
 
 BlackthornGrampsGrantsEntryText:
 	text "If CLAIR allows"
-	line "it, her grand-"
-	cont "father--our MASTER"
-	cont "--will also."
-
-	para "You may enter."
+	line "it, you may enter."
 	done
 
 BlackBeltText_WeirdRadio:

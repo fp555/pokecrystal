@@ -266,7 +266,7 @@ PokemaniacBenSeenText:
 	text "I love #MON!"
 
 	para "That's why I"
-	line "started--and why"
+	line "started, and why"
 
 	para "I'll keep on col-"
 	line "lecting #MON!"
@@ -360,8 +360,8 @@ FisherMarvinAfterBattleText:
 
 CamperSpencerSeenText:
 	text "I can do so much"
-	line "with my #MON--"
-	cont "it's super-fun!"
+	line "with my #MON."
+	cont "It's super-fun!"
 	done
 
 CamperSpencerBeatenText:

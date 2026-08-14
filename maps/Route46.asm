@@ -183,7 +183,7 @@ CamperTedAfterBattleText:
 	text "I did my best but"
 	line "came up short."
 
-	para "No excuses--I"
+	para "No excuses. I"
 	line "admit I lost."
 	done
 

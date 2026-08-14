@@ -63,15 +63,14 @@ HallOfFame_SlowlyApproachMachine:
 	step_end
 
 HallOfFame_LanceText:
-	text "LANCE: It's been a"
-	line "long time since I"
-	cont "last came here."
+	text "It's been a long"
+	line "time since I last"
+	cont "came here."
 
 	para "This is where we"
 	line "honor the LEAGUE"
-
-	para "CHAMPIONS for all"
-	line "eternity."
+	cont "CHAMPIONS for all"
+	cont "eternity."
 
 	para "Their courageous"
 	line "#MON are also"
@@ -79,33 +78,28 @@ HallOfFame_LanceText:
 
 	para "Here today, we"
 	line "witnessed the rise"
-
-	para "of a new LEAGUE"
-	line "CHAMPION--a"
-
-	para "trainer who feels"
-	line "compassion for,"
-
-	para "and trust toward,"
-	line "all #MON."
+	cont "of a new LEAGUE"
+	cont "CHAMPION."
 
 	para "A trainer who"
 	line "succeeded through"
-
-	para "perseverance and"
-	line "determination."
+	cont "perseverance and"
+	cont "determination."
+	
+	para "A trainer who"
+	line "simply trusts, and"
+	cont "cares about, all"
+	cont "#MON."
 
 	para "The new LEAGUE"
 	line "CHAMPION who has"
+	cont "all the makings"
+	cont "of greatness!"
 
-	para "all the makings"
-	line "of greatness!"
-
-	para "<PLAY_G>, allow me"
+	para "<PLAYER>, allow me"
 	line "to register you"
-
-	para "and your partners"
-	line "as CHAMPIONS!"
+	cont "and your partners"
+	cont "as CHAMPIONS!"
 	done
 
 HallOfFame_MapEvents:

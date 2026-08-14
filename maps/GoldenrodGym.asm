@@ -185,7 +185,7 @@ WhitneyBeforeText:
 
 	para "You want to bat-"
 	line "tle? I'm warning"
-	cont "you--I'm good!"
+	cont "you, I'm good!"
 	done
 
 WhitneyShouldntBeSoSeriousText:
@@ -203,8 +203,6 @@ WhitneyYouMeanieText:
 	text "Waaaaah!"
 
 	para "Waaaaah!"
-
-	para "…Snivel, hic…"
 	line "…You meanie!"
 	done
 

@@ -34,8 +34,7 @@ InitPartyMenuPalettes:
 	ld hl, PalPacket_PartyMenu + 1
 	call CopyFourPalettes
 	call InitPartyMenuOBPals
-	call WipeAttrmap
-	ret
+	jp WipeAttrmap
 
 SGB_ApplyPartyMenuHPPals:
 ; SGB layout for SCGB_PARTY_MENU_HP_BARS
@@ -81,7 +80,7 @@ LoadMonPaletteAsNthBGPal:
 	inc hl
 	inc hl
 	inc hl
-
+	; fallthrough
 LoadNthMiddleBGPal:
 	push hl
 	ld hl, wBGPals1
@@ -96,8 +95,7 @@ LoadNthMiddleBGPal:
 	ld e, l
 	ld d, h
 	pop hl
-	call LoadPalette_White_Col1_Col2_Black
-	ret
+	jp LoadPalette_White_Col1_Col2_Black
 
 ApplyMonOrTrainerPals:
 	ld a, e
@@ -114,18 +112,32 @@ ApplyMonOrTrainerPals:
 	call LoadPalette_White_Col1_Col2_Black
 	call WipeAttrmap
 	call ApplyAttrmap
-	call ApplyPals
-	ret
+	jp ApplyPals
 
 ApplyHPBarPals:
 	ld a, [wWhichHPBar]
-	and a
+	and a ; 0?
 	jr z, .Enemy
-	cp $1
+	dec a ; 1?
 	jr z, .Player
-	cp $2
-	jr z, .PartyMenu
-	ret
+	dec a ; 2?
+	ret nz
+	; PartyMenu
+	ld e, c
+	inc e
+	hlcoord 11, 1, wAttrmap
+	ld bc, 2 * SCREEN_WIDTH
+	ld a, [wCurPartyMon]
+.loop
+	and a
+	jr z, .done
+	add hl, bc
+	dec a
+	jr .loop
+.done
+	lb bc, 2, 8
+	ld a, e
+	jp FillBoxWithByte
 .Enemy:
 	ld de, wBGPals2 palette PAL_BATTLE_BG_ENEMY_HP color 1
 	jr .okay
@@ -143,23 +155,6 @@ ApplyHPBarPals:
 	call FarCopyWRAM
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
-	ret
-.PartyMenu:
-	ld e, c
-	inc e
-	hlcoord 11, 1, wAttrmap
-	ld bc, 2 * SCREEN_WIDTH
-	ld a, [wCurPartyMon]
-.loop
-	and a
-	jr z, .done
-	add hl, bc
-	dec a
-	jr .loop
-.done
-	lb bc, 2, 8
-	ld a, e
-	call FillBoxWithByte
 	ret
 
 LoadStatsScreenPals:
@@ -198,8 +193,7 @@ LoadMailPalettes:
 	call FarCopyWRAM
 	call ApplyPals
 	call WipeAttrmap
-	call ApplyAttrmap
-	ret
+	jp ApplyAttrmap
 .MailPals:
 INCLUDE "gfx/mail/mail.pal"
 
@@ -312,16 +306,14 @@ WipeAttrmap:
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_AREA
 	xor a
-	call ByteFill
-	ret
+	jp ByteFill
 
 ApplyPals:
 	ld hl, wBGPals1
 	ld de, wBGPals2
 	ld bc, 16 palettes
 	ld a, BANK(wGBCPalettes)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 ApplyAttrmap:
 	ldh a, [rLCDC]
@@ -388,16 +380,14 @@ CGB_ApplyPartyMenuHPPals:
 .done
 	lb bc, 2, 8
 	ld a, e
-	call FillBoxWithByte
-	ret
+	jp FillBoxWithByte
 
 InitPartyMenuOBPals:
 	ld hl, PartyMenuOBPals
 	ld de, wOBPals1
 	ld bc, 8 palettes
 	ld a, BANK(wOBPals1)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 GetBattlemonBackpicPalettePointer:
 	push de
@@ -421,24 +411,22 @@ GetEnemyFrontpicPalettePointer:
 
 GetPlayerOrMonPalettePointer:
 	and a
-	jp nz, GetMonNormalOrShinyPalettePointer
+	jr nz, GetMonNormalOrShinyPalettePointer
+	ld hl, PlayerPalette
 	ld a, [wPlayerSpriteSetupFlags]
 	bit PLAYERSPRITESETUP_FEMALE_TO_MALE_F, a
-	jr nz, .male
+	ret nz ; chris
 	ld a, [wPlayerGender]
 	and a
-	jr z, .male
+	ret z ; chris
 	ld hl, KrisPalette
-	ret
-.male
-	ld hl, PlayerPalette
 	ret
 
 GetFrontpicPalettePointer:
 	and a
-	jp nz, GetMonNormalOrShinyPalettePointer
+	jr nz, GetMonNormalOrShinyPalettePointer
 	ld a, [wTrainerClass]
-
+	; fallthrough
 GetTrainerPalettePointer:
 	ld l, a
 	ld h, 0
@@ -458,9 +446,6 @@ GetMonPalettePointer:
 	add hl, bc
 	ret
 
-BattleObjectPals:
-INCLUDE "gfx/battle_anims/battle_anims.pal"
-
 GetMonNormalOrShinyPalettePointer:
 	push bc
 	call GetMonPalettePointer
@@ -474,20 +459,18 @@ rept 4
 endr
 	ret
 
+BattleObjectPals:
+INCLUDE "gfx/battle_anims/battle_anims.pal"
+
 PushSGBPals:
 	ld a, [wJoypadDisable]
 	push af
 	set JOYPAD_DISABLE_SGB_TRANSFER_F, a
 	ld [wJoypadDisable], a
-	call _PushSGBPals
-	pop af
-	ld [wJoypadDisable], a
-	ret
-
-_PushSGBPals:
+	; _PushSGBPals
 	ld a, [hl]
 	and $7
-	ret z
+	jr z, .done
 	ld b, a
 .loop
 	push bc
@@ -522,6 +505,9 @@ _PushSGBPals:
 	pop bc
 	dec b
 	jr nz, .loop
+.done
+	pop af
+	ld [wJoypadDisable], a
 	ret
 
 InitCGBPals::
@@ -759,8 +745,7 @@ endr
 	ld de, wOBPals1 palette PAL_OW_ROCK + 2
 	ld bc, 1 palettes - 2
 	ld a, BANK(wOBPals1)
-	call FarCopyWRAM
-	ret
+	jp FarCopyWRAM
 
 INCLUDE "data/maps/environment_colors.asm"
 

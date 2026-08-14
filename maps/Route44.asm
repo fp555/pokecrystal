@@ -450,7 +450,7 @@ CooltrainerfCybilAfterBattleText:
 
 	para "I battled a lot to"
 	line "become what I am"
-	cont "today--an elite."
+	cont "today: an elite."
 	done
 
 Route44Sign1Text:

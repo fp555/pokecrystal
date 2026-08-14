@@ -152,7 +152,7 @@ FalknerZephyrBadgeText:
 	para "FLASH, if they"
 	line "have it, anytime."
 
-	para "Here--take this"
+	para "Here, take this"
 	line "too."
 	done
 
@@ -164,7 +164,7 @@ FalknerTMMudSlapText:
 	line "new move."
 
 	para "Think before you"
-	line "act--a TM can be"
+	line "act: a TM can be"
 	cont "used only once."
 
 	para "TM31 contains"
@@ -241,9 +241,9 @@ BirdKeeperAbeAfterBattleText:
 	done
 
 VioletGymGuideText:
-	text "Hey! I'm no train-"
-	line "er but I can give"
-	cont "some advice!"
+	text "Hey! I'm not a"
+	line "trainer but I can"
+	cont "give some advice!"
 
 	para "Believe me!"
 	line "If you believe, a"
@@ -256,9 +256,9 @@ VioletGymGuideText:
 
 	para "The grass-type is"
 	line "weak against the"
-
-	para "flying-type. Keep"
-	line "this in mind."
+	cont "flying-type."
+	
+	para "Keep this in mind!"
 	done
 
 VioletGymGuideWinText:

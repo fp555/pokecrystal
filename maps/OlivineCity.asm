@@ -167,21 +167,18 @@ OlivineCityRivalText:
 
 	para "There's no need to"
 	line "panic. I don't"
-
-	para "bother with wimps"
-	line "like you."
+	cont "bother with wimps"
+	cont "like you."
 
 	para "Speaking of weak-"
 	line "lings, the city's"
-
-	para "GYM LEADER isn't"
-	line "here."
+	cont "GYM LEADER isn't"
+	cont "here."
 
 	para "Supposedly taking"
 	line "care of a sick"
-
-	para "#MON at the"
-	line "LIGHTHOUSE."
+	cont "#MON at the"
+	cont "LIGHTHOUSE."
 
 	para "Humph! Boo-hoo!"
 	line "Just let sick"
@@ -207,20 +204,18 @@ OlivineCitySailor1Text:
 
 	para "But in the pitch-"
 	line "black of night,"
-
-	para "the sea is even"
-	line "more treacherous!"
+	cont "the sea is even"
+	cont "more treacherous!"
 
 	para "Without the beacon"
 	line "of the LIGHTHOUSE"
-
-	para "to guide it, no"
-	line "ship can sail."
+	cont "to guide it, no"
+	cont "ship can sail."
 	done
 
 OlivineCityStandingYoungsterPokegearText:
 	text "That thing you"
-	line "have--it's a #-"
+	line "have… it's a #-"
 	cont "GEAR, right? Wow,"
 	cont "that's cool."
 	done
@@ -282,7 +277,6 @@ OlivineCity_MapEvents:
 	warp_event 13, 21, OLIVINE_POKECENTER_1F, 1
 	warp_event 10, 11, OLIVINE_GYM, 1
 	warp_event 25, 11, OLIVINE_TIMS_HOUSE, 1
-	warp_event  0,  0, OLIVINE_HOUSE_BETA, 1 ; inaccessible
 	warp_event 29, 11, OLIVINE_PUNISHMENT_SPEECH_HOUSE, 1
 	warp_event 13, 15, OLIVINE_GOOD_ROD_HOUSE, 1
 	warp_event  7, 21, OLIVINE_CAFE, 1

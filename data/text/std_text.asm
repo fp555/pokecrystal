@@ -1,23 +1,24 @@
 NurseMornText:
 	text "Good morning!"
+	line "Welcome to our"
+	cont "#MON CENTER."
 	done
 
 NurseDayText:
 	text "Hello!"
+	line "Welcome to our"
+	cont "#MON CENTER."
 	done
 
 NurseNiteText:
 	text "Good evening!"
-	line "You're out late."
+	line "Welcome to our"
+	cont "#MON CENTER."
 	done
 
 NurseAskHealText:
-	text "Welcome to our"
-	line "#MON CENTER."
-
-	para "We can heal your"
-	line "#MON to perfect"
-	cont "health."
+	text "Do you need to"
+	line "heal your #MON?"
 	done
 
 NurseTakePokemonText:
@@ -34,16 +35,15 @@ NurseReturnPokemonText:
 	done
 
 NurseGoodbyeText:
-	text "We hope to see you"
-	line "again."
+	text "Please take care"
+	line "of them."
 	done
 
 NursePokerusText:
 	text "Your #MON"
 	line "appear to be"
-
-	para "infected by tiny"
-	line "life forms."
+	cont "infected by tiny"
+	cont "life forms."
 
 	para "Your #MON are"
 	line "healthy and seem"

@@ -116,8 +116,7 @@ PlateauRivalBattleCommon:
 	startbattle
 	dontrestartmapmusic
 	reloadmapafterbattle
-	sjump PlateauRivalPostBattle
-
+	; fallthrough
 PlateauRivalPostBattle:
 	playmusic MUSIC_RIVAL_AFTER
 	opentext
@@ -130,6 +129,7 @@ PlateauRivalPostBattle:
 	setscene SCENE_INDIGOPLATEAUPOKECENTER1F_RIVAL_BATTLE
 	playmapmusic
 	setflag ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT
+	; fallthrough
 PlateauRivalScriptDone:
 	end
 
@@ -239,7 +239,7 @@ PlateauRivalText1:
 PlateauRivalWinText:
 	text "…"
 
-	para "OK--I lost…"
+	para "OK… I lost…"
 	done
 
 PlateauRivalText2:

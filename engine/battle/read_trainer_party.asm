@@ -51,7 +51,6 @@ ReadTrainerParty:
 	ld d, h
 	ld e, l
 	call ReadTrainerPartyPieces
-.done
 	jp ComputeTrainerReward
 .cal1
 	ld a, BANK(sMysteryGiftTrainerHouseFlag)
@@ -67,7 +66,7 @@ ReadTrainerParty:
 	ld de, sMysteryGiftTrainer
 	call ReadTrainerPartyPieces
 	call CloseSRAM
-	jr .done
+	jp ComputeTrainerReward
 
 ReadTrainerPartyPieces:
 	ld h, d

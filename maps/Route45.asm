@@ -236,21 +236,10 @@ TrainerCooltrainerfKelly:
 	end
 
 TrainerCamperQuentin:
-	faceplayer
+	trainer CAMPER, QUENTIN, EVENT_BEAT_CAMPER_QUENTIN, CamperQuentinSeenText, CamperQuentinBeatenText, 0, .Script
+.Script:
+	endifjustbattled
 	opentext
-	checkevent EVENT_BEAT_CAMPER_QUENTIN
-	iftrue .Defeated
-	writetext CamperQuentinSeenText
-	waitbutton
-	closetext
-	winlosstext CamperQuentinBeatenText, 0
-	loadtrainer CAMPER, QUENTIN
-	startbattle
-	reloadmapafterbattle
-	setevent EVENT_BEAT_CAMPER_QUENTIN
-	closetext
-	end
-.Defeated:
 	writetext CamperQuentinAfterBattleText
 	waitbutton
 	closetext
@@ -373,11 +362,10 @@ HikerParryGivesIronText:
 
 	para "Keep it up!"
 
-	para "Oh, and take this"
-	line "--it's the gift"
-
-	para "you couldn't take"
-	line "when we last met."
+	para "Oh, and take this."
+	line "It's the gift you"
+	cont "couldn't take when"
+	cont "we last met."
 	done
 
 BlackbeltKenji3SeenText:
@@ -462,18 +450,13 @@ CooltrainerfKellyAfterBattleText:
 	cont "to harm #MON."
 	done
 
-Route45DummyText:
+CamperQuentinSeenText:
 	text "I'm really, really"
 	line "tough!"
 
 	para "Is there anywhere"
 	line "I can prove how"
 	cont "tough I really am?"
-	done
-
-CamperQuentinSeenText:
-	text "I'm really, really"
-	line "tough!"
 	done
 
 CamperQuentinBeatenText:

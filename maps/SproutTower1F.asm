@@ -25,14 +25,9 @@ SproutTower1FTeacherScript:
 
 TrainerSageChow:
 	trainer SAGE, CHOW, EVENT_BEAT_SAGE_CHOW, SageChowSeenText, SageChowBeatenText, 0, .Script
-
 .Script:
 	endifjustbattled
-	opentext
-	writetext SageChowAfterBattleText
-	waitbutton
-	closetext
-	end
+	jumptext SageChowAfterBattleText
 
 SproutTower1FParlyzHeal:
 	itemball PARLYZ_HEAL
@@ -64,21 +59,20 @@ SageChowAfterBattleText:
 
 SproutTower1FSage1Text:
 	text "Only if you reach"
-	line "the top will you"
-	cont "obtain an HM."
+	line "the top you will"
+	cont "meet the ELDER."
 	done
 
 SproutTower1FSage2Text:
 	text "SPROUT TOWER was"
 	line "built long ago"
-
-	para "as a place for"
-	line "#MON training."
+	cont "as a place for"
+	cont "#MON training."
 	done
 
 SproutTower1FGrannyText:
 	text "A BELLSPROUT over"
-	line "100 feet tall…"
+	line "30m tall…"
 
 	para "People say that it"
 	line "became the center"

@@ -24,18 +24,15 @@ RuinsOfAlphOutsideScientistCallback:
 	iftrue .NoScientist
 	checkevent EVENT_MADE_UNOWN_APPEAR_IN_RUINS
 	iftrue .MaybeScientist
-	sjump .NoScientist
-.MaybeScientist:
-	readvar VAR_UNOWNCOUNT
-	ifgreater 2, .YesScientist
-	sjump .NoScientist
-.YesScientist:
-	appear RUINSOFALPHOUTSIDE_SCIENTIST
-	setscene SCENE_RUINSOFALPHOUTSIDE_GET_UNOWN_DEX
-	endcallback
 .NoScientist:
 	disappear RUINSOFALPHOUTSIDE_SCIENTIST
 	setscene SCENE_RUINSOFALPHOUTSIDE_NOOP
+	endcallback
+.MaybeScientist:
+	readvar VAR_UNOWNCOUNT
+	ifless 3, .NoScientist
+	appear RUINSOFALPHOUTSIDE_SCIENTIST
+	setscene SCENE_RUINSOFALPHOUTSIDE_GET_UNOWN_DEX
 	endcallback
 
 RuinsOfAlphOutsideScientistScene1:
@@ -81,12 +78,7 @@ RuinsOfAlphOutsideFisherScript:
 	end
 
 RuinsOfAlphOutsideYoungster1Script:
-	faceplayer
-	opentext
-	writetext RuinsOfAlphOutsideYoungster1Text
-	waitbutton
-	closetext
-	end
+	jumptextfaceplayer RuinsOfAlphOutsideYoungster1Text
 
 RuinsOfAlphOutsideYoungster2Script:
 	faceplayer
@@ -101,11 +93,7 @@ TrainerPsychicNathan:
 	trainer PSYCHIC_T, NATHAN, EVENT_BEAT_PSYCHIC_NATHAN, PsychicNathanSeenText, PsychicNathanBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext PsychicNathanAfterBattleText
-	waitbutton
-	closetext
-	end
+	jumptext PsychicNathanAfterBattleText
 
 RuinsOfAlphOutsideMysteryChamberSign:
 	jumptext RuinsOfAlphOutsideMysteryChamberSignText
@@ -148,9 +136,8 @@ RuinsOfAlphOutsideScientistText:
 
 	para "It looks like the"
 	line "strange writing on"
-
-	para "the walls of the"
-	line "RUINS."
+	cont "the walls of the"
+	cont "RUINS."
 
 	para "If those drawings"
 	line "are really #-"
@@ -171,9 +158,8 @@ SuperNerdStanSeenText:
 SuperNerdStanBeatenText:
 	text "Sorry…"
 	line "I'm frustrated by"
-
-	para "our lack of real"
-	line "understanding…"
+	cont "our lack of real"
+	cont "understanding…"
 	done
 
 SuperNerdStanAfterBattleText:
@@ -228,9 +214,8 @@ RuinsOfAlphResearchCenterSignText:
 RuinsOfAlphOutsideFisherText1:
 	text "While exploring"
 	line "the RUINS, we"
-
-	para "suddenly noticed"
-	line "an odd presence."
+	cont "suddenly noticed"
+	cont "an odd presence."
 
 	para "We all got scared"
 	line "and ran away."
@@ -249,19 +234,16 @@ RuinsOfAlphOutsideFisherText2:
 RuinsOfAlphOutsideYoungster1Text:
 	text "There are many"
 	line "kinds of UNOWN, so"
-
-	para "we use them for"
-	line "our secret codes."
+	cont "we use them for"
+	cont "our secret codes."
 	done
 
 RuinsOfAlphOutsideYoungster2Text:
 	text "A… H… E… A… D…"
 	line "Hmm…"
 
-	para "What?"
-
-	para "I'm decoding this"
-	line "message!"
+	para "Am I decoding this"
+	line "right?"
 	done
 
 RuinsOfAlphOutside_MapEvents:

@@ -57,9 +57,13 @@ SudowoodoScript:
 	opentext
 	writetext UseSquirtbottleText
 	yesorno
-	iffalse DidntUseSquirtbottleScript
+	iffalse .DidntUseSquirtbottleScript
 	closetext
-	; fallthrough
+	sjump WateredWeirdTreeScript
+.DidntUseSquirtbottleScript:
+	closetext
+	end
+
 WateredWeirdTreeScript:: ; export (for when you use Squirtbottle from pack)
 	opentext
 	writetext UsedSquirtbottleText
@@ -75,16 +79,11 @@ WateredWeirdTreeScript:: ; export (for when you use Squirtbottle from pack)
 	loadwildmon SUDOWOODO, 20
 	startbattle
 	setevent EVENT_FOUGHT_SUDOWOODO
-	ifequal DRAW, DidntCatchSudowoodo
+	ifequal DRAW, .DidntCatchSudowoodo
 	disappear ROUTE36_WEIRD_TREE
 	reloadmapafterbattle
 	end
-
-DidntUseSquirtbottleScript:
-	closetext
-	end
-
-DidntCatchSudowoodo:
+.DidntCatchSudowoodo:
 	reloadmapafterbattle
 	applymovement ROUTE36_WEIRD_TREE, WeirdTreeMovement_Flee
 	disappear ROUTE36_WEIRD_TREE
@@ -160,10 +159,10 @@ TrainerSchoolboyAlan1:
 .Script:
 	loadvar VAR_CALLERID, PHONE_SCHOOLBOY_ALAN
 	opentext
-	checkflag ENGINE_ALAN_READY_FOR_REMATCH
-	iftrue .ChooseRematch
 	checkflag ENGINE_ALAN_HAS_FIRE_STONE
 	iftrue .GiveFireStone
+	checkflag ENGINE_ALAN_READY_FOR_REMATCH
+	iftrue .ChooseRematch
 	checkcellnum PHONE_SCHOOLBOY_ALAN
 	iftrue .NumberAccepted
 	checkevent EVENT_ALAN_ASKED_FOR_PHONE_NUMBER
@@ -171,19 +170,24 @@ TrainerSchoolboyAlan1:
 	writetext SchoolboyAlanBooksText
 	promptbutton
 	setevent EVENT_ALAN_ASKED_FOR_PHONE_NUMBER
-	scall .AskNumber1
+	callstd AskNumber1MScript
 	sjump .ContinueAskForPhoneNumber
 .AskAgainForPhoneNumber:
-	scall .AskNumber2
+	callstd AskNumber2MScript
 .ContinueAskForPhoneNumber:
 	askforphonenumber PHONE_SCHOOLBOY_ALAN
 	ifequal PHONE_CONTACTS_FULL, .PhoneFull
 	ifequal PHONE_CONTACT_REFUSED, .NumberDeclined
 	gettrainername STRING_BUFFER_3, SCHOOLBOY, ALAN1
-	scall .RegisteredNumber
-	sjump .NumberAccepted
+	callstd RegisteredNumberScript
+.NumberAccepted:
+	jumpstd NumberAcceptedMScript
+.NumberDeclined:
+	jumpstd NumberDeclinedMScript
+.PhoneFull:
+	jumpstd PhoneFullMScript
 .ChooseRematch:
-	scall .Rematch
+	callstd RematchMScript
 	winlosstext SchoolboyAlan1BeatenText, 0
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
@@ -195,80 +199,38 @@ TrainerSchoolboyAlan1:
 	iftrue .LoadFight1
 	; initial fight
 	loadtrainer SCHOOLBOY, ALAN1
+.battle
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer SCHOOLBOY, ALAN2
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_ALAN_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight2:
 	loadtrainer SCHOOLBOY, ALAN3
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_ALAN_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight3:
 	loadtrainer SCHOOLBOY, ALAN4
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_ALAN_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight4:
 	loadtrainer SCHOOLBOY, ALAN5
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_ALAN_READY_FOR_REMATCH
-	end
+	sjump .battle
 .GiveFireStone:
-	scall .Gift
+	callstd GiftMScript
 	verbosegiveitem FIRE_STONE
 	iffalse .BagFull
 	clearflag ENGINE_ALAN_HAS_FIRE_STONE
 	setevent EVENT_ALAN_GAVE_FIRE_STONE
 	sjump .NumberAccepted
 .BagFull:
-	sjump .PackFull
-.AskNumber1:
-	jumpstd AskNumber1MScript
-	end
-.AskNumber2:
-	jumpstd AskNumber2MScript
-	end
-.RegisteredNumber:
-	jumpstd RegisteredNumberScript
-	end
-.NumberAccepted:
-	jumpstd NumberAcceptedMScript
-	end
-.NumberDeclined:
-	jumpstd NumberDeclinedMScript
-	end
-.PhoneFull:
-	jumpstd PhoneFullMScript
-	end
-.Rematch:
-	jumpstd RematchMScript
-	end
-.Gift:
-	jumpstd GiftMScript
-	end
-.PackFull:
 	jumpstd PackFullMScript
-	end
 
 TrainerPsychicMark:
 	trainer PSYCHIC_T, MARK, EVENT_BEAT_PSYCHIC_MARK, PsychicMarkSeenText, PsychicMarkBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext PsychicMarkAfterBattleText
-	waitbutton
-	closetext
-	end
+	jumptext PsychicMarkAfterBattleText
 
 ArthurScript:
 	faceplayer
@@ -276,7 +238,7 @@ ArthurScript:
 	checkevent EVENT_GOT_HARD_STONE_FROM_ARTHUR
 	iftrue .AlreadyGotStone
 	readvar VAR_WEEKDAY
-	ifnotequal THURSDAY, ArthurNotThursdayScript
+	ifnotequal THURSDAY, .ArthurNotThursdayScript
 	checkevent EVENT_MET_ARTHUR_OF_THURSDAY
 	iftrue .MetArthur
 	writetext MeetArthurText
@@ -292,16 +254,15 @@ ArthurScript:
 	waitbutton
 	closetext
 	end
+.ArthurNotThursdayScript:
+	writetext ArthurNotThursdayText
+	waitbutton
+	closetext
+	end
 .AlreadyGotStone:
 	writetext ArthurThursdayText
 	waitbutton
 .BagFull:
-	closetext
-	end
-
-ArthurNotThursdayScript:
-	writetext ArthurNotThursdayText
-	waitbutton
 	closetext
 	end
 
@@ -391,18 +352,16 @@ FloriaText1:
 
 	para "When I sprinkled"
 	line "water on that"
-
-	para "wiggly tree, it"
-	line "jumped right up!"
+	cont "wiggly tree, it"
+	cont "jumped right up!"
 
 	para "It just has to be"
 	line "a #MON."
 
 	para "I bet it would be"
 	line "shocked out of its"
-
-	para "disguise if you"
-	line "soaked it!"
+	cont "disguise if you"
+	cont "soaked it!"
 
 	para "I know! I'll tell"
 	line "my sis and borrow"
@@ -412,15 +371,13 @@ FloriaText1:
 FloriaText2:
 	text "When I told my sis"
 	line "about the jiggly"
-
-	para "tree, she said"
-	line "it's dangerous."
+	cont "tree, she said"
+	cont "it's dangerous."
 
 	para "If I beat WHITNEY,"
 	line "I wonder if she'll"
-
-	para "lend me her water"
-	line "bottle…"
+	cont "lend me her water"
+	cont "bottle…"
 	done
 
 WhirlpoolGuyText1:
@@ -428,9 +385,8 @@ WhirlpoolGuyText1:
 
 	para "I was going to"
 	line "snap that tree"
-
-	para "with my straight-"
-	line "arm punch."
+	cont "with my straight-"
+	cont "arm punch."
 
 	para "But I couldn't!"
 	line "I'm a failure!"
@@ -490,15 +446,14 @@ PsychicMarkBeatenText:
 PsychicMarkAfterBattleText:
 	text "I'd be strong if"
 	line "only I could tell"
-
-	para "what my opponent"
-	line "was thinking."
+	cont "what my opponent"
+	cont "was thinking…"
 	done
 
 SchoolboyAlan1SeenText:
-	text "Thanks to my stud-"
-	line "ies, I'm ready for"
-	cont "any #MON!"
+	text "Thanks to my"
+	line "studies, I'm ready"
+	cont "for any #MON!"
 	done
 
 SchoolboyAlan1BeatenText:
@@ -516,8 +471,7 @@ SchoolboyAlanBooksText:
 	done
 
 MeetArthurText:
-	text "ARTHUR: Who are"
-	line "you?"
+	text "Who are you?"
 
 	para "I'm ARTHUR of"
 	line "Thursday."
@@ -529,27 +483,25 @@ ArthurGivesGiftText:
 	done
 
 ArthurGaveGiftText:
-	text "ARTHUR: A #MON"
-	line "that uses rock-"
-
-	para "type moves should"
-	line "hold on to that."
+	text "A #MON that"
+	line "uses rock-type"
+	cont "moves should hold"
+	cont "on to that."
 
 	para "It pumps up rock-"
 	line "type attacks."
 	done
 
 ArthurThursdayText:
-	text "ARTHUR: I'm ARTHUR"
-	line "of Thursday. I'm"
-
-	para "the second son out"
-	line "of seven children."
+	text "I'm ARTHUR of"
+	line "Thursday. I'm the"
+	cont "second son out of"
+	cont "seven children."
 	done
 
 ArthurNotThursdayText:
-	text "ARTHUR: Today's"
-	line "not Thursday. How"
+	text "Today's not"
+	line "Thursday. How"
 	cont "disappointing."
 	done
 
@@ -574,9 +526,8 @@ Route36TrainerTips1Text:
 
 	para "However, differ-"
 	line "ences will become"
-
-	para "pronounced as the"
-	line "#MON grow."
+	cont "pronounced as the"
+	cont "#MON grow."
 	done
 
 Route36TrainerTips2Text:
@@ -588,9 +539,8 @@ Route36TrainerTips2Text:
 
 	para "It is convenient"
 	line "for exploring"
-
-	para "caves and other"
-	line "landmarks."
+	cont "caves and other"
+	cont "landmarks."
 	done
 
 Route36_MapEvents:

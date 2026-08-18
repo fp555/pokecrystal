@@ -78,7 +78,7 @@ RuinsOfAlphHoOhChamberDescriptionSign:
 
 RuinsOfAlphHoOhChamberWallPatternLeft:
 	opentext
-	writetext RuinsOfAlphHoOhChamberWallPatternLeftText
+	writetext RuinsOfAlphHoOhChamberWallPatternText
 	setval UNOWNWORDS_HO_OH
 	special DisplayUnownWords
 	closetext
@@ -87,29 +87,15 @@ RuinsOfAlphHoOhChamberWallPatternLeft:
 RuinsOfAlphHoOhChamberWallPatternRight:
 	checkevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
 	iftrue .WallOpen
-	opentext
-	writetext RuinsOfAlphHoOhChamberWallPatternRightText
-	setval UNOWNWORDS_HO_OH
-	special DisplayUnownWords
-	closetext
-	end
+	sjump RuinsOfAlphHoOhChamberWallPatternLeft
 .WallOpen:
-	opentext
-	writetext RuinsOfAlphHoOhChamberWallHoleText
-	waitbutton
-	closetext
-	end
+	jumptext RuinsOfAlphHoOhChamberWallHoleText
 
 RuinsOfAlphHoOhChamberSkyfallTopMovement:
 	skyfall_top
 	step_end
 
-RuinsOfAlphHoOhChamberWallPatternLeftText:
-	text "Patterns appeared"
-	line "on the walls…"
-	done
-
-RuinsOfAlphHoOhChamberWallPatternRightText:
+RuinsOfAlphHoOhChamberWallPatternText:
 	text "Patterns appeared"
 	line "on the walls…"
 	done
@@ -128,9 +114,8 @@ RuinsOfAlphHoOhChamberAncientReplicaText:
 RuinsOfAlphHoOhChamberDescriptionText:
 	text "A #MON that"
 	line "flew gracefully on"
-
-	para "rainbow-colored"
-	line "wings."
+	cont "rainbow-colored"
+	cont "wings."
 	done
 
 RuinsOfAlphHoOhChamber_MapEvents:

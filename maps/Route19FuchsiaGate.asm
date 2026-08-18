@@ -15,7 +15,6 @@ Route19FuchsiaGateOfficerScript:
 	waitbutton
 	closetext
 	end
-
 .RocksCleared:
 	writetext Route19FuchsiaGateOfficerText_RocksCleared
 	waitbutton
@@ -38,16 +37,16 @@ Route19FuchsiaGateOfficerText:
 Route19FuchsiaGateOfficerText_RocksCleared:
 	text "No CINNABAR citi-"
 	line "zens were injured"
-
-	para "by the eruption."
-	line "That's great!"
+	cont "by the eruption."
+	
+	para "That's great!"
 	done
 
 Route19FuchsiaGate_MapEvents:
 
 	def_warp_events
-	warp_event  4,  0, FUCHSIA_CITY, 10
-	warp_event  5,  0, FUCHSIA_CITY, 11
+	warp_event  4,  0, FUCHSIA_CITY, 9
+	warp_event  5,  0, FUCHSIA_CITY, 10
 	warp_event  4,  7, ROUTE_19, 1
 	warp_event  5,  7, ROUTE_19, 1
 

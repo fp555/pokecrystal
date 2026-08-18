@@ -113,7 +113,7 @@ RuinsOfAlphKabutoChamberDescriptionSign:
 
 RuinsOfAlphKabutoChamberWallPatternLeft:
 	opentext
-	writetext RuinsOfAlphKabutoChamberWallPatternLeftText
+	writetext RuinsOfAlphKabutoChamberWallPatternText
 	setval UNOWNWORDS_ESCAPE
 	special DisplayUnownWords
 	closetext
@@ -122,18 +122,9 @@ RuinsOfAlphKabutoChamberWallPatternLeft:
 RuinsOfAlphKabutoChamberWallPatternRight:
 	checkevent EVENT_WALL_OPENED_IN_KABUTO_CHAMBER
 	iftrue .WallOpen
-	opentext
-	writetext RuinsOfAlphKabutoChamberWallPatternRightText
-	setval UNOWNWORDS_ESCAPE
-	special DisplayUnownWords
-	closetext
-	end
+	sjump RuinsOfAlphKabutoChamberWallPatternLeft
 .WallOpen:
-	opentext
-	writetext RuinsOfAlphKabutoChamberWallHoleText
-	waitbutton
-	closetext
-	end
+	jumptext RuinsOfAlphKabutoChamberWallHoleText
 
 RuinsOfAlphKabutoChamberSkyfallTopMovement:
 	skyfall_top
@@ -145,9 +136,8 @@ RuinsOfAlphKabutoChamberReceptionistText:
 
 	para "There are sliding"
 	line "panels that depict"
-
-	para "a #MON drawn by"
-	line "the ancients."
+	cont "a #MON drawn by"
+	cont "the ancients."
 
 	para "Slide the panels"
 	line "around to form the"
@@ -159,9 +149,8 @@ RuinsOfAlphKabutoChamberReceptionistText:
 
 	para "Scientists in the"
 	line "back are examining"
-
-	para "some newly found"
-	line "patterns."
+	cont "some newly found"
+	cont "patterns."
 	done
 
 RuinsOfAlphKabutoChamberScientistCrypticText:
@@ -194,12 +183,7 @@ RuinsOfAlphKabutoChamberScientistTremorText:
 	cont "this wall here…"
 	done
 
-RuinsOfAlphKabutoChamberWallPatternLeftText:
-	text "Patterns appeared"
-	line "on the walls…"
-	done
-
-RuinsOfAlphKabutoChamberWallPatternRightText:
+RuinsOfAlphKabutoChamberWallPatternText:
 	text "Patterns appeared"
 	line "on the walls…"
 	done

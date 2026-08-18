@@ -82,19 +82,16 @@ NewBarkTownTeacherScript:
 	waitbutton
 	closetext
 	end
-
 .MonIsAdorable:
 	writetext Text_YourMonIsAdorable
 	waitbutton
 	closetext
 	end
-
 .TellMomYoureLeaving:
 	writetext Text_TellMomIfLeaving
 	waitbutton
 	closetext
 	end
-
 .CallMom:
 	writetext Text_CallMomOnGear
 	waitbutton
@@ -195,7 +192,7 @@ Text_GearIsImpressive:
 	done
 
 Text_WaitPlayer:
-	text "Wait, <PLAY_G>!"
+	text "Wait, <PLAYER>!"
 	done
 
 Text_WhatDoYouThinkYoureDoing:
@@ -210,9 +207,8 @@ Text_ItsDangerousToGoAlone:
 
 	para "Wild #MON"
 	line "jump out of the"
-
-	para "grass on the way"
-	line "to the next town."
+	cont "grass on the way"
+	cont "to the next town."
 	done
 
 Text_YourMonIsAdorable:
@@ -222,7 +218,7 @@ Text_YourMonIsAdorable:
 	done
 
 Text_TellMomIfLeaving:
-	text "Hi, <PLAY_G>!"
+	text "Hi, <PLAYER>!"
 	line "Leaving again?"
 
 	para "You should tell"
@@ -233,9 +229,8 @@ Text_TellMomIfLeaving:
 Text_CallMomOnGear:
 	text "Call your mom on"
 	line "your #GEAR to"
-
-	para "let her know how"
-	line "you're doing."
+	cont "let her know how"
+	cont "you're doing."
 	done
 
 Text_ElmDiscoveredNewMon:

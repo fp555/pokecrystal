@@ -36,8 +36,6 @@ VioletCityEarlScript:
 	playmusic MUSIC_SHOW_ME_AROUND
 	follow VIOLETCITY_EARL, PLAYER
 	applymovement VIOLETCITY_EARL, VioletCityFollowEarl_MovementData
-	turnobject PLAYER, UP
-	applymovement VIOLETCITY_EARL, VioletCitySpinningEarl_MovementData
 	stopfollow
 	special RestartMapMusic
 	opentext
@@ -97,33 +95,9 @@ VioletCityHiddenHyperPotion:
 VioletCityFollowEarl_MovementData:
 	big_step DOWN
 	big_step DOWN
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	turn_head RIGHT
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
+	big_step DOWN
+	big_step DOWN
+	big_step DOWN
 	big_step DOWN
 	turn_head DOWN
 	turn_head LEFT
@@ -139,8 +113,6 @@ VioletCityFollowEarl_MovementData:
 	big_step RIGHT
 	big_step RIGHT
 	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
 	turn_head RIGHT
 	turn_head DOWN
 	turn_head LEFT
@@ -150,6 +122,7 @@ VioletCityFollowEarl_MovementData:
 	turn_head LEFT
 	turn_head UP
 	big_step UP
+	big_step UP
 	turn_head DOWN
 	step_end
 
@@ -158,8 +131,6 @@ VioletCityFinishFollowEarl_MovementData:
 	step_end
 
 VioletCitySpinningEarl_MovementData:
-	turn_head DOWN
-	turn_head LEFT
 	turn_head UP
 	turn_head RIGHT
 	turn_head DOWN
@@ -171,6 +142,8 @@ VioletCitySpinningEarl_MovementData:
 	turn_head UP
 	turn_head RIGHT
 	turn_head DOWN
+	turn_head LEFT
+	turn_head UP
 	step_end
 
 Text_EarlAsksIfYouBeatFalkner:
@@ -203,11 +176,10 @@ VioletCityLassText:
 	line "to appear in"
 	cont "SPROUT TOWER."
 
-	para "They said normal-"
+	para "They say normal-"
 	line "type #MON moves"
-
-	para "had no effect on"
-	line "ghosts."
+	cont "have no effect on"
+	cont "ghosts."
 	done
 
 VioletCitySuperNerdText:
@@ -216,23 +188,23 @@ VioletCitySuperNerdText:
 
 	para "If you beat the"
 	line "GYM LEADER here,"
-
-	para "you'll be ready"
-	line "for prime time!"
+	cont "you'll be ready"
+	cont "for prime time!"
 	done
 
 VioletCityGrampsText:
-	text "FALKNER, from the"
-	line "VIOLET #MON"
-
-	para "GYM, is a fine"
-	line "trainer!"
-
-	para "He inherited his"
-	line "father's gym and"
-
-	para "has done a great"
-	line "job with it."
+	text "The leader of this"
+	line "GYM, FALKNER, is a"
+	cont "fine trainer!"
+	
+	para "If you want his"
+	line "BADGE, go train"
+	cont "inside SPROUT"
+	cont "TOWER first."
+	
+	para "The ELDER there"
+	line "will judge if"
+	cont "you're ready."
 	done
 
 VioletCityYoungsterText:
@@ -275,33 +247,33 @@ EarlsPokemonAcademySignText:
 VioletCity_MapEvents:
 
 	def_warp_events
-	warp_event  9, 17, VIOLET_MART, 2
-	warp_event 18, 17, VIOLET_GYM, 1
-	warp_event 30, 17, EARLS_POKEMON_ACADEMY, 1
-	warp_event  3, 15, VIOLET_NICKNAME_SPEECH_HOUSE, 1
-	warp_event 31, 25, VIOLET_POKECENTER_1F, 1
-	warp_event 21, 29, VIOLET_KYLES_HOUSE, 1
-	warp_event 23,  5, SPROUT_TOWER_1F, 1
-	warp_event 39, 24, ROUTE_31_VIOLET_GATE, 1
-	warp_event 39, 25, ROUTE_31_VIOLET_GATE, 2
+	warp_event  7, 19, VIOLET_MART, 2
+	warp_event 14, 21, VIOLET_GYM, 1
+	warp_event 26, 21, EARLS_POKEMON_ACADEMY, 1
+	warp_event  7, 13, VIOLET_NICKNAME_SPEECH_HOUSE, 1
+	warp_event 27, 29, VIOLET_POKECENTER_1F, 1
+	warp_event 19, 29, VIOLET_KYLES_HOUSE, 1
+	warp_event 19,  9, SPROUT_TOWER_1F, 1
+	warp_event 35, 28, ROUTE_31_VIOLET_GATE, 1
+	warp_event 35, 29, ROUTE_31_VIOLET_GATE, 2
 
 	def_coord_events
 
 	def_bg_events
-	bg_event 24, 20, BGEVENT_READ, VioletCitySign
-	bg_event 15, 17, BGEVENT_READ, VioletGymSign
-	bg_event 24,  8, BGEVENT_READ, SproutTowerSign
-	bg_event 27, 17, BGEVENT_READ, EarlsPokemonAcademySign
-	bg_event 32, 25, BGEVENT_READ, VioletCityPokecenterSign
-	bg_event 10, 17, BGEVENT_READ, VioletCityMartSign
-	bg_event 37, 14, BGEVENT_ITEM, VioletCityHiddenHyperPotion
+	bg_event 19, 25, BGEVENT_READ, VioletCitySign
+	bg_event 11, 21, BGEVENT_READ, VioletGymSign
+	bg_event 20, 12, BGEVENT_READ, SproutTowerSign
+	bg_event 23, 21, BGEVENT_READ, EarlsPokemonAcademySign
+	bg_event 28, 29, BGEVENT_READ, VioletCityPokecenterSign
+	bg_event  8, 19, BGEVENT_READ, VioletCityMartSign
+	bg_event 33, 18, BGEVENT_ITEM, VioletCityHiddenHyperPotion
 
 	def_object_events
-	object_event 13, 16, SPRITE_FISHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityEarlScript, EVENT_VIOLET_CITY_EARL
-	object_event 28, 28, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityLassScript, -1
-	object_event 24, 14, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 2, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, VioletCitySuperNerdScript, -1
-	object_event 17, 20, SPRITE_GRAMPS, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletCityGrampsScript, -1
-	object_event  5, 18, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityYoungsterScript, -1
-	object_event 14, 29, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletCityFruitTree, -1
-	object_event  4,  1, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, VioletCityPPUp, EVENT_VIOLET_CITY_PP_UP
-	object_event 35,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, VioletCityRareCandy, EVENT_VIOLET_CITY_RARE_CANDY
+	object_event 20, 18, SPRITE_FISHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityEarlScript, EVENT_VIOLET_CITY_EARL
+	object_event 19, 15, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 1, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityLassScript, -1
+	object_event 28, 32, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, VioletCitySuperNerdScript, -1
+	object_event 14, 22, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletCityGrampsScript, EVENT_BEAT_SAGE_LI
+	object_event  8, 23, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletCityYoungsterScript, -1
+	object_event 13, 27, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletCityFruitTree, -1
+	object_event  6,  4, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, VioletCityPPUp, EVENT_VIOLET_CITY_PP_UP
+	object_event 31, 11, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, VioletCityRareCandy, EVENT_VIOLET_CITY_RARE_CANDY

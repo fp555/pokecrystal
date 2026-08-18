@@ -22,15 +22,13 @@ ElmsHouseBookshelf:
 ElmsWifeText:
 	text "Hi, <PLAYER>! My"
 	line "husband's always"
-
-	para "so busy… I hope"
-	line "he's OK."
+	cont "so busy… I hope"
+	cont "he's OK."
 
 	para "When he's caught"
 	line "up in his #MON"
-
-	para "research, he even"
-	line "forgets to eat."
+	cont "research, he even"
+	cont "forgets to eat."
 	done
 
 ElmsSonText:
@@ -54,9 +52,8 @@ ElmsHousePCText:
 
 	para "I want to know! I"
 	line "will dedicate my"
-
-	para "life to the study"
-	line "of #MON!"
+	cont "life to the study"
+	cont "of #MON!"
 
 	para "…"
 

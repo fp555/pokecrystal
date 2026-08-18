@@ -163,9 +163,9 @@ TuscanyScript:
 	faceplayer
 	opentext
 	checkevent EVENT_GOT_PINK_BOW_FROM_TUSCANY
-	iftrue TuscanyTuesdayScript
+	iftrue .TuscanyTuesdayScript
 	readvar VAR_WEEKDAY
-	ifnotequal TUESDAY, TuscanyNotTuesdayScript
+	ifnotequal TUESDAY, .TuscanyNotTuesdayScript
 	checkevent EVENT_MET_TUSCANY_OF_TUESDAY
 	iftrue .MetTuscany
 	writetext MeetTuscanyText
@@ -175,22 +175,19 @@ TuscanyScript:
 	writetext TuscanyGivesGiftText
 	promptbutton
 	verbosegiveitem PINK_BOW
-	iffalse TuscanyDoneScript
+	iffalse .done
 	setevent EVENT_GOT_PINK_BOW_FROM_TUSCANY
 	writetext TuscanyGaveGiftText
 	waitbutton
+.done
 	closetext
 	end
-
-TuscanyTuesdayScript:
+.TuscanyTuesdayScript:
 	writetext TuscanyTuesdayText
 	waitbutton
-	; fallthrough
-TuscanyDoneScript:
 	closetext
 	end
-
-TuscanyNotTuesdayScript:
+.TuscanyNotTuesdayScript:
 	writetext TuscanyNotTuesdayText
 	waitbutton
 	closetext
@@ -245,17 +242,15 @@ DudeMovementData2b:
 CatchingTutorialBoxFullText:
 	text "#MON hide in"
 	line "the grass. Who"
-
-	para "knows when they'll"
-	line "pop out…"
+	cont "knows when they'll"
+	cont "pop out…"
 	done
 
 CatchingTutorialIntroText:
 	text "I've seen you a"
 	line "couple times. How"
-
-	para "many #MON have"
-	line "you caught?"
+	cont "many #MON have"
+	cont "you caught?"
 
 	para "Would you like me"
 	line "to show you how to"
@@ -276,9 +271,8 @@ CatchingTutorialDeclinedText:
 
 	para "Anyway, if you"
 	line "want to catch"
-
-	para "#MON, you have"
-	line "to walk a lot."
+	cont "#MON, you have"
+	cont "to walk a lot."
 	done
 
 CatchingTutorialRepeatText:
@@ -293,9 +287,8 @@ Route29YoungsterText:
 
 	para "If they're weak"
 	line "and not ready for"
-
-	para "battle, keep out"
-	line "of the grass."
+	cont "battle, keep out"
+	cont "of the grass."
 	done
 
 Route29TeacherText:
@@ -305,41 +298,34 @@ Route29TeacherText:
 
 	para "But you can go to"
 	line "NEW BARK without"
-
-	para "walking through"
-	line "the grass."
+	cont "walking through"
+	cont "the grass."
 	done
 
 Route29FisherText:
 	text "I wanted to take a"
 	line "break, so I saved"
-
-	para "to record my"
-	line "progress."
+	cont "to record my"
+	cont "progress."
 	done
 
 Route29CooltrainerMText_WaitingForNight:
 	text "I'm waiting for"
-	line "#MON that"
-
-	para "appear only at"
-	line "night."
+	line "#MON that only"
+	cont "appear at night."
 	done
 
 Route29CooltrainerMText_WaitingForMorning:
 	text "I'm waiting for"
-	line "#MON that"
-
-	para "appear only in the"
-	line "morning."
+	line "#MON that only"
+	cont "appear in the"
+	cont "morning."
 	done
 
 MeetTuscanyText:
-	text "TUSCANY: I do be-"
-	line "lieve that this is"
-
-	para "the first time"
-	line "we've met?"
+	text "I do believe this"
+	line "is the first time"
+	cont "we've met?"
 
 	para "Please allow me to"
 	line "introduce myself."
@@ -351,15 +337,14 @@ MeetTuscanyText:
 TuscanyGivesGiftText:
 	text "By way of intro-"
 	line "duction, please"
-
-	para "accept this gift,"
-	line "a PINK BOW."
+	cont "accept this gift,"
+	cont "a PINK BOW."
 	done
 
 TuscanyGaveGiftText:
-	text "TUSCANY: Wouldn't"
-	line "you agree that it"
-	cont "is most adorable?"
+	text "Wouldn't you agree"
+	line "that it is most"
+	cont "adorable?"
 
 	para "It strengthens"
 	line "normal-type moves."
@@ -369,9 +354,9 @@ TuscanyGaveGiftText:
 	done
 
 TuscanyTuesdayText:
-	text "TUSCANY: Have you"
-	line "met MONICA, my"
-	cont "older sister?"
+	text "Have you met"
+	line "MONICA, my older"
+	cont "sister?"
 
 	para "Or my younger"
 	line "brother, WESLEY?"
@@ -381,9 +366,9 @@ TuscanyTuesdayText:
 	done
 
 TuscanyNotTuesdayText:
-	text "TUSCANY: Today is"
-	line "not Tuesday. That"
-	cont "is unfortunate…"
+	text "Today is not"
+	line "Tuesday. That is"
+	cont "unfortunate…"
 	done
 
 Route29Sign1Text:

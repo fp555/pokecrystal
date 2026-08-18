@@ -35,15 +35,14 @@ VioletMartGrannyText:
 	done
 
 VioletMartCooltrainerMText:
-	text "#MON can hold"
-	line "items like POTION"
-	cont "and ANTIDOTE."
+	text "#MON can also hold"
+	line "manmade items,"
+	cont "like POTION."
 
 	para "But they don't"
 	line "appear to know how"
-
-	para "to use manmade"
-	line "items."
+	cont "to use them in"
+	cont "battle."
 	done
 
 VioletMart_MapEvents:

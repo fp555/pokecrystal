@@ -79,9 +79,8 @@ _NameRaterEggText::
 _NameRaterSameNameText::
 	text "It might look the"
 	line "same as before,"
-
-	para "but this new name"
-	line "is much better!"
+	cont "but this new name"
+	cont "is much better!"
 
 	para "Well done!"
 	done
@@ -351,6 +350,7 @@ _UseEscapeRopeText::
 	done
 
 _CantUseDigText::
+_CantUseTeleportText::
 	text "Can't use that"
 	line "here."
 	done
@@ -358,13 +358,6 @@ _CantUseDigText::
 _TeleportReturnText::
 	text "Return to the last"
 	line "#MON CENTER."
-	done
-
-_CantUseTeleportText::
-	text "Can't use that"
-	line "here."
-
-	para ""
 	done
 
 _UseStrengthText::
@@ -1415,9 +1408,8 @@ _OakText3::
 _OakText4::
 	text "People and #MON"
 	line "live together by"
-
-	para "supporting each"
-	line "other."
+	cont "supporting each"
+	cont "other."
 
 	para "Some people play"
 	line "with #MON, some"

@@ -419,11 +419,11 @@ BecameConfusedText:
 	prompt
 
 BattleText_ItemHealedConfusion:
-	text "A @"
+	text "@"
 	text_ram wStringBuffer1
-	text " rid"
-	line "<TARGET>"
-	cont "of its confusion."
+	text " cured"
+	line "<TARGET>'s"
+	cont "confusion."
 	prompt
 
 AlreadyConfusedText:
@@ -454,10 +454,6 @@ UsedBindText:
 	prompt
 
 WhirlpoolTrapText:
-	text "<TARGET>"
-	line "was trapped!"
-	prompt
-
 FireSpinTrapText:
 	text "<TARGET>"
 	line "was trapped!"
@@ -551,7 +547,7 @@ IgnoredOrdersText:
 IgnoredSleepingText:
 	text_ram wBattleMonNickname
 	text " ignored"
-	line "orders…sleeping!"
+	line "orders… sleeping!"
 	prompt
 
 NoPPLeftText:
@@ -584,10 +580,6 @@ RegainedHealthText:
 	prompt
 
 AttackMissedText:
-	text "<USER>'s"
-	line "attack missed!"
-	prompt
-
 AttackMissed2Text:
 	text "<USER>'s"
 	line "attack missed!"

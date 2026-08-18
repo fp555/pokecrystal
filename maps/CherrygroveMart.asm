@@ -15,7 +15,6 @@ CherrygroveMartClerkScript:
 	pokemart MARTTYPE_STANDARD, MART_CHERRYGROVE
 	closetext
 	end
-
 .PokeBallsInStock:
 	pokemart MARTTYPE_STANDARD, MART_CHERRYGROVE_DEX
 	closetext
@@ -30,7 +29,6 @@ CherrygroveMartCooltrainerMScript:
 	waitbutton
 	closetext
 	end
-
 .PokeBallsInStock:
 	writetext CherrygroveMartCooltrainerMText_PokeBallsInStock
 	waitbutton
@@ -57,9 +55,8 @@ CherrygroveMartCooltrainerMText_PokeBallsInStock:
 CherrygroveMartYoungsterText:
 	text "When I was walking"
 	line "in the grass, a"
-
-	para "bug #MON poi-"
-	line "soned my #MON!"
+	cont "bug #MON poi-"
+	cont "soned my #MON!"
 
 	para "I just kept going,"
 	line "but then my"

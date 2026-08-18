@@ -78,7 +78,7 @@ RuinsOfAlphOmanyteChamberDescriptionSign:
 
 RuinsOfAlphOmanyteChamberWallPatternLeft:
 	opentext
-	writetext RuinsOfAlphOmanyteChamberWallPatternLeftText
+	writetext RuinsOfAlphOmanyteChamberWallPatternText
 	setval UNOWNWORDS_WATER
 	special DisplayUnownWords
 	closetext
@@ -87,29 +87,15 @@ RuinsOfAlphOmanyteChamberWallPatternLeft:
 RuinsOfAlphOmanyteChamberWallPatternRight:
 	checkevent EVENT_WALL_OPENED_IN_OMANYTE_CHAMBER
 	iftrue .WallOpen
-	opentext
-	writetext RuinsOfAlphOmanyteChamberWallPatternRightText
-	setval UNOWNWORDS_WATER
-	special DisplayUnownWords
-	closetext
-	end
+	sjump RuinsOfAlphOmanyteChamberWallPatternLeft
 .WallOpen:
-	opentext
-	writetext RuinsOfAlphOmanyteChamberWallHoleText
-	waitbutton
-	closetext
-	end
+	jumptext RuinsOfAlphOmanyteChamberWallHoleText
 
 RuinsOfAlphOmanyteChamberSkyfallTopMovement:
 	skyfall_top
 	step_end
 
-RuinsOfAlphOmanyteChamberWallPatternLeftText:
-	text "Patterns appeared"
-	line "on the walls…"
-	done
-
-RuinsOfAlphOmanyteChamberWallPatternRightText:
+RuinsOfAlphOmanyteChamberWallPatternText:
 	text "Patterns appeared"
 	line "on the walls…"
 	done
@@ -128,9 +114,8 @@ RuinsOfAlphOmanyteChamberAncientReplicaText:
 RuinsOfAlphOmanyteChamberDescriptionText:
 	text "This #MON"
 	line "drifted in the"
-
-	para "sea by twisting"
-	line "its ten tentacles."
+	cont "sea by twisting"
+	cont "its ten tentacles."
 	done
 
 RuinsOfAlphOmanyteChamber_MapEvents:

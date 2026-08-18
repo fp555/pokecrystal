@@ -19,6 +19,9 @@ VioletPokecenter1F_ElmsAideScript:
 	checkevent EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE
 	iftrue .SecondTimeAsking
 	writetext VioletPokecenterElmsAideFavorText
+	sjump .AskTakeEgg
+.SecondTimeAsking:
+	writetext VioletPokecenterElmsAideAskEggText
 .AskTakeEgg:
 	yesorno
 	iffalse .RefusedEgg
@@ -26,7 +29,7 @@ VioletPokecenter1F_ElmsAideScript:
 	ifequal PARTY_LENGTH, .PartyFull
 	giveegg TOGEPI, EGG_LEVEL
 	getstring STRING_BUFFER_4, .eggname
-	scall .AideGivesEgg
+	callstd ReceiveTogepiEggScript
 	setevent EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE
 	clearevent EVENT_ELMS_AIDE_IN_LAB
 	clearevent EVENT_TOGEPI_HATCHED
@@ -42,6 +45,17 @@ VioletPokecenter1F_ElmsAideScript:
 	disappear VIOLETPOKECENTER1F_ELMS_AIDE
 	waitsfx
 	end
+.RefusedEgg:
+	writetext VioletPokecenterElmsAideRefuseText
+	waitbutton
+	closetext
+	setevent EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE
+	end
+.PartyFull:
+	writetext VioletCityElmsAideFullPartyText
+	waitbutton
+	closetext
+	end
 .AideWalksAroundPlayer:
 	applymovement VIOLETPOKECENTER1F_ELMS_AIDE, MovementData_AideWalksLeftToExitPokecenter
 	turnobject PLAYER, DOWN
@@ -52,23 +66,6 @@ VioletPokecenter1F_ElmsAideScript:
 	end
 .eggname
 	db "EGG@"
-.AideGivesEgg:
-	jumpstd ReceiveTogepiEggScript
-	end
-.PartyFull:
-	writetext VioletCityElmsAideFullPartyText
-	waitbutton
-	closetext
-	end
-.RefusedEgg:
-	writetext VioletPokecenterElmsAideRefuseText
-	waitbutton
-	closetext
-	setevent EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE
-	end
-.SecondTimeAsking:
-	writetext VioletPokecenterElmsAideAskEggText
-	sjump .AskTakeEgg
 
 VioletPokecenter1FGameboyKidScript:
 	jumptextfaceplayer VioletPokecenter1FGameboyKidText
@@ -98,8 +95,8 @@ MovementData_AideFinishesLeavingPokecenter:
 	step_end
 
 VioletPokecenterElmsAideFavorText:
-	text "<PLAY_G>, long"
-	line "time, no see."
+	text "<PLAYER>, how are"
+	line "you doing?"
 
 	para "PROF.ELM asked me"
 	line "to find you."
@@ -114,15 +111,14 @@ VioletPokecenterElmsAideFavorText:
 VioletPokecenterElmsAideGiveEggText:
 	text "We discovered that"
 	line "a #MON will not"
-
-	para "hatch until it"
-	line "grows in the EGG."
+	cont "hatch until it"
+	cont "grows in the EGG."
 
 	para "It also has to be"
 	line "with other active"
 	cont "#MON to hatch."
 
-	para "<PLAY_G>, you're"
+	para "<PLAYER>, you're"
 	line "the only person"
 	cont "we can rely on."
 
@@ -147,7 +143,7 @@ VioletPokecenterElmsAideRefuseText:
 	done
 
 VioletPokecenterElmsAideAskEggText:
-	text "<PLAY_G>, will you"
+	text "<PLAYER>, will you"
 	line "take the EGG?"
 	done
 
@@ -173,15 +169,13 @@ VioletPokecenter1FGentlemanText:
 VioletPokecenter1FYoungsterText:
 	text "#MON are smart."
 	line "They won't obey a"
-
-	para "trainer they don't"
-	line "respect."
+	cont "trainer they don't"
+	cont "respect."
 
 	para "Without the right"
 	line "GYM BADGES, they"
-
-	para "will just do as"
-	line "they please."
+	cont "will just do as"
+	cont "they please."
 	done
 
 VioletPokecenter1F_MapEvents:

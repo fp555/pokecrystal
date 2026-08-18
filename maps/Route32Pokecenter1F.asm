@@ -27,13 +27,11 @@ Route32Pokecenter1FFishingGuruScript:
 	closetext
 	setevent EVENT_GOT_OLD_ROD
 	end
-
 .Refused:
 	writetext Route32Pokecenter1FFishingGuruText_No
 	waitbutton
 	closetext
 	end
-
 .GotOldRod:
 	writetext Route32Pokecenter1FFishingGuruText_After
 	waitbutton
@@ -48,8 +46,8 @@ Route32Pokecenter1FFishingGuruText_Question:
 	line "fishing spot."
 
 	para "You saw people"
-	line "fishing? How"
-	cont "about you?"
+	line "fishing? How about"
+	cont "you?"
 
 	para "Would you like one"
 	line "of my RODS?"
@@ -68,9 +66,8 @@ Route32Pokecenter1FFishingGuruText_GiveOldRod:
 
 	para "If there's water,"
 	line "be it the sea or a"
-
-	para "stream, try out"
-	line "your ROD."
+	cont "pond, try out your"
+	cont "ROD."
 	done
 
 Route32Pokecenter1FFishingGuruText_No:

@@ -202,9 +202,8 @@ PicnickerErin1BeatenText:
 PicnickerErinAfterBattleText:
 	text "I've been to many"
 	line "GYMS, but the GYM"
-
-	para "in GOLDENROD is my"
-	line "favorite."
+	cont "in GOLDENROD is my"
+	cont "favorite."
 
 	para "It's filled with"
 	line "pretty flowers!"
@@ -218,11 +217,12 @@ PicnickerErin2BeatenText:
 	line "try harder!"
 
 	para "Anyway, thanks for"
-	line "battling me again"
+	line "battling with me"
+	cont "again and again."
 
-	para "and again. Here's"
-	line "that present from"
-	cont "the other time."
+	para "Here's the present"
+	line "from that other"
+	cont "time."
 	done
 
 Route46SignText:

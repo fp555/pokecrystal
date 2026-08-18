@@ -166,7 +166,7 @@ MrPokemonsHouse_OakExits:
 
 MrPokemonIntroText1:
 	text "Hello, hello! You"
-	line "must be <PLAY_G>."
+	line "must be <PLAYER>."
 
 	para "PROF.ELM said that"
 	line "you would visit."
@@ -228,14 +228,13 @@ MrPokemonText_ImDependingOnYou:
 MrPokemonText_AlwaysNewDiscoveries:
 	text "Life is delight-"
 	line "ful! Always, new"
-
-	para "discoveries to be"
-	line "made!"
+	cont "discoveries to be"
+	cont "made!"
 	done
 
 MrPokemonsHouse_OakText1:
-	text "OAK: Aha! So"
-	line "you're <PLAY_G>!"
+	text "Aha! So you're"
+	line "<PLAYER>!"
 
 	para "I'm OAK! A #MON"
 	line "researcher."
@@ -246,9 +245,8 @@ MrPokemonsHouse_OakText1:
 
 	para "I heard you were"
 	line "running an errand"
-
-	para "for PROF.ELM, so I"
-	line "waited here."
+	cont "for PROF.ELM, so I"
+	cont "waited here."
 
 	para "Oh! What's this?"
 	line "A rare #MON!"
@@ -257,21 +255,18 @@ MrPokemonsHouse_OakText1:
 
 	para "I understand why"
 	line "PROF.ELM gave you"
-
-	para "a #MON for this"
-	line "errand."
+	cont "a #MON for this"
+	cont "errand."
 
 	para "To researchers"
 	line "like PROF.ELM and"
+	cont "I, #MON are our"
+	cont "friends."
 
-	para "I, #MON are our"
-	line "friends."
-
-	para "He saw that you"
+	para "He knew that you"
 	line "would treat your"
-
-	para "#MON with love"
-	line "and care."
+	cont "#MON with love"
+	cont "and care."
 
 	para "…Ah!"
 
@@ -287,9 +282,8 @@ MrPokemonsHouse_OakText1:
 
 	para "It automatically"
 	line "records data on"
-
-	para "#MON you've"
-	line "seen or caught."
+	cont "#MON you've"
+	cont "seen or caught."
 
 	para "It's a hi-tech"
 	line "encyclopedia!"
@@ -303,9 +297,8 @@ MrPokemonsHouse_GetDexText:
 MrPokemonsHouse_OakText2:
 	text "Go meet many kinds"
 	line "of #MON and"
-
-	para "complete that"
-	line "#DEX!"
+	cont "complete that"
+	cont "#DEX!"
 
 	para "But I've stayed"
 	line "too long."
@@ -314,7 +307,7 @@ MrPokemonsHouse_OakText2:
 	line "GOLDENROD for my"
 	cont "usual radio show."
 
-	para "<PLAY_G>, I'm"
+	para "<PLAYER>, I'm"
 	line "counting on you!"
 	done
 
@@ -326,7 +319,7 @@ MrPokemonText_GimmeTheScale:
 	para "That's rare! "
 	line "I, I want it…"
 
-	para "<PLAY_G>, would you"
+	para "<PLAYER>, would you"
 	line "care to trade it?"
 
 	para "I can offer this"
@@ -350,7 +343,7 @@ MrPokemonsHouse_ForeignMagazinesText:
 
 MrPokemonsHouse_BrokenComputerText:
 	text "It's a big com-"
-	line "puter. Hmm. It's"
+	line "puter. Hmm… it's"
 	cont "broken."
 	done
 

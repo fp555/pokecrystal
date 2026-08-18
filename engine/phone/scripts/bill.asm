@@ -6,17 +6,13 @@ BillPhoneCalleeScript:
 	farwritetext BillPhoneMornGreetingText
 	promptbutton
 	sjump .main
-
 .daygreet
 	farwritetext BillPhoneDayGreetingText
 	promptbutton
 	sjump .main
-
 .nitegreet
 	farwritetext BillPhoneNiteGreetingText
 	promptbutton
-	sjump .main
-
 .main
 	farwritetext BillPhoneGenericText
 	promptbutton
@@ -26,13 +22,11 @@ BillPhoneCalleeScript:
 	ifless PARTY_LENGTH, .nearlyfull
 	farwritetext BillPhoneNotFullText
 	end
-
-.nearlyfull
-	farwritetext BillPhoneNearlyFullText
-	end
-
 .full
 	farwritetext BillPhoneFullText
+	end
+.nearlyfull
+	farwritetext BillPhoneNearlyFullText
 	end
 
 BillPhoneCallerScript:

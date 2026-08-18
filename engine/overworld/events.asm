@@ -69,7 +69,9 @@ EnterMap:
 	xor a
 	ld [wXYComparePointer], a
 	ld [wXYComparePointer + 1], a
-	call SetUpFiveStepWildEncounterCooldown
+	; SetUpFiveStepWildEncounterCooldown
+	ld a, 5
+	ld [wWildEncounterCooldown], a
 	farcall RunMapSetupScript
 	call DisableEvents
 	ldh a, [hMapEntryMethod]
@@ -90,7 +92,9 @@ EnterMap:
 	ret
 
 HandleMap:
-	call ResetOverworldDelay
+	; ResetOverworldDelay
+	ld a, 2
+	ld [wOverworldDelay], a
 	call HandleMapTimeAndJoypad
 	call HandleStoneTable
 	call MapEvents
@@ -101,7 +105,7 @@ HandleMap:
 	call HandleMapObjects
 	call NextOverworldFrame
 	call HandleMapBackground
-	jp CheckPlayerState
+	jr CheckPlayerState
 
 MapEvents:
 	ld a, [wMapEventStatus]
@@ -110,11 +114,6 @@ MapEvents:
 	call PlayerEvents
 	call DisableEvents
 	farcall ScriptEvents
-	ret
-
-ResetOverworldDelay:
-	ld a, 2
-	ld [wOverworldDelay], a
 	ret
 
 NextOverworldFrame:
@@ -263,8 +262,7 @@ CheckTileEvent:
 	ld h, [hl]
 	ld l, a
 	call GetMapScriptsBank
-	call CallScript
-	ret
+	jp CallScript
 
 CheckWildEncounterCooldown::
 	ld hl, wWildEncounterCooldown
@@ -274,11 +272,6 @@ CheckWildEncounterCooldown::
 	dec [hl]
 	ret z
 	scf
-	ret
-
-SetUpFiveStepWildEncounterCooldown:
-	ld a, 5
-	ld [wWildEncounterCooldown], a
 	ret
 
 RunSceneScript:
@@ -330,6 +323,7 @@ CheckTimeEvents:
 	jr z, .do_daily
 	farcall CheckBugContestTimer
 	jr c, .end_bug_contest
+.nothing
 	xor a
 	ret
 .do_daily
@@ -337,7 +331,6 @@ CheckTimeEvents:
 	farcall CheckPokerusTick
 	farcall CheckPhoneCall
 	ret c
-.nothing
 	xor a
 	ret
 .end_bug_contest
@@ -392,6 +385,7 @@ PlayTalkObject:
 TryObjectEvent:
 	farcall CheckFacingObject
 	jr c, .IsObject
+.nope
 	xor a
 	ret
 .IsObject:
@@ -419,9 +413,6 @@ TryObjectEvent:
 	ld h, [hl]
 	ld l, a
 	jp hl
-.nope
-	xor a
-	ret
 
 ObjectEventTypeArray:
 	table_width 3
@@ -531,11 +522,7 @@ BGEventJumptable:
 .ifset:
 	call CheckBGEventFlag
 	jr z, .dontread
-	jr .thenread
-.ifnotset:
-	call CheckBGEventFlag
-	jr nz, .dontread
-.thenread:
+.thenread
 	push hl
 	call PlayTalkObject
 	pop hl
@@ -547,6 +534,9 @@ BGEventJumptable:
 	call CallScript
 	scf
 	ret
+.ifnotset:
+	call CheckBGEventFlag
+	jr z, .thenread
 .dontread:
 	xor a
 	ret
@@ -1061,13 +1051,12 @@ DoBikeStep::
 	dec hl
 	ld [hl], d
 .dont_increment
-	; If we've taken at least 1024 steps, have the bike
-	;  shop owner try to call us.
+	; If we've taken at least 1024 steps, 
+	; have the bike shop owner try to call us.
 	ld a, d
 	cp HIGH(1024)
 	jr c, .NoCall
-	; If a call has already been queued, don't overwrite
-	; that call.
+	; If a call has already been queued, don't overwrite that call.
 	ld a, [wSpecialPhoneCallID]
 	and a
 	jr nz, .NoCall

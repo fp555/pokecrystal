@@ -62,16 +62,15 @@ Route32CooltrainerMContinueScene:
 	verbosegiveitem MIRACLE_SEED
 	iffalse .BagFull
 	setevent EVENT_GOT_MIRACLE_SEED_IN_ROUTE_32
-	sjump .GotMiracleSeed
-.DontHaveZephyrBadge:
-	writetext Route32CooltrainerMText_VioletGym
-	waitbutton
-	closetext
-	end
 .GotMiracleSeed:
 	writetext Route32CooltrainerMText_ExperiencesShouldBeUseful
 	waitbutton
 .BagFull:
+	closetext
+	end
+.DontHaveZephyrBadge:
+	writetext Route32CooltrainerMText_VioletGym
+	waitbutton
 	closetext
 	end
 
@@ -115,6 +114,7 @@ Route32WannaBuyASlowpokeTailScript:
 
 SlowpokeTailSalesmanScript:
 	faceplayer
+	; fallthrough
 _OfferToSellSlowpokeTail:
 	setscene SCENE_ROUTE32_NOOP
 	opentext
@@ -135,21 +135,13 @@ TrainerCamperRoland:
 	trainer CAMPER, ROLAND, EVENT_BEAT_CAMPER_ROLAND, CamperRolandSeenText, CamperRolandBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext CamperRolandAfterText
-	waitbutton
-	closetext
-	end
+	jumptext CamperRolandAfterText
 
 TrainerFisherJustin:
 	trainer FISHER, JUSTIN, EVENT_BEAT_FISHER_JUSTIN, FisherJustinSeenText, FisherJustinBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext FisherJustinAfterText
-	waitbutton
-	closetext
-	end
+	jumptext FisherJustinAfterText
 
 TrainerFisherRalph1:
 	trainer FISHER, RALPH1, EVENT_BEAT_FISHER_RALPH, FisherRalph1SeenText, FisherRalph1BeatenText, 0, .Script
@@ -167,19 +159,24 @@ TrainerFisherRalph1:
 	writetext FisherRalphAfterText
 	promptbutton
 	setevent EVENT_RALPH_ASKED_FOR_PHONE_NUMBER
-	scall .AskNumber1
+	callstd AskNumber1MScript
 	sjump .AskForNumber
 .AskAgain:
-	scall .AskNumber2
+	callstd AskNumber2MScript
 .AskForNumber:
 	askforphonenumber PHONE_FISHER_RALPH
 	ifequal PHONE_CONTACTS_FULL, .PhoneFull
 	ifequal PHONE_CONTACT_REFUSED, .NumberDeclined
 	gettrainername STRING_BUFFER_3, FISHER, RALPH1
-	scall .RegisteredNumber
-	sjump .NumberAccepted
+	callstd RegisteredNumberScript
+.NumberAccepted:
+	jumpstd NumberAcceptedMScript
+.NumberDeclined:
+	jumpstd NumberDeclinedMScript
+.PhoneFull:
+	jumpstd PhoneFullMScript
 .Rematch:
-	scall .RematchStd
+	callstd RematchMScript
 	winlosstext FisherRalph1BeatenText, 0
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
@@ -191,70 +188,34 @@ TrainerFisherRalph1:
 	iftrue .LoadFight1
 	; initial fight
 	loadtrainer FISHER, RALPH1
+.battle
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_RALPH_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer FISHER, RALPH2
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_RALPH_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight2:
 	loadtrainer FISHER, RALPH3
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_RALPH_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight3:
 	loadtrainer FISHER, RALPH4
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_RALPH_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight4:
 	loadtrainer FISHER, RALPH5
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_RALPH_READY_FOR_REMATCH
-	end
+	sjump .battle
 .Swarm:
 	writetext FisherRalphSwarmText
 	waitbutton
 	closetext
-	end
-.AskNumber1:
-	jumpstd AskNumber1MScript
-	end
-.AskNumber2:
-	jumpstd AskNumber2MScript
-	end
-.RegisteredNumber:
-	jumpstd RegisteredNumberScript
-	end
-.NumberAccepted:
-	jumpstd NumberAcceptedMScript
-	end
-.NumberDeclined:
-	jumpstd NumberDeclinedMScript
-	end
-.PhoneFull:
-	jumpstd PhoneFullMScript
-	end
-.RematchStd:
-	jumpstd RematchMScript
 	end
 
 TrainerFisherHenry:
 	trainer FISHER, HENRY, EVENT_BEAT_FISHER_HENRY, FisherHenrySeenText, FisherHenryBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext FisherHenryAfterText
-	waitbutton
-	closetext
-	end
+	jumptext FisherHenryAfterText
 
 TrainerPicnickerLiz1:
 	trainer PICNICKER, LIZ1, EVENT_BEAT_PICNICKER_LIZ, PicnickerLiz1SeenText, PicnickerLiz1BeatenText, 0, .Script
@@ -270,19 +231,24 @@ TrainerPicnickerLiz1:
 	writetext PicnickerLiz1AfterText
 	promptbutton
 	setevent EVENT_LIZ_ASKED_FOR_PHONE_NUMBER
-	scall .AskNumber1
+	callstd AskNumber1FScript
 	sjump .AskForNumber
 .AskAgain:
-	scall .AskNumber2
+	callstd AskNumber2FScript
 .AskForNumber:
 	askforphonenumber PHONE_PICNICKER_LIZ
 	ifequal PHONE_CONTACTS_FULL, .PhoneFull
 	ifequal PHONE_CONTACT_REFUSED, .NumberDeclined
 	gettrainername STRING_BUFFER_3, PICNICKER, LIZ1
-	scall .RegisteredNumber
-	sjump .NumberAccepted
+	callstd RegisteredNumberScript
+.NumberAccepted:
+	jumpstd NumberAcceptedFScript
+.NumberDeclined:
+	jumpstd NumberDeclinedFScript
+.PhoneFull:
+	jumpstd PhoneFullFScript
 .Rematch:
-	scall .RematchStd
+	callstd RematchFScript
 	winlosstext PicnickerLiz1BeatenText, 0
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight4
@@ -294,85 +260,41 @@ TrainerPicnickerLiz1:
 	iftrue .LoadFight1
 	; initial fight
 	loadtrainer PICNICKER, LIZ1
+.battle
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_LIZ_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer PICNICKER, LIZ2
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_LIZ_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight2:
 	loadtrainer PICNICKER, LIZ3
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_LIZ_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight3:
 	loadtrainer PICNICKER, LIZ4
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_LIZ_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight4:
 	loadtrainer PICNICKER, LIZ5
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_LIZ_READY_FOR_REMATCH
-	end
-.AskNumber1:
-	jumpstd AskNumber1FScript
-	end
-.AskNumber2:
-	jumpstd AskNumber2FScript
-	end
-.RegisteredNumber:
-	jumpstd RegisteredNumberScript
-	end
-.NumberAccepted:
-	jumpstd NumberAcceptedFScript
-	end
-.NumberDeclined:
-	jumpstd NumberDeclinedFScript
-	end
-.PhoneFull:
-	jumpstd PhoneFullFScript
-	end
-.RematchStd:
-	jumpstd RematchFScript
-	end
+	sjump .battle
 
 TrainerYoungsterAlbert:
 	trainer YOUNGSTER, ALBERT, EVENT_BEAT_YOUNGSTER_ALBERT, YoungsterAlbertSeenText, YoungsterAlbertBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext YoungsterAlbertAfterText
-	waitbutton
-	closetext
-	end
+	jumptext YoungsterAlbertAfterText
 
 TrainerYoungsterGordon:
 	trainer YOUNGSTER, GORDON, EVENT_BEAT_YOUNGSTER_GORDON, YoungsterGordonSeenText, YoungsterGordonBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext YoungsterGordonAfterText
-	waitbutton
-	closetext
-	end
+	jumptext YoungsterGordonAfterText
 
 TrainerBirdKeeperPeter:
 	trainer BIRD_KEEPER, PETER, EVENT_BEAT_BIRD_KEEPER_PETER, BirdKeeperPeterSeenText, BirdKeeperPeterBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext BirdKeeperPeterAfterText
-	waitbutton
-	closetext
-	end
+	jumptext BirdKeeperPeterAfterText
 
 FriedaScript:
 	faceplayer
@@ -453,30 +375,13 @@ Route32CooltrainerMText_WhatsTheHurry:
 Route32CooltrainerMText_AideIsWaiting:
 	text "<PLAYER>, right?"
 	line "Some guy wearing"
-
-	para "glasses was look-"
-	line "ing for you."
+	cont "glasses was look-"
+	cont "ing for you."
 
 	para "See for yourself."
 	line "He's waiting for"
-
-	para "you at the #MON"
-	line "CENTER."
-	done
-
-Route32CooltrainerMText_UnusedSproutTower:
-	text "Have you gone to"
-	line "SPROUT TOWER?"
-
-	para "If you ever visit"
-	line "VIOLET CITY, "
-
-	para "they'll expect you"
-	line "to train there."
-
-	para "That's basic for"
-	line "trainers. Go to"
-	cont "SPROUT TOWER!"
+	cont "you at the #MON"
+	cont "CENTER."
 	done
 
 Route32CooltrainerMText_VioletGym:
@@ -498,15 +403,13 @@ Route32CooltrainerMText_HaveThisSeed:
 
 	para "It must be from"
 	line "the training you"
+	cont "had in VIOLET"
+	cont "CITY."
 
-	para "gave them around"
-	line "VIOLET CITY."
-
-	para "The training at"
-	line "the GYM must have"
-
-	para "been especially"
-	line "helpful."
+	para "The battles at the"
+	line "GYM must have been"
+	cont "especially help-"
+	cont "ful."
 
 	para "As a souvenir of"
 	line "VIOLET CITY, take"
@@ -520,22 +423,21 @@ Route32CooltrainerMText_HaveThisSeed:
 Route32CooltrainerMText_ExperiencesShouldBeUseful:
 	text "Your experiences"
 	line "in VIOLET CITY"
-
-	para "should be useful"
-	line "for your journey."
+	cont "should be useful"
+	cont "for your journey."
 	done
 
 Text_MillionDollarSlowpokeTail:
-	text "How would you like"
+	text "Wouldn't you love"
 	line "to have this"
-
-	para "tasty, nutritious"
-	line "SLOWPOKETAIL?"
+	cont "tasty, nutritious"
+	cont "SLOWPOKETAIL?"
 
 	para "For you right now,"
 	line "just ¥1,000,000!"
 
-	para "You'll want this!"
+	para "You do crave it,"
+	line "right?"
 	done
 
 Text_ThoughtKidsWereLoaded:
@@ -563,9 +465,8 @@ FisherJustinBeatenText:
 FisherJustinAfterText:
 	text "Calm, collected…"
 	line "The essence of"
-
-	para "fishing and #-"
-	line "MON is the same."
+	cont "fishing and #-"
+	cont "MON is the same."
 	done
 
 FisherRalph1SeenText:
@@ -593,12 +494,11 @@ FisherRalphAfterText:
 FisherRalphSwarmText:
 	text "One, two, three…"
 	line "Muahahaha, what a"
-
-	para "great haul!"
-	line "I'm done! Go ahead"
-
-	para "and catch as many"
-	line "as you can, kid!"
+	cont "great haul!"
+	
+	para "I'm done! Go ahead"
+	line "and catch as many"
+	cont "as you can, kid!"
 	done
 
 FisherHenrySeenText:
@@ -613,9 +513,8 @@ FisherHenryBeatenText:
 FisherHenryAfterText:
 	text "Freshly caught"
 	line "#MON are no"
-
-	para "match for properly"
-	line "raised ones."
+	cont "match for properly"
+	cont "raised ones."
 	done
 
 YoungsterAlbertSeenText:
@@ -716,10 +615,10 @@ BirdKeeperPeterAfterText:
 
 Text_RoarIntro:
 	text "WROOOOAR!"
-	line "PEOPLE RUN WHEN I"
-
-	para "ROAR! BUT YOU"
-	line "CAME LOOKING!"
+	
+	para "PEOPLE RUN WHEN I"
+	line "ROAR! BUT YOU CAME"
+	cont "LOOKING!"
 
 	para "THAT PLEASES ME!"
 	line "NOW TAKE THIS!"
@@ -734,8 +633,8 @@ Text_RoarOutro:
 	done
 
 MeetFriedaText:
-	text "FRIEDA: Yahoo!"
-	line "It's Friday!"
+	text "Yahoo! It's"
+	line "Friday!"
 
 	para "I'm FRIEDA of"
 	line "Friday!"
@@ -749,13 +648,11 @@ FriedaGivesGiftText:
 	done
 
 FriedaGaveGiftText:
-	text "FRIEDA: Give it to"
-	line "a #MON that has"
+	text "Give it to a"
+	line "#MON that has"
 	cont "poison-type moves."
 
-	para "Oh!"
-
-	para "It's wicked!"
+	para "Oh, it's wicked!"
 
 	para "You'll be shocked"
 	line "how good it makes"
@@ -763,10 +660,10 @@ FriedaGaveGiftText:
 	done
 
 FriedaFridayText:
-	text "FRIEDA: Hiya! What"
-	line "day do you like?"
+	text "Hiya! What's your"
+	line "favourite day?"
 
-	para "I love Friday. No"
+	para "I love Fridays. No"
 	line "doubt about it!"
 
 	para "Don't you think"
@@ -774,8 +671,8 @@ FriedaFridayText:
 	done
 
 FriedaNotFridayText:
-	text "FRIEDA: Isn't it"
-	line "Friday today?"
+	text "Isn't it Friday"
+	line "today?"
 
 	para "It's so boring"
 	line "when it's not!"
@@ -811,9 +708,9 @@ Route32_MapEvents:
 	coord_event  7, 71, SCENE_ROUTE32_OFFER_SLOWPOKETAIL, Route32WannaBuyASlowpokeTailScript
 
 	def_bg_events
-	bg_event 13,  5, BGEVENT_READ, Route32Sign
-	bg_event  9,  1, BGEVENT_READ, Route32RuinsSign
-	bg_event 10, 84, BGEVENT_READ, Route32UnionCaveSign
+	bg_event 17,  7, BGEVENT_READ, Route32Sign
+	bg_event  9,  3, BGEVENT_READ, Route32RuinsSign
+	bg_event  7, 83, BGEVENT_READ, Route32UnionCaveSign
 	bg_event 12, 73, BGEVENT_READ, Route32PokecenterSign
 	bg_event 12, 67, BGEVENT_ITEM, Route32HiddenGreatBall
 	bg_event 11, 40, BGEVENT_ITEM, Route32HiddenSuperPotion

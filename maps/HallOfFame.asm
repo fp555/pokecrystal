@@ -63,9 +63,9 @@ HallOfFame_SlowlyApproachMachine:
 	step_end
 
 HallOfFame_LanceText:
-	text "It's been a long"
-	line "time since I last"
-	cont "came here."
+	text "It's been a while"
+	line "since I last came"
+	cont "here."
 
 	para "This is where we"
 	line "honor the LEAGUE"

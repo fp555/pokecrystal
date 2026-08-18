@@ -189,11 +189,10 @@ AcademyEarlTeachHowToRaiseWellText:
 	text "Fine! Teach you,"
 	line "I will!"
 
-	para "If #MON come"
+	para "If a #MON come"
 	line "out in battle even"
-
-	para "briefly, some EXP."
-	line "Points it gets."
+	cont "briefly, some EXP."
+	cont "Points it gets."
 
 	para "At top of list put"
 	line "weak #MON."
@@ -253,9 +252,8 @@ EarlsPokemonAcademyYoungster2Text:
 AcademyBlackboardText:
 	text "The blackboard"
 	line "describes #MON"
-
-	para "status changes in"
-	line "battle."
+	cont "status changes in"
+	cont "battle."
 	done
 
 AcademyPoisonText:
@@ -265,9 +263,8 @@ AcademyPoisonText:
 
 	para "Poison lingers"
 	line "after the battle,"
-
-	para "and HP is lost as"
-	line "you walk."
+	cont "and HP is lost as"
+	cont "you walk."
 
 	para "To cure it, use an"
 	line "ANTIDOTE."
@@ -297,17 +294,17 @@ AcademySleepText:
 	done
 
 AcademyBurnText:
-	text "A burn steadily"
-	line "consumes HP."
+	text "A burned #MON"
+	line "steadily loses HP."
 
 	para "It also reduces"
 	line "attack power."
 
 	para "A burn lingers"
 	line "after battle."
-
-	para "Use a BURN HEAL as"
-	line "the cure."
+	
+	para "It can be cured"
+	cont "with a BURN HEAL."
 	done
 
 AcademyFreezeText:
@@ -365,23 +362,16 @@ AcademyNotebookText2:
 AcademyNotebookText3:
 	text "People who catch"
 	line "and use #MON"
+	cont "in battle are"
+	cont "#MON trainers."
 
-	para "in battle are"
-	line "#MON trainers."
-
-	para "They are expected"
-	line "to visit #MON"
-
-	para "GYMS and defeat"
-	line "other trainers."
+	para "They grow stronger"
+	line "by defeating other"
+	cont "trainers and chal-"
+	cont "lenging GYMS."
 
 	para "The next page"
-	line "is… Blank!"
-
-	para "Boy: E-he-he…"
-
-	para "I haven't written"
-	line "anymore…"
+	line "is… blank!"
 	done
 
 EarlsPokemonAcademy_MapEvents:

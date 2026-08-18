@@ -26,30 +26,35 @@ TrainerBugCatcherWade1:
 .Script:
 	loadvar VAR_CALLERID, PHONE_BUG_CATCHER_WADE
 	opentext
-	checkflag ENGINE_WADE_READY_FOR_REMATCH
-	iftrue .WadeRematch
 	checkflag ENGINE_WADE_HAS_ITEM
 	iftrue .WadeItem
+	checkflag ENGINE_WADE_READY_FOR_REMATCH
+	iftrue .WadeRematch
 	checkcellnum PHONE_BUG_CATCHER_WADE
-	iftrue .AcceptedNumberSTD
+	iftrue .AcceptedNumber
 	checkevent EVENT_WADE_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskAgain
 	writetext BugCatcherWade1AfterText
-	waitbutton
+	promptbutton
 	setevent EVENT_WADE_ASKED_FOR_PHONE_NUMBER
-	scall .AskPhoneNumberSTD
-	sjump .Continue
+	callstd AskNumber1MScript
+	sjump .RequestNumber
 .AskAgain:
-	scall .AskAgainSTD
-.Continue:
+	callstd AskNumber2MScript
+.RequestNumber:
 	askforphonenumber PHONE_BUG_CATCHER_WADE
-	ifequal PHONE_CONTACTS_FULL, .PhoneFullSTD
-	ifequal PHONE_CONTACT_REFUSED, .DeclinedNumberSTD
+	ifequal PHONE_CONTACTS_FULL, .PhoneFull
+	ifequal PHONE_CONTACT_REFUSED, .DeclinedNumber
 	gettrainername STRING_BUFFER_3, BUG_CATCHER, WADE1
-	scall .RegisterNumberSTD
-	sjump .AcceptedNumberSTD
+	callstd RegisteredNumberScript
+.AcceptedNumber:
+	jumpstd NumberAcceptedMScript
+.DeclinedNumber:
+	jumpstd NumberDeclinedMScript
+.PhoneFull:
+	jumpstd PhoneFullMScript
 .WadeRematch:
-	scall .RematchSTD
+	callstd RematchMScript
 	winlosstext BugCatcherWade1BeatenText, 0
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .LoadFight4
@@ -61,36 +66,25 @@ TrainerBugCatcherWade1:
 	iftrue .LoadFight1
 	; initial fight
 	loadtrainer BUG_CATCHER, WADE1
+.battle:
 	startbattle
 	reloadmapafterbattle
 	clearflag ENGINE_WADE_READY_FOR_REMATCH
 	end
 .LoadFight1:
 	loadtrainer BUG_CATCHER, WADE2
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_WADE_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight2:
 	loadtrainer BUG_CATCHER, WADE3
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_WADE_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight3:
 	loadtrainer BUG_CATCHER, WADE4
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_WADE_READY_FOR_REMATCH
-	end
+	sjump .battle
 .LoadFight4:
 	loadtrainer BUG_CATCHER, WADE5
-	startbattle
-	reloadmapafterbattle
-	clearflag ENGINE_WADE_READY_FOR_REMATCH
-	end
+	sjump .battle
 .WadeItem:
-	scall .ItemSTD
+	callstd GiftMScript
 	checkevent EVENT_WADE_HAS_BERRY
 	iftrue .Berry
 	checkevent EVENT_WADE_HAS_PSNCUREBERRY
@@ -102,50 +96,27 @@ TrainerBugCatcherWade1:
 .Berry:
 	verbosegiveitem BERRY
 	iffalse .PackFull
+	clearevent EVENT_WADE_HAS_BERRY
 	sjump .Done
 .Psncureberry:
 	verbosegiveitem PSNCUREBERRY
 	iffalse .PackFull
+	clearevent EVENT_WADE_HAS_PSNCUREBERRY
 	sjump .Done
 .Przcureberry:
 	verbosegiveitem PRZCUREBERRY
 	iffalse .PackFull
+	clearevent EVENT_WADE_HAS_PRZCUREBERRY
 	sjump .Done
 .BitterBerry:
 	verbosegiveitem BITTER_BERRY
 	iffalse .PackFull
+	clearevent EVENT_WADE_HAS_BERRY
 .Done:
 	clearflag ENGINE_WADE_HAS_ITEM
-	sjump .AcceptedNumberSTD
+	sjump .AcceptedNumber
 .PackFull:
-	sjump .PackFullSTD
-.AskPhoneNumberSTD:
-	jumpstd AskNumber1MScript
-	end
-.AskAgainSTD:
-	jumpstd AskNumber2MScript
-	end
-.RegisterNumberSTD:
-	jumpstd RegisteredNumberScript
-	end
-.AcceptedNumberSTD:
-	jumpstd NumberAcceptedMScript
-	end
-.DeclinedNumberSTD:
-	jumpstd NumberDeclinedMScript
-	end
-.PhoneFullSTD:
-	jumpstd PhoneFullMScript
-	end
-.RematchSTD:
-	jumpstd RematchMScript
-	end
-.ItemSTD:
-	jumpstd GiftMScript
-	end
-.PackFullSTD:
 	jumpstd PackFullMScript
-	end
 
 Route31MailRecipientScript:
 	faceplayer
@@ -230,7 +201,7 @@ Route31PokeBall:
 Route31CooltrainerMText:
 	text "DARK CAVE…"
 
-	para "If #MON could"
+	para "If a #MON could"
 	line "light it up, I'd"
 	cont "explore it."
 	done
@@ -248,9 +219,8 @@ BugCatcherWade1BeatenText:
 BugCatcherWade1AfterText:
 	text "You can catch"
 	line "#MON even if"
-
-	para "you have six with"
-	line "you."
+	cont "you have six with"
+	cont "you."
 
 	para "If you catch one,"
 	line "it'll go to your"
@@ -316,9 +286,8 @@ Text_Route31DescribeNightmare:
 
 	para "It's a wicked move"
 	line "that steadily cuts"
-
-	para "the HP of a sleep-"
-	line "ing enemy."
+	cont "the HP of a"
+	cont "sleeping enemy."
 
 	para "Ooooh…"
 	line "That's scary…"
@@ -348,9 +317,8 @@ Text_Route31DeclinedToHandOverMail:
 Text_Route31CantTakeLastMon:
 	text "If I take that"
 	line "#MON from you,"
-
-	para "what are you going"
-	line "to use in battle?"
+	cont "what are you going"
+	cont "to use in battle?"
 	done
 
 Route31YoungsterText:

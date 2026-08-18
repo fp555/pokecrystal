@@ -20,7 +20,7 @@ PlayersHouse1FNoop2Scene:
 
 MeetMomLeftScript:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-
+	; fallthrough
 MeetMomRightScript:
 	playmusic MUSIC_MOM
 	showemote EMOTE_SHOCK, PLAYERSHOUSE1F_MOM1, 15
@@ -36,8 +36,8 @@ MeetMomScript:
 	opentext
 	writetext ElmsLookingForYouText
 	promptbutton
-	getstring STRING_BUFFER_4, PokegearName
-	scall PlayersHouse1FReceiveItemStd
+	getstring STRING_BUFFER_4, .PokegearName
+	callstd ReceiveItemScript
 	setflag ENGINE_POKEGEAR
 	setflag ENGINE_PHONE_CARD
 	addcellnum PHONE_MOM
@@ -69,34 +69,24 @@ MeetMomScript:
 	iftrue .FromRight
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	iffalse .FromLeft
-	sjump .Finish
+.Finish:
+	special RestartMapMusic
+	turnobject PLAYERSHOUSE1F_MOM1, LEFT
+	end
 .FromRight:
 	applymovement PLAYERSHOUSE1F_MOM1, MomTurnsBackMovement
 	sjump .Finish
 .FromLeft:
 	applymovement PLAYERSHOUSE1F_MOM1, MomWalksBackMovement
 	sjump .Finish
-.Finish:
-	special RestartMapMusic
-	turnobject PLAYERSHOUSE1F_MOM1, LEFT
-	end
-
-MeetMomTalkedScript:
-	playmusic MUSIC_MOM
-	sjump MeetMomScript
-
-PokegearName:
+.PokegearName:
 	db "#GEAR@"
-
-PlayersHouse1FReceiveItemStd:
-	jumpstd ReceiveItemScript
-	end
 
 MomScript:
 	faceplayer
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	checkscene
-	iffalse MeetMomTalkedScript ; SCENE_PLAYERSHOUSE1F_MEET_MOM
+	iffalse .MeetMomTalkedScript ; SCENE_PLAYERSHOUSE1F_MEET_MOM
 	opentext
 	checkevent EVENT_FIRST_TIME_BANKING_WITH_MOM
 	iftrue .FirstTimeBanking
@@ -110,11 +100,9 @@ MomScript:
 	waitbutton
 	closetext
 	end
-.GotAPokemon:
-	writetext SoWhatWasProfElmsErrandText
-	waitbutton
-	closetext
-	end
+.MeetMomTalkedScript:
+	playmusic MUSIC_MOM
+	sjump MeetMomScript
 .FirstTimeBanking:
 	writetext ImBehindYouText
 	waitbutton
@@ -128,6 +116,11 @@ MomScript:
 	waitbutton
 	closetext
 	end
+.GotAPokemon:
+	writetext SoWhatWasProfElmsErrandText
+	waitbutton
+	closetext
+	end
 
 NeighborScript:
 	faceplayer
@@ -136,8 +129,15 @@ NeighborScript:
 	iftrue .MornScript
 	checktime DAY
 	iftrue .DayScript
-	checktime NITE
-	iftrue .NiteScript
+	; NITE
+	writetext NeighborNiteIntroText
+	promptbutton
+.Main:
+	writetext NeighborText
+	waitbutton
+	closetext
+	turnobject PLAYERSHOUSE1F_POKEFAN_F, RIGHT
+	end
 .MornScript:
 	writetext NeighborMornIntroText
 	promptbutton
@@ -146,16 +146,6 @@ NeighborScript:
 	writetext NeighborDayIntroText
 	promptbutton
 	sjump .Main
-.NiteScript:
-	writetext NeighborNiteIntroText
-	promptbutton
-	sjump .Main
-.Main:
-	writetext NeighborText
-	waitbutton
-	closetext
-	turnobject PLAYERSHOUSE1F_POKEFAN_F, RIGHT
-	end
 
 PlayersHouse1FTVScript:
 	jumptext PlayersHouse1FTVText
@@ -188,29 +178,24 @@ MomWalksBackMovement:
 ElmsLookingForYouText:
 	text "Oh, <PLAYER>…! Our"
 	line "neighbor, PROF."
-
-	para "ELM, was looking"
-	line "for you."
+	cont "ELM, was looking"
+	cont "for you."
 
 	para "He said he wanted"
 	line "you to do some-"
 	cont "thing for him."
 
 	para "Oh! I almost for-"
-	line "got! Your #MON"
-
-	para "GEAR is back from"
-	line "the repair shop."
+	line "got! Your #GEAR"
+	cont "is back from the"
+	cont "repair shop."
 
 	para "Here you go!"
 	done
 
 MomGivesPokegearText:
-	text "#MON GEAR, or"
-	line "just #GEAR."
-
-	para "It's essential if"
-	line "you want to be a"
+	text "The #GEAR is"
+	line "essential for a"
 	cont "good trainer."
 
 	para "Oh, the day of the"
@@ -228,17 +213,14 @@ IsItDSTText:
 ComeHomeForDSTText:
 	text "Come home to"
 	line "adjust your clock"
-
-	para "for Daylight"
-	line "Saving Time."
+	cont "for Daylight"
+	cont "Saving Time."
 	done
 
 PhoneInstructionsText:
-	text "By the way, to use"
-	line "the PHONE, just"
-	
-	para "turn the #GEAR"
-	line "on and select the"
+	text "To use the PHONE"
+	line "open the #GEAR"
+	cont "and select the"
 	cont "PHONE icon."
 	
 	para "Phone numbers are"
@@ -281,32 +263,31 @@ ImBehindYouText:
 
 NeighborMornIntroText:
 	text "Good morning,"
-	line "<PLAY_G>!"
+	line "<PLAYER>!"
 
 	para "I'm visiting!"
 	done
 
 NeighborDayIntroText:
-	text "Hello, <PLAY_G>!"
+	text "Hello, <PLAYER>!"
 	line "I'm visiting!"
 	done
 
 NeighborNiteIntroText:
 	text "Good evening,"
-	line "<PLAY_G>!"
+	line "<PLAYER>!"
 
 	para "I'm visiting!"
 	done
 
 NeighborText:
-	text "<PLAY_G>, have you"
+	text "<PLAYER>, have you"
 	line "heard?"
 
 	para "My daughter is"
 	line "adamant about"
-
-	para "becoming PROF."
-	line "ELM's assistant."
+	cont "becoming PROF."
+	cont "ELM's assistant."
 
 	para "She really loves"
 	line "#MON!"
@@ -321,7 +302,7 @@ PlayersHouse1FStoveText:
 
 PlayersHouse1FSinkText:
 	text "The sink is spot-"
-	line "less. Mom likes it"
+	line "less. Mom keeps it"
 	cont "clean."
 	done
 
@@ -336,9 +317,8 @@ PlayersHouse1FFridgeText:
 PlayersHouse1FTVText:
 	text "There's a movie on"
 	line "TV: Stars dot the"
-
-	para "sky as two boys"
-	line "ride on a train…"
+	cont "sky as two boys"
+	cont "ride on a train…"
 
 	para "I'd better get"
 	line "rolling too!"

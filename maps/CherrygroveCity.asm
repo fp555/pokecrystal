@@ -312,15 +312,13 @@ GuideGentIntroText:
 GuideGentPokecenterText:
 	text "This is a #MON"
 	line "CENTER. They heal"
-
-	para "your #MON in no"
-	line "time at all."
+	cont "your #MON in no"
+	cont "time at all."
 
 	para "You'll be relying"
 	line "on them a lot, so"
-
-	para "you better learn"
-	line "about them."
+	cont "you better learn"
+	cont "about them."
 	done
 
 GuideGentMartText:
@@ -329,20 +327,18 @@ GuideGentMartText:
 
 	para "They sell BALLS"
 	line "for catching wild"
-
-	para "#MON and other"
-	line "useful items."
+	cont "#MON and other"
+	cont "useful items."
 	done
 
 GuideGentRoute30Text:
 	text "ROUTE 30 is out"
 	line "this way."
-
+	
 	para "Trainers will be"
 	line "battling their"
-
-	para "prized #MON"
-	line "there."
+	cont "prized #MON"
+	cont "there."
 	done
 
 GuideGentSeaText:

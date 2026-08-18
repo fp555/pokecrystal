@@ -32,7 +32,7 @@ Route30BerrySpeechHouseMonEatBerriesText:
 
 	para "For example, my"
 	line "#MON recovered"
-	line "health by eating a"
+	cont "health by eating a"
 	cont "ORAN BERRY."
 
 	para "Here. I'll share"

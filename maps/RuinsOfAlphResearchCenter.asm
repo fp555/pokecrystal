@@ -182,11 +182,9 @@ RuinsOfAlphResearchCenterModifiedDexText:
 	para "I modified your"
 	line "#DEX."
 
-	para "I added an"
-	line "optional #DEX"
-
-	para "to store UNOWN"
-	line "data."
+	para "The UNOWNDEX"
+	line "stores additional"
+	cont "UNOWN data."
 
 	para "It records them in"
 	line "the sequence that"
@@ -252,23 +250,20 @@ RuinsOfAlphResearchCenterScientist1Text_UnownAppeared:
 RuinsOfAlphResearchCenterScientist1Text_GotAllUnown:
 	text "Our investigation,"
 	line "with your help, is"
-
-	para "giving us insight"
-	line "into the RUINS."
+	cont "giving us insight"
+	cont "into the RUINS."
 
 	para "The RUINS appear"
 	line "to have been built"
-
-	para "as a habitat for"
-	line "#MON."
+	cont "as a habitat for"
+	cont "#MON."
 	done
 
 RuinsOfAlphResearchCenterScientist2Text:
 	text "There are odd pat-"
 	line "terns drawn on the"
-
-	para "walls of the"
-	line "RUINS."
+	cont "walls of the"
+	cont "RUINS."
 
 	para "They must be the"
 	line "key for unraveling"
@@ -283,9 +278,8 @@ RuinsOfAlphResearchCenterScientist2Text_UnownAppeared:
 
 	para "They appear to be"
 	line "very much like the"
-
-	para "drawings on the"
-	line "walls there."
+	cont "drawings on the"
+	cont "walls there."
 
 	para "Hmm…"
 
@@ -297,9 +291,8 @@ RuinsOfAlphResearchCenterScientist2Text_UnownAppeared:
 RuinsOfAlphResearchCenterScientist2Text_GotAllUnown:
 	text "Why did those"
 	line "ancient patterns"
-
-	para "appear on the wall"
-	line "now?"
+	cont "appear on the wall"
+	cont "now?"
 
 	para "The mystery"
 	line "deepens…"

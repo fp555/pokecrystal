@@ -27,7 +27,6 @@ CherrygrovePokecenter1FTeacherScript:
 	waitbutton
 	closetext
 	end
-
 .CommCenterOpen:
 	writetext CherrygrovePokecenter1FTeacherText_CommCenterOpen
 	waitbutton
@@ -37,9 +36,8 @@ CherrygrovePokecenter1FTeacherScript:
 CherrygrovePokecenter1FFisherText:
 	text "It's great. I can"
 	line "store any number"
-
-	para "of #MON, and"
-	line "it's all free."
+	cont "of #MON, and"
+	cont "it's all free."
 	done
 
 CherrygrovePokecenter1FGentlemanText:

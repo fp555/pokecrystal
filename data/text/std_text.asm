@@ -283,9 +283,8 @@ BugContestPrizeNoRoomText:
 
 	para "We'll keep this"
 	line "for you today, so"
-
-	para "come back when you"
-	line "make room for it."
+	cont "come back when you"
+	cont "make room for it."
 	done
 
 HappinessText3:
@@ -297,9 +296,8 @@ HappinessText3:
 HappinessText2:
 	text "#MON get more"
 	line "friendly if you"
-
-	para "spend time with"
-	line "them."
+	cont "spend time with"
+	cont "them."
 	done
 
 HappinessText1:

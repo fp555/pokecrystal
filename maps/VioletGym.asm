@@ -65,21 +65,13 @@ TrainerBirdKeeperRod:
 	trainer BIRD_KEEPER, ROD, EVENT_BEAT_BIRD_KEEPER_ROD, BirdKeeperRodSeenText, BirdKeeperRodBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext BirdKeeperRodAfterBattleText
-	waitbutton
-	closetext
-	end
+	jumptext BirdKeeperRodAfterBattleText
 
 TrainerBirdKeeperAbe:
 	trainer BIRD_KEEPER, ABE, EVENT_BEAT_BIRD_KEEPER_ABE, BirdKeeperAbeSeenText, BirdKeeperAbeBeatenText, 0, .Script
 .Script:
 	endifjustbattled
-	opentext
-	writetext BirdKeeperAbeAfterBattleText
-	waitbutton
-	closetext
-	end
+	jumptext BirdKeeperAbeAfterBattleText
 
 VioletGymGuideScript:
 	faceplayer
@@ -109,11 +101,9 @@ FalknerIntroText:
 	line "VIOLET #MON GYM"
 	cont "leader!"
 
-	para "People say you can"
-	line "clip flying-type"
-
-	para "#MON's wings"
-	line "with a jolt of"
+	para "People zap flying-"
+	line "type #MON with"
+	cont "a jolt of"
 	cont "electricity…"
 
 	para "I won't allow such"
@@ -122,9 +112,8 @@ FalknerIntroText:
 
 	para "I'll show you the"
 	line "real power of the"
-
-	para "magnificent bird"
-	line "#MON!"
+	cont "magnificent bird"
+	cont "#MON!"
 	done
 
 FalknerWinLossText:
@@ -148,9 +137,8 @@ ReceivedZephyrBadgeText:
 FalknerZephyrBadgeText:
 	text "ZEPHYRBADGE lets"
 	line "your #MON use"
-
-	para "FLASH, if they"
-	line "have it, anytime."
+	cont "FLASH, if they"
+	cont "have it, anytime."
 
 	para "Here, take this"
 	line "too."
@@ -159,9 +147,8 @@ FalknerZephyrBadgeText:
 FalknerTMMudSlapText:
 	text "By using a TM, a"
 	line "#MON will"
-
-	para "instantly learn a"
-	line "new move."
+	cont "instantly learn a"
+	cont "new move."
 
 	para "Think before you"
 	line "act: a TM can be"
@@ -170,11 +157,9 @@ FalknerTMMudSlapText:
 	para "TM31 contains"
 	line "MUD-SLAP."
 
-	para "It reduces the"
-	line "enemy's accuracy"
-
-	para "while it causes"
-	line "damage."
+	para "It causes damage"
+	line "while reducing the"
+	cont "enemy's accuracy."
 
 	para "In other words, it"
 	line "is both defensive"
@@ -191,10 +176,9 @@ FalknerFightDoneText:
 	cont "these GYMS."
 
 	para "I'm going to train"
-	line "harder to become"
-
-	para "the greatest bird"
-	line "master!"
+	line "hard to become the"
+	cont "greatest bird"
+	cont "master!"
 	done
 
 BirdKeeperRodSeenText:
@@ -203,9 +187,8 @@ BirdKeeperRodSeenText:
 
 	para "Those here are"
 	line "training night and"
-
-	para "day to become bird"
-	line "#MON masters."
+	cont "day to become bird"
+	cont "#MON masters."
 
 	para "Come on!"
 	done
@@ -247,9 +230,8 @@ VioletGymGuideText:
 
 	para "Believe me!"
 	line "If you believe, a"
-
-	para "championship dream"
-	line "can come true."
+	cont "championship dream"
+	cont "can come true."
 
 	para "You believe?"
 	line "Then listen."
@@ -264,9 +246,8 @@ VioletGymGuideText:
 VioletGymGuideWinText:
 	text "Nice battle! Keep"
 	line "it up, and you'll"
-
-	para "be the CHAMP in no"
-	line "time at all!"
+	cont "be the CHAMP in no"
+	cont "time at all!"
 	done
 
 VioletGym_MapEvents:

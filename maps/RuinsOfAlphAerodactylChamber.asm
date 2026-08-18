@@ -77,7 +77,7 @@ RuinsOfAlphAerodactylChamberDescriptionSign:
 
 RuinsOfAlphAerodactylChamberWallPatternLeft:
 	opentext
-	writetext RuinsOfAlphAerodactylChamberWallPatternLeftText
+	writetext RuinsOfAlphAerodactylChamberWallPatternText
 	setval UNOWNWORDS_LIGHT
 	special DisplayUnownWords
 	closetext
@@ -86,29 +86,15 @@ RuinsOfAlphAerodactylChamberWallPatternLeft:
 RuinsOfAlphAerodactylChamberWallPatternRight:
 	checkevent EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER
 	iftrue .WallOpen
-	opentext
-	writetext RuinsOfAlphAerodactylChamberWallPatternRightText
-	setval UNOWNWORDS_LIGHT
-	special DisplayUnownWords
-	closetext
-	end
+	sjump RuinsOfAlphAerodactylChamberWallPatternLeft
 .WallOpen:
-	opentext
-	writetext RuinsOfAlphAerodactylChamberWallHoleText
-	waitbutton
-	closetext
-	end
+	jumptext RuinsOfAlphAerodactylChamberWallHoleText
 
 RuinsOfAlphAerodactylChamberSkyfallTopMovement:
 	skyfall_top
 	step_end
 
-RuinsOfAlphAerodactylChamberWallPatternLeftText:
-	text "Patterns appeared"
-	line "on the walls…"
-	done
-
-RuinsOfAlphAerodactylChamberWallPatternRightText:
+RuinsOfAlphAerodactylChamberWallPatternText:
 	text "Patterns appeared"
 	line "on the walls…"
 	done
@@ -127,9 +113,8 @@ RuinsOfAlphAerodactylChamberAncientReplicaText:
 RuinsOfAlphAerodactylChamberDescriptionText:
 	text "This flying #-"
 	line "MON attacked its"
-
-	para "prey with saw-like"
-	line "fangs."
+	cont "prey with saw-like"
+	cont "fangs."
 	done
 
 RuinsOfAlphAerodactylChamber_MapEvents:

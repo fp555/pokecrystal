@@ -1,9 +1,10 @@
 MACRO add_stdscript
 \1StdScript::
-	dba \1
+	dw \1
 ENDM
 
 StdScripts::
+; all scripts must be defined in this bank
 	add_stdscript PokecenterNurseScript
 	add_stdscript DifficultBookshelfScript
 	add_stdscript PictureBookshelfScript

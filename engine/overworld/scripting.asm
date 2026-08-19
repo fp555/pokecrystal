@@ -1180,6 +1180,8 @@ Script_memcall:
 	ld d, [hl]
 	; fallthrough
 ScriptCall:
+; The script stack has a capacity of 5 scripts,
+; so we prevent pushing a sixth script.
 	ld hl, wScriptStackSize
 	ld a, [hl]
 	cp 5
@@ -1295,17 +1297,12 @@ Script_callstd:
 StdScript:
 	call GetScriptByte
 	ld e, a
-	call GetScriptByte
-	ld d, a
+	ld d, 0
 	ld hl, StdScripts
 	add hl, de
 	add hl, de
-	add hl, de
-	ld a, BANK(StdScripts)
-	call GetFarByte
-	ld b, a
-	inc hl
-	ld a, BANK(StdScripts)
+	ld b, BANK(StdScripts)
+	ld a, b
 	jp GetFarWord
 
 SkipTwoScriptBytes:

@@ -2,7 +2,7 @@
 
 MACRO stdcoll
 	db \1
-	dw (\2StdScript - StdScripts) / 3
+	db (\2StdScript - StdScripts) / 2
 ENDM
 
 TileCollisionStdScripts:

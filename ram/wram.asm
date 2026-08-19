@@ -2113,7 +2113,8 @@ wPlayerTurningDirection:: db
 NEXTU
 ; std script buffer
 	ds 1
-wJumpStdScriptBuffer:: ds 3
+wJumpStdScriptBuffer:: ds 2
+	ds 1
 
 NEXTU
 ; phone script data

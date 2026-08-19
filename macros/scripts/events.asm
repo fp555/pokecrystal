@@ -80,13 +80,13 @@ ENDM
 	const jumpstd_command ; $0c
 MACRO jumpstd
 	db jumpstd_command
-	dw (\1StdScript - StdScripts) / 3
+	db (\1StdScript - StdScripts) / 2
 ENDM
 
 	const callstd_command ; $0d
 MACRO callstd
 	db callstd_command
-	dw (\1StdScript - StdScripts) / 3
+	db (\1StdScript - StdScripts) / 2
 ENDM
 
 	const callasm_command ; $0e
